@@ -1,0 +1,51 @@
+{
+  "name": "payload-nextjs-server",
+  "description": "A boilerplate project for NextJS with Payload CMS",
+  "keywords": [
+    "payload",
+    "cms",
+    "nextjs"
+  ],
+  "version": "0.0.1",
+  "private": false,
+  "license": "MIT",
+  "author": "TRBL",
+  "scripts": {
+    "build:next": "next build",
+    "build:server": "tsc --project tsconfig.server.json",
+    "build:payload": "payload build",
+    "build": "cross-env NODE_ENV=production yarn build:payload && yarn build:server && cross-env NEXT_BUILD=true node dist/index.js",
+    "dev": "node dev.js",
+    "seed": "node seed/index.js",
+    "serve": "cross-env NODE_ENV=production node dist/index.js"
+  },
+  "dependencies": {
+    "@babel/register": "^7.17.0",
+    "dotenv": "^16.0.0",
+    "escape-html": "^1.0.3",
+    "express": "^4.18.0",
+    "next": "^12.1.0",
+    "payload": "^1.0.7",
+    "react": "^18.1.0",
+    "sass": "^1.52.0",
+    "slate": "^0.72.8",
+    "typescript": "^4.7.0"
+  },
+  "devDependencies": {
+    "@trbl/eslint-config": "^1.2.4",
+    "@types/express": "^4.17.11",
+    "@types/react": "^16.9.56",
+    "@typescript-eslint/eslint-plugin": "4.0.1",
+    "@typescript-eslint/parser": "4.0.1",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.11.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-jest": "^23.16.0",
+    "eslint-plugin-jest-dom": "^3.0.1",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-react": "^7.18.0",
+    "eslint-plugin-react-hooks": "^2.3.0",
+    "ts-node": "^10.8.0"
+  }
+}
