@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import "./index.scss";
+import './index.scss';
 
-const baseClass = "rich-text-large-body";
+const baseClass = 'rich-text-large-body';
 
 const LargeBodyElement: React.FC<{
   attributes: any

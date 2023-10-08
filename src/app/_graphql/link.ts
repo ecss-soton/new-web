@@ -4,8 +4,8 @@ interface Args {
 }
 
 export const LINK_FIELDS = ({ disableAppearance, disableLabel }: Args = {}): string => `{
-  ${!disableLabel ? "label" : ""}
-  ${!disableAppearance ? "appearance" : ""}
+  ${!disableLabel ? 'label' : ''}
+  ${!disableAppearance ? 'appearance' : ''}
   type
   newTab
   url

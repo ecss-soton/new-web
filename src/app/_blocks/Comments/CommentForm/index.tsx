@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import React, { Fragment, useCallback } from "react";
-import { useForm } from "react-hook-form";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import React, { Fragment, useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-import { Comment } from "../../../../payload/payload-types";
-import { Button } from "../../../_components/Button";
-import { Input } from "../../../_components/Input";
-import { Message } from "../../../_components/Message";
-import { useAuth } from "../../../_providers/Auth";
+import { Comment } from '../../../../payload/payload-types';
+import { Button } from '../../../_components/Button';
+import { Input } from '../../../_components/Input';
+import { Message } from '../../../_components/Message';
+import { useAuth } from '../../../_providers/Auth';
 
-import classes from "./index.module.scss";
+import classes from './index.module.scss';
 
 type FormData = {
   comment: string
@@ -39,14 +39,14 @@ export const CommentForm: React.FC<{
 
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/comments`, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             // All comments are created as drafts so that they can be moderated before being published
             // Navigate to the admin dashboard and change the comment status to "published" for it to appear on the site
-            status: "draft",
+            status: 'draft',
             doc: docID,
             user: user.id,
             ...data,
@@ -63,29 +63,36 @@ export const CommentForm: React.FC<{
 
         setSuccess(
           <Fragment>
-            {"Your comment was submitted for moderation successfully. To approve it, "}
+            {'Your comment was submitted for moderation successfully. To approve it, '}
             <Link
               href={`${process.env.NEXT_PUBLIC_SERVER_URL}/admin/collections/comments/${
-                typeof json.doc === "object" ? json.doc.id : json.doc
+                typeof json.doc === 'object' ? json.doc.id : json.doc
               }`}
             >
               navigate to the admin dashboard
             </Link>
-            {" and click \"publish\"."}
+            {' and click "publish".'}
           </Fragment>,
         );
 
         reset();
       } catch (_) {
-        setError("Something went wrong");
+        setError('Something went wrong');
       }
     },
     [docID, user, reset],
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
-      <Message error={error} success={success} className={classes.message} />
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className={classes.form}
+    >
+      <Message
+        error={error}
+        success={success}
+        className={classes.message}
+      />
       <Input
         name="comment"
         label="Comment"
@@ -93,12 +100,12 @@ export const CommentForm: React.FC<{
         register={register}
         error={errors.comment}
         type="textarea"
-        placeholder={user ? "Leave a comment" : "Login to leave a comment"}
+        placeholder={user ? 'Leave a comment' : 'Login to leave a comment'}
         disabled={!user}
-        validate={value => {
-          if (!value) return "Please enter a comment";
-          if (value.length < 3) return "Please enter a comment over 3 characters";
-          if (value.length > 500) return "Please enter a comment under 500 characters";
+        validate={(value) => {
+          if (!value) return 'Please enter a comment';
+          if (value.length < 3) return 'Please enter a comment over 3 characters';
+          if (value.length > 500) return 'Please enter a comment under 500 characters';
           return true;
         }}
       />
@@ -114,7 +121,7 @@ export const CommentForm: React.FC<{
         <Button
           type="submit"
           appearance="primary"
-          label={isLoading ? "Processing" : "Comment"}
+          label={isLoading ? 'Processing' : 'Comment'}
           disabled={isLoading}
           className={classes.submit}
         />

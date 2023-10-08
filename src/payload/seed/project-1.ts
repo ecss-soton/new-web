@@ -1,35 +1,35 @@
-import type { Project } from "../payload-types";
+import type { Project } from '../payload-types';
 
 export const project1: Partial<Project> = {
-  title: "Project 1",
-  slug: "project-1",
-  _status: "published",
+  title: 'Project 1',
+  slug: 'project-1',
+  _status: 'published',
   meta: {
-    title: "Project 1",
-    description: "This is the first project.",
-    image: "{{IMAGE}}",
+    title: 'Project 1',
+    description: 'This is the first project.',
+    image: '{{IMAGE}}',
   },
   hero: {
-    type: "lowImpact",
+    type: 'lowImpact',
     links: null,
     richText: [
       {
         children: [
           {
-            text: "Project 1",
+            text: 'Project 1',
           },
         ],
-        type: "h1",
+        type: 'h1',
       },
     ],
     media: null,
   },
   layout: [
     {
-      blockType: "content",
+      blockType: 'content',
       columns: [
         {
-          size: "twoThirds",
+          size: 'twoThirds',
           richText: [
             {
               children: [
@@ -41,11 +41,11 @@ export const project1: Partial<Project> = {
           ],
           link: {
             reference: {
-              relationTo: "pages",
-              value: "",
+              relationTo: 'pages',
+              value: '',
             },
-            url: "",
-            label: "",
+            url: '',
+            label: '',
           },
         },
       ],

@@ -1,6 +1,6 @@
-import React, { forwardRef, Ref } from "react";
+import React, { forwardRef, Ref } from 'react';
 
-import classes from "./index.module.scss";
+import classes from './index.module.scss';
 
 type Props = {
   left?: boolean
@@ -23,11 +23,11 @@ export const Gutter: React.FC<Props> = forwardRef<HTMLDivElement, Props>((props,
         className,
       ]
         .filter(Boolean)
-        .join(" ")}
+        .join(' ')}
     >
       {children}
     </div>
   );
 });
 
-Gutter.displayName = "Gutter";
+Gutter.displayName = 'Gutter';

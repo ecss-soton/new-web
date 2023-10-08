@@ -1,16 +1,16 @@
+import React from 'react';
+import Link from 'next/link';
+
+import { Header } from '../../../payload/payload-types';
+import { fetchHeader } from '../../_api/fetchGlobals';
+import { Gutter } from '../Gutter';
+import { HeaderNav } from './Nav';
+
+import classes from './index.module.scss';
+
 {
   /* eslint-disable @next/next/no-img-element */
 }
-
-import React from "react";
-import Link from "next/link";
-
-import { Header } from "../../../payload/payload-types";
-import { fetchHeader } from "../../_api/fetchGlobals";
-import { Gutter } from "../Gutter";
-import { HeaderNav } from "./Nav";
-
-import classes from "./index.module.scss";
 
 export async function Header() {
   let header: Header | null = null;
@@ -25,7 +25,7 @@ export async function Header() {
   }
 
   return (
-    <>
+    <React.Fragment>
       <header className={classes.header}>
         <Gutter className={classes.wrap}>
           <Link href="/">
@@ -43,6 +43,6 @@ export async function Header() {
           <HeaderNav header={header} />
         </Gutter>
       </header>
-    </>
+    </React.Fragment>
   );
 }

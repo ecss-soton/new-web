@@ -1,7 +1,7 @@
-import { CATEGORIES } from "./categories";
-import { LINK_FIELDS } from "./link";
-import { MEDIA } from "./media";
-import { META } from "./meta";
+import { CATEGORIES } from './categories';
+import { LINK_FIELDS } from './link';
+import { MEDIA } from './media';
+import { META } from './meta';
 
 export const CALL_TO_ACTION = `
 ...on Cta {

@@ -1,13 +1,13 @@
-import React from "react";
-import Link from "next/link";
+import React from 'react';
+import Link from 'next/link';
 
-import { Footer } from "../../../payload/payload-types";
-import { fetchFooter } from "../../_api/fetchGlobals";
-import { ThemeSelector } from "../../_providers/Theme/ThemeSelector";
-import { Gutter } from "../Gutter";
-import { CMSLink } from "../Link";
+import { Footer } from '../../../payload/payload-types';
+import { fetchFooter } from '../../_api/fetchGlobals';
+import { ThemeSelector } from '../../_providers/Theme/ThemeSelector';
+import { Gutter } from '../Gutter';
+import { CMSLink } from '../Link';
 
-import classes from "./index.module.scss";
+import classes from './index.module.scss';
 
 export async function Footer() {
   let footer: Footer | null = null;
@@ -37,9 +37,12 @@ export async function Footer() {
         </Link>
         <nav className={classes.nav}>
           <ThemeSelector />
-          {navItems.map(({ link }, i) => {
-            return <CMSLink key={i} {...link} />;
-          })}
+          {navItems.map(({ link }, i) => (
+            <CMSLink
+              key={i}
+              {...link}
+            />
+          ))}
           <Link href="/admin">Admin</Link>
           <Link
             href="https://github.com/payloadcms/payload/tree/master/templates/website"
@@ -48,7 +51,11 @@ export async function Footer() {
           >
             Source Code
           </Link>
-          <Link href="https://payloadcms.com" target="_blank" rel="noopener noreferrer">
+          <Link
+            href="https://payloadcms.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Payload
           </Link>
         </nav>

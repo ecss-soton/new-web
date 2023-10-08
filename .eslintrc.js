@@ -1,35 +1,35 @@
 module.exports = {
-  parser: "@typescript-eslint/parser",
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2022,
-    sourceType: "module",
+    sourceType: 'module',
     ecmaFeatures: {
       jsx: true,
     },
   },
-  extends: ["@trbl", "plugin:@typescript-eslint/recommended"],
+  extends: ['@trbl', 'plugin:@typescript-eslint/recommended'],
   settings: {
-    "import/resolver": {
+    'import/resolver': {
       node: {
-        extensions: [".js", ".jsx", ".ts", ".tsx"],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     },
   },
   rules: {
-    "react/jsx-filename-extension": [2, { extensions: [".js", ".jsx", ".ts", ".tsx"] }],
-    "import/prefer-default-export": "off",
-    "react/prop-types": "off",
-    "react/no-unused-prop-types": "off",
-    "react/require-default-props": "off",
-    "no-underscore-dangle": "off",
-    "import/extensions": ["error", "ignorePackages", {
-      js: "never", jsx: "never", ts: "never", tsx: "never",
+    'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
+    'import/prefer-default-export': 'off',
+    'react/prop-types': 'off',
+    'react/no-unused-prop-types': 'off',
+    'react/require-default-props': 'off',
+    'no-underscore-dangle': 'off',
+    'import/extensions': ['error', 'ignorePackages', {
+      js: 'never', jsx: 'never', ts: 'never', tsx: 'never',
     }],
   },
   overrides: [{
-    files: ["*.js"],
+    files: ['*.js'],
     rules: {
-      "@typescript-eslint/no-var-requires": "off",
+      '@typescript-eslint/no-var-requires': 'off',
     },
   }],
 };

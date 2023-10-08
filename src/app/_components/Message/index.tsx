@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import classes from "./index.module.scss";
+import classes from './index.module.scss';
 
 export const Message: React.FC<{
   message?: React.ReactNode
@@ -23,7 +23,7 @@ export const Message: React.FC<{
           !error && !success && !warning && classes.default,
         ]
           .filter(Boolean)
-          .join(" ")}
+          .join(' ')}
       >
         {messageToRender}
       </div>

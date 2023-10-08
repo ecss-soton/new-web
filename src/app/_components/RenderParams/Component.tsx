@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 
-import { Message } from "../Message";
+import { Message } from '../Message';
 
-import classes from "./index.module.scss";
+import classes from './index.module.scss';
 
 export type Props = {
   params?: string[]
@@ -15,12 +15,12 @@ export type Props = {
 }
 
 export const RenderParamsComponent: React.FC<Props> = ({
-                                                         params = ["error", "warning", "success", "message"],
-                                                         className,
-                                                         onParams,
-                                                       }) => {
+  params = ['error', 'warning', 'success', 'message'],
+  className,
+  onParams,
+}) => {
   const searchParams = useSearchParams();
-  const paramValues = params.map(param => searchParams?.get(param));
+  const paramValues = params.map((param) => searchParams?.get(param));
 
   useEffect(() => {
     if (paramValues.length && onParams) {

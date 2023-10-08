@@ -1,31 +1,31 @@
-import type { Block } from "payload/types";
+import type { Block } from 'payload/types';
 
-import richText from "../../fields/richText";
+import richText from '../../fields/richText';
 
 export const FormBlock: Block = {
-  slug: "formBlock",
+  slug: 'formBlock',
   labels: {
-    singular: "Form Block",
-    plural: "Form Blocks",
+    singular: 'Form Block',
+    plural: 'Form Blocks',
   },
   graphQL: {
-    singularName: "FormBlock",
+    singularName: 'FormBlock',
   },
   fields: [
     {
-      name: "form",
-      type: "relationship",
-      relationTo: "forms",
+      name: 'form',
+      type: 'relationship',
+      relationTo: 'forms',
       required: true,
     },
     {
-      name: "enableIntro",
-      label: "Enable Intro Content",
-      type: "checkbox",
+      name: 'enableIntro',
+      label: 'Enable Intro Content',
+      type: 'checkbox',
     },
     richText({
-      name: "introContent",
-      label: "Intro Content",
+      name: 'introContent',
+      label: 'Intro Content',
       admin: {
         condition: (_, { enableIntro }) => Boolean(enableIntro),
       },

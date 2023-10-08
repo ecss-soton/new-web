@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import React, { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import qs from "qs";
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import qs from 'qs';
 
-import { Post, Project } from "../../../payload/payload-types";
-import type { ArchiveBlockProps } from "../../_blocks/ArchiveBlock/types";
-import { Card } from "../Card";
-import { Gutter } from "../Gutter";
-import { PageRange } from "../PageRange";
-import { Pagination } from "../Pagination";
+import { Post, Project } from '../../../payload/payload-types';
+import type { ArchiveBlockProps } from '../../_blocks/ArchiveBlock/types';
+import { Card } from '../Card';
+import { Gutter } from '../Gutter';
+import { PageRange } from '../PageRange';
+import { Pagination } from '../Pagination';
 
-import classes from "./index.module.scss";
+import classes from './index.module.scss';
 
 type Result = {
   totalDocs: number
@@ -25,25 +25,25 @@ type Result = {
 
 export type Props = {
   className?: string
-  relationTo?: "posts" | "projects"
-  populateBy?: "collection" | "selection"
+  relationTo?: 'posts' | 'projects'
+  populateBy?: 'collection' | 'selection'
   showPageRange?: boolean
   onResultChange?: (result: Result) => void // eslint-disable-line no-unused-vars
   sort?: string
   limit?: number
-  populatedDocs?: ArchiveBlockProps["populatedDocs"]
-  selectedDocs?: ArchiveBlockProps["selectedDocs"]
-  populatedDocsTotal?: ArchiveBlockProps["populatedDocsTotal"]
-  categories?: ArchiveBlockProps["categories"]
+  populatedDocs?: ArchiveBlockProps['populatedDocs']
+  selectedDocs?: ArchiveBlockProps['selectedDocs']
+  populatedDocsTotal?: ArchiveBlockProps['populatedDocsTotal']
+  categories?: ArchiveBlockProps['categories']
 }
 
-export const CollectionArchive: React.FC<Props> = props => {
+export const CollectionArchive: React.FC<Props> = (props) => {
   const {
     className,
     relationTo,
     showPageRange,
     onResultChange,
-    sort = "-createdAt",
+    sort = '-createdAt',
     limit = 10,
     populatedDocs,
     populatedDocsTotal,
@@ -53,8 +53,8 @@ export const CollectionArchive: React.FC<Props> = props => {
   } = props;
 
   const [results, setResults] = useState<Result>({
-    totalDocs: typeof populatedDocsTotal === "number" ? populatedDocsTotal : 0,
-    docs: populatedDocs?.map(doc => doc.value) || selectedDocs?.map(doc => doc.value) || [],
+    totalDocs: typeof populatedDocsTotal === 'number' ? populatedDocsTotal : 0,
+    docs: populatedDocs?.map((doc) => doc.value) || selectedDocs?.map((doc) => doc.value) || [],
     page: 1,
     totalPages: 1,
     hasPrevPage: false,
@@ -79,7 +79,7 @@ export const CollectionArchive: React.FC<Props> = props => {
   }, []);
 
   useEffect(() => {
-    if (!isLoading && typeof results.page !== "undefined") {
+    if (!isLoading && typeof results.page !== 'undefined') {
       // scrollToRef()
     }
   }, [isLoading, scrollToRef, results]);
@@ -87,7 +87,7 @@ export const CollectionArchive: React.FC<Props> = props => {
   useEffect(() => {
     let timer: NodeJS.Timeout = null;
 
-    if (populateBy === "collection") {
+    if (populateBy === 'collection') {
       // hydrate the block with fresh content after first render
       // don't show loader unless the request takes longer than x ms
       // and don't show it during initial hydration
@@ -105,9 +105,9 @@ export const CollectionArchive: React.FC<Props> = props => {
               ? {
                 categories: {
                   in:
-                    typeof catsFromProps === "string"
+                    typeof catsFromProps === 'string'
                       ? [catsFromProps]
-                      : catsFromProps.map(cat => cat.id).join(","),
+                      : catsFromProps.map((cat) => cat.id).join(','),
                 },
               }
               : {}),
@@ -133,7 +133,7 @@ export const CollectionArchive: React.FC<Props> = props => {
           if (docs && Array.isArray(docs)) {
             setResults(json);
             setIsLoading(false);
-            if (typeof onResultChange === "function") {
+            if (typeof onResultChange === 'function') {
               onResultChange(json);
             }
           }
@@ -153,8 +153,11 @@ export const CollectionArchive: React.FC<Props> = props => {
   }, [page, catsFromProps, relationTo, onResultChange, sort, limit, populateBy]);
 
   return (
-    <div className={[classes.collectionArchive, className].filter(Boolean).join(" ")}>
-      <div ref={scrollRef} className={classes.scrollRef} />
+    <div className={[classes.collectionArchive, className].filter(Boolean).join(' ')}>
+      <div
+        ref={scrollRef}
+        className={classes.scrollRef}
+      />
       {!isLoading && error && <Gutter>{error}</Gutter>}
       <Fragment>
         {showPageRange !== false && (
@@ -171,13 +174,18 @@ export const CollectionArchive: React.FC<Props> = props => {
         )}
         <Gutter>
           <div className={classes.grid}>
-            {results.docs?.map((result, index) => {
-              return (
-                <div key={index} className={classes.column}>
-                  <Card relationTo={relationTo} doc={result} showCategories />
-                </div>
-              );
-            })}
+            {results.docs?.map((result, index) => (
+              <div
+                key={index}
+                className={classes.column}
+              >
+                <Card
+                  relationTo={relationTo}
+                  doc={result}
+                  showCategories
+                />
+              </div>
+            ))}
           </div>
           {results.totalPages > 1 && (
             <Pagination

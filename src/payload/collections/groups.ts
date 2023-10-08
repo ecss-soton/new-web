@@ -1,5 +1,5 @@
 enum Groups {
-  Elections = "Elections",
+  Elections = 'Elections',
 }
 
 export default Groups;

@@ -1,13 +1,13 @@
-import React, { Fragment } from "react";
-import Link from "next/link";
+import React, { Fragment } from 'react';
+import Link from 'next/link';
 
-import { Post } from "../../../payload/payload-types";
-import { Gutter } from "../../_components/Gutter";
-import { Media } from "../../_components/Media";
-import RichText from "../../_components/RichText";
-import { formatDateTime } from "../../_utilities/formatDateTime";
+import { Post } from '../../../payload/payload-types';
+import { Gutter } from '../../_components/Gutter';
+import { Media } from '../../_components/Media';
+import RichText from '../../_components/RichText';
+import { formatDateTime } from '../../_utilities/formatDateTime';
 
-import classes from "./index.module.scss";
+import classes from './index.module.scss';
 
 export const PostHero: React.FC<{
   post: Post
@@ -30,7 +30,7 @@ export const PostHero: React.FC<{
               {categories?.map((category, index) => {
                 const { title: categoryTitle } = category;
 
-                const titleToUse = categoryTitle || "Untitled category";
+                const titleToUse = categoryTitle || 'Untitled category';
 
                 const isLast = index === categories.length - 1;
 
@@ -47,7 +47,7 @@ export const PostHero: React.FC<{
           <p className={classes.meta}>
             {populatedAuthors && (
               <Fragment>
-                {"By "}
+                {'By '}
                 {populatedAuthors.map((author, index) => {
                   const { name } = author;
 
@@ -67,30 +67,37 @@ export const PostHero: React.FC<{
             )}
             {publishedOn && (
               <Fragment>
-                {" on "}
+                {' on '}
                 {formatDateTime(publishedOn)}
               </Fragment>
             )}
           </p>
           <div>
             <p className={classes.description}>
-              {`${description ? `${description} ` : ""}To edit this post, `}
+              {`${description ? `${description} ` : ''}To edit this post, `}
               <Link href={`${process.env.NEXT_PUBLIC_SERVER_URL}/admin/collections/posts/${id}`}>
                 navigate to the admin dashboard
               </Link>
-              {"."}
+              .
             </p>
           </div>
         </div>
         <div className={classes.media}>
           <div className={classes.mediaWrapper}>
             {!metaImage && <div className={classes.placeholder}>No image</div>}
-            {metaImage && typeof metaImage !== "string" && (
-              <Media imgClassName={classes.image} resource={metaImage} fill />
+            {metaImage && typeof metaImage !== 'string' && (
+              <Media
+                imgClassName={classes.image}
+                resource={metaImage}
+                fill
+              />
             )}
           </div>
-          {metaImage && typeof metaImage !== "string" && metaImage?.caption && (
-            <RichText content={metaImage.caption} className={classes.caption} />
+          {metaImage && typeof metaImage !== 'string' && metaImage?.caption && (
+            <RichText
+              content={metaImage.caption}
+              className={classes.caption}
+            />
           )}
         </div>
       </Gutter>

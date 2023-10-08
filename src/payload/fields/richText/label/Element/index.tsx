@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import "./index.scss";
+import './index.scss';
 
-const baseClass = "rich-text-label";
+const baseClass = 'rich-text-label';
 
 const LabelElement: React.FC<{
   attributes: any

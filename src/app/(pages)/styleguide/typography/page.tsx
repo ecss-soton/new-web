@@ -1,20 +1,23 @@
-import React from "react";
-import { Metadata } from "next";
-import Link from "next/link";
+import React from 'react';
+import { Metadata } from 'next';
+import Link from 'next/link';
 
-import { Gutter } from "../../../_components/Gutter";
-import { VerticalPadding } from "../../../_components/VerticalPadding";
-import { mergeOpenGraph } from "../../../_utilities/mergeOpenGraph";
+import { Gutter } from '../../../_components/Gutter';
+import { VerticalPadding } from '../../../_components/VerticalPadding';
+import { mergeOpenGraph } from '../../../_utilities/mergeOpenGraph';
 
 export default async function Typography() {
   return (
     <Gutter>
       <p>
         <Link href="/styleguide">Styleguide</Link>
-        {" / "}
+        {' / '}
         <span>Typography</span>
       </p>
-      <VerticalPadding bottom="large" top="none">
+      <VerticalPadding
+        bottom="large"
+        top="none"
+      >
         <h1>Typography</h1>
         <h1>H1: Lorem ipsum dolor sit amet officia deserunt.</h1>
         <h2>H2: Lorem ipsum dolor sit amet in culpa qui officia deserunt consectetur.</h2>
@@ -45,10 +48,10 @@ export default async function Typography() {
 }
 
 export const metadata: Metadata = {
-  title: "Typography",
-  description: "Styleguide for typography.",
+  title: 'Typography',
+  description: 'Styleguide for typography.',
   openGraph: mergeOpenGraph({
-    title: "Typography",
-    url: "/styleguide/typography",
+    title: 'Typography',
+    url: '/styleguide/typography',
   }),
 };

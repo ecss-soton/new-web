@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import React, { useEffect } from "react";
-import Link from "next/link";
+import React, { useEffect } from 'react';
+import Link from 'next/link';
 
-import { Page } from "../../../payload/payload-types";
-import { POST_PREMIUM_CONTENT } from "../../_graphql/posts";
-import { useAuth } from "../../_providers/Auth";
-import { Blocks } from "../Blocks";
-import { Gutter } from "../Gutter";
-import { LoadingShimmer } from "../LoadingShimmer";
-import { Message } from "../Message";
-import { VerticalPadding } from "../VerticalPadding";
+import { Page } from '../../../payload/payload-types';
+import { POST_PREMIUM_CONTENT } from '../../_graphql/posts';
+import { useAuth } from '../../_providers/Auth';
+import { Blocks } from '../Blocks';
+import { Gutter } from '../Gutter';
+import { LoadingShimmer } from '../LoadingShimmer';
+import { Message } from '../Message';
+import { VerticalPadding } from '../VerticalPadding';
 
 export const PremiumContent: React.FC<{
   postSlug: string
   disableTopPadding?: boolean
-}> = props => {
+}> = (props) => {
   const { postSlug, disableTopPadding } = props;
   const { user } = useAuth();
 
   const [isLoading, setIsLoading] = React.useState(false);
-  const [blocks, setBlocks] = React.useState<Page["layout"]>();
+  const [blocks, setBlocks] = React.useState<Page['layout']>();
   const hasInitialized = React.useRef(false);
   const isRequesting = React.useRef(false);
 
@@ -36,10 +36,10 @@ export const PremiumContent: React.FC<{
 
       try {
         const premiumContent = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/graphql`, {
-          method: "POST",
-          credentials: "include",
+          method: 'POST',
+          credentials: 'include',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             query: POST_PREMIUM_CONTENT,
@@ -48,8 +48,8 @@ export const PremiumContent: React.FC<{
             },
           }),
         })
-          ?.then(res => res.json())
-          ?.then(res => res?.data?.Posts.docs[0]?.premiumContent);
+          ?.then((res) => res.json())
+          ?.then((res) => res?.data?.Posts.docs[0]?.premiumContent);
 
         if (premiumContent) {
           setBlocks(premiumContent);
@@ -59,7 +59,7 @@ export const PremiumContent: React.FC<{
         // this is to prevent a flash of the loading shimmer on fast networks
         const end = Date.now();
         if (end - start < 1000) {
-          await new Promise(resolve => setTimeout(resolve, 500 - (end - start)));
+          await new Promise((resolve) => setTimeout(resolve, 500 - (end - start)));
         }
 
         setIsLoading(false);
@@ -81,17 +81,20 @@ export const PremiumContent: React.FC<{
   if (user === null) {
     return (
       <Gutter>
-        <VerticalPadding bottom="large" top="none">
+        <VerticalPadding
+          bottom="large"
+          top="none"
+        >
           <Message
-            message={
-              <>
-                {`This content is gated behind authentication. You must be `}
+            message={(
+              <React.Fragment>
+                {'This content is gated behind authentication. You must be '}
                 <Link href={`/login?redirect=${encodeURIComponent(window.location.pathname)}`}>
                   logged in
                 </Link>
-                {` to view this content.`}
-              </>
-            }
+                {' to view this content.'}
+              </React.Fragment>
+            )}
           />
         </VerticalPadding>
       </Gutter>
@@ -101,7 +104,10 @@ export const PremiumContent: React.FC<{
   if (isLoading) {
     return (
       <Gutter>
-        <VerticalPadding bottom="large" top="none">
+        <VerticalPadding
+          bottom="large"
+          top="none"
+        >
           <LoadingShimmer />
         </VerticalPadding>
       </Gutter>
@@ -111,12 +117,20 @@ export const PremiumContent: React.FC<{
   if (!blocks || blocks.length === 0) {
     return (
       <Gutter>
-        <VerticalPadding bottom="large" top="none">
+        <VerticalPadding
+          bottom="large"
+          top="none"
+        >
           <Message message="Log in to unlock this premium content." />
         </VerticalPadding>
       </Gutter>
     );
   }
 
-  return <Blocks blocks={blocks} disableTopPadding={disableTopPadding} />;
+  return (
+    <Blocks
+      blocks={blocks}
+      disableTopPadding={disableTopPadding}
+    />
+  );
 };

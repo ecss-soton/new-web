@@ -1,43 +1,43 @@
-import type { Media } from "../payload-types";
+import type { Media } from '../payload-types';
 
 export const image2: Media = {
-  alt: "E-Book",
-  id: "",
-  createdAt: "",
-  updatedAt: "",
+  alt: 'E-Book',
+  id: '',
+  createdAt: '',
+  updatedAt: '',
   caption: [
     {
       children: [
         {
-          text: "Photo by ",
+          text: 'Photo by ',
         },
         {
-          type: "link",
-          linkType: "custom",
-          url: "https://unsplash.com/@sebastiansvenson?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText",
+          type: 'link',
+          linkType: 'custom',
+          url: 'https://unsplash.com/@sebastiansvenson?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
           newTab: true,
           children: [
             {
-              text: "Sebastian Svenson",
+              text: 'Sebastian Svenson',
             },
           ],
         },
         {
-          text: " on ",
+          text: ' on ',
         },
         {
-          type: "link",
-          linkType: "custom",
-          url: "https://unsplash.com/photos/d2w-_1LJioQ?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText",
+          type: 'link',
+          linkType: 'custom',
+          url: 'https://unsplash.com/photos/d2w-_1LJioQ?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText',
           newTab: true,
           children: [
             {
-              text: "Unsplash",
+              text: 'Unsplash',
             },
           ],
         },
         {
-          text: ".",
+          text: '.',
         },
       ],
     },
