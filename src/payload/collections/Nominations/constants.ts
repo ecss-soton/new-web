@@ -1,1 +1,1 @@
-export const MaxNominees = 3
+export const MaxNominees = 3;

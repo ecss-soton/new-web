@@ -1,37 +1,37 @@
-import type { Page } from '../payload-types'
+import type { Page } from "../payload-types";
 
 export const home: Partial<Page> = {
-  title: 'Home',
-  slug: 'home',
-  _status: 'published',
+  title: "Home",
+  slug: "home",
+  _status: "published",
   meta: {
-    title: 'Payload Website Template',
-    description: 'An open-source website built with Payload and Next.js.',
-    image: '{{IMAGE_1}}',
+    title: "Payload Website Template",
+    description: "An open-source website built with Payload and Next.js.",
+    image: "{{IMAGE_1}}",
   },
   hero: {
-    type: 'highImpact',
+    type: "highImpact",
     richText: [
       {
         children: [
           {
-            text: 'Payload Website Template',
+            text: "Payload Website Template",
           },
         ],
-        type: 'h1',
+        type: "h1",
       },
       {
         children: [
           {
-            text: 'Welcome to your website! ',
+            text: "Welcome to your website! ",
           },
           {
-            type: 'link',
-            linkType: 'custom',
-            url: '/admin',
+            type: "link",
+            linkType: "custom",
+            url: "/admin",
             children: [
               {
-                text: 'Visit the admin dashboard',
+                text: "Visit the admin dashboard",
               },
             ],
           },
@@ -39,86 +39,86 @@ export const home: Partial<Page> = {
             text: " to begin managing this site's content. The code for this template is completely open-source and can be found ",
           },
           {
-            type: 'link',
-            linkType: 'custom',
-            url: 'https://github.com/payloadcms/payload/tree/master/templates/website',
+            type: "link",
+            linkType: "custom",
+            url: "https://github.com/payloadcms/payload/tree/master/templates/website",
             newTab: true,
             children: [
               {
-                text: 'here',
+                text: "here",
               },
             ],
           },
           {
-            text: '.',
+            text: ".",
           },
         ],
-        type: 'large-body',
+        type: "large-body",
       },
     ],
     links: [
       {
         link: {
-          type: 'reference',
-          appearance: 'primary',
+          type: "reference",
+          appearance: "primary",
           reference: {
-            relationTo: 'pages',
-            value: '{{POSTS_PAGE_ID}}',
+            relationTo: "pages",
+            value: "{{POSTS_PAGE_ID}}",
           },
-          label: 'All posts',
-          url: '',
+          label: "All posts",
+          url: "",
         },
       },
       {
         link: {
-          type: 'reference',
-          appearance: 'secondary',
+          type: "reference",
+          appearance: "secondary",
           reference: {
-            relationTo: 'pages',
-            value: '{{PROJECTS_PAGE_ID}}',
+            relationTo: "pages",
+            value: "{{PROJECTS_PAGE_ID}}",
           },
-          label: 'All projects',
-          url: '',
+          label: "All projects",
+          url: "",
         },
       },
     ],
-    media: '{{IMAGE_1}}',
+    media: "{{IMAGE_1}}",
   },
   layout: [
     {
-      blockName: 'Content Block',
-      blockType: 'content',
+      blockName: "Content Block",
+      blockType: "content",
       columns: [
         {
-          size: 'full',
+          size: "full",
           richText: [
             {
               children: [
                 {
-                  text: 'Core features',
+                  text: "Core features",
                 },
               ],
-              type: 'h2',
+              type: "h2",
             },
             {
               children: [
                 {
-                  text: '',
+                  text: "",
                 },
               ],
             },
           ],
         },
         {
-          size: 'oneThird',
+          size: "oneThird",
           richText: [
             {
               children: [
                 {
-                  text: 'Admin Dashboard',
+                  text: "Admin Dashboard",
                 },
               ],
-              type: 'h3',
+              type: "h3",
             },
             {
               children: [
@@ -126,17 +126,17 @@ export const home: Partial<Page> = {
                   text: "Manage this site's pages, posts, projects and more from the ",
                 },
                 {
-                  type: 'link',
-                  linkType: 'custom',
-                  url: '/admin',
+                  type: "link",
+                  linkType: "custom",
+                  url: "/admin",
                   children: [
                     {
-                      text: 'admin dashboard',
+                      text: "admin dashboard",
                     },
                   ],
                 },
                 {
-                  text: '.',
+                  text: ".",
                 },
               ],
             },
@@ -144,54 +144,54 @@ export const home: Partial<Page> = {
           enableLink: false,
           link: {
             reference: {
-              value: '',
-              relationTo: 'pages',
+              value: "",
+              relationTo: "pages",
             },
-            url: '',
-            label: '',
+            url: "",
+            label: "",
           },
         },
         {
-          size: 'oneThird',
+          size: "oneThird",
           richText: [
             {
               children: [
                 {
-                  text: 'Authentication',
+                  text: "Authentication",
                 },
               ],
-              type: 'h3',
+              type: "h3",
             },
             {
               children: [
                 {
-                  text: 'Complete user ',
+                  text: "Complete user ",
                 },
                 {
-                  type: 'link',
-                  linkType: 'custom',
-                  url: '/login',
+                  type: "link",
+                  linkType: "custom",
+                  url: "/login",
                   children: [
                     {
-                      text: 'login',
+                      text: "login",
                     },
                   ],
                 },
                 {
-                  text: ' and ',
+                  text: " and ",
                 },
                 {
-                  type: 'link',
-                  linkType: 'custom',
-                  url: '/create-account',
+                  type: "link",
+                  linkType: "custom",
+                  url: "/create-account",
                   children: [
                     {
-                      text: 'create account',
+                      text: "create account",
                     },
                   ],
                 },
                 {
-                  text: ' flows with email verification and password reset.',
+                  text: " flows with email verification and password reset.",
                 },
               ],
             },
@@ -199,29 +199,29 @@ export const home: Partial<Page> = {
           enableLink: false,
           link: {
             reference: {
-              value: '',
-              relationTo: 'pages',
+              value: "",
+              relationTo: "pages",
             },
-            url: '',
-            label: '',
+            url: "",
+            label: "",
           },
         },
 
         {
-          size: 'oneThird',
+          size: "oneThird",
           richText: [
             {
               children: [
                 {
-                  text: 'Preview',
+                  text: "Preview",
                 },
               ],
-              type: 'h3',
+              type: "h3",
             },
             {
               children: [
                 {
-                  text: 'Using versions, drafts, and preview, editors can review and share their changes before publishing them.',
+                  text: "Using versions, drafts, and preview, editors can review and share their changes before publishing them.",
                 },
               ],
             },
@@ -229,41 +229,41 @@ export const home: Partial<Page> = {
           enableLink: false,
           link: {
             reference: {
-              value: '',
-              relationTo: 'pages',
+              value: "",
+              relationTo: "pages",
             },
-            url: '',
-            label: '',
+            url: "",
+            label: "",
           },
         },
         {
-          size: 'oneThird',
+          size: "oneThird",
           richText: [
             {
               children: [
                 {
-                  text: 'Comments',
+                  text: "Comments",
                 },
               ],
-              type: 'h3',
+              type: "h3",
             },
             {
               children: [
                 {
-                  text: 'Users can comment on posts and editors can moderate comments directly from the ',
+                  text: "Users can comment on posts and editors can moderate comments directly from the ",
                 },
                 {
-                  type: 'link',
-                  linkType: 'custom',
-                  url: '/admin/collections/comments',
+                  type: "link",
+                  linkType: "custom",
+                  url: "/admin/collections/comments",
                   children: [
                     {
-                      text: 'admin dashboard',
+                      text: "admin dashboard",
                     },
                   ],
                 },
                 {
-                  text: '.',
+                  text: ".",
                 },
               ],
             },
@@ -271,41 +271,41 @@ export const home: Partial<Page> = {
           enableLink: false,
           link: {
             reference: {
-              value: '',
-              relationTo: 'pages',
+              value: "",
+              relationTo: "pages",
             },
-            url: '',
-            label: '',
+            url: "",
+            label: "",
           },
         },
         {
-          size: 'oneThird',
+          size: "oneThird",
           richText: [
             {
               children: [
                 {
-                  text: 'User Accounts',
+                  text: "User Accounts",
                 },
               ],
-              type: 'h3',
+              type: "h3",
             },
             {
               children: [
                 {
-                  text: 'Users can ',
+                  text: "Users can ",
                 },
                 {
-                  type: 'link',
-                  linkType: 'custom',
-                  url: '/account',
+                  type: "link",
+                  linkType: "custom",
+                  url: "/account",
                   children: [
                     {
-                      text: 'manage their account',
+                      text: "manage their account",
                     },
                   ],
                 },
                 {
-                  text: ', view their comment history, and more without leaving the site.',
+                  text: ", view their comment history, and more without leaving the site.",
                 },
               ],
             },
@@ -313,28 +313,28 @@ export const home: Partial<Page> = {
           enableLink: false,
           link: {
             reference: {
-              value: '',
-              relationTo: 'pages',
+              value: "",
+              relationTo: "pages",
             },
-            url: '',
-            label: '',
+            url: "",
+            label: "",
           },
         },
         {
-          size: 'oneThird',
+          size: "oneThird",
           richText: [
             {
               children: [
                 {
-                  text: 'Premium Content',
+                  text: "Premium Content",
                 },
               ],
-              type: 'h3',
+              type: "h3",
             },
             {
               children: [
                 {
-                  text: 'Easily restrict access to premium content to only authenticated members of your site.',
+                  text: "Easily restrict access to premium content to only authenticated members of your site.",
                 },
               ],
             },
@@ -342,28 +342,28 @@ export const home: Partial<Page> = {
           enableLink: false,
           link: {
             reference: {
-              value: '',
-              relationTo: 'pages',
+              value: "",
+              relationTo: "pages",
             },
-            url: '',
-            label: '',
+            url: "",
+            label: "",
           },
         },
         {
-          size: 'oneThird',
+          size: "oneThird",
           richText: [
             {
               children: [
                 {
-                  text: 'Page Builder',
+                  text: "Page Builder",
                 },
               ],
-              type: 'h3',
+              type: "h3",
             },
             {
               children: [
                 {
-                  text: 'Custom page builder allows you to create unique page, post, and project layouts for any type of content.',
+                  text: "Custom page builder allows you to create unique page, post, and project layouts for any type of content.",
                 },
               ],
             },
@@ -371,41 +371,41 @@ export const home: Partial<Page> = {
           enableLink: false,
           link: {
             reference: {
-              value: '',
-              relationTo: 'pages',
+              value: "",
+              relationTo: "pages",
             },
-            url: '',
-            label: '',
+            url: "",
+            label: "",
           },
         },
         {
-          size: 'oneThird',
+          size: "oneThird",
           richText: [
             {
               children: [
                 {
-                  text: 'SEO',
+                  text: "SEO",
                 },
               ],
-              type: 'h3',
+              type: "h3",
             },
             {
               children: [
                 {
-                  text: 'Editors have complete control over SEO data and site content directly from the ',
+                  text: "Editors have complete control over SEO data and site content directly from the ",
                 },
                 {
-                  type: 'link',
-                  linkType: 'custom',
-                  url: '/admin',
+                  type: "link",
+                  linkType: "custom",
+                  url: "/admin",
                   children: [
                     {
-                      text: 'admin dashboard',
+                      text: "admin dashboard",
                     },
                   ],
                 },
                 {
-                  text: '.',
+                  text: ".",
                 },
               ],
             },
@@ -413,28 +413,28 @@ export const home: Partial<Page> = {
           enableLink: false,
           link: {
             reference: {
-              value: '',
-              relationTo: 'pages',
+              value: "",
+              relationTo: "pages",
             },
-            url: '',
-            label: '',
+            url: "",
+            label: "",
           },
         },
         {
-          size: 'oneThird',
+          size: "oneThird",
           richText: [
             {
               children: [
                 {
-                  text: 'Dark Mode',
+                  text: "Dark Mode",
                 },
               ],
-              type: 'h3',
+              type: "h3",
             },
             {
               children: [
                 {
-                  text: 'Users will experience this site in their preferred color scheme and each block can be inverted.',
+                  text: "Users will experience this site in their preferred color scheme and each block can be inverted.",
                 },
               ],
             },
@@ -442,100 +442,100 @@ export const home: Partial<Page> = {
           enableLink: false,
           link: {
             reference: {
-              value: '',
-              relationTo: 'pages',
+              value: "",
+              relationTo: "pages",
             },
-            url: '',
-            label: '',
+            url: "",
+            label: "",
           },
         },
       ],
     },
     {
-      blockType: 'mediaBlock',
-      blockName: 'Media Block',
-      position: 'default',
-      media: '{{IMAGE_2}}',
+      blockType: "mediaBlock",
+      blockName: "Media Block",
+      position: "default",
+      media: "{{IMAGE_2}}",
     },
     {
-      blockName: 'Archive Block',
-      blockType: 'archive',
+      blockName: "Archive Block",
+      blockType: "archive",
       introContent: [
         {
-          type: 'h4',
+          type: "h4",
           children: [
             {
-              text: 'Recent posts',
+              text: "Recent posts",
             },
           ],
         },
         {
-          type: 'p',
+          type: "p",
           children: [
             {
-              text: 'The posts below are displayed in an "Archive" layout building block which is an extremely powerful way to display documents on a page. It can be auto-populated by collection or by category, or posts can be individually selected. Pagination controls will automatically appear if the number of results exceeds the number of items per page.',
+              text: "The posts below are displayed in an \"Archive\" layout building block which is an extremely powerful way to display documents on a page. It can be auto-populated by collection or by category, or posts can be individually selected. Pagination controls will automatically appear if the number of results exceeds the number of items per page.",
             },
           ],
         },
       ],
-      populateBy: 'collection',
-      relationTo: 'posts',
+      populateBy: "collection",
+      relationTo: "posts",
       categories: [],
     },
     {
-      blockName: 'Archive Block',
-      blockType: 'archive',
+      blockName: "Archive Block",
+      blockType: "archive",
       introContent: [
         {
-          type: 'h4',
+          type: "h4",
           children: [
             {
-              text: 'Recent projects',
+              text: "Recent projects",
             },
           ],
         },
         {
-          type: 'p',
+          type: "p",
           children: [
             {
-              text: 'The projects below are displayed in an "Archive" layout building block which is an extremely powerful way to display documents on a page. It can be auto-populated by collection or by category, or projects can be individually selected. Pagination controls will automatically appear if the number of results exceeds the number of items per page.',
+              text: "The projects below are displayed in an \"Archive\" layout building block which is an extremely powerful way to display documents on a page. It can be auto-populated by collection or by category, or projects can be individually selected. Pagination controls will automatically appear if the number of results exceeds the number of items per page.",
             },
           ],
         },
       ],
-      populateBy: 'collection',
-      relationTo: 'projects',
+      populateBy: "collection",
+      relationTo: "projects",
       categories: [],
     },
     {
-      blockType: 'cta',
-      blockName: 'CTA',
+      blockType: "cta",
+      blockName: "CTA",
       richText: [
         {
           children: [
             {
-              text: 'This is a call to action',
+              text: "This is a call to action",
             },
           ],
-          type: 'h4',
+          type: "h4",
         },
         {
           children: [
             {
-              text: 'This is a custom layout building block ',
+              text: "This is a custom layout building block ",
             },
             {
-              type: 'link',
-              linkType: 'custom',
-              url: '/admin',
+              type: "link",
+              linkType: "custom",
+              url: "/admin",
               children: [
                 {
-                  text: 'configured in the admin dashboard',
+                  text: "configured in the admin dashboard",
                 },
               ],
             },
             {
-              text: '.',
+              text: ".",
             },
           ],
         },
@@ -543,29 +543,29 @@ export const home: Partial<Page> = {
       links: [
         {
           link: {
-            type: 'reference',
-            url: '',
-            label: 'All posts',
-            appearance: 'primary',
+            type: "reference",
+            url: "",
+            label: "All posts",
+            appearance: "primary",
             reference: {
-              value: '{{POSTS_PAGE_ID}}',
-              relationTo: 'pages',
+              value: "{{POSTS_PAGE_ID}}",
+              relationTo: "pages",
             },
           },
         },
         {
           link: {
-            type: 'reference',
-            url: '',
-            label: 'All projects',
-            appearance: 'secondary',
+            type: "reference",
+            url: "",
+            label: "All projects",
+            appearance: "secondary",
             reference: {
-              value: '{{PROJECTS_PAGE_ID}}',
-              relationTo: 'pages',
+              value: "{{PROJECTS_PAGE_ID}}",
+              relationTo: "pages",
             },
           },
         },
       ],
     },
   ],
-}
+};

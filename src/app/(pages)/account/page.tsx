@@ -1,30 +1,30 @@
-import React, { Fragment } from 'react'
-import { Metadata } from 'next'
-import Link from 'next/link'
+import React, { Fragment } from "react";
+import { Metadata } from "next";
+import Link from "next/link";
 
-import { fetchComments } from '../../_api/fetchComments'
-import { Button } from '../../_components/Button'
-import { Gutter } from '../../_components/Gutter'
-import { HR } from '../../_components/HR'
-import { RenderParams } from '../../_components/RenderParams'
-import { LowImpactHero } from '../../_heros/LowImpact'
-import { formatDateTime } from '../../_utilities/formatDateTime'
-import { getMeUser } from '../../_utilities/getMeUser'
-import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
-import AccountForm from './AccountForm'
+import { fetchComments } from "../../_api/fetchComments";
+import { Button } from "../../_components/Button";
+import { Gutter } from "../../_components/Gutter";
+import { HR } from "../../_components/HR";
+import { RenderParams } from "../../_components/RenderParams";
+import { LowImpactHero } from "../../_heros/LowImpact";
+import { formatDateTime } from "../../_utilities/formatDateTime";
+import { getMeUser } from "../../_utilities/getMeUser";
+import { mergeOpenGraph } from "../../_utilities/mergeOpenGraph";
+import AccountForm from "./AccountForm";
 
-import classes from './index.module.scss'
+import classes from "./index.module.scss";
 
 export default async function Account() {
   const { user } = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
-      'You must be logged in to access your account.',
-    )}&redirect=${encodeURIComponent('/account')}`,
-  })
+      "You must be logged in to access your account.",
+    )}&redirect=${encodeURIComponent("/account")}`,
+  });
 
   const comments = await fetchComments({
     user: user?.id,
-  })
+  });
 
   return (
     <Fragment>
@@ -36,25 +36,25 @@ export default async function Account() {
         media={null}
         richText={[
           {
-            type: 'h1',
+            type: "h1",
             children: [
               {
-                text: 'Account',
+                text: "Account",
               },
             ],
           },
           {
-            type: 'paragraph',
+            type: "paragraph",
             children: [
               {
-                text: 'This is your account dashboard. Here you can update your account information, view your comment history, and more. To manage all users, ',
+                text: "This is your account dashboard. Here you can update your account information, view your comment history, and more. To manage all users, ",
               },
               {
-                type: 'link',
-                url: '/admin/collections/users',
+                type: "link",
+                url: "/admin/collections/users",
                 children: [
                   {
-                    text: 'login to the admin dashboard.',
+                    text: "login to the admin dashboard.",
                   },
                 ],
               },
@@ -74,20 +74,20 @@ export default async function Account() {
         {comments?.length === 0 && <p>You have not made any comments yet.</p>}
         {comments.length > 0 &&
           comments?.map((com, index) => {
-            const { doc, comment, createdAt } = com
+            const { doc, comment, createdAt } = com;
 
-            if (!comment) return null
+            if (!comment) return null;
 
             return (
               <Fragment key={index}>
                 <div className={classes.column}>
                   <p className={classes.comment}>"{comment}"</p>
                   <p className={classes.meta}>
-                    {'Posted '}
-                    {doc && typeof doc === 'object' && (
+                    {"Posted "}
+                    {doc && typeof doc === "object" && (
                       <Fragment>
-                        {' to '}
-                        <Link href={`/posts/${doc?.slug}`}>{doc?.title || 'Untitled Post'}</Link>
+                        {" to "}
+                        <Link href={`/posts/${doc?.slug}`}>{doc?.title || "Untitled Post"}</Link>
                       </Fragment>
                     )}
                     {createdAt && ` on ${formatDateTime(createdAt)}`}
@@ -95,20 +95,20 @@ export default async function Account() {
                 </div>
                 {index < comments.length - 1 && <HR />}
               </Fragment>
-            )
+            );
           })}
         <HR />
         <Button href="/logout" appearance="secondary" label="Log out" />
       </Gutter>
     </Fragment>
-  )
+  );
 }
 
 export const metadata: Metadata = {
-  title: 'Account',
-  description: 'Create an account or log in to your existing account.',
+  title: "Account",
+  description: "Create an account or log in to your existing account.",
   openGraph: mergeOpenGraph({
-    title: 'Account',
-    url: '/account',
+    title: "Account",
+    url: "/account",
   }),
-}
+};

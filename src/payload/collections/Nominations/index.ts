@@ -1,11 +1,11 @@
-import type { CollectionConfig } from 'payload/types'
-import { v4 as uuidv4 } from 'uuid'
+import type { CollectionConfig } from 'payload/types';
+import { v4 as uuidv4 } from 'uuid';
 
-import { admins } from '../../access/admins'
-import Groups from '../groups'
-import { adminOrNominee } from './access/nominees'
-import { MaxNominees } from './constants'
-import { joinNomination } from './endpoints/joinNomination'
+import { admins } from '../../access/admins';
+import Groups from '../groups';
+import { adminOrNominee } from './access/nominees';
+import { MaxNominees } from './constants';
+import { joinNomination } from './endpoints/joinNomination';
 
 const Nominations: CollectionConfig = {
   slug: 'nominations',
@@ -21,6 +21,7 @@ const Nominations: CollectionConfig = {
   },
   fields: [
     {
+      // TODO: Add populated nominee like in comments
       name: 'nominee',
       label: 'Nominee',
       type: 'relationship',
@@ -29,6 +30,11 @@ const Nominations: CollectionConfig = {
       maxRows: MaxNominees,
       required: true,
       relationTo: 'users',
+      access: {
+        // Force nominee to add own user id.
+        create: admins,
+      },
+      defaultValue: ({ user }) => user.id,
     },
     {
       name: 'nickname',
@@ -38,7 +44,7 @@ const Nominations: CollectionConfig = {
     {
       name: 'manifesto',
       label: 'Manifesto',
-      type: 'text',
+      type: 'richText',
     },
     {
       name: 'position',
@@ -70,7 +76,6 @@ const Nominations: CollectionConfig = {
       name: 'droppedOut',
       label: 'Has the nominee dropped out',
       type: 'checkbox',
-      //TODO: Only allow nominees to set themselves as dropped out.
     },
     {
       name: 'supporters',
@@ -98,6 +103,6 @@ const Nominations: CollectionConfig = {
       handler: joinNomination,
     },
   ],
-}
+};
 
-export default Nominations
+export default Nominations;

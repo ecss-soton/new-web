@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 export const MenuIcon: React.FC = () => {
   return (
@@ -7,5 +7,5 @@ export const MenuIcon: React.FC = () => {
       <rect x="3.5" y="11.5" width="18" height="2" fill="currentColor" />
       <rect x="3.5" y="18.5" width="18" height="2" fill="currentColor" />
     </svg>
-  )
-}
+  );
+};

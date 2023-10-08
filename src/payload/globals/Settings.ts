@@ -1,4 +1,4 @@
-import type { GlobalConfig } from 'payload/types'
+import type { GlobalConfig } from 'payload/types';
 
 export const Settings: GlobalConfig = {
   slug: 'settings',
@@ -25,4 +25,4 @@ export const Settings: GlobalConfig = {
       label: 'Projects page',
     },
   ],
-}
+};

@@ -1,6 +1,6 @@
-import type { AfterChangeHook } from 'payload/dist/collections/config/types'
+import type { AfterChangeHook } from 'payload/dist/collections/config/types';
 
-import { revalidate } from '../../../utilities/revalidate'
+import { revalidate } from '../../../utilities/revalidate';
 
 // Revalidate the post that is associated with this comment
 export const revalidatePost: AfterChangeHook = async ({ doc: commentDoc, req: { payload } }) => {
@@ -11,17 +11,17 @@ export const revalidatePost: AfterChangeHook = async ({ doc: commentDoc, req: { 
         collection: 'posts',
         id: commentDoc.doc,
         depth: 0,
-      })
+      });
 
       if (parentDoc) {
-        revalidate({ payload, collection: 'posts', slug: parentDoc.slug })
+        revalidate({ payload, collection: 'posts', slug: parentDoc.slug });
       } else {
         payload.logger.error(
           `Parent doc for comment '${commentDoc.id}' was not found, could not revalidate`,
-        )
+        );
       }
     }
   }
 
-  return commentDoc
-}
+  return commentDoc;
+};

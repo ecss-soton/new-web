@@ -1,6 +1,6 @@
-import type { AfterChangeHook } from 'payload/dist/collections/config/types'
+import type { AfterChangeHook } from 'payload/dist/collections/config/types';
 
-import { revalidate } from '../../../utilities/revalidate'
+import { revalidate } from '../../../utilities/revalidate';
 
 // Revalidate the page in the background, so the user doesn't have to wait
 // Notice that the hook itself is not async and we are not awaiting `revalidate`
@@ -8,8 +8,8 @@ import { revalidate } from '../../../utilities/revalidate'
 // Don't scope to `operation` in order to purge static demo pages
 export const revalidatePage: AfterChangeHook = ({ doc, req: { payload } }) => {
   if (doc._status === 'published') {
-    revalidate({ payload, collection: 'pages', slug: doc.slug })
+    revalidate({ payload, collection: 'pages', slug: doc.slug });
   }
 
-  return doc
-}
+  return doc;
+};

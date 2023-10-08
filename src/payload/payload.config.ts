@@ -1,38 +1,36 @@
-import { payloadCloud } from '@payloadcms/plugin-cloud'
+import { payloadCloud } from '@payloadcms/plugin-cloud';
 // import formBuilder from '@payloadcms/plugin-form-builder'
-import nestedDocs from '@payloadcms/plugin-nested-docs'
-import redirects from '@payloadcms/plugin-redirects'
-import seo from '@payloadcms/plugin-seo'
-import type { GenerateTitle } from '@payloadcms/plugin-seo/types'
-import dotenv from 'dotenv'
-import path from 'path'
-import { buildConfig } from 'payload/config'
+import nestedDocs from '@payloadcms/plugin-nested-docs';
+import redirects from '@payloadcms/plugin-redirects';
+import seo from '@payloadcms/plugin-seo';
+import type { GenerateTitle } from '@payloadcms/plugin-seo/types';
+import dotenv from 'dotenv';
+import path from 'path';
+import { buildConfig } from 'payload/config';
 
-import Categories from './collections/Categories'
-import Comments from './collections/Comments'
-import Elections from './collections/Elections'
-import { Media } from './collections/Media'
-import Nominations from './collections/Nominations'
-import { Pages } from './collections/Pages'
-import Positions from './collections/Position'
-import { Posts } from './collections/Posts'
-import { Projects } from './collections/Projects'
-import Users from './collections/Users'
-import Votes from './collections/Votes'
-import BeforeDashboard from './components/BeforeDashboard'
-import BeforeLogin from './components/BeforeLogin'
-import { seed } from './endpoints/seed'
-import { Footer } from './globals/Footer'
-import { Header } from './globals/Header'
-import { Settings } from './globals/Settings'
+import Categories from './collections/Categories';
+import Comments from './collections/Comments';
+import Elections from './collections/Elections';
+import { Media } from './collections/Media';
+import Nominations from './collections/Nominations';
+import { Pages } from './collections/Pages';
+import Positions from './collections/Position';
+import { Posts } from './collections/Posts';
+import { Projects } from './collections/Projects';
+import Users from './collections/Users';
+import Votes from './collections/Votes';
+import BeforeDashboard from './components/BeforeDashboard';
+import BeforeLogin from './components/BeforeLogin';
+import { seed } from './endpoints/seed';
+import { Footer } from './globals/Footer';
+import { Header } from './globals/Header';
+import { Settings } from './globals/Settings';
 
-const generateTitle: GenerateTitle = () => {
-  return 'My Website'
-}
+const generateTitle: GenerateTitle = () => 'My Website';
 
 dotenv.config({
   path: path.resolve(__dirname, '../../.env'),
-})
+});
 
 export default buildConfig({
   admin: {
@@ -93,4 +91,4 @@ export default buildConfig({
     }),
     payloadCloud(),
   ],
-})
+});

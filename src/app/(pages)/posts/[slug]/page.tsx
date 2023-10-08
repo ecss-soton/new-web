@@ -1,45 +1,45 @@
-import React from 'react'
-import { Metadata } from 'next'
-import { draftMode } from 'next/headers'
-import { notFound } from 'next/navigation'
+import React from "react";
+import { Metadata } from "next";
+import { draftMode } from "next/headers";
+import { notFound } from "next/navigation";
 
-import { Comment, Post } from '../../../../payload/payload-types'
-import { fetchComments } from '../../../_api/fetchComments'
-import { fetchDoc } from '../../../_api/fetchDoc'
-import { fetchDocs } from '../../../_api/fetchDocs'
-import { Blocks } from '../../../_components/Blocks'
-import { PremiumContent } from '../../../_components/PremiumContent'
-import { PostHero } from '../../../_heros/PostHero'
-import { generateMeta } from '../../../_utilities/generateMeta'
+import { Post } from "../../../../payload/payload-types";
+import { fetchComments } from "../../../_api/fetchComments";
+import { fetchDoc } from "../../../_api/fetchDoc";
+import { fetchDocs } from "../../../_api/fetchDocs";
+import { Blocks } from "../../../_components/Blocks";
+import { PremiumContent } from "../../../_components/PremiumContent";
+import { PostHero } from "../../../_heros/PostHero";
+import { generateMeta } from "../../../_utilities/generateMeta";
 
 // Force this page to be dynamic so that Next.js does not cache it
 // See the note in '../../../[slug]/page.tsx' about this
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 export default async function Post({ params: { slug } }) {
-  const { isEnabled: isDraftMode } = draftMode()
+  const { isEnabled: isDraftMode } = draftMode();
 
-  let post: Post | null = null
+  let post: Post | null = null;
 
   try {
     post = await fetchDoc<Post>({
-      collection: 'posts',
+      collection: "posts",
       slug,
       draft: isDraftMode,
-    })
+    });
   } catch (error) {
-    console.error(error) // eslint-disable-line no-console
+    console.error(error); // eslint-disable-line no-console
   }
 
   if (!post) {
-    notFound()
+    notFound();
   }
 
   const comments = await fetchComments({
     doc: post?.id,
-  })
+  });
 
-  const { layout, relatedPosts, enablePremiumContent, premiumContent } = post
+  const { layout, relatedPosts, enablePremiumContent, premiumContent } = post;
 
   return (
     <React.Fragment>
@@ -50,35 +50,35 @@ export default async function Post({ params: { slug } }) {
         disableTopPadding
         blocks={[
           {
-            blockType: 'comments',
-            blockName: 'Comments',
-            relationTo: 'posts',
+            blockType: "comments",
+            blockName: "Comments",
+            relationTo: "posts",
             introContent: [
               {
-                type: 'h4',
+                type: "h4",
                 children: [
                   {
-                    text: 'Comments',
+                    text: "Comments",
                   },
                 ],
               },
               {
-                type: 'p',
+                type: "p",
                 children: [
                   {
-                    text: 'Authenticated users can leave comments on this post. All new comments are given the status "draft" until they are approved by an admin. Draft comments are not accessible to the public and will not show up on this page until it is marked as "published". To manage all comments, ',
+                    text: "Authenticated users can leave comments on this post. All new comments are given the status \"draft\" until they are approved by an admin. Draft comments are not accessible to the public and will not show up on this page until it is marked as \"published\". To manage all comments, ",
                   },
                   {
-                    type: 'link',
-                    url: '/admin/collections/comments',
+                    type: "link",
+                    url: "/admin/collections/comments",
                     children: [
                       {
-                        text: 'navigate to the admin dashboard',
+                        text: "navigate to the admin dashboard",
                       },
                     ],
                   },
                   {
-                    text: '.',
+                    text: ".",
                   },
                 ],
               },
@@ -87,35 +87,35 @@ export default async function Post({ params: { slug } }) {
             comments,
           },
           {
-            blockType: 'relatedPosts',
-            blockName: 'Related Posts',
-            relationTo: 'posts',
+            blockType: "relatedPosts",
+            blockName: "Related Posts",
+            relationTo: "posts",
             introContent: [
               {
-                type: 'h4',
+                type: "h4",
                 children: [
                   {
-                    text: 'Related posts',
+                    text: "Related posts",
                   },
                 ],
               },
               {
-                type: 'p',
+                type: "p",
                 children: [
                   {
-                    text: 'The posts displayed here are individually selected for this page. Admins can select any number of related posts to display here and the layout will adjust accordingly. Alternatively, you could swap this out for the "Archive" block to automatically populate posts by category complete with pagination. To manage related posts, ',
+                    text: "The posts displayed here are individually selected for this page. Admins can select any number of related posts to display here and the layout will adjust accordingly. Alternatively, you could swap this out for the \"Archive\" block to automatically populate posts by category complete with pagination. To manage related posts, ",
                   },
                   {
-                    type: 'link',
+                    type: "link",
                     url: `/admin/collections/posts/${post.id}`,
                     children: [
                       {
-                        text: 'navigate to the admin dashboard',
+                        text: "navigate to the admin dashboard",
                       },
                     ],
                   },
                   {
-                    text: '.',
+                    text: ".",
                   },
                 ],
               },
@@ -125,30 +125,31 @@ export default async function Post({ params: { slug } }) {
         ]}
       />
     </React.Fragment>
-  )
+  );
 }
 
 export async function generateStaticParams() {
   try {
-    const posts = await fetchDocs<Post>('posts')
-    return posts?.map(({ slug }) => slug)
+    const posts = await fetchDocs<Post>("posts");
+    return posts?.map(({ slug }) => slug);
   } catch (error) {
-    return []
+    return [];
   }
 }
 
 export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
-  const { isEnabled: isDraftMode } = draftMode()
+  const { isEnabled: isDraftMode } = draftMode();
 
-  let post: Post | null = null
+  let post: Post | null = null;
 
   try {
     post = await fetchDoc<Post>({
-      collection: 'posts',
+      collection: "posts",
       slug,
       draft: isDraftMode,
-    })
-  } catch (error) {}
+    });
+  } catch (error) {
+  }
 
-  return generateMeta({ doc: post })
+  return generateMeta({ doc: post });
 }

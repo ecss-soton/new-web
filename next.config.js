@@ -1,6 +1,6 @@
-/** @type {import('next').NextConfig} */
-const ContentSecurityPolicy = require('./csp')
-const redirects = require('./redirects')
+/** @type {import("next").NextConfig} */
+const ContentSecurityPolicy = require('./csp');
+const redirects = require('./redirects');
 
 const nextConfig = {
   reactStrictMode: true,
@@ -8,11 +8,11 @@ const nextConfig = {
   images: {
     domains: ['localhost', process.env.NEXT_PUBLIC_SERVER_URL]
       .filter(Boolean)
-      .map(url => url.replace(/https?:\/\//, '')),
+      .map((url) => url.replace(/https?:\/\//, '')),
   },
   redirects,
   async headers() {
-    const headers = []
+    const headers = [];
 
     // Prevent search engines from indexing the site if it is not live
     // This is useful for staging environments before they are ready to go live
@@ -27,7 +27,7 @@ const nextConfig = {
           },
         ],
         source: '/:path*',
-      })
+      });
     }
 
     // Set the `Content-Security-Policy` header as a security measure to prevent XSS attacks
@@ -41,10 +41,10 @@ const nextConfig = {
           value: ContentSecurityPolicy,
         },
       ],
-    })
+    });
 
-    return headers
+    return headers;
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

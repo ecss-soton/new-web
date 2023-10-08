@@ -1,7 +1,7 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload/types';
 
-import { admins } from '../access/admins'
-import Groups from './groups'
+import { admins } from '../access/admins';
+import Groups from './groups';
 
 const Positions: CollectionConfig = {
   slug: 'positions',
@@ -41,6 +41,6 @@ const Positions: CollectionConfig = {
       },
     },
   ],
-}
+};
 
-export default Positions
+export default Positions;

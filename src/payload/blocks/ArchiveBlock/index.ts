@@ -1,6 +1,6 @@
-import type { Block } from 'payload/types'
+import type { Block } from 'payload/types';
 
-import richText from '../../fields/richText'
+import richText from '../../fields/richText';
 
 export const Archive: Block = {
   slug: 'archive',
@@ -101,4 +101,4 @@ export const Archive: Block = {
       },
     },
   ],
-}
+};

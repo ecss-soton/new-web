@@ -7,13 +7,13 @@ const policies = {
   'font-src': ["'self'"],
   'frame-src': ["'self'"],
   'connect-src': ["'self'", 'https://maps.googleapis.com'],
-}
+};
 
 module.exports = Object.entries(policies)
   .map(([key, value]) => {
     if (Array.isArray(value)) {
-      return `${key} ${value.join(' ')}`
+      return `${key} ${value.join(' ')}`;
     }
-    return ''
+    return '';
   })
-  .join('; ')
+  .join('; ');

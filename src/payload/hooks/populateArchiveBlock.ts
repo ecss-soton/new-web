@@ -1,6 +1,6 @@
-import type { AfterReadHook } from 'payload/dist/globals/config/types'
+import type { AfterReadHook } from "payload/dist/globals/config/types";
 
-import type { Page, Post } from '../payload-types'
+import type { Page, Post } from "../payload-types";
 
 export const populateArchiveBlock: AfterReadHook = async ({ doc, req: { payload } }) => {
   // pre-populate the archive block if `populateBy` is `collection`
@@ -8,34 +8,34 @@ export const populateArchiveBlock: AfterReadHook = async ({ doc, req: { payload 
 
   const layoutWithArchive = await Promise.all(
     doc.layout.map(async block => {
-      if (block.blockType === 'archive') {
-        const archiveBlock = block as Extract<Page['layout'][0], { blockType: 'archive' }> & {
+      if (block.blockType === "archive") {
+        const archiveBlock = block as Extract<Page["layout"][0], { blockType: "archive" }> & {
           populatedDocs: Array<{
-            relationTo: 'pages' | 'posts'
+            relationTo: "pages" | "posts"
             value: string
           }>
-        }
+        };
 
-        if (archiveBlock.populateBy === 'collection') {
+        if (archiveBlock.populateBy === "collection") {
           const res: { totalDocs: number; docs: Post[] } = await payload.find({
             collection: archiveBlock.relationTo,
             limit: archiveBlock.limit || 10,
             where: {
               ...(archiveBlock?.categories?.length > 0
                 ? {
-                    categories: {
-                      in: archiveBlock.categories
-                        .map(cat => {
-                          if (typeof cat === 'string') return cat
-                          return cat.id
-                        })
-                        .join(','),
-                    },
-                  }
+                  categories: {
+                    in: archiveBlock.categories
+                      .map(cat => {
+                        if (typeof cat === "string") return cat;
+                        return cat.id;
+                      })
+                      .join(","),
+                  },
+                }
                 : {}),
             },
-            sort: '-publishedDate',
-          })
+            sort: "-publishedDate",
+          });
 
           return {
             ...block,
@@ -44,16 +44,16 @@ export const populateArchiveBlock: AfterReadHook = async ({ doc, req: { payload 
               relationTo: archiveBlock.relationTo,
               value: thisDoc.id,
             })),
-          }
+          };
         }
       }
 
-      return block
+      return block;
     }),
-  )
+  );
 
   return {
     ...doc,
     layout: layoutWithArchive,
-  }
-}
+  };
+};

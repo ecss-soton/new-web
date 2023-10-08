@@ -1,6 +1,6 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload/types';
 
-import Groups from '../groups'
+import Groups from '../groups';
 
 const Votes: CollectionConfig = {
   slug: 'votes',
@@ -38,6 +38,6 @@ const Votes: CollectionConfig = {
       hasMany: true,
     },
   ],
-}
+};
 
-export default Votes
+export default Votes;

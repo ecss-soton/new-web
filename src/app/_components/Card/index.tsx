@@ -1,20 +1,20 @@
-import React, { Fragment } from 'react'
-import Link from 'next/link'
+import React, { Fragment } from "react";
+import Link from "next/link";
 
-import { Post, Project } from '../../../payload/payload-types'
-import { Media } from '../Media'
+import { Post, Project } from "../../../payload/payload-types";
+import { Media } from "../Media";
 
-import classes from './index.module.scss'
+import classes from "./index.module.scss";
 
 export const Card: React.FC<{
-  alignItems?: 'center'
+  alignItems?: "center"
   className?: string
   showCategories?: boolean
   hideImagesOnMobile?: boolean
   title?: string
-  relationTo?: 'projects' | 'posts'
+  relationTo?: "projects" | "posts"
   doc?: Project | Post
-  orientation?: 'horizontal' | 'vertical'
+  orientation?: "horizontal" | "vertical"
 }> = props => {
   const {
     relationTo,
@@ -22,26 +22,26 @@ export const Card: React.FC<{
     title: titleFromProps,
     doc,
     className,
-    orientation = 'vertical',
-  } = props
+    orientation = "vertical",
+  } = props;
 
-  const { slug, title, categories, meta } = doc || {}
-  const { description, image: metaImage } = meta || {}
+  const { slug, title, categories, meta } = doc || {};
+  const { description, image: metaImage } = meta || {};
 
-  const hasCategories = categories && Array.isArray(categories) && categories.length > 0
-  const titleToUse = titleFromProps || title
-  const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  const href = `/${relationTo}/${slug}`
+  const hasCategories = categories && Array.isArray(categories) && categories.length > 0;
+  const titleToUse = titleFromProps || title;
+  const sanitizedDescription = description?.replace(/\s/g, " "); // replace non-breaking space with white space
+  const href = `/${relationTo}/${slug}`;
 
   return (
     <div
       className={[classes.card, className, orientation && classes[orientation]]
         .filter(Boolean)
-        .join(' ')}
+        .join(" ")}
     >
       <Link href={href} className={classes.mediaWrapper}>
         {!metaImage && <div className={classes.placeholder}>No image</div>}
-        {metaImage && typeof metaImage !== 'string' && (
+        {metaImage && typeof metaImage !== "string" && (
           <Media imgClassName={classes.image} resource={metaImage} fill />
         )}
       </Link>
@@ -51,18 +51,18 @@ export const Card: React.FC<{
             {showCategories && hasCategories && (
               <div>
                 {categories?.map((category, index) => {
-                  const { title: titleFromCategory } = category
+                  const { title: titleFromCategory } = category;
 
-                  const categoryTitle = titleFromCategory || 'Untitled category'
+                  const categoryTitle = titleFromCategory || "Untitled category";
 
-                  const isLast = index === categories.length - 1
+                  const isLast = index === categories.length - 1;
 
                   return (
                     <Fragment key={index}>
                       {categoryTitle}
                       {!isLast && <Fragment>, &nbsp;</Fragment>}
                     </Fragment>
-                  )
+                  );
                 })}
               </div>
             )}
@@ -82,5 +82,5 @@ export const Card: React.FC<{
         )}
       </div>
     </div>
-  )
-}
+  );
+};

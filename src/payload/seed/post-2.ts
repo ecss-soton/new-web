@@ -1,36 +1,36 @@
-import type { Post } from '../payload-types'
+import type { Post } from "../payload-types";
 
 export const post2: Partial<Post> = {
-  title: 'Post 2',
-  slug: 'post-2',
-  _status: 'published',
+  title: "Post 2",
+  slug: "post-2",
+  _status: "published",
   meta: {
-    title: 'Post 2',
-    description: 'This is the second post.',
-    image: '{{IMAGE}}',
+    title: "Post 2",
+    description: "This is the second post.",
+    image: "{{IMAGE}}",
   },
-  authors: ['{{AUTHOR}}'],
+  authors: ["{{AUTHOR}}"],
   hero: {
-    type: 'lowImpact',
+    type: "lowImpact",
     links: null,
     richText: [
       {
         children: [
           {
-            text: 'Post 2',
+            text: "Post 2",
           },
         ],
-        type: 'h1',
+        type: "h1",
       },
     ],
     media: null,
   },
   layout: [
     {
-      blockType: 'content',
+      blockType: "content",
       columns: [
         {
-          size: 'twoThirds',
+          size: "twoThirds",
           richText: [
             {
               children: [
@@ -42,11 +42,11 @@ export const post2: Partial<Post> = {
           ],
           link: {
             reference: {
-              relationTo: 'pages',
-              value: '',
+              relationTo: "pages",
+              value: "",
             },
-            url: '',
-            label: '',
+            url: "",
+            label: "",
           },
         },
       ],
@@ -55,34 +55,34 @@ export const post2: Partial<Post> = {
   enablePremiumContent: true,
   premiumContent: [
     {
-      blockType: 'content',
+      blockType: "content",
       columns: [
         {
-          size: 'twoThirds',
+          size: "twoThirds",
           richText: [
             {
               children: [
                 {
-                  text: 'This is premium content.',
+                  text: "This is premium content.",
                   bold: true,
                 },
                 {
-                  text: ' It is only available to authenticated users. This content can be anything from additional video, text, and content, to download links and more. These are simply layout building blocks configured in the CMS.',
+                  text: " It is only available to authenticated users. This content can be anything from additional video, text, and content, to download links and more. These are simply layout building blocks configured in the CMS.",
                 },
               ],
             },
           ],
           link: {
             reference: {
-              relationTo: 'pages',
-              value: '',
+              relationTo: "pages",
+              value: "",
             },
-            url: '',
-            label: '',
+            url: "",
+            label: "",
           },
         },
       ],
     },
   ],
   relatedPosts: [], // this is populated by the seed script
-}
+};

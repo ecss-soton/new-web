@@ -11,7 +11,7 @@ populatedUser {
 }
 comment
 createdAt
-`
+`;
 
 export const COMMENTS_BY_DOC = `
   query Comments($doc: String) {
@@ -21,7 +21,7 @@ export const COMMENTS_BY_DOC = `
       }
     }
   }
-`
+`;
 
 export const COMMENTS_BY_USER = `
   query Comments($user: String) {
@@ -31,4 +31,4 @@ export const COMMENTS_BY_USER = `
       }
     }
   }
-`
+`;

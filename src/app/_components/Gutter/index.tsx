@@ -1,6 +1,6 @@
-import React, { forwardRef, Ref } from 'react'
+import React, { forwardRef, Ref } from "react";
 
-import classes from './index.module.scss'
+import classes from "./index.module.scss";
 
 type Props = {
   left?: boolean
@@ -11,7 +11,7 @@ type Props = {
 }
 
 export const Gutter: React.FC<Props> = forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const { left = true, right = true, className, children } = props
+  const { left = true, right = true, className, children } = props;
 
   return (
     <div
@@ -23,11 +23,11 @@ export const Gutter: React.FC<Props> = forwardRef<HTMLDivElement, Props>((props,
         className,
       ]
         .filter(Boolean)
-        .join(' ')}
+        .join(" ")}
     >
       {children}
     </div>
-  )
-})
+  );
+});
 
-Gutter.displayName = 'Gutter'
+Gutter.displayName = "Gutter";

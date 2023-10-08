@@ -1,30 +1,30 @@
-import type { Page } from '../payload-types'
+import type { Page } from "../payload-types";
 
 export const postsPage: Partial<Page> = {
-  title: 'Posts',
-  slug: 'posts',
-  _status: 'published',
+  title: "Posts",
+  slug: "posts",
+  _status: "published",
   meta: {
-    title: 'Payload Website Template',
-    description: 'An open-source website built with Payload and Next.js.',
-    image: '{{IMAGE}}',
+    title: "Payload Website Template",
+    description: "An open-source website built with Payload and Next.js.",
+    image: "{{IMAGE}}",
   },
   hero: {
-    type: 'lowImpact',
+    type: "lowImpact",
     richText: [
       {
-        type: 'h1',
+        type: "h1",
         children: [
           {
-            text: 'All posts',
+            text: "All posts",
           },
         ],
       },
       {
-        type: 'p',
+        type: "p",
         children: [
           {
-            text: 'This page displays all or some of the posts of your blog. Each post is complete with a dynamic page layout builder for a completely custom user experience that is under your full control.',
+            text: "This page displays all or some of the posts of your blog. Each post is complete with a dynamic page layout builder for a completely custom user experience that is under your full control.",
           },
         ],
       },
@@ -33,30 +33,30 @@ export const postsPage: Partial<Page> = {
   },
   layout: [
     {
-      blockName: 'Archive Block',
-      blockType: 'archive',
+      blockName: "Archive Block",
+      blockType: "archive",
       introContent: [
         {
-          type: 'h4',
+          type: "h4",
           children: [
             {
-              text: 'All posts',
+              text: "All posts",
             },
           ],
         },
         {
-          type: 'p',
+          type: "p",
           children: [
             {
-              text: 'The posts below are displayed in an "Archive" layout building block which is an extremely powerful way to display documents on a page. It can be auto-populated by collection or by category, or posts can be individually selected. Pagination controls will automatically appear if the number of results exceeds the number of items per page.',
+              text: "The posts below are displayed in an \"Archive\" layout building block which is an extremely powerful way to display documents on a page. It can be auto-populated by collection or by category, or posts can be individually selected. Pagination controls will automatically appear if the number of results exceeds the number of items per page.",
             },
           ],
         },
       ],
-      populateBy: 'collection',
-      relationTo: 'posts',
+      populateBy: "collection",
+      relationTo: "posts",
       limit: 10,
       categories: [],
     },
   ],
-}
+};

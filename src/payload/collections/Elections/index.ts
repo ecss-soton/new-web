@@ -1,13 +1,13 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload/types';
 
-import { admins } from '../../access/admins'
-import Groups from '../groups'
+import { admins } from '../../access/admins';
+import Groups from '../groups';
 import {
   inTheFuture,
   isAfterNomination,
   isNominationConstitutional,
   isVotingConstitutional,
-} from './validate/dateValidate'
+} from './validate/dateValidate';
 
 const Elections: CollectionConfig = {
   slug: 'elections',
@@ -88,6 +88,6 @@ const Elections: CollectionConfig = {
       },
     },
   ],
-}
+};
 
-export default Elections
+export default Elections;
