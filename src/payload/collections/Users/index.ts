@@ -11,7 +11,7 @@ const Users: CollectionConfig = {
   slug: 'users',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'email'],
+    defaultColumns: ['name', 'username', 'email'],
   },
   access: {
     read: adminsAndUser,
@@ -28,6 +28,11 @@ const Users: CollectionConfig = {
     {
       name: 'name',
       type: 'text',
+    },
+    {
+      name: 'username',
+      type: 'text',
+      required: true,
     },
     {
       name: 'roles',

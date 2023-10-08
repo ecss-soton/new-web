@@ -10,11 +10,15 @@ import { buildConfig } from 'payload/config'
 
 import Categories from './collections/Categories'
 import Comments from './collections/Comments'
+import Elections from './collections/Elections'
 import { Media } from './collections/Media'
+import Nominations from './collections/Nominations'
 import { Pages } from './collections/Pages'
+import Positions from './collections/Position'
 import { Posts } from './collections/Posts'
 import { Projects } from './collections/Projects'
 import Users from './collections/Users'
+import Votes from './collections/Votes'
 import BeforeDashboard from './components/BeforeDashboard'
 import BeforeLogin from './components/BeforeLogin'
 import { seed } from './endpoints/seed'
@@ -43,7 +47,19 @@ export default buildConfig({
     },
   },
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL,
-  collections: [Pages, Posts, Projects, Media, Categories, Users, Comments],
+  collections: [
+    Pages,
+    Posts,
+    Projects,
+    Media,
+    Categories,
+    Users,
+    Comments,
+    Elections,
+    Nominations,
+    Positions,
+    Votes,
+  ],
   globals: [Settings, Header, Footer],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),

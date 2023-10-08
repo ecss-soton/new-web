@@ -30,6 +30,21 @@ type Query {
   docAccessComment(id: String!): commentsDocAccess
   versionComment(id: String): CommentVersion
   versionsComments(where: versionsComment_where, page: Int, limit: Int, sort: String): versionsComments
+  Election(id: String!, draft: Boolean): Election
+  Elections(where: Election_where, draft: Boolean, page: Int, limit: Int, sort: String): Elections
+  docAccessElection(id: String!): electionsDocAccess
+  Nomination(id: String!, draft: Boolean): Nomination
+  Nominations(where: Nomination_where, draft: Boolean, page: Int, limit: Int, sort: String): Nominations
+  docAccessNomination(id: String!): nominationsDocAccess
+  Position(id: String!, draft: Boolean): Position
+  Positions(where: Position_where, draft: Boolean, page: Int, limit: Int, sort: String): Positions
+  docAccessPosition(id: String!): positionsDocAccess
+  Vote(id: String!, draft: Boolean): Vote
+  Votes(where: Vote_where, draft: Boolean, page: Int, limit: Int, sort: String): Votes
+  docAccessVote(id: String!): votesDocAccess
+  Redirect(id: String!, draft: Boolean): Redirect
+  Redirects(where: Redirect_where, draft: Boolean, page: Int, limit: Int, sort: String): Redirects
+  docAccessRedirect(id: String!): redirectsDocAccess
   Settings(draft: Boolean): Settings
   docAccessSettings: settingsDocAccess
   Header(draft: Boolean): Header
@@ -59,8 +74,8 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTime
 
 type Page_Hero {
-  type: Page_Hero_type
-  richText(depth: Int): JSON
+  type: Page_Hero_type!
+  richText(depth: Int): JSON!
   links: [Page_Hero_Links!]
   media(where: Page_Hero_Media_where): Media
 }
@@ -87,7 +102,7 @@ type Page_Hero_Links_Link {
   newTab: Boolean
   reference: Page_Hero_Links_Link_Reference_Relationship
   url: String
-  label: String
+  label: String!
   appearance: Page_Hero_Links_Link_appearance
 }
 
@@ -341,7 +356,7 @@ type Content {
 
 type Content_Columns {
   size: Content_Columns_size
-  richText(depth: Int): JSON
+  richText(depth: Int): JSON!
   enableLink: Boolean
   link: Content_Columns_Link
   id: String
@@ -631,6 +646,7 @@ type Post {
 type User {
   id: String
   name: String
+  username: String!
   roles: [User_roles!]
   updatedAt: DateTime
   createdAt: DateTime
@@ -660,8 +676,8 @@ type Post_PopulatedAuthors {
 }
 
 type Post_Hero {
-  type: Post_Hero_type
-  richText(depth: Int): JSON
+  type: Post_Hero_type!
+  richText(depth: Int): JSON!
   links: [Post_Hero_Links!]
   media(where: Post_Hero_Media_where): Media
 }
@@ -683,7 +699,7 @@ type Post_Hero_Links_Link {
   newTab: Boolean
   reference: Post_Hero_Links_Link_Reference_Relationship
   url: String
-  label: String
+  label: String!
   appearance: Post_Hero_Links_Link_appearance
 }
 
@@ -1056,8 +1072,8 @@ type Project {
 }
 
 type Project_Hero {
-  type: Project_Hero_type
-  richText(depth: Int): JSON
+  type: Project_Hero_type!
+  richText(depth: Int): JSON!
   links: [Project_Hero_Links!]
   media(where: Project_Hero_Media_where): Media
 }
@@ -1079,7 +1095,7 @@ type Project_Hero_Links_Link {
   newTab: Boolean
   reference: Project_Hero_Links_Link_Reference_Relationship
   url: String
-  label: String
+  label: String!
   appearance: Project_Hero_Links_Link_appearance
 }
 
@@ -1700,9 +1716,8 @@ input Page_hero__richText_operator {
 input Page_hero__links__link__type_operator {
   equals: Page_hero__links__link__type_Input
   not_equals: Page_hero__links__link__type_Input
-  in: [Page_hero__links__link__type_Input]
-  not_in: [Page_hero__links__link__type_Input]
-  all: [Page_hero__links__link__type_Input]
+  like: Page_hero__links__link__type_Input
+  contains: Page_hero__links__link__type_Input
   exists: Boolean
 }
 
@@ -2593,11 +2608,12 @@ type PageVersion {
   version: PageVersion_Version
   createdAt: DateTime
   updatedAt: DateTime
+  latest: Boolean
   id: String
 }
 
 type PageVersion_Version {
-  title: String
+  title: String!
   publishedDate: DateTime
   hero: PageVersion_Version_Hero
   layout: [PageVersion_Version_Layout!]!
@@ -3024,6 +3040,7 @@ input versionsPage_where {
   version___status: versionsPage_version___status_operator
   createdAt: versionsPage_createdAt_operator
   updatedAt: versionsPage_updatedAt_operator
+  latest: versionsPage_latest_operator
   id: versionsPage_id_operator
   OR: [versionsPage_where_or]
   AND: [versionsPage_where_and]
@@ -3084,9 +3101,8 @@ input versionsPage_version__hero__richText_operator {
 input versionsPage_version__hero__links__link__type_operator {
   equals: versionsPage_version__hero__links__link__type_Input
   not_equals: versionsPage_version__hero__links__link__type_Input
-  in: [versionsPage_version__hero__links__link__type_Input]
-  not_in: [versionsPage_version__hero__links__link__type_Input]
-  all: [versionsPage_version__hero__links__link__type_Input]
+  like: versionsPage_version__hero__links__link__type_Input
+  contains: versionsPage_version__hero__links__link__type_Input
   exists: Boolean
 }
 
@@ -3255,6 +3271,12 @@ input versionsPage_updatedAt_operator {
   exists: Boolean
 }
 
+input versionsPage_latest_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
 input versionsPage_id_operator {
   equals: String
   not_equals: String
@@ -3289,6 +3311,7 @@ input versionsPage_where_or {
   version___status: versionsPage_version___status_operator
   createdAt: versionsPage_createdAt_operator
   updatedAt: versionsPage_updatedAt_operator
+  latest: versionsPage_latest_operator
   id: versionsPage_id_operator
 }
 
@@ -3315,6 +3338,7 @@ input versionsPage_where_and {
   version___status: versionsPage_version___status_operator
   createdAt: versionsPage_createdAt_operator
   updatedAt: versionsPage_updatedAt_operator
+  latest: versionsPage_latest_operator
   id: versionsPage_id_operator
 }
 
@@ -3449,9 +3473,8 @@ input Post_hero__richText_operator {
 input Post_hero__links__link__type_operator {
   equals: Post_hero__links__link__type_Input
   not_equals: Post_hero__links__link__type_Input
-  in: [Post_hero__links__link__type_Input]
-  not_in: [Post_hero__links__link__type_Input]
-  all: [Post_hero__links__link__type_Input]
+  like: Post_hero__links__link__type_Input
+  contains: Post_hero__links__link__type_Input
   exists: Boolean
 }
 
@@ -4560,11 +4583,12 @@ type PostVersion {
   version: PostVersion_Version
   createdAt: DateTime
   updatedAt: DateTime
+  latest: Boolean
   id: String
 }
 
 type PostVersion_Version {
-  title: String
+  title: String!
   categories: [Category!]
   publishedOn: DateTime
   authors: [User!]
@@ -5010,6 +5034,7 @@ input versionsPost_where {
   version___status: versionsPost_version___status_operator
   createdAt: versionsPost_createdAt_operator
   updatedAt: versionsPost_updatedAt_operator
+  latest: versionsPost_latest_operator
   id: versionsPost_id_operator
   OR: [versionsPost_where_or]
   AND: [versionsPost_where_and]
@@ -5110,9 +5135,8 @@ input versionsPost_version__hero__richText_operator {
 input versionsPost_version__hero__links__link__type_operator {
   equals: versionsPost_version__hero__links__link__type_Input
   not_equals: versionsPost_version__hero__links__link__type_Input
-  in: [versionsPost_version__hero__links__link__type_Input]
-  not_in: [versionsPost_version__hero__links__link__type_Input]
-  all: [versionsPost_version__hero__links__link__type_Input]
+  like: versionsPost_version__hero__links__link__type_Input
+  contains: versionsPost_version__hero__links__link__type_Input
   exists: Boolean
 }
 
@@ -5296,6 +5320,12 @@ input versionsPost_updatedAt_operator {
   exists: Boolean
 }
 
+input versionsPost_latest_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
 input versionsPost_id_operator {
   equals: String
   not_equals: String
@@ -5336,6 +5366,7 @@ input versionsPost_where_or {
   version___status: versionsPost_version___status_operator
   createdAt: versionsPost_createdAt_operator
   updatedAt: versionsPost_updatedAt_operator
+  latest: versionsPost_latest_operator
   id: versionsPost_id_operator
 }
 
@@ -5368,6 +5399,7 @@ input versionsPost_where_and {
   version___status: versionsPost_version___status_operator
   createdAt: versionsPost_createdAt_operator
   updatedAt: versionsPost_updatedAt_operator
+  latest: versionsPost_latest_operator
   id: versionsPost_id_operator
 }
 
@@ -5467,9 +5499,8 @@ input Project_hero__richText_operator {
 input Project_hero__links__link__type_operator {
   equals: Project_hero__links__link__type_Input
   not_equals: Project_hero__links__link__type_Input
-  in: [Project_hero__links__link__type_Input]
-  not_in: [Project_hero__links__link__type_Input]
-  all: [Project_hero__links__link__type_Input]
+  like: Project_hero__links__link__type_Input
+  contains: Project_hero__links__link__type_Input
   exists: Boolean
 }
 
@@ -6416,11 +6447,12 @@ type ProjectVersion {
   version: ProjectVersion_Version
   createdAt: DateTime
   updatedAt: DateTime
+  latest: Boolean
   id: String
 }
 
 type ProjectVersion_Version {
-  title: String
+  title: String!
   categories: [Category!]
   publishedDate: DateTime
   hero: ProjectVersion_Version_Hero
@@ -6851,6 +6883,7 @@ input versionsProject_where {
   version___status: versionsProject_version___status_operator
   createdAt: versionsProject_createdAt_operator
   updatedAt: versionsProject_updatedAt_operator
+  latest: versionsProject_latest_operator
   id: versionsProject_id_operator
   OR: [versionsProject_where_or]
   AND: [versionsProject_where_and]
@@ -6920,9 +6953,8 @@ input versionsProject_version__hero__richText_operator {
 input versionsProject_version__hero__links__link__type_operator {
   equals: versionsProject_version__hero__links__link__type_Input
   not_equals: versionsProject_version__hero__links__link__type_Input
-  in: [versionsProject_version__hero__links__link__type_Input]
-  not_in: [versionsProject_version__hero__links__link__type_Input]
-  all: [versionsProject_version__hero__links__link__type_Input]
+  like: versionsProject_version__hero__links__link__type_Input
+  contains: versionsProject_version__hero__links__link__type_Input
   exists: Boolean
 }
 
@@ -7100,6 +7132,12 @@ input versionsProject_updatedAt_operator {
   exists: Boolean
 }
 
+input versionsProject_latest_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
 input versionsProject_id_operator {
   equals: String
   not_equals: String
@@ -7136,6 +7174,7 @@ input versionsProject_where_or {
   version___status: versionsProject_version___status_operator
   createdAt: versionsProject_createdAt_operator
   updatedAt: versionsProject_updatedAt_operator
+  latest: versionsProject_latest_operator
   id: versionsProject_id_operator
 }
 
@@ -7164,6 +7203,7 @@ input versionsProject_where_and {
   version___status: versionsProject_version___status_operator
   createdAt: versionsProject_createdAt_operator
   updatedAt: versionsProject_updatedAt_operator
+  latest: versionsProject_latest_operator
   id: versionsProject_id_operator
 }
 
@@ -8024,6 +8064,7 @@ type Users {
 
 input User_where {
   name: User_name_operator
+  username: User_username_operator
   roles: User_roles_operator
   updatedAt: User_updatedAt_operator
   createdAt: User_createdAt_operator
@@ -8042,6 +8083,16 @@ input User_name_operator {
   not_in: [String]
   all: [String]
   exists: Boolean
+}
+
+input User_username_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
 }
 
 input User_roles_operator {
@@ -8103,6 +8154,7 @@ input User_id_operator {
 
 input User_where_or {
   name: User_name_operator
+  username: User_username_operator
   roles: User_roles_operator
   updatedAt: User_updatedAt_operator
   createdAt: User_createdAt_operator
@@ -8112,6 +8164,7 @@ input User_where_or {
 
 input User_where_and {
   name: User_name_operator
+  username: User_username_operator
   roles: User_roles_operator
   updatedAt: User_updatedAt_operator
   createdAt: User_createdAt_operator
@@ -8130,6 +8183,7 @@ type usersDocAccess {
 
 type UsersDocAccessFields {
   name: UsersDocAccessFields_name
+  username: UsersDocAccessFields_username
   roles: UsersDocAccessFields_roles
   updatedAt: UsersDocAccessFields_updatedAt
   createdAt: UsersDocAccessFields_createdAt
@@ -8157,6 +8211,29 @@ type UsersDocAccessFields_name_Update {
 }
 
 type UsersDocAccessFields_name_Delete {
+  permission: Boolean!
+}
+
+type UsersDocAccessFields_username {
+  create: UsersDocAccessFields_username_Create
+  read: UsersDocAccessFields_username_Read
+  update: UsersDocAccessFields_username_Update
+  delete: UsersDocAccessFields_username_Delete
+}
+
+type UsersDocAccessFields_username_Create {
+  permission: Boolean!
+}
+
+type UsersDocAccessFields_username_Read {
+  permission: Boolean!
+}
+
+type UsersDocAccessFields_username_Update {
+  permission: Boolean!
+}
+
+type UsersDocAccessFields_username_Delete {
   permission: Boolean!
 }
 
@@ -8737,6 +8814,7 @@ type CommentVersion {
   version: CommentVersion_Version
   createdAt: DateTime
   updatedAt: DateTime
+  latest: Boolean
   id: String
 }
 
@@ -8786,6 +8864,7 @@ input versionsComment_where {
   version___status: versionsComment_version___status_operator
   createdAt: versionsComment_createdAt_operator
   updatedAt: versionsComment_updatedAt_operator
+  latest: versionsComment_latest_operator
   id: versionsComment_id_operator
   OR: [versionsComment_where_or]
   AND: [versionsComment_where_and]
@@ -8906,6 +8985,12 @@ input versionsComment_updatedAt_operator {
   exists: Boolean
 }
 
+input versionsComment_latest_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
 input versionsComment_id_operator {
   equals: String
   not_equals: String
@@ -8929,6 +9014,7 @@ input versionsComment_where_or {
   version___status: versionsComment_version___status_operator
   createdAt: versionsComment_createdAt_operator
   updatedAt: versionsComment_updatedAt_operator
+  latest: versionsComment_latest_operator
   id: versionsComment_id_operator
 }
 
@@ -8944,7 +9030,1945 @@ input versionsComment_where_and {
   version___status: versionsComment_version___status_operator
   createdAt: versionsComment_createdAt_operator
   updatedAt: versionsComment_updatedAt_operator
+  latest: versionsComment_latest_operator
   id: versionsComment_id_operator
+}
+
+type Election {
+  id: String
+  name: String!
+  nominationStart: DateTime!
+  nominationEnd: DateTime!
+  votingStart: DateTime!
+  votingEnd: DateTime!
+  positions: [Position!]!
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+type Position {
+  id: String
+  name: String!
+  description: String!
+  importance: Float!
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+type Elections {
+  docs: [Election]
+  totalDocs: Int
+  offset: Int
+  limit: Int
+  totalPages: Int
+  page: Int
+  pagingCounter: Int
+  hasPrevPage: Boolean
+  hasNextPage: Boolean
+  prevPage: Int
+  nextPage: Int
+}
+
+input Election_where {
+  name: Election_name_operator
+  nominationStart: Election_nominationStart_operator
+  nominationEnd: Election_nominationEnd_operator
+  votingStart: Election_votingStart_operator
+  votingEnd: Election_votingEnd_operator
+  positions: Election_positions_operator
+  updatedAt: Election_updatedAt_operator
+  createdAt: Election_createdAt_operator
+  id: Election_id_operator
+  OR: [Election_where_or]
+  AND: [Election_where_and]
+}
+
+input Election_name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Election_nominationStart_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input Election_nominationEnd_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input Election_votingStart_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input Election_votingEnd_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input Election_positions_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Election_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Election_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Election_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Election_where_or {
+  name: Election_name_operator
+  nominationStart: Election_nominationStart_operator
+  nominationEnd: Election_nominationEnd_operator
+  votingStart: Election_votingStart_operator
+  votingEnd: Election_votingEnd_operator
+  positions: Election_positions_operator
+  updatedAt: Election_updatedAt_operator
+  createdAt: Election_createdAt_operator
+  id: Election_id_operator
+}
+
+input Election_where_and {
+  name: Election_name_operator
+  nominationStart: Election_nominationStart_operator
+  nominationEnd: Election_nominationEnd_operator
+  votingStart: Election_votingStart_operator
+  votingEnd: Election_votingEnd_operator
+  positions: Election_positions_operator
+  updatedAt: Election_updatedAt_operator
+  createdAt: Election_createdAt_operator
+  id: Election_id_operator
+}
+
+type electionsDocAccess {
+  fields: ElectionsDocAccessFields
+  create: ElectionsCreateDocAccess
+  read: ElectionsReadDocAccess
+  update: ElectionsUpdateDocAccess
+  delete: ElectionsDeleteDocAccess
+}
+
+type ElectionsDocAccessFields {
+  name: ElectionsDocAccessFields_name
+  nominationStart: ElectionsDocAccessFields_nominationStart
+  nominationEnd: ElectionsDocAccessFields_nominationEnd
+  votingStart: ElectionsDocAccessFields_votingStart
+  votingEnd: ElectionsDocAccessFields_votingEnd
+  positions: ElectionsDocAccessFields_positions
+  updatedAt: ElectionsDocAccessFields_updatedAt
+  createdAt: ElectionsDocAccessFields_createdAt
+}
+
+type ElectionsDocAccessFields_name {
+  create: ElectionsDocAccessFields_name_Create
+  read: ElectionsDocAccessFields_name_Read
+  update: ElectionsDocAccessFields_name_Update
+  delete: ElectionsDocAccessFields_name_Delete
+}
+
+type ElectionsDocAccessFields_name_Create {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_name_Read {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_name_Update {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_name_Delete {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_nominationStart {
+  create: ElectionsDocAccessFields_nominationStart_Create
+  read: ElectionsDocAccessFields_nominationStart_Read
+  update: ElectionsDocAccessFields_nominationStart_Update
+  delete: ElectionsDocAccessFields_nominationStart_Delete
+}
+
+type ElectionsDocAccessFields_nominationStart_Create {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_nominationStart_Read {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_nominationStart_Update {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_nominationStart_Delete {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_nominationEnd {
+  create: ElectionsDocAccessFields_nominationEnd_Create
+  read: ElectionsDocAccessFields_nominationEnd_Read
+  update: ElectionsDocAccessFields_nominationEnd_Update
+  delete: ElectionsDocAccessFields_nominationEnd_Delete
+}
+
+type ElectionsDocAccessFields_nominationEnd_Create {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_nominationEnd_Read {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_nominationEnd_Update {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_nominationEnd_Delete {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_votingStart {
+  create: ElectionsDocAccessFields_votingStart_Create
+  read: ElectionsDocAccessFields_votingStart_Read
+  update: ElectionsDocAccessFields_votingStart_Update
+  delete: ElectionsDocAccessFields_votingStart_Delete
+}
+
+type ElectionsDocAccessFields_votingStart_Create {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_votingStart_Read {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_votingStart_Update {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_votingStart_Delete {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_votingEnd {
+  create: ElectionsDocAccessFields_votingEnd_Create
+  read: ElectionsDocAccessFields_votingEnd_Read
+  update: ElectionsDocAccessFields_votingEnd_Update
+  delete: ElectionsDocAccessFields_votingEnd_Delete
+}
+
+type ElectionsDocAccessFields_votingEnd_Create {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_votingEnd_Read {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_votingEnd_Update {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_votingEnd_Delete {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_positions {
+  create: ElectionsDocAccessFields_positions_Create
+  read: ElectionsDocAccessFields_positions_Read
+  update: ElectionsDocAccessFields_positions_Update
+  delete: ElectionsDocAccessFields_positions_Delete
+}
+
+type ElectionsDocAccessFields_positions_Create {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_positions_Read {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_positions_Update {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_positions_Delete {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_updatedAt {
+  create: ElectionsDocAccessFields_updatedAt_Create
+  read: ElectionsDocAccessFields_updatedAt_Read
+  update: ElectionsDocAccessFields_updatedAt_Update
+  delete: ElectionsDocAccessFields_updatedAt_Delete
+}
+
+type ElectionsDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_createdAt {
+  create: ElectionsDocAccessFields_createdAt_Create
+  read: ElectionsDocAccessFields_createdAt_Read
+  update: ElectionsDocAccessFields_createdAt_Update
+  delete: ElectionsDocAccessFields_createdAt_Delete
+}
+
+type ElectionsDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type ElectionsCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionsReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionsUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type Nomination {
+  id: String
+  nominee: [User!]!
+  nickname: String
+  manifesto: String
+  position: Position!
+  election: Election!
+  image(where: Nomination_Image_where): Media
+  droppedOut: Boolean
+  supporters: [User!]
+  joinUUID: String
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+input Nomination_Image_where {
+  alt: Nomination_Image_alt_operator
+  caption: Nomination_Image_caption_operator
+  updatedAt: Nomination_Image_updatedAt_operator
+  createdAt: Nomination_Image_createdAt_operator
+  url: Nomination_Image_url_operator
+  filename: Nomination_Image_filename_operator
+  mimeType: Nomination_Image_mimeType_operator
+  filesize: Nomination_Image_filesize_operator
+  width: Nomination_Image_width_operator
+  height: Nomination_Image_height_operator
+  id: Nomination_Image_id_operator
+  OR: [Nomination_Image_where_or]
+  AND: [Nomination_Image_where_and]
+}
+
+input Nomination_Image_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Nomination_Image_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Nomination_Image_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Nomination_Image_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Nomination_Image_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Nomination_Image_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Nomination_Image_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Nomination_Image_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Nomination_Image_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Nomination_Image_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Nomination_Image_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Nomination_Image_where_or {
+  alt: Nomination_Image_alt_operator
+  caption: Nomination_Image_caption_operator
+  updatedAt: Nomination_Image_updatedAt_operator
+  createdAt: Nomination_Image_createdAt_operator
+  url: Nomination_Image_url_operator
+  filename: Nomination_Image_filename_operator
+  mimeType: Nomination_Image_mimeType_operator
+  filesize: Nomination_Image_filesize_operator
+  width: Nomination_Image_width_operator
+  height: Nomination_Image_height_operator
+  id: Nomination_Image_id_operator
+}
+
+input Nomination_Image_where_and {
+  alt: Nomination_Image_alt_operator
+  caption: Nomination_Image_caption_operator
+  updatedAt: Nomination_Image_updatedAt_operator
+  createdAt: Nomination_Image_createdAt_operator
+  url: Nomination_Image_url_operator
+  filename: Nomination_Image_filename_operator
+  mimeType: Nomination_Image_mimeType_operator
+  filesize: Nomination_Image_filesize_operator
+  width: Nomination_Image_width_operator
+  height: Nomination_Image_height_operator
+  id: Nomination_Image_id_operator
+}
+
+type Nominations {
+  docs: [Nomination]
+  totalDocs: Int
+  offset: Int
+  limit: Int
+  totalPages: Int
+  page: Int
+  pagingCounter: Int
+  hasPrevPage: Boolean
+  hasNextPage: Boolean
+  prevPage: Int
+  nextPage: Int
+}
+
+input Nomination_where {
+  nominee: Nomination_nominee_operator
+  nickname: Nomination_nickname_operator
+  manifesto: Nomination_manifesto_operator
+  position: Nomination_position_operator
+  election: Nomination_election_operator
+  image: Nomination_image_operator
+  droppedOut: Nomination_droppedOut_operator
+  supporters: Nomination_supporters_operator
+  joinUUID: Nomination_joinUUID_operator
+  updatedAt: Nomination_updatedAt_operator
+  createdAt: Nomination_createdAt_operator
+  id: Nomination_id_operator
+  OR: [Nomination_where_or]
+  AND: [Nomination_where_and]
+}
+
+input Nomination_nominee_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Nomination_nickname_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Nomination_manifesto_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Nomination_position_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Nomination_election_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Nomination_image_operator {
+  equals: String
+  not_equals: String
+  exists: Boolean
+}
+
+input Nomination_droppedOut_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input Nomination_supporters_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Nomination_joinUUID_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Nomination_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Nomination_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Nomination_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Nomination_where_or {
+  nominee: Nomination_nominee_operator
+  nickname: Nomination_nickname_operator
+  manifesto: Nomination_manifesto_operator
+  position: Nomination_position_operator
+  election: Nomination_election_operator
+  image: Nomination_image_operator
+  droppedOut: Nomination_droppedOut_operator
+  supporters: Nomination_supporters_operator
+  joinUUID: Nomination_joinUUID_operator
+  updatedAt: Nomination_updatedAt_operator
+  createdAt: Nomination_createdAt_operator
+  id: Nomination_id_operator
+}
+
+input Nomination_where_and {
+  nominee: Nomination_nominee_operator
+  nickname: Nomination_nickname_operator
+  manifesto: Nomination_manifesto_operator
+  position: Nomination_position_operator
+  election: Nomination_election_operator
+  image: Nomination_image_operator
+  droppedOut: Nomination_droppedOut_operator
+  supporters: Nomination_supporters_operator
+  joinUUID: Nomination_joinUUID_operator
+  updatedAt: Nomination_updatedAt_operator
+  createdAt: Nomination_createdAt_operator
+  id: Nomination_id_operator
+}
+
+type nominationsDocAccess {
+  fields: NominationsDocAccessFields
+  create: NominationsCreateDocAccess
+  read: NominationsReadDocAccess
+  update: NominationsUpdateDocAccess
+  delete: NominationsDeleteDocAccess
+}
+
+type NominationsDocAccessFields {
+  nominee: NominationsDocAccessFields_nominee
+  nickname: NominationsDocAccessFields_nickname
+  manifesto: NominationsDocAccessFields_manifesto
+  position: NominationsDocAccessFields_position
+  election: NominationsDocAccessFields_election
+  image: NominationsDocAccessFields_image
+  droppedOut: NominationsDocAccessFields_droppedOut
+  supporters: NominationsDocAccessFields_supporters
+  joinUUID: NominationsDocAccessFields_joinUUID
+  updatedAt: NominationsDocAccessFields_updatedAt
+  createdAt: NominationsDocAccessFields_createdAt
+}
+
+type NominationsDocAccessFields_nominee {
+  create: NominationsDocAccessFields_nominee_Create
+  read: NominationsDocAccessFields_nominee_Read
+  update: NominationsDocAccessFields_nominee_Update
+  delete: NominationsDocAccessFields_nominee_Delete
+}
+
+type NominationsDocAccessFields_nominee_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_nominee_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_nominee_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_nominee_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_nickname {
+  create: NominationsDocAccessFields_nickname_Create
+  read: NominationsDocAccessFields_nickname_Read
+  update: NominationsDocAccessFields_nickname_Update
+  delete: NominationsDocAccessFields_nickname_Delete
+}
+
+type NominationsDocAccessFields_nickname_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_nickname_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_nickname_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_nickname_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_manifesto {
+  create: NominationsDocAccessFields_manifesto_Create
+  read: NominationsDocAccessFields_manifesto_Read
+  update: NominationsDocAccessFields_manifesto_Update
+  delete: NominationsDocAccessFields_manifesto_Delete
+}
+
+type NominationsDocAccessFields_manifesto_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_manifesto_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_manifesto_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_manifesto_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_position {
+  create: NominationsDocAccessFields_position_Create
+  read: NominationsDocAccessFields_position_Read
+  update: NominationsDocAccessFields_position_Update
+  delete: NominationsDocAccessFields_position_Delete
+}
+
+type NominationsDocAccessFields_position_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_position_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_position_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_position_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_election {
+  create: NominationsDocAccessFields_election_Create
+  read: NominationsDocAccessFields_election_Read
+  update: NominationsDocAccessFields_election_Update
+  delete: NominationsDocAccessFields_election_Delete
+}
+
+type NominationsDocAccessFields_election_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_election_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_election_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_election_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_image {
+  create: NominationsDocAccessFields_image_Create
+  read: NominationsDocAccessFields_image_Read
+  update: NominationsDocAccessFields_image_Update
+  delete: NominationsDocAccessFields_image_Delete
+}
+
+type NominationsDocAccessFields_image_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_image_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_image_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_image_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_droppedOut {
+  create: NominationsDocAccessFields_droppedOut_Create
+  read: NominationsDocAccessFields_droppedOut_Read
+  update: NominationsDocAccessFields_droppedOut_Update
+  delete: NominationsDocAccessFields_droppedOut_Delete
+}
+
+type NominationsDocAccessFields_droppedOut_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_droppedOut_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_droppedOut_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_droppedOut_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_supporters {
+  create: NominationsDocAccessFields_supporters_Create
+  read: NominationsDocAccessFields_supporters_Read
+  update: NominationsDocAccessFields_supporters_Update
+  delete: NominationsDocAccessFields_supporters_Delete
+}
+
+type NominationsDocAccessFields_supporters_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_supporters_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_supporters_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_supporters_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_joinUUID {
+  create: NominationsDocAccessFields_joinUUID_Create
+  read: NominationsDocAccessFields_joinUUID_Read
+  update: NominationsDocAccessFields_joinUUID_Update
+  delete: NominationsDocAccessFields_joinUUID_Delete
+}
+
+type NominationsDocAccessFields_joinUUID_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_joinUUID_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_joinUUID_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_joinUUID_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_updatedAt {
+  create: NominationsDocAccessFields_updatedAt_Create
+  read: NominationsDocAccessFields_updatedAt_Read
+  update: NominationsDocAccessFields_updatedAt_Update
+  delete: NominationsDocAccessFields_updatedAt_Delete
+}
+
+type NominationsDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_createdAt {
+  create: NominationsDocAccessFields_createdAt_Create
+  read: NominationsDocAccessFields_createdAt_Read
+  update: NominationsDocAccessFields_createdAt_Update
+  delete: NominationsDocAccessFields_createdAt_Delete
+}
+
+type NominationsDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type NominationsCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NominationsReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NominationsUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NominationsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type Positions {
+  docs: [Position]
+  totalDocs: Int
+  offset: Int
+  limit: Int
+  totalPages: Int
+  page: Int
+  pagingCounter: Int
+  hasPrevPage: Boolean
+  hasNextPage: Boolean
+  prevPage: Int
+  nextPage: Int
+}
+
+input Position_where {
+  name: Position_name_operator
+  description: Position_description_operator
+  importance: Position_importance_operator
+  updatedAt: Position_updatedAt_operator
+  createdAt: Position_createdAt_operator
+  id: Position_id_operator
+  OR: [Position_where_or]
+  AND: [Position_where_and]
+}
+
+input Position_name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Position_description_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Position_importance_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+}
+
+input Position_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Position_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Position_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Position_where_or {
+  name: Position_name_operator
+  description: Position_description_operator
+  importance: Position_importance_operator
+  updatedAt: Position_updatedAt_operator
+  createdAt: Position_createdAt_operator
+  id: Position_id_operator
+}
+
+input Position_where_and {
+  name: Position_name_operator
+  description: Position_description_operator
+  importance: Position_importance_operator
+  updatedAt: Position_updatedAt_operator
+  createdAt: Position_createdAt_operator
+  id: Position_id_operator
+}
+
+type positionsDocAccess {
+  fields: PositionsDocAccessFields
+  create: PositionsCreateDocAccess
+  read: PositionsReadDocAccess
+  update: PositionsUpdateDocAccess
+  delete: PositionsDeleteDocAccess
+}
+
+type PositionsDocAccessFields {
+  name: PositionsDocAccessFields_name
+  description: PositionsDocAccessFields_description
+  importance: PositionsDocAccessFields_importance
+  updatedAt: PositionsDocAccessFields_updatedAt
+  createdAt: PositionsDocAccessFields_createdAt
+}
+
+type PositionsDocAccessFields_name {
+  create: PositionsDocAccessFields_name_Create
+  read: PositionsDocAccessFields_name_Read
+  update: PositionsDocAccessFields_name_Update
+  delete: PositionsDocAccessFields_name_Delete
+}
+
+type PositionsDocAccessFields_name_Create {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_name_Read {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_name_Update {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_name_Delete {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_description {
+  create: PositionsDocAccessFields_description_Create
+  read: PositionsDocAccessFields_description_Read
+  update: PositionsDocAccessFields_description_Update
+  delete: PositionsDocAccessFields_description_Delete
+}
+
+type PositionsDocAccessFields_description_Create {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_description_Read {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_description_Update {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_description_Delete {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_importance {
+  create: PositionsDocAccessFields_importance_Create
+  read: PositionsDocAccessFields_importance_Read
+  update: PositionsDocAccessFields_importance_Update
+  delete: PositionsDocAccessFields_importance_Delete
+}
+
+type PositionsDocAccessFields_importance_Create {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_importance_Read {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_importance_Update {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_importance_Delete {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_updatedAt {
+  create: PositionsDocAccessFields_updatedAt_Create
+  read: PositionsDocAccessFields_updatedAt_Read
+  update: PositionsDocAccessFields_updatedAt_Update
+  delete: PositionsDocAccessFields_updatedAt_Delete
+}
+
+type PositionsDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_createdAt {
+  create: PositionsDocAccessFields_createdAt_Create
+  read: PositionsDocAccessFields_createdAt_Read
+  update: PositionsDocAccessFields_createdAt_Update
+  delete: PositionsDocAccessFields_createdAt_Delete
+}
+
+type PositionsDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type PositionsDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type PositionsCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type PositionsReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type PositionsUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type PositionsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type Vote {
+  id: String
+  username: String!
+  position: Position!
+  election: Election!
+  preference: [Nomination!]!
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+type Votes {
+  docs: [Vote]
+  totalDocs: Int
+  offset: Int
+  limit: Int
+  totalPages: Int
+  page: Int
+  pagingCounter: Int
+  hasPrevPage: Boolean
+  hasNextPage: Boolean
+  prevPage: Int
+  nextPage: Int
+}
+
+input Vote_where {
+  username: Vote_username_operator
+  position: Vote_position_operator
+  election: Vote_election_operator
+  preference: Vote_preference_operator
+  updatedAt: Vote_updatedAt_operator
+  createdAt: Vote_createdAt_operator
+  id: Vote_id_operator
+  OR: [Vote_where_or]
+  AND: [Vote_where_and]
+}
+
+input Vote_username_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Vote_position_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Vote_election_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Vote_preference_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Vote_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Vote_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Vote_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Vote_where_or {
+  username: Vote_username_operator
+  position: Vote_position_operator
+  election: Vote_election_operator
+  preference: Vote_preference_operator
+  updatedAt: Vote_updatedAt_operator
+  createdAt: Vote_createdAt_operator
+  id: Vote_id_operator
+}
+
+input Vote_where_and {
+  username: Vote_username_operator
+  position: Vote_position_operator
+  election: Vote_election_operator
+  preference: Vote_preference_operator
+  updatedAt: Vote_updatedAt_operator
+  createdAt: Vote_createdAt_operator
+  id: Vote_id_operator
+}
+
+type votesDocAccess {
+  fields: VotesDocAccessFields
+  create: VotesCreateDocAccess
+  read: VotesReadDocAccess
+  update: VotesUpdateDocAccess
+  delete: VotesDeleteDocAccess
+}
+
+type VotesDocAccessFields {
+  username: VotesDocAccessFields_username
+  position: VotesDocAccessFields_position
+  election: VotesDocAccessFields_election
+  preference: VotesDocAccessFields_preference
+  updatedAt: VotesDocAccessFields_updatedAt
+  createdAt: VotesDocAccessFields_createdAt
+}
+
+type VotesDocAccessFields_username {
+  create: VotesDocAccessFields_username_Create
+  read: VotesDocAccessFields_username_Read
+  update: VotesDocAccessFields_username_Update
+  delete: VotesDocAccessFields_username_Delete
+}
+
+type VotesDocAccessFields_username_Create {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_username_Read {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_username_Update {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_username_Delete {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_position {
+  create: VotesDocAccessFields_position_Create
+  read: VotesDocAccessFields_position_Read
+  update: VotesDocAccessFields_position_Update
+  delete: VotesDocAccessFields_position_Delete
+}
+
+type VotesDocAccessFields_position_Create {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_position_Read {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_position_Update {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_position_Delete {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_election {
+  create: VotesDocAccessFields_election_Create
+  read: VotesDocAccessFields_election_Read
+  update: VotesDocAccessFields_election_Update
+  delete: VotesDocAccessFields_election_Delete
+}
+
+type VotesDocAccessFields_election_Create {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_election_Read {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_election_Update {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_election_Delete {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_preference {
+  create: VotesDocAccessFields_preference_Create
+  read: VotesDocAccessFields_preference_Read
+  update: VotesDocAccessFields_preference_Update
+  delete: VotesDocAccessFields_preference_Delete
+}
+
+type VotesDocAccessFields_preference_Create {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_preference_Read {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_preference_Update {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_preference_Delete {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_updatedAt {
+  create: VotesDocAccessFields_updatedAt_Create
+  read: VotesDocAccessFields_updatedAt_Read
+  update: VotesDocAccessFields_updatedAt_Update
+  delete: VotesDocAccessFields_updatedAt_Delete
+}
+
+type VotesDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_createdAt {
+  create: VotesDocAccessFields_createdAt_Create
+  read: VotesDocAccessFields_createdAt_Read
+  update: VotesDocAccessFields_createdAt_Update
+  delete: VotesDocAccessFields_createdAt_Delete
+}
+
+type VotesDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type VotesCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type VotesReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type VotesUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type VotesDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type Redirect {
+  id: String
+  from: String!
+  to: Redirect_To
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+type Redirect_To {
+  type: Redirect_To_type
+  reference: Redirect_To_Reference_Relationship
+  url: String
+}
+
+enum Redirect_To_type {
+  reference
+  custom
+}
+
+type Redirect_To_Reference_Relationship {
+  relationTo: Redirect_To_Reference_RelationTo
+  value: Redirect_To_Reference
+}
+
+enum Redirect_To_Reference_RelationTo {
+  pages
+  posts
+}
+
+union Redirect_To_Reference = Page | Post
+
+type Redirects {
+  docs: [Redirect]
+  totalDocs: Int
+  offset: Int
+  limit: Int
+  totalPages: Int
+  page: Int
+  pagingCounter: Int
+  hasPrevPage: Boolean
+  hasNextPage: Boolean
+  prevPage: Int
+  nextPage: Int
+}
+
+input Redirect_where {
+  from: Redirect_from_operator
+  to__type: Redirect_to__type_operator
+  to__reference: Redirect_to__reference_Relation
+  to__url: Redirect_to__url_operator
+  updatedAt: Redirect_updatedAt_operator
+  createdAt: Redirect_createdAt_operator
+  id: Redirect_id_operator
+  OR: [Redirect_where_or]
+  AND: [Redirect_where_and]
+}
+
+input Redirect_from_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Redirect_to__type_operator {
+  equals: Redirect_to__type_Input
+  not_equals: Redirect_to__type_Input
+  like: Redirect_to__type_Input
+  contains: Redirect_to__type_Input
+  exists: Boolean
+}
+
+enum Redirect_to__type_Input {
+  reference
+  custom
+}
+
+input Redirect_to__reference_Relation {
+  relationTo: Redirect_to__reference_Relation_RelationTo
+  value: String
+}
+
+enum Redirect_to__reference_Relation_RelationTo {
+  pages
+  posts
+}
+
+input Redirect_to__url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Redirect_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Redirect_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Redirect_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Redirect_where_or {
+  from: Redirect_from_operator
+  to__type: Redirect_to__type_operator
+  to__reference: Redirect_to__reference_Relation
+  to__url: Redirect_to__url_operator
+  updatedAt: Redirect_updatedAt_operator
+  createdAt: Redirect_createdAt_operator
+  id: Redirect_id_operator
+}
+
+input Redirect_where_and {
+  from: Redirect_from_operator
+  to__type: Redirect_to__type_operator
+  to__reference: Redirect_to__reference_Relation
+  to__url: Redirect_to__url_operator
+  updatedAt: Redirect_updatedAt_operator
+  createdAt: Redirect_createdAt_operator
+  id: Redirect_id_operator
+}
+
+type redirectsDocAccess {
+  fields: RedirectsDocAccessFields
+  create: RedirectsCreateDocAccess
+  read: RedirectsReadDocAccess
+  update: RedirectsUpdateDocAccess
+  delete: RedirectsDeleteDocAccess
+}
+
+type RedirectsDocAccessFields {
+  from: RedirectsDocAccessFields_from
+  to: RedirectsDocAccessFields_to
+  updatedAt: RedirectsDocAccessFields_updatedAt
+  createdAt: RedirectsDocAccessFields_createdAt
+}
+
+type RedirectsDocAccessFields_from {
+  create: RedirectsDocAccessFields_from_Create
+  read: RedirectsDocAccessFields_from_Read
+  update: RedirectsDocAccessFields_from_Update
+  delete: RedirectsDocAccessFields_from_Delete
+}
+
+type RedirectsDocAccessFields_from_Create {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_from_Read {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_from_Update {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_from_Delete {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to {
+  create: RedirectsDocAccessFields_to_Create
+  read: RedirectsDocAccessFields_to_Read
+  update: RedirectsDocAccessFields_to_Update
+  delete: RedirectsDocAccessFields_to_Delete
+  fields: RedirectsDocAccessFields_to_Fields
+}
+
+type RedirectsDocAccessFields_to_Create {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_Read {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_Update {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_Delete {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_Fields {
+  type: RedirectsDocAccessFields_to_type
+  reference: RedirectsDocAccessFields_to_reference
+  url: RedirectsDocAccessFields_to_url
+}
+
+type RedirectsDocAccessFields_to_type {
+  create: RedirectsDocAccessFields_to_type_Create
+  read: RedirectsDocAccessFields_to_type_Read
+  update: RedirectsDocAccessFields_to_type_Update
+  delete: RedirectsDocAccessFields_to_type_Delete
+}
+
+type RedirectsDocAccessFields_to_type_Create {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_type_Read {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_type_Update {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_type_Delete {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_reference {
+  create: RedirectsDocAccessFields_to_reference_Create
+  read: RedirectsDocAccessFields_to_reference_Read
+  update: RedirectsDocAccessFields_to_reference_Update
+  delete: RedirectsDocAccessFields_to_reference_Delete
+}
+
+type RedirectsDocAccessFields_to_reference_Create {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_reference_Read {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_reference_Update {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_reference_Delete {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_url {
+  create: RedirectsDocAccessFields_to_url_Create
+  read: RedirectsDocAccessFields_to_url_Read
+  update: RedirectsDocAccessFields_to_url_Update
+  delete: RedirectsDocAccessFields_to_url_Delete
+}
+
+type RedirectsDocAccessFields_to_url_Create {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_url_Read {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_url_Update {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_to_url_Delete {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_updatedAt {
+  create: RedirectsDocAccessFields_updatedAt_Create
+  read: RedirectsDocAccessFields_updatedAt_Read
+  update: RedirectsDocAccessFields_updatedAt_Update
+  delete: RedirectsDocAccessFields_updatedAt_Delete
+}
+
+type RedirectsDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_createdAt {
+  create: RedirectsDocAccessFields_createdAt_Create
+  read: RedirectsDocAccessFields_createdAt_Read
+  update: RedirectsDocAccessFields_createdAt_Update
+  delete: RedirectsDocAccessFields_createdAt_Delete
+}
+
+type RedirectsDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type RedirectsDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type RedirectsCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type RedirectsReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type RedirectsUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type RedirectsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
 }
 
 type Settings {
@@ -9085,7 +11109,7 @@ type Header_NavItems_Link {
   newTab: Boolean
   reference: Header_NavItems_Link_Reference_Relationship
   url: String
-  label: String
+  label: String!
 }
 
 enum Header_NavItems_Link_type {
@@ -9387,7 +11411,7 @@ type Footer_NavItems_Link {
   newTab: Boolean
   reference: Footer_NavItems_Link_Reference_Relationship
   url: String
-  label: String
+  label: String!
 }
 
 enum Footer_NavItems_Link_type {
@@ -9689,6 +11713,11 @@ type Access {
   categories: categoriesAccess
   users: usersAccess
   comments: commentsAccess
+  elections: electionsAccess
+  nominations: nominationsAccess
+  positions: positionsAccess
+  votes: votesAccess
+  redirects: redirectsAccess
   settings: settingsAccess
   header: headerAccess
   footer: footerAccess
@@ -12502,6 +14531,7 @@ type usersAccess {
 
 type UsersFields {
   name: UsersFields_name
+  username: UsersFields_username
   roles: UsersFields_roles
   updatedAt: UsersFields_updatedAt
   createdAt: UsersFields_createdAt
@@ -12529,6 +14559,29 @@ type UsersFields_name_Update {
 }
 
 type UsersFields_name_Delete {
+  permission: Boolean!
+}
+
+type UsersFields_username {
+  create: UsersFields_username_Create
+  read: UsersFields_username_Read
+  update: UsersFields_username_Update
+  delete: UsersFields_username_Delete
+}
+
+type UsersFields_username_Create {
+  permission: Boolean!
+}
+
+type UsersFields_username_Read {
+  permission: Boolean!
+}
+
+type UsersFields_username_Update {
+  permission: Boolean!
+}
+
+type UsersFields_username_Delete {
   permission: Boolean!
 }
 
@@ -12925,6 +14978,1053 @@ type CommentsDeleteAccess {
 }
 
 type CommentsReadVersionsAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type electionsAccess {
+  fields: ElectionsFields
+  create: ElectionsCreateAccess
+  read: ElectionsReadAccess
+  update: ElectionsUpdateAccess
+  delete: ElectionsDeleteAccess
+}
+
+type ElectionsFields {
+  name: ElectionsFields_name
+  nominationStart: ElectionsFields_nominationStart
+  nominationEnd: ElectionsFields_nominationEnd
+  votingStart: ElectionsFields_votingStart
+  votingEnd: ElectionsFields_votingEnd
+  positions: ElectionsFields_positions
+  updatedAt: ElectionsFields_updatedAt
+  createdAt: ElectionsFields_createdAt
+}
+
+type ElectionsFields_name {
+  create: ElectionsFields_name_Create
+  read: ElectionsFields_name_Read
+  update: ElectionsFields_name_Update
+  delete: ElectionsFields_name_Delete
+}
+
+type ElectionsFields_name_Create {
+  permission: Boolean!
+}
+
+type ElectionsFields_name_Read {
+  permission: Boolean!
+}
+
+type ElectionsFields_name_Update {
+  permission: Boolean!
+}
+
+type ElectionsFields_name_Delete {
+  permission: Boolean!
+}
+
+type ElectionsFields_nominationStart {
+  create: ElectionsFields_nominationStart_Create
+  read: ElectionsFields_nominationStart_Read
+  update: ElectionsFields_nominationStart_Update
+  delete: ElectionsFields_nominationStart_Delete
+}
+
+type ElectionsFields_nominationStart_Create {
+  permission: Boolean!
+}
+
+type ElectionsFields_nominationStart_Read {
+  permission: Boolean!
+}
+
+type ElectionsFields_nominationStart_Update {
+  permission: Boolean!
+}
+
+type ElectionsFields_nominationStart_Delete {
+  permission: Boolean!
+}
+
+type ElectionsFields_nominationEnd {
+  create: ElectionsFields_nominationEnd_Create
+  read: ElectionsFields_nominationEnd_Read
+  update: ElectionsFields_nominationEnd_Update
+  delete: ElectionsFields_nominationEnd_Delete
+}
+
+type ElectionsFields_nominationEnd_Create {
+  permission: Boolean!
+}
+
+type ElectionsFields_nominationEnd_Read {
+  permission: Boolean!
+}
+
+type ElectionsFields_nominationEnd_Update {
+  permission: Boolean!
+}
+
+type ElectionsFields_nominationEnd_Delete {
+  permission: Boolean!
+}
+
+type ElectionsFields_votingStart {
+  create: ElectionsFields_votingStart_Create
+  read: ElectionsFields_votingStart_Read
+  update: ElectionsFields_votingStart_Update
+  delete: ElectionsFields_votingStart_Delete
+}
+
+type ElectionsFields_votingStart_Create {
+  permission: Boolean!
+}
+
+type ElectionsFields_votingStart_Read {
+  permission: Boolean!
+}
+
+type ElectionsFields_votingStart_Update {
+  permission: Boolean!
+}
+
+type ElectionsFields_votingStart_Delete {
+  permission: Boolean!
+}
+
+type ElectionsFields_votingEnd {
+  create: ElectionsFields_votingEnd_Create
+  read: ElectionsFields_votingEnd_Read
+  update: ElectionsFields_votingEnd_Update
+  delete: ElectionsFields_votingEnd_Delete
+}
+
+type ElectionsFields_votingEnd_Create {
+  permission: Boolean!
+}
+
+type ElectionsFields_votingEnd_Read {
+  permission: Boolean!
+}
+
+type ElectionsFields_votingEnd_Update {
+  permission: Boolean!
+}
+
+type ElectionsFields_votingEnd_Delete {
+  permission: Boolean!
+}
+
+type ElectionsFields_positions {
+  create: ElectionsFields_positions_Create
+  read: ElectionsFields_positions_Read
+  update: ElectionsFields_positions_Update
+  delete: ElectionsFields_positions_Delete
+}
+
+type ElectionsFields_positions_Create {
+  permission: Boolean!
+}
+
+type ElectionsFields_positions_Read {
+  permission: Boolean!
+}
+
+type ElectionsFields_positions_Update {
+  permission: Boolean!
+}
+
+type ElectionsFields_positions_Delete {
+  permission: Boolean!
+}
+
+type ElectionsFields_updatedAt {
+  create: ElectionsFields_updatedAt_Create
+  read: ElectionsFields_updatedAt_Read
+  update: ElectionsFields_updatedAt_Update
+  delete: ElectionsFields_updatedAt_Delete
+}
+
+type ElectionsFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type ElectionsFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type ElectionsFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type ElectionsFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type ElectionsFields_createdAt {
+  create: ElectionsFields_createdAt_Create
+  read: ElectionsFields_createdAt_Read
+  update: ElectionsFields_createdAt_Update
+  delete: ElectionsFields_createdAt_Delete
+}
+
+type ElectionsFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type ElectionsFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type ElectionsFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type ElectionsFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type ElectionsCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionsReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionsUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionsDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type nominationsAccess {
+  fields: NominationsFields
+  create: NominationsCreateAccess
+  read: NominationsReadAccess
+  update: NominationsUpdateAccess
+  delete: NominationsDeleteAccess
+}
+
+type NominationsFields {
+  nominee: NominationsFields_nominee
+  nickname: NominationsFields_nickname
+  manifesto: NominationsFields_manifesto
+  position: NominationsFields_position
+  election: NominationsFields_election
+  image: NominationsFields_image
+  droppedOut: NominationsFields_droppedOut
+  supporters: NominationsFields_supporters
+  joinUUID: NominationsFields_joinUUID
+  updatedAt: NominationsFields_updatedAt
+  createdAt: NominationsFields_createdAt
+}
+
+type NominationsFields_nominee {
+  create: NominationsFields_nominee_Create
+  read: NominationsFields_nominee_Read
+  update: NominationsFields_nominee_Update
+  delete: NominationsFields_nominee_Delete
+}
+
+type NominationsFields_nominee_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_nominee_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_nominee_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_nominee_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_nickname {
+  create: NominationsFields_nickname_Create
+  read: NominationsFields_nickname_Read
+  update: NominationsFields_nickname_Update
+  delete: NominationsFields_nickname_Delete
+}
+
+type NominationsFields_nickname_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_nickname_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_nickname_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_nickname_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_manifesto {
+  create: NominationsFields_manifesto_Create
+  read: NominationsFields_manifesto_Read
+  update: NominationsFields_manifesto_Update
+  delete: NominationsFields_manifesto_Delete
+}
+
+type NominationsFields_manifesto_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_manifesto_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_manifesto_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_manifesto_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_position {
+  create: NominationsFields_position_Create
+  read: NominationsFields_position_Read
+  update: NominationsFields_position_Update
+  delete: NominationsFields_position_Delete
+}
+
+type NominationsFields_position_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_position_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_position_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_position_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_election {
+  create: NominationsFields_election_Create
+  read: NominationsFields_election_Read
+  update: NominationsFields_election_Update
+  delete: NominationsFields_election_Delete
+}
+
+type NominationsFields_election_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_election_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_election_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_election_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_image {
+  create: NominationsFields_image_Create
+  read: NominationsFields_image_Read
+  update: NominationsFields_image_Update
+  delete: NominationsFields_image_Delete
+}
+
+type NominationsFields_image_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_image_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_image_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_image_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_droppedOut {
+  create: NominationsFields_droppedOut_Create
+  read: NominationsFields_droppedOut_Read
+  update: NominationsFields_droppedOut_Update
+  delete: NominationsFields_droppedOut_Delete
+}
+
+type NominationsFields_droppedOut_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_droppedOut_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_droppedOut_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_droppedOut_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_supporters {
+  create: NominationsFields_supporters_Create
+  read: NominationsFields_supporters_Read
+  update: NominationsFields_supporters_Update
+  delete: NominationsFields_supporters_Delete
+}
+
+type NominationsFields_supporters_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_supporters_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_supporters_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_supporters_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_joinUUID {
+  create: NominationsFields_joinUUID_Create
+  read: NominationsFields_joinUUID_Read
+  update: NominationsFields_joinUUID_Update
+  delete: NominationsFields_joinUUID_Delete
+}
+
+type NominationsFields_joinUUID_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_joinUUID_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_joinUUID_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_joinUUID_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_updatedAt {
+  create: NominationsFields_updatedAt_Create
+  read: NominationsFields_updatedAt_Read
+  update: NominationsFields_updatedAt_Update
+  delete: NominationsFields_updatedAt_Delete
+}
+
+type NominationsFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_createdAt {
+  create: NominationsFields_createdAt_Create
+  read: NominationsFields_createdAt_Read
+  update: NominationsFields_createdAt_Update
+  delete: NominationsFields_createdAt_Delete
+}
+
+type NominationsFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type NominationsCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NominationsReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NominationsUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NominationsDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type positionsAccess {
+  fields: PositionsFields
+  create: PositionsCreateAccess
+  read: PositionsReadAccess
+  update: PositionsUpdateAccess
+  delete: PositionsDeleteAccess
+}
+
+type PositionsFields {
+  name: PositionsFields_name
+  description: PositionsFields_description
+  importance: PositionsFields_importance
+  updatedAt: PositionsFields_updatedAt
+  createdAt: PositionsFields_createdAt
+}
+
+type PositionsFields_name {
+  create: PositionsFields_name_Create
+  read: PositionsFields_name_Read
+  update: PositionsFields_name_Update
+  delete: PositionsFields_name_Delete
+}
+
+type PositionsFields_name_Create {
+  permission: Boolean!
+}
+
+type PositionsFields_name_Read {
+  permission: Boolean!
+}
+
+type PositionsFields_name_Update {
+  permission: Boolean!
+}
+
+type PositionsFields_name_Delete {
+  permission: Boolean!
+}
+
+type PositionsFields_description {
+  create: PositionsFields_description_Create
+  read: PositionsFields_description_Read
+  update: PositionsFields_description_Update
+  delete: PositionsFields_description_Delete
+}
+
+type PositionsFields_description_Create {
+  permission: Boolean!
+}
+
+type PositionsFields_description_Read {
+  permission: Boolean!
+}
+
+type PositionsFields_description_Update {
+  permission: Boolean!
+}
+
+type PositionsFields_description_Delete {
+  permission: Boolean!
+}
+
+type PositionsFields_importance {
+  create: PositionsFields_importance_Create
+  read: PositionsFields_importance_Read
+  update: PositionsFields_importance_Update
+  delete: PositionsFields_importance_Delete
+}
+
+type PositionsFields_importance_Create {
+  permission: Boolean!
+}
+
+type PositionsFields_importance_Read {
+  permission: Boolean!
+}
+
+type PositionsFields_importance_Update {
+  permission: Boolean!
+}
+
+type PositionsFields_importance_Delete {
+  permission: Boolean!
+}
+
+type PositionsFields_updatedAt {
+  create: PositionsFields_updatedAt_Create
+  read: PositionsFields_updatedAt_Read
+  update: PositionsFields_updatedAt_Update
+  delete: PositionsFields_updatedAt_Delete
+}
+
+type PositionsFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type PositionsFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type PositionsFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type PositionsFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type PositionsFields_createdAt {
+  create: PositionsFields_createdAt_Create
+  read: PositionsFields_createdAt_Read
+  update: PositionsFields_createdAt_Update
+  delete: PositionsFields_createdAt_Delete
+}
+
+type PositionsFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type PositionsFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type PositionsFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type PositionsFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type PositionsCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type PositionsReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type PositionsUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type PositionsDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type votesAccess {
+  fields: VotesFields
+  create: VotesCreateAccess
+  read: VotesReadAccess
+  update: VotesUpdateAccess
+  delete: VotesDeleteAccess
+}
+
+type VotesFields {
+  username: VotesFields_username
+  position: VotesFields_position
+  election: VotesFields_election
+  preference: VotesFields_preference
+  updatedAt: VotesFields_updatedAt
+  createdAt: VotesFields_createdAt
+}
+
+type VotesFields_username {
+  create: VotesFields_username_Create
+  read: VotesFields_username_Read
+  update: VotesFields_username_Update
+  delete: VotesFields_username_Delete
+}
+
+type VotesFields_username_Create {
+  permission: Boolean!
+}
+
+type VotesFields_username_Read {
+  permission: Boolean!
+}
+
+type VotesFields_username_Update {
+  permission: Boolean!
+}
+
+type VotesFields_username_Delete {
+  permission: Boolean!
+}
+
+type VotesFields_position {
+  create: VotesFields_position_Create
+  read: VotesFields_position_Read
+  update: VotesFields_position_Update
+  delete: VotesFields_position_Delete
+}
+
+type VotesFields_position_Create {
+  permission: Boolean!
+}
+
+type VotesFields_position_Read {
+  permission: Boolean!
+}
+
+type VotesFields_position_Update {
+  permission: Boolean!
+}
+
+type VotesFields_position_Delete {
+  permission: Boolean!
+}
+
+type VotesFields_election {
+  create: VotesFields_election_Create
+  read: VotesFields_election_Read
+  update: VotesFields_election_Update
+  delete: VotesFields_election_Delete
+}
+
+type VotesFields_election_Create {
+  permission: Boolean!
+}
+
+type VotesFields_election_Read {
+  permission: Boolean!
+}
+
+type VotesFields_election_Update {
+  permission: Boolean!
+}
+
+type VotesFields_election_Delete {
+  permission: Boolean!
+}
+
+type VotesFields_preference {
+  create: VotesFields_preference_Create
+  read: VotesFields_preference_Read
+  update: VotesFields_preference_Update
+  delete: VotesFields_preference_Delete
+}
+
+type VotesFields_preference_Create {
+  permission: Boolean!
+}
+
+type VotesFields_preference_Read {
+  permission: Boolean!
+}
+
+type VotesFields_preference_Update {
+  permission: Boolean!
+}
+
+type VotesFields_preference_Delete {
+  permission: Boolean!
+}
+
+type VotesFields_updatedAt {
+  create: VotesFields_updatedAt_Create
+  read: VotesFields_updatedAt_Read
+  update: VotesFields_updatedAt_Update
+  delete: VotesFields_updatedAt_Delete
+}
+
+type VotesFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type VotesFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type VotesFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type VotesFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type VotesFields_createdAt {
+  create: VotesFields_createdAt_Create
+  read: VotesFields_createdAt_Read
+  update: VotesFields_createdAt_Update
+  delete: VotesFields_createdAt_Delete
+}
+
+type VotesFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type VotesFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type VotesFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type VotesFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type VotesCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type VotesReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type VotesUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type VotesDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type redirectsAccess {
+  fields: RedirectsFields
+  create: RedirectsCreateAccess
+  read: RedirectsReadAccess
+  update: RedirectsUpdateAccess
+  delete: RedirectsDeleteAccess
+}
+
+type RedirectsFields {
+  from: RedirectsFields_from
+  to: RedirectsFields_to
+  updatedAt: RedirectsFields_updatedAt
+  createdAt: RedirectsFields_createdAt
+}
+
+type RedirectsFields_from {
+  create: RedirectsFields_from_Create
+  read: RedirectsFields_from_Read
+  update: RedirectsFields_from_Update
+  delete: RedirectsFields_from_Delete
+}
+
+type RedirectsFields_from_Create {
+  permission: Boolean!
+}
+
+type RedirectsFields_from_Read {
+  permission: Boolean!
+}
+
+type RedirectsFields_from_Update {
+  permission: Boolean!
+}
+
+type RedirectsFields_from_Delete {
+  permission: Boolean!
+}
+
+type RedirectsFields_to {
+  create: RedirectsFields_to_Create
+  read: RedirectsFields_to_Read
+  update: RedirectsFields_to_Update
+  delete: RedirectsFields_to_Delete
+  fields: RedirectsFields_to_Fields
+}
+
+type RedirectsFields_to_Create {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_Read {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_Update {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_Delete {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_Fields {
+  type: RedirectsFields_to_type
+  reference: RedirectsFields_to_reference
+  url: RedirectsFields_to_url
+}
+
+type RedirectsFields_to_type {
+  create: RedirectsFields_to_type_Create
+  read: RedirectsFields_to_type_Read
+  update: RedirectsFields_to_type_Update
+  delete: RedirectsFields_to_type_Delete
+}
+
+type RedirectsFields_to_type_Create {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_type_Read {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_type_Update {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_type_Delete {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_reference {
+  create: RedirectsFields_to_reference_Create
+  read: RedirectsFields_to_reference_Read
+  update: RedirectsFields_to_reference_Update
+  delete: RedirectsFields_to_reference_Delete
+}
+
+type RedirectsFields_to_reference_Create {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_reference_Read {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_reference_Update {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_reference_Delete {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_url {
+  create: RedirectsFields_to_url_Create
+  read: RedirectsFields_to_url_Read
+  update: RedirectsFields_to_url_Update
+  delete: RedirectsFields_to_url_Delete
+}
+
+type RedirectsFields_to_url_Create {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_url_Read {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_url_Update {
+  permission: Boolean!
+}
+
+type RedirectsFields_to_url_Delete {
+  permission: Boolean!
+}
+
+type RedirectsFields_updatedAt {
+  create: RedirectsFields_updatedAt_Create
+  read: RedirectsFields_updatedAt_Read
+  update: RedirectsFields_updatedAt_Update
+  delete: RedirectsFields_updatedAt_Delete
+}
+
+type RedirectsFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type RedirectsFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type RedirectsFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type RedirectsFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type RedirectsFields_createdAt {
+  create: RedirectsFields_createdAt_Create
+  read: RedirectsFields_createdAt_Read
+  update: RedirectsFields_createdAt_Update
+  delete: RedirectsFields_createdAt_Delete
+}
+
+type RedirectsFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type RedirectsFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type RedirectsFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type RedirectsFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type RedirectsCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type RedirectsReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type RedirectsUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type RedirectsDeleteAccess {
   permission: Boolean!
   where: JSONObject
 }
@@ -13611,6 +16711,21 @@ type Mutation {
   updateComment(id: String!, data: mutationCommentUpdateInput!, draft: Boolean, autosave: Boolean): Comment
   deleteComment(id: String!): Comment
   restoreVersionComment(id: String): Comment
+  createElection(data: mutationElectionInput!, draft: Boolean): Election
+  updateElection(id: String!, data: mutationElectionUpdateInput!, draft: Boolean, autosave: Boolean): Election
+  deleteElection(id: String!): Election
+  createNomination(data: mutationNominationInput!, draft: Boolean): Nomination
+  updateNomination(id: String!, data: mutationNominationUpdateInput!, draft: Boolean, autosave: Boolean): Nomination
+  deleteNomination(id: String!): Nomination
+  createPosition(data: mutationPositionInput!, draft: Boolean): Position
+  updatePosition(id: String!, data: mutationPositionUpdateInput!, draft: Boolean, autosave: Boolean): Position
+  deletePosition(id: String!): Position
+  createVote(data: mutationVoteInput!, draft: Boolean): Vote
+  updateVote(id: String!, data: mutationVoteUpdateInput!, draft: Boolean, autosave: Boolean): Vote
+  deleteVote(id: String!): Vote
+  createRedirect(data: mutationRedirectInput!, draft: Boolean): Redirect
+  updateRedirect(id: String!, data: mutationRedirectUpdateInput!, draft: Boolean, autosave: Boolean): Redirect
+  deleteRedirect(id: String!): Redirect
   updateSettings(data: mutationSettingsInput!, draft: Boolean): Settings
   updateHeader(data: mutationHeaderInput!, draft: Boolean): Header
   updateFooter(data: mutationFooterInput!, draft: Boolean): Footer
@@ -14098,6 +17213,7 @@ input mutationCategoryUpdate_BreadcrumbsInput {
 
 input mutationUserInput {
   name: String
+  username: String!
   roles: [User_roles_MutationInput]
   updatedAt: String
   createdAt: String
@@ -14118,6 +17234,7 @@ enum User_roles_MutationInput {
 
 input mutationUserUpdateInput {
   name: String
+  username: String
   roles: [UserUpdate_roles_MutationInput]
   updatedAt: String
   createdAt: String
@@ -14196,6 +17313,136 @@ input mutationCommentUpdate_PopulatedUserInput {
 enum CommentUpdate__status_MutationInput {
   draft
   published
+}
+
+input mutationElectionInput {
+  name: String!
+  nominationStart: String!
+  nominationEnd: String!
+  votingStart: String!
+  votingEnd: String!
+  positions: [String]
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationElectionUpdateInput {
+  name: String
+  nominationStart: String
+  nominationEnd: String
+  votingStart: String
+  votingEnd: String
+  positions: [String]
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationNominationInput {
+  nominee: [String]
+  nickname: String
+  manifesto: String
+  position: String
+  election: String
+  image: String
+  droppedOut: Boolean
+  supporters: [String]
+  joinUUID: String
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationNominationUpdateInput {
+  nominee: [String]
+  nickname: String
+  manifesto: String
+  position: String
+  election: String
+  image: String
+  droppedOut: Boolean
+  supporters: [String]
+  joinUUID: String
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationPositionInput {
+  name: String!
+  description: String!
+  importance: Float!
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationPositionUpdateInput {
+  name: String
+  description: String
+  importance: Float
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationVoteInput {
+  username: String!
+  position: String
+  election: String
+  preference: [String]
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationVoteUpdateInput {
+  username: String
+  position: String
+  election: String
+  preference: [String]
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationRedirectInput {
+  from: String!
+  to: mutationRedirect_ToInput!
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationRedirect_ToInput {
+  type: String
+  reference: Redirect_To_ReferenceRelationshipInput
+  url: String
+}
+
+input Redirect_To_ReferenceRelationshipInput {
+  relationTo: Redirect_To_ReferenceRelationshipInputRelationTo
+  value: JSON
+}
+
+enum Redirect_To_ReferenceRelationshipInputRelationTo {
+  pages
+  posts
+}
+
+input mutationRedirectUpdateInput {
+  from: String
+  to: mutationRedirectUpdate_ToInput!
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationRedirectUpdate_ToInput {
+  type: String
+  reference: RedirectUpdate_To_ReferenceRelationshipInput
+  url: String
+}
+
+input RedirectUpdate_To_ReferenceRelationshipInput {
+  relationTo: RedirectUpdate_To_ReferenceRelationshipInputRelationTo
+  value: JSON
+}
+
+enum RedirectUpdate_To_ReferenceRelationshipInputRelationTo {
+  pages
+  posts
 }
 
 input mutationSettingsInput {

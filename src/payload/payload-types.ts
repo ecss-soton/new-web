@@ -15,6 +15,11 @@ export interface Config {
     categories: Category;
     users: User;
     comments: Comment;
+    elections: Election;
+    nominations: Nomination;
+    positions: Position;
+    votes: Vote;
+    redirects: Redirect;
   };
   globals: {
     settings: Settings;
@@ -470,6 +475,7 @@ export interface Post {
 export interface User {
   id: string;
   name?: string;
+  username: string;
   roles?: ('admin' | 'user')[];
   updatedAt: string;
   createdAt: string;
@@ -644,6 +650,67 @@ export interface Comment {
   updatedAt: string;
   createdAt: string;
   _status?: 'draft' | 'published';
+}
+export interface Election {
+  id: string;
+  name: string;
+  nominationStart: string;
+  nominationEnd: string;
+  votingStart: string;
+  votingEnd: string;
+  positions: string[] | Position[];
+  updatedAt: string;
+  createdAt: string;
+}
+export interface Position {
+  id: string;
+  name: string;
+  description: string;
+  importance: number;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface Nomination {
+  id: string;
+  nominee: string[] | User[];
+  nickname?: string;
+  manifesto?: string;
+  position: string | Position;
+  election: string | Election;
+  image?: string | Media;
+  droppedOut?: boolean;
+  supporters?: string[] | User[];
+  joinUUID?: string;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface Vote {
+  id: string;
+  username: string;
+  position: string | Position;
+  election: string | Election;
+  preference: string[] | Nomination[];
+  updatedAt: string;
+  createdAt: string;
+}
+export interface Redirect {
+  id: string;
+  from: string;
+  to: {
+    type?: 'reference' | 'custom';
+    reference:
+      | {
+          value: string | Page;
+          relationTo: 'pages';
+        }
+      | {
+          value: string | Post;
+          relationTo: 'posts';
+        };
+    url: string;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 export interface Settings {
   id: string;
