@@ -14,7 +14,6 @@ export const populateNominees: AfterReadHook<Nomination> = async ({ doc, req: { 
           contains: typeof doc.nominees[0] === 'object' ? doc?.nominees?.map((n) => n.id) : doc?.nominees,
         },
       },
-      overrideAccess: true,
       depth: 0,
     });
 

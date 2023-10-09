@@ -7,6 +7,7 @@ import { joinNomination } from './endpoints/joinNomination';
 import { beforeVoting } from './access/beforeVoting';
 import { addOwnId } from './validate/addOwnId';
 import { populateNominees } from './hooks/populateNominees';
+import { nominationIsUnique } from './validate/nominationIsUnique';
 
 const Nominations: CollectionConfig = {
   slug: 'nominations',
@@ -25,7 +26,6 @@ const Nominations: CollectionConfig = {
   },
   fields: [
     {
-      // TODO: Ensure the same nominee is not running for the same non dropped out positions
       name: 'nominees',
       label: 'Nominees',
       type: 'relationship',
@@ -40,6 +40,7 @@ const Nominations: CollectionConfig = {
         // Don't allow nominees to remove themselves
         update: admins,
       },
+      validate: nominationIsUnique,
       defaultValue: ({ user }) => user.id,
     },
     // This field is only used to populate the nominees data via the `populateUser` hook
@@ -119,6 +120,8 @@ const Nominations: CollectionConfig = {
       access: {
         update: beforeVoting,
       },
+      required: true,
+      defaultValue: false,
     },
     {
       name: 'supporters',

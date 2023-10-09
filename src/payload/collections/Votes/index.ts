@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload/types';
 
 import Groups from '../groups';
+import { voteIsUnique } from './validate/voteIsUnique';
 
 const Votes: CollectionConfig = {
   slug: 'votes',
@@ -15,7 +16,6 @@ const Votes: CollectionConfig = {
   },
   fields: [
     {
-      // TODO: Validate users cannot vote multiple times
       name: 'username',
       type: 'text',
       required: true,
@@ -23,6 +23,7 @@ const Votes: CollectionConfig = {
         create: () => false,
       },
       defaultValue: ({ user }) => user.username,
+      validate: voteIsUnique,
     },
     {
       name: 'position',
@@ -37,6 +38,11 @@ const Votes: CollectionConfig = {
       required: true,
       relationTo: 'elections',
       hasMany: false,
+      filterOptions: ({ data }) => ({
+        positions: {
+          contains: data.position,
+        },
+      }),
     },
     {
       // TODO: Validate preferences
