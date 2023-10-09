@@ -102,9 +102,23 @@ const Nominations: CollectionConfig = {
         update: beforeVoting,
       },
       filterOptions: ({ data }) => ({
-        positions: {
-          contains: data.position,
-        },
+        and: [
+          {
+            positions: {
+              contains: data.position,
+            },
+          },
+          {
+            nominationStart: {
+              less_than_equal: data.createdAt,
+            },
+          },
+          {
+            nominationEnd: {
+              greater_than_equal: data.createdAt,
+            },
+          },
+        ],
       }),
     },
     {

@@ -39,9 +39,23 @@ const Votes: CollectionConfig = {
       relationTo: 'elections',
       hasMany: false,
       filterOptions: ({ data }) => ({
-        positions: {
-          contains: data.position,
-        },
+        and: [
+          {
+            positions: {
+              contains: data.position,
+            },
+          },
+          {
+            votingStart: {
+              less_than_equal: new Date(),
+            },
+          },
+          {
+            votingEnd: {
+              greater_than_equal: new Date(),
+            },
+          },
+        ],
       }),
     },
     {

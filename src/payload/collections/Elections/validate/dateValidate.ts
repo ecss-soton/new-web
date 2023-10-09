@@ -7,14 +7,6 @@ function moreThanDaysAway(start: Date, end: Date, days: number): boolean {
   return diff >= duration;
 }
 
-export const inTheFuture: Validate = (timestamp: string, args) => {
-  const date = new Date(Date.parse(timestamp));
-  if (date > new Date()) {
-    return validateDate(timestamp, args);
-  }
-  return 'The date selected must be in the future.';
-};
-
 // Nominations must last at least 10 days
 export const isNominationConstitutional: Validate = (date: string, args) => {
   if (!args.siblingData.nominationStart) {
