@@ -40,13 +40,13 @@ export const joinNomination: PayloadHandler = async (req, res): Promise<void> =>
     return;
   }
 
-  const nominee = nominations.docs[0].nominee as string[];
+  const nominees = nominations.docs[0].nominees as string[];
 
-  if (nominee.includes(user.id)) {
+  if (nominees.includes(user.id)) {
     res.status(403).json({ error: 'You are already a nominee for this nomination.' });
     return;
   }
-  const newNominees = nominations.docs[0].nominee as string[];
+  const newNominees = nominations.docs[0].nominees as string[];
   newNominees.push(user.id);
 
   try {
@@ -54,7 +54,7 @@ export const joinNomination: PayloadHandler = async (req, res): Promise<void> =>
       id: req.params.id,
       collection: 'nominations',
       data: {
-        nominee: newNominees,
+        nominees: newNominees,
       },
     });
     res.json({ success: true });

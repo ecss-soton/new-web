@@ -6,6 +6,7 @@ import { adminOrNominee } from './access/nominees';
 import { joinNomination } from './endpoints/joinNomination';
 import { beforeVoting } from './access/beforeVoting';
 import { addOwnId } from './validate/addOwnId';
+import { populateNominees } from './hooks/populateNominees';
 
 const Nominations: CollectionConfig = {
   slug: 'nominations',
@@ -15,16 +16,18 @@ const Nominations: CollectionConfig = {
     update: adminOrNominee,
     delete: admins,
   },
+  hooks: {
+    afterRead: [populateNominees],
+  },
   admin: {
     group: Groups.Elections,
     defaultColumns: ['nickname', 'election', 'position'],
   },
   fields: [
     {
-      // TODO: Add populated nominee like in comments
       // TODO: Ensure the same nominee is not running for the same non dropped out positions
-      name: 'nominee',
-      label: 'Nominee',
+      name: 'nominees',
+      label: 'Nominees',
       type: 'relationship',
       hasMany: true,
       minRows: 1,
@@ -38,6 +41,35 @@ const Nominations: CollectionConfig = {
         update: admins,
       },
       defaultValue: ({ user }) => user.id,
+    },
+    // This field is only used to populate the nominees data via the `populateUser` hook
+    // This is because the `user` collection has access control locked to protect user privacy
+    // GraphQL will also not return mutated user data that differs from the underlying schema
+    {
+      name: 'populatedNominees',
+      type: 'array',
+      admin: {
+        readOnly: true,
+        disabled: true,
+      },
+      access: {
+        update: () => false,
+        create: () => false,
+      },
+      fields: [
+        {
+          name: 'id',
+          type: 'text',
+        },
+        {
+          name: 'name',
+          type: 'text',
+        },
+        {
+          name: 'username',
+          type: 'text',
+        },
+      ],
     },
     {
       name: 'nickname',
@@ -76,13 +108,13 @@ const Nominations: CollectionConfig = {
     },
     {
       name: 'image',
-      label: 'Picture of the nominee',
+      label: 'Picture of the nominees',
       type: 'upload',
       relationTo: 'media',
     },
     {
       name: 'droppedOut',
-      label: 'Has the nominee dropped out',
+      label: 'Have the nominees dropped out',
       type: 'checkbox',
       access: {
         update: beforeVoting,

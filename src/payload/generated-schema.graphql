@@ -9423,7 +9423,8 @@ type ElectionsDeleteDocAccess {
 
 type Nomination {
   id: String
-  nominee: [User!]!
+  nominees: [User!]!
+  populatedNominees: [Nomination_PopulatedNominees!]
   nickname: String
   manifesto(depth: Int): JSON
   position: Position!
@@ -9434,6 +9435,12 @@ type Nomination {
   joinUUID: String
   updatedAt: DateTime
   createdAt: DateTime
+}
+
+type Nomination_PopulatedNominees {
+  id: String
+  name: String
+  username: String
 }
 
 input Nomination_Image_where {
@@ -9609,7 +9616,10 @@ type Nominations {
 }
 
 input Nomination_where {
-  nominee: Nomination_nominee_operator
+  nominees: Nomination_nominees_operator
+  populatedNominees__id: Nomination_populatedNominees__id_operator
+  populatedNominees__name: Nomination_populatedNominees__name_operator
+  populatedNominees__username: Nomination_populatedNominees__username_operator
   nickname: Nomination_nickname_operator
   manifesto: Nomination_manifesto_operator
   position: Nomination_position_operator
@@ -9625,12 +9635,45 @@ input Nomination_where {
   AND: [Nomination_where_and]
 }
 
-input Nomination_nominee_operator {
+input Nomination_nominees_operator {
   equals: String
   not_equals: String
   in: [String]
   not_in: [String]
   all: [String]
+}
+
+input Nomination_populatedNominees__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Nomination_populatedNominees__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Nomination_populatedNominees__username_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
 }
 
 input Nomination_nickname_operator {
@@ -9734,7 +9777,10 @@ input Nomination_id_operator {
 }
 
 input Nomination_where_or {
-  nominee: Nomination_nominee_operator
+  nominees: Nomination_nominees_operator
+  populatedNominees__id: Nomination_populatedNominees__id_operator
+  populatedNominees__name: Nomination_populatedNominees__name_operator
+  populatedNominees__username: Nomination_populatedNominees__username_operator
   nickname: Nomination_nickname_operator
   manifesto: Nomination_manifesto_operator
   position: Nomination_position_operator
@@ -9749,7 +9795,10 @@ input Nomination_where_or {
 }
 
 input Nomination_where_and {
-  nominee: Nomination_nominee_operator
+  nominees: Nomination_nominees_operator
+  populatedNominees__id: Nomination_populatedNominees__id_operator
+  populatedNominees__name: Nomination_populatedNominees__name_operator
+  populatedNominees__username: Nomination_populatedNominees__username_operator
   nickname: Nomination_nickname_operator
   manifesto: Nomination_manifesto_operator
   position: Nomination_position_operator
@@ -9772,7 +9821,8 @@ type nominationsDocAccess {
 }
 
 type NominationsDocAccessFields {
-  nominee: NominationsDocAccessFields_nominee
+  nominees: NominationsDocAccessFields_nominees
+  populatedNominees: NominationsDocAccessFields_populatedNominees
   nickname: NominationsDocAccessFields_nickname
   manifesto: NominationsDocAccessFields_manifesto
   position: NominationsDocAccessFields_position
@@ -9785,26 +9835,125 @@ type NominationsDocAccessFields {
   createdAt: NominationsDocAccessFields_createdAt
 }
 
-type NominationsDocAccessFields_nominee {
-  create: NominationsDocAccessFields_nominee_Create
-  read: NominationsDocAccessFields_nominee_Read
-  update: NominationsDocAccessFields_nominee_Update
-  delete: NominationsDocAccessFields_nominee_Delete
+type NominationsDocAccessFields_nominees {
+  create: NominationsDocAccessFields_nominees_Create
+  read: NominationsDocAccessFields_nominees_Read
+  update: NominationsDocAccessFields_nominees_Update
+  delete: NominationsDocAccessFields_nominees_Delete
 }
 
-type NominationsDocAccessFields_nominee_Create {
+type NominationsDocAccessFields_nominees_Create {
   permission: Boolean!
 }
 
-type NominationsDocAccessFields_nominee_Read {
+type NominationsDocAccessFields_nominees_Read {
   permission: Boolean!
 }
 
-type NominationsDocAccessFields_nominee_Update {
+type NominationsDocAccessFields_nominees_Update {
   permission: Boolean!
 }
 
-type NominationsDocAccessFields_nominee_Delete {
+type NominationsDocAccessFields_nominees_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees {
+  create: NominationsDocAccessFields_populatedNominees_Create
+  read: NominationsDocAccessFields_populatedNominees_Read
+  update: NominationsDocAccessFields_populatedNominees_Update
+  delete: NominationsDocAccessFields_populatedNominees_Delete
+  fields: NominationsDocAccessFields_populatedNominees_Fields
+}
+
+type NominationsDocAccessFields_populatedNominees_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_Fields {
+  id: NominationsDocAccessFields_populatedNominees_id
+  name: NominationsDocAccessFields_populatedNominees_name
+  username: NominationsDocAccessFields_populatedNominees_username
+}
+
+type NominationsDocAccessFields_populatedNominees_id {
+  create: NominationsDocAccessFields_populatedNominees_id_Create
+  read: NominationsDocAccessFields_populatedNominees_id_Read
+  update: NominationsDocAccessFields_populatedNominees_id_Update
+  delete: NominationsDocAccessFields_populatedNominees_id_Delete
+}
+
+type NominationsDocAccessFields_populatedNominees_id_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_id_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_id_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_id_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_name {
+  create: NominationsDocAccessFields_populatedNominees_name_Create
+  read: NominationsDocAccessFields_populatedNominees_name_Read
+  update: NominationsDocAccessFields_populatedNominees_name_Update
+  delete: NominationsDocAccessFields_populatedNominees_name_Delete
+}
+
+type NominationsDocAccessFields_populatedNominees_name_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_name_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_name_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_name_Delete {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_username {
+  create: NominationsDocAccessFields_populatedNominees_username_Create
+  read: NominationsDocAccessFields_populatedNominees_username_Read
+  update: NominationsDocAccessFields_populatedNominees_username_Update
+  delete: NominationsDocAccessFields_populatedNominees_username_Delete
+}
+
+type NominationsDocAccessFields_populatedNominees_username_Create {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_username_Read {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_username_Update {
+  permission: Boolean!
+}
+
+type NominationsDocAccessFields_populatedNominees_username_Delete {
   permission: Boolean!
 }
 
@@ -15211,7 +15360,8 @@ type nominationsAccess {
 }
 
 type NominationsFields {
-  nominee: NominationsFields_nominee
+  nominees: NominationsFields_nominees
+  populatedNominees: NominationsFields_populatedNominees
   nickname: NominationsFields_nickname
   manifesto: NominationsFields_manifesto
   position: NominationsFields_position
@@ -15224,26 +15374,125 @@ type NominationsFields {
   createdAt: NominationsFields_createdAt
 }
 
-type NominationsFields_nominee {
-  create: NominationsFields_nominee_Create
-  read: NominationsFields_nominee_Read
-  update: NominationsFields_nominee_Update
-  delete: NominationsFields_nominee_Delete
+type NominationsFields_nominees {
+  create: NominationsFields_nominees_Create
+  read: NominationsFields_nominees_Read
+  update: NominationsFields_nominees_Update
+  delete: NominationsFields_nominees_Delete
 }
 
-type NominationsFields_nominee_Create {
+type NominationsFields_nominees_Create {
   permission: Boolean!
 }
 
-type NominationsFields_nominee_Read {
+type NominationsFields_nominees_Read {
   permission: Boolean!
 }
 
-type NominationsFields_nominee_Update {
+type NominationsFields_nominees_Update {
   permission: Boolean!
 }
 
-type NominationsFields_nominee_Delete {
+type NominationsFields_nominees_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees {
+  create: NominationsFields_populatedNominees_Create
+  read: NominationsFields_populatedNominees_Read
+  update: NominationsFields_populatedNominees_Update
+  delete: NominationsFields_populatedNominees_Delete
+  fields: NominationsFields_populatedNominees_Fields
+}
+
+type NominationsFields_populatedNominees_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_Fields {
+  id: NominationsFields_populatedNominees_id
+  name: NominationsFields_populatedNominees_name
+  username: NominationsFields_populatedNominees_username
+}
+
+type NominationsFields_populatedNominees_id {
+  create: NominationsFields_populatedNominees_id_Create
+  read: NominationsFields_populatedNominees_id_Read
+  update: NominationsFields_populatedNominees_id_Update
+  delete: NominationsFields_populatedNominees_id_Delete
+}
+
+type NominationsFields_populatedNominees_id_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_id_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_id_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_id_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_name {
+  create: NominationsFields_populatedNominees_name_Create
+  read: NominationsFields_populatedNominees_name_Read
+  update: NominationsFields_populatedNominees_name_Update
+  delete: NominationsFields_populatedNominees_name_Delete
+}
+
+type NominationsFields_populatedNominees_name_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_name_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_name_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_name_Delete {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_username {
+  create: NominationsFields_populatedNominees_username_Create
+  read: NominationsFields_populatedNominees_username_Read
+  update: NominationsFields_populatedNominees_username_Update
+  delete: NominationsFields_populatedNominees_username_Delete
+}
+
+type NominationsFields_populatedNominees_username_Create {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_username_Read {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_username_Update {
+  permission: Boolean!
+}
+
+type NominationsFields_populatedNominees_username_Delete {
   permission: Boolean!
 }
 
@@ -17335,7 +17584,8 @@ input mutationElectionUpdateInput {
 }
 
 input mutationNominationInput {
-  nominee: [String]
+  nominees: [String]
+  populatedNominees: [mutationNomination_PopulatedNomineesInput]
   nickname: String
   manifesto: JSON
   position: String
@@ -17348,8 +17598,15 @@ input mutationNominationInput {
   createdAt: String
 }
 
+input mutationNomination_PopulatedNomineesInput {
+  id: String
+  name: String
+  username: String
+}
+
 input mutationNominationUpdateInput {
-  nominee: [String]
+  nominees: [String]
+  populatedNominees: [mutationNominationUpdate_PopulatedNomineesInput]
   nickname: String
   manifesto: JSON
   position: String
@@ -17360,6 +17617,12 @@ input mutationNominationUpdateInput {
   joinUUID: String
   updatedAt: String
   createdAt: String
+}
+
+input mutationNominationUpdate_PopulatedNomineesInput {
+  id: String
+  name: String
+  username: String
 }
 
 input mutationPositionInput {

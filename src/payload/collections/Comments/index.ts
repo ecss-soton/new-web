@@ -23,24 +23,24 @@ const Comments: CollectionConfig = {
     // Admins should be able to read all comments
     read: ({ data, req: { user } }) => Boolean(
       data?.status === 'published'
-        || checkRole(['admin'], user)
-        || (typeof data?.user === 'string' ? data?.user : data?.user?.id) === user?.id,
+      || checkRole(['admin'], user)
+      || (typeof data?.user === 'string' ? data?.user : data?.user?.id) === user?.id,
     ),
     // Public users should not be able to create published comments
     // User should only be allowed to create and their own draft comments
     // Admins should have full control
     create: ({ data, req: { user } }) => Boolean(
       checkRole(['admin'], user)
-        || (data?.status === 'draft'
-          && (typeof data?.user === 'string' ? data?.user : data?.user?.id) === user?.id),
+      || (data?.status === 'draft'
+        && (typeof data?.user === 'string' ? data?.user : data?.user?.id) === user?.id),
     ),
     // Public users should not be able to update published comments
     // Users should only be allowed to update their own draft comments
     // Admins should have full control
     update: ({ data, req: { user } }) => Boolean(
       checkRole(['admin'], user)
-        || (data?.status === 'draft'
-          && (typeof data?.user === 'string' ? data?.user : data?.user?.id) === user?.id),
+      || (data?.status === 'draft'
+        && (typeof data?.user === 'string' ? data?.user : data?.user?.id) === user?.id),
     ),
     // Only admins can delete comments
     delete: ({ req: { user } }) => checkRole(['admin'], user),

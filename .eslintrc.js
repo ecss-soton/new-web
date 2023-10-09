@@ -15,6 +15,7 @@ module.exports = {
       },
     },
   },
+  ignorePatterns: ['next-env.d.ts', 'src/payload/payload-types.ts'],
   rules: {
     'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
     'import/prefer-default-export': 'off',
@@ -28,6 +29,7 @@ module.exports = {
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
     'no-continue': 'off',
+    'no-param-reassign': 'off',
   },
   overrides: [{
     files: ['*.js'],
