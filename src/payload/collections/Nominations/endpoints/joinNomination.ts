@@ -1,7 +1,7 @@
 import type { PayloadHandler } from 'payload/config';
 
+import { PaginatedDocs } from 'payload/dist/database/types';
 import type { Nomination } from '../../../payload-types';
-import { MaxNominees } from '../constants';
 
 export const joinNomination: PayloadHandler = async (req, res): Promise<void> => {
   const { user, payload } = req;
@@ -11,24 +11,43 @@ export const joinNomination: PayloadHandler = async (req, res): Promise<void> =>
     return;
   }
 
-  const nomination: Nomination = await payload.findByID({
+  const nominations: PaginatedDocs<Nomination> = await payload.find({
     collection: 'nominations',
-    id: req.params.id,
+    where: {
+      and: [
+        {
+          id: {
+            equals: req.params.id,
+          },
+        },
+        {
+          joinUUID: {
+            equals: req.params.key,
+          },
+        },
+        {
+          'election.votingStart': {
+            greater_than: new Date(),
+          },
+        },
+      ],
+    },
     depth: 0,
   });
 
-  if (!nomination || nomination.joinUUID !== req.params.key) {
+  if (!nominations || nominations.docs.length !== 1) {
     res.status(404).json({ error: 'Could not find nomination.' });
     return;
   }
 
-  if (nomination.nominee.length >= MaxNominees) {
-    res.status(403).json({ error: 'Nomination already has too many nominees' });
+  const nominee = nominations.docs[0].nominee as string[];
+
+  if (nominee.includes(user.id)) {
+    res.status(403).json({ error: 'You are already a nominee for this nomination.' });
     return;
   }
-
-  const newNominees = nomination.nominee as string[];
-  newNominees.push(req.params.id);
+  const newNominees = nominations.docs[0].nominee as string[];
+  newNominees.push(user.id);
 
   try {
     await payload.update({

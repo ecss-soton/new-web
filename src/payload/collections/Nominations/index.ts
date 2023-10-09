@@ -1,11 +1,11 @@
 import type { CollectionConfig } from 'payload/types';
 import { v4 as uuidv4 } from 'uuid';
-
 import { admins } from '../../access/admins';
 import Groups from '../groups';
 import { adminOrNominee } from './access/nominees';
-import { MaxNominees } from './constants';
 import { joinNomination } from './endpoints/joinNomination';
+import { beforeVoting } from './access/beforeVoting';
+import { addOwnId } from './validate/addOwnId';
 
 const Nominations: CollectionConfig = {
   slug: 'nominations',
@@ -22,17 +22,20 @@ const Nominations: CollectionConfig = {
   fields: [
     {
       // TODO: Add populated nominee like in comments
+      // TODO: Ensure the same nominee is not running for the same non dropped out positions
       name: 'nominee',
       label: 'Nominee',
       type: 'relationship',
       hasMany: true,
       minRows: 1,
-      maxRows: MaxNominees,
+      maxRows: 3,
       required: true,
       relationTo: 'users',
       access: {
         // Force nominee to add own user id.
         create: admins,
+        // Don't allow nominees to remove themselves
+        update: admins,
       },
       defaultValue: ({ user }) => user.id,
     },
@@ -53,7 +56,7 @@ const Nominations: CollectionConfig = {
       relationTo: 'positions',
       hasMany: false,
       access: {
-        update: () => false,
+        update: beforeVoting,
       },
     },
     {
@@ -63,8 +66,13 @@ const Nominations: CollectionConfig = {
       relationTo: 'elections',
       hasMany: false,
       access: {
-        update: () => false,
+        update: beforeVoting,
       },
+      filterOptions: ({ data }) => ({
+        positions: {
+          contains: data.position,
+        },
+      }),
     },
     {
       name: 'image',
@@ -76,6 +84,9 @@ const Nominations: CollectionConfig = {
       name: 'droppedOut',
       label: 'Has the nominee dropped out',
       type: 'checkbox',
+      access: {
+        update: beforeVoting,
+      },
     },
     {
       name: 'supporters',
@@ -83,6 +94,10 @@ const Nominations: CollectionConfig = {
       type: 'relationship',
       relationTo: 'users',
       hasMany: true,
+      access: {
+        update: beforeVoting,
+      },
+      validate: addOwnId,
     },
     {
       name: 'joinUUID',
@@ -98,7 +113,7 @@ const Nominations: CollectionConfig = {
   ],
   endpoints: [
     {
-      path: '/join/:key',
+      path: '/:id/join/:key',
       method: 'post',
       handler: joinNomination,
     },

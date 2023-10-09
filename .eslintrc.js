@@ -25,6 +25,9 @@ module.exports = {
     'import/extensions': ['error', 'ignorePackages', {
       js: 'never', jsx: 'never', ts: 'never', tsx: 'never',
     }],
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
+    'no-continue': 'off',
   },
   overrides: [{
     files: ['*.js'],

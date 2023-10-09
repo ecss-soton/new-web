@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react';
+import { Page } from '../../../payload/payload-types';
 
-import { Page } from '../../../payload/payload-types.js';
 import { ArchiveBlock } from '../../_blocks/ArchiveBlock';
 import { CallToActionBlock } from '../../_blocks/CallToAction';
-import { CommentsBlock, type CommentsBlockProps } from '../../_blocks/Comments/index';
+import { CommentsBlock, type CommentsBlockProps } from '../../_blocks/Comments';
 import { ContentBlock } from '../../_blocks/Content';
 import { MediaBlock } from '../../_blocks/MediaBlock';
 import { RelatedPosts, type RelatedPostsProps } from '../../_blocks/RelatedPosts';
@@ -70,8 +70,9 @@ export const Blocks: React.FC<{
                     top={paddingTop}
                     bottom={paddingBottom}
                   >
-                    {/* @ts-expect-error */}
                     <Block
+                      /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+                      // @ts-ignore
                       id={toKebabCase(blockName)}
                       {...block}
                     />
