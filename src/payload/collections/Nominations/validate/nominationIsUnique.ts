@@ -28,7 +28,7 @@ export const nominationIsUnique: Validate = async (nominees, args) => {
           },
           {
             id: {
-              not_equals: args.data.id,
+              not_equals: args.operation === 'create' ? '' : args.data.id,
             },
           },
           {

@@ -28,7 +28,7 @@ export const voteIsUnique: Validate = async (username: string, args) => {
           },
           {
             id: {
-              not_equals: args.data.id,
+              not_equals: args.operation === 'create' ? '' : args.data.id,
             },
           },
         ],

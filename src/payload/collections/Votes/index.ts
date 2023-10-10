@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload/types';
 
 import Groups from '../groups';
 import { voteIsUnique } from './validate/voteIsUnique';
+import { validatePreferences } from './validate/validatePreferences';
 
 const Votes: CollectionConfig = {
   slug: 'votes',
@@ -47,24 +48,25 @@ const Votes: CollectionConfig = {
           },
           {
             votingStart: {
-              less_than_equal: new Date(),
+              less_than_equal: new Date().toString(),
             },
           },
           {
             votingEnd: {
-              greater_than_equal: new Date(),
+              greater_than_equal: new Date().toString(),
             },
           },
         ],
       }),
     },
     {
-      // TODO: Validate preferences
       name: 'preference',
       type: 'relationship',
       required: true,
       relationTo: 'nominations',
       hasMany: true,
+      minRows: 1,
+      validate: validatePreferences,
     },
   ],
 };
