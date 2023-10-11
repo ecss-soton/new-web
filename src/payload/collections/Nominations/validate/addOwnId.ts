@@ -7,6 +7,33 @@ export const addOwnId: Validate = async (userList: string[], args) => {
     return true;
   }
 
+  const nominations = await args.payload.find({
+    collection: 'nominations',
+    depth: 0,
+    where: {
+      and: [
+        {
+          election: {
+            equals: typeof args.data.election === 'object' ? args.data.election.id : args.data.election,
+          },
+          position: {
+            equals: typeof args.data.position === 'object' ? args.data.position.id : args.data.position,
+          },
+          supporters: {
+            in: [args.user.id],
+          },
+          id: {
+            not_equals: args.data.id,
+          },
+        },
+      ],
+    },
+  });
+
+  if (nominations.totalDocs > 0) {
+    return 'Cannot support multiple nominees for the same position.';
+  }
+
   if (args.operation === 'create') {
     if (userList.length === 1 && userList[0] !== args.user.id) {
       return 'Should only use own id.';
@@ -17,7 +44,7 @@ export const addOwnId: Validate = async (userList: string[], args) => {
   } else if (args.operation === 'update' && args.payload) {
     const nomination = await args.payload.findByID({
       collection: 'nominations',
-      id: args.siblingData.id,
+      id: args.data.id,
       depth: 0,
     });
     const oldUserList: string[] = nomination.supporters;

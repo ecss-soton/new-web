@@ -9,10 +9,10 @@ function moreThanDaysAway(start: Date, end: Date, days: number): boolean {
 
 // Nominations must last at least 10 days
 export const isNominationConstitutional: Validate = (date: string, args) => {
-  if (!args.siblingData.nominationStart) {
+  if (!args.data.nominationStart) {
     return 'Nomination start should be selected.';
   }
-  const nominationStart = new Date(Date.parse(args.siblingData.nominationStart));
+  const nominationStart = new Date(Date.parse(args.data.nominationStart));
   const nominationEnd = new Date(Date.parse(date));
   if (moreThanDaysAway(nominationStart, nominationEnd, 10)) {
     return validateDate(date, args);
@@ -21,10 +21,10 @@ export const isNominationConstitutional: Validate = (date: string, args) => {
 };
 
 export const isAfterNomination: Validate = (date: string, args) => {
-  if (!args.siblingData.nominationEnd) {
+  if (!args.data.nominationEnd) {
     return 'Nomination end must be selected.';
   }
-  const nominationEnd = new Date(Date.parse(args.siblingData.nominationEnd));
+  const nominationEnd = new Date(Date.parse(args.data.nominationEnd));
   const votingStart = new Date(Date.parse(date));
   if (votingStart > nominationEnd) {
     return validateDate(date, args);
@@ -34,10 +34,10 @@ export const isAfterNomination: Validate = (date: string, args) => {
 
 // Voting must last at least 7 days
 export const isVotingConstitutional: Validate = (date: string, args) => {
-  if (!args.siblingData.votingStart) {
+  if (!args.data.votingStart) {
     return 'Voting end must be selected.';
   }
-  const votingStart = new Date(Date.parse(args.siblingData.votingStart));
+  const votingStart = new Date(Date.parse(args.data.votingStart));
   const votingEnd = new Date(Date.parse(date));
   if (moreThanDaysAway(votingStart, votingEnd, 7)) {
     return validateDate(date, args);
