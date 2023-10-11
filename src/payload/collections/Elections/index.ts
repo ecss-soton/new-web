@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload/types';
 import { admins } from '../../access/admins';
 import Groups from '../groups';
 import { isAfterNomination, isNominationConstitutional, isVotingConstitutional } from './validate/dateValidate';
+import { checkNominations } from './hooks/checkNominations';
 
 const Elections: CollectionConfig = {
   slug: 'elections',
@@ -55,6 +56,9 @@ const Elections: CollectionConfig = {
         date: {
           pickerAppearance: 'dayAndTime',
         },
+      },
+      hooks: {
+        afterChange: [checkNominations],
       },
       validate: isAfterNomination,
       required: true,

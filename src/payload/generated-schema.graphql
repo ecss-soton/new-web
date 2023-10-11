@@ -9430,8 +9430,8 @@ type Nomination {
   position: Position!
   election: Election!
   image(where: Nomination_Image_where): Media
-  droppedOut: Boolean
-  supporters: [User!]
+  droppedOut: Boolean!
+  supporters: [User!]!
   joinUUID: String
   updatedAt: DateTime
   createdAt: DateTime
@@ -9720,7 +9720,6 @@ input Nomination_image_operator {
 input Nomination_droppedOut_operator {
   equals: Boolean
   not_equals: Boolean
-  exists: Boolean
 }
 
 input Nomination_supporters_operator {
@@ -9729,7 +9728,6 @@ input Nomination_supporters_operator {
   in: [String]
   not_in: [String]
   all: [String]
-  exists: Boolean
 }
 
 input Nomination_joinUUID_operator {
@@ -9740,7 +9738,6 @@ input Nomination_joinUUID_operator {
   in: [String]
   not_in: [String]
   all: [String]
-  exists: Boolean
 }
 
 input Nomination_updatedAt_operator {

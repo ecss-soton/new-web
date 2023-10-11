@@ -20,7 +20,6 @@ export const addOwnId: Validate = async (userList: string[], args) => {
       id: args.siblingData.id,
       depth: 0,
     });
-
     const oldUserList: string[] = nomination.supporters;
 
     // Nothing has changed

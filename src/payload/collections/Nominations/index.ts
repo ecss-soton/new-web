@@ -8,7 +8,7 @@ import { beforeVoting } from './access/beforeVoting';
 import { addOwnId } from './validate/addOwnId';
 import { populateNominees } from './hooks/populateNominees';
 import { nominationIsUnique } from './validate/nominationIsUnique';
-
+// TODO: A member may only register support for one candidate’s nomination for each position that is advertised for election.
 const Nominations: CollectionConfig = {
   slug: 'nominations',
   access: {
@@ -142,6 +142,7 @@ const Nominations: CollectionConfig = {
       label: 'Supporters',
       type: 'relationship',
       relationTo: 'users',
+      required: true,
       hasMany: true,
       access: {
         update: beforeVoting,
@@ -153,6 +154,7 @@ const Nominations: CollectionConfig = {
       label: 'UUID used to join nomination',
       type: 'text',
       defaultValue: () => uuidv4(),
+      required: true,
       access: {
         read: adminOrNominee,
         create: () => false,

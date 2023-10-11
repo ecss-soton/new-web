@@ -692,15 +692,13 @@ export interface Nomination {
   nickname?: string;
   manifesto?: {
     [k: string]: unknown;
-
-
   }[];
   position: string | Position;
   election: string | Election;
   image?: string | Media;
-  droppedOut?: boolean;
-  supporters?: string[] | User[];
-  joinUUID?: string;
+  droppedOut: boolean;
+  supporters: string[] | User[];
+  joinUUID: string;
   updatedAt: string;
   createdAt: string;
 }

@@ -48,12 +48,12 @@ const Votes: CollectionConfig = {
           },
           {
             votingStart: {
-              less_than_equal: new Date().toString(),
+              less_than_equal: new Date().toISOString(),
             },
           },
           {
             votingEnd: {
-              greater_than_equal: new Date().toString(),
+              greater_than_equal: new Date().toISOString(),
             },
           },
         ],

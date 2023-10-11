@@ -6,6 +6,7 @@ import express from 'express';
 import payload from 'payload';
 
 import { seed } from './payload/seed';
+import restartJobs from './payload/utilities/restartJobs';
 
 dotenv.config({
   path: path.resolve(__dirname, '../.env'),
@@ -39,6 +40,8 @@ const start = async (): Promise<void> => {
 
     return;
   }
+
+  await restartJobs(payload);
 
   const nextApp = next({
     dev: process.env.NODE_ENV !== 'production',
