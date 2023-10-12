@@ -2,12 +2,13 @@ import { Validate } from 'payload/types';
 import { relationship } from 'payload/dist/fields/validations';
 import { PaginatedDocs } from 'payload/dist/database/types';
 import { Nomination } from '../../../payload-types';
+import { getArrayID, getID } from '../../../utilities/getID';
 
 export const validatePreferences: Validate = async (preferences, args) => {
   if (!preferences || preferences?.length === 0) {
     return 'Vote must include at least one preference';
   }
-  const prefs: string[] = typeof preferences[0] === 'object' ? preferences.map((p) => p.id) : preferences;
+  const prefs = getArrayID(preferences);
 
   if (prefs.length !== new Set(prefs).size) {
     return 'Vote cannot have the same nomination multiple times';
@@ -24,30 +25,29 @@ export const validatePreferences: Validate = async (preferences, args) => {
         and: [
           {
             election: {
-              equals: typeof election === 'object' ? election.id : election,
+              equals: getID(election),
             },
           },
           {
             position: {
-              equals: typeof position === 'object' ? position.id : position,
+              equals: getID(position),
             },
           },
         ],
       },
     });
 
-    for (let i = 0; i < prefs.length; i += 1) {
-      const nomination = result.docs.findIndex((v) => v.id === prefs[i]);
+    for (const pref of prefs) {
+      const nomination = result.docs.findIndex((v) => v.id === pref);
       if (nomination === -1) {
         return 'Could not find nomination.';
       }
+
       result.docs.splice(nomination, 1);
     }
 
-    for (let i = 0; i < result.docs.length; i += 1) {
-      if (!result.docs[i].droppedOut) {
-        return 'Does not contain all non-dropped out nominations.';
-      }
+    if (!result.docs.every((doc) => doc.droppedOut)) {
+      return 'Does not contain all non-dropped out nominations.';
     }
   }
 

@@ -1,6 +1,7 @@
 import { Validate } from 'payload/types';
 import { relationship } from 'payload/dist/fields/validations';
 import { checkRole } from '../../Users/checkRole';
+import { getID } from '../../../utilities/getID';
 
 export const addOwnId: Validate = async (userList: string[], args) => {
   if (args.user && checkRole(['admin'], args.user)) {
@@ -14,10 +15,10 @@ export const addOwnId: Validate = async (userList: string[], args) => {
       and: [
         {
           election: {
-            equals: typeof args.data.election === 'object' ? args.data.election.id : args.data.election,
+            equals: getID(args.data.election),
           },
           position: {
-            equals: typeof args.data.position === 'object' ? args.data.position.id : args.data.position,
+            equals: getID(args.data.position),
           },
           supporters: {
             in: [args.user.id],
@@ -50,24 +51,25 @@ export const addOwnId: Validate = async (userList: string[], args) => {
     const oldUserList: string[] = nomination.supporters;
 
     // Nothing has changed
-    if ((oldUserList.length === userList.length) && oldUserList.every((elem, idx) => elem === userList[idx])) {
+    if ((oldUserList.length === userList.length)
+      && oldUserList.every((elem, idx) => elem === userList[idx])) {
       return true;
     }
 
-    for (let i = 0; i < userList.length; i += 1) {
-      if (userList[i] === args.user.id) {
+    for (const user of userList) {
+      if (user === args.user.id) {
         continue;
       }
-      if (!oldUserList.includes(userList[i])) {
+      if (!oldUserList.includes(user)) {
         return 'Added user not from old list.';
       }
     }
 
-    for (let i = 0; i < oldUserList.length; i += 1) {
-      if (oldUserList[i] === args.user.id) {
+    for (const oldUser of oldUserList) {
+      if (oldUser === args.user.id) {
         continue;
       }
-      if (!userList.includes(oldUserList[i])) {
+      if (!userList.includes(oldUser)) {
         return 'Removed user from old list.';
       }
     }

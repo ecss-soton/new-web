@@ -46,21 +46,22 @@ export const joinNomination: PayloadHandler = async (req, res): Promise<void> =>
     res.status(403).json({ error: 'You are already a nominee for this nomination.' });
     return;
   }
-  const newNominees = nominations.docs[0].nominees as string[];
-  newNominees.push(user.id);
+  nominees.push(user.id);
 
   try {
     await payload.update({
       id: req.params.id,
       collection: 'nominations',
       data: {
-        nominees: newNominees,
+        nominees,
       },
     });
+
     res.json({ success: true });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     payload.logger.error(message);
+
     res.status(503).json({ error: message });
   }
 };

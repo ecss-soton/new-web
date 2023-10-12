@@ -5,5 +5,6 @@ export const isAnInt: Validate = (num: number, args) => {
   if (!Number.isInteger(num)) {
     return 'Expected an integer';
   }
+
   return number(num, args);
 };

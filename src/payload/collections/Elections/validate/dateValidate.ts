@@ -12,11 +12,13 @@ export const isNominationConstitutional: Validate = (date: string, args) => {
   if (!args.data.nominationStart) {
     return 'Nomination start should be selected.';
   }
+
   const nominationStart = new Date(Date.parse(args.data.nominationStart));
   const nominationEnd = new Date(Date.parse(date));
   if (moreThanDaysAway(nominationStart, nominationEnd, 10)) {
     return validateDate(date, args);
   }
+
   return 'The date selected must be more than 10 days from the nomination start.';
 };
 
@@ -24,11 +26,13 @@ export const isAfterNomination: Validate = (date: string, args) => {
   if (!args.data.nominationEnd) {
     return 'Nomination end must be selected.';
   }
+
   const nominationEnd = new Date(Date.parse(args.data.nominationEnd));
   const votingStart = new Date(Date.parse(date));
   if (votingStart > nominationEnd) {
     return validateDate(date, args);
   }
+
   return 'The date selected must be after the nomination ends.';
 };
 
@@ -37,10 +41,12 @@ export const isVotingConstitutional: Validate = (date: string, args) => {
   if (!args.data.votingStart) {
     return 'Voting end must be selected.';
   }
+
   const votingStart = new Date(Date.parse(args.data.votingStart));
   const votingEnd = new Date(Date.parse(date));
   if (moreThanDaysAway(votingStart, votingEnd, 7)) {
     return validateDate(date, args);
   }
+
   return 'The date selected must be more than 7 days from the voting end.';
 };

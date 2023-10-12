@@ -1,5 +1,6 @@
 import { Validate } from 'payload/types';
 import { text } from 'payload/dist/fields/validations';
+import { getID } from '../../../utilities/getID';
 
 export const voteIsUnique: Validate = async (username: string, args) => {
   if (args.payload) {
@@ -18,12 +19,12 @@ export const voteIsUnique: Validate = async (username: string, args) => {
           },
           {
             election: {
-              equals: typeof election === 'object' ? election.id : election,
+              equals: getID(election),
             },
           },
           {
             position: {
-              equals: typeof position === 'object' ? position.id : position,
+              equals: getID(position),
             },
           },
           {

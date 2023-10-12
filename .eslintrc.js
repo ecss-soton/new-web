@@ -7,7 +7,7 @@ module.exports = {
       jsx: true,
     },
   },
-  extends: ['@trbl', 'plugin:@typescript-eslint/recommended'],
+  extends: ['eslint-config-airbnb-base'],
   settings: {
     'import/resolver': {
       node: {
@@ -17,7 +17,7 @@ module.exports = {
   },
   ignorePatterns: ['next-env.d.ts', 'src/payload/payload-types.ts'],
   rules: {
-    'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
+    'no-restricted-syntax': 'off',
     'import/prefer-default-export': 'off',
     'react/prop-types': 'off',
     'react/no-unused-prop-types': 'off',
@@ -27,7 +27,6 @@ module.exports = {
       js: 'never', jsx: 'never', ts: 'never', tsx: 'never',
     }],
     'no-shadow': 'off',
-    '@typescript-eslint/no-shadow': ['error'],
     'no-continue': 'off',
     'no-param-reassign': 'off',
   },

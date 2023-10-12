@@ -13,8 +13,7 @@ async function restartNominationCheck(payload: Payload) {
     },
   });
 
-  for (let i = 0; i < elections.docs.length; i += 1) {
-    const election = elections.docs[i];
+  for (const election of elections.docs) {
     scheduleNominationCheck(election.id, election.votingStart);
   }
 }

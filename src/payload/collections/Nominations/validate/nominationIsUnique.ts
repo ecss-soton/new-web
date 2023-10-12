@@ -1,5 +1,6 @@
 import { Validate } from 'payload/types';
 import { relationship } from 'payload/dist/fields/validations';
+import { getArrayID, getID } from '../../../utilities/getID';
 
 export const nominationIsUnique: Validate = async (nominees, args) => {
   if (args.payload && nominees.length > 0) {
@@ -13,17 +14,17 @@ export const nominationIsUnique: Validate = async (nominees, args) => {
         and: [
           {
             nominees: {
-              in: typeof nominees[0] === 'object' ? nominees.map((n) => n.id) : nominees,
+              in: getArrayID(nominees),
             },
           },
           {
             election: {
-              equals: typeof election === 'object' ? election.id : election,
+              equals: getID(election),
             },
           },
           {
             position: {
-              equals: typeof position === 'object' ? position.id : position,
+              equals: getID(position),
             },
           },
           {
