@@ -1,6 +1,7 @@
 import type { Block } from 'payload/types';
 
 import richText from '../../fields/richText';
+import { isAnInt } from '../../validate/isAnInt';
 
 export const Archive: Block = {
   slug: 'archive',
@@ -62,6 +63,7 @@ export const Archive: Block = {
       name: 'limit',
       label: 'Limit',
       defaultValue: 10,
+      validate: isAnInt,
       admin: {
         condition: (_, siblingData) => siblingData.populateBy === 'collection',
         step: 1,

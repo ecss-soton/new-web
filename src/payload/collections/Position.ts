@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload/types';
 
 import { admins } from '../access/admins';
 import Groups from './groups';
+import { isAnInt } from '../validate/isAnInt';
 
 const Positions: CollectionConfig = {
   slug: 'positions',
@@ -35,6 +36,7 @@ const Positions: CollectionConfig = {
       type: 'number',
       required: true,
       unique: true,
+      validate: isAnInt,
       min: 1,
       admin: {
         step: 1,

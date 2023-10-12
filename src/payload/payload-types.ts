@@ -708,6 +708,7 @@ export interface Vote {
   username: string;
   position: string | Position;
   election: string | Election;
+  RONPosition: number;
   preference: string[] | Nomination[];
   updatedAt: string;
   createdAt: string;

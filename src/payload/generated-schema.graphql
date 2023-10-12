@@ -10465,6 +10465,7 @@ type Vote {
   username: String!
   position: Position!
   election: Election!
+  RONPosition: Float!
   preference: [Nomination!]!
   updatedAt: DateTime
   createdAt: DateTime
@@ -10488,6 +10489,7 @@ input Vote_where {
   username: Vote_username_operator
   position: Vote_position_operator
   election: Vote_election_operator
+  RONPosition: Vote_RONPosition_operator
   preference: Vote_preference_operator
   updatedAt: Vote_updatedAt_operator
   createdAt: Vote_createdAt_operator
@@ -10520,6 +10522,15 @@ input Vote_election_operator {
   in: [String]
   not_in: [String]
   all: [String]
+}
+
+input Vote_RONPosition_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
 }
 
 input Vote_preference_operator {
@@ -10567,6 +10578,7 @@ input Vote_where_or {
   username: Vote_username_operator
   position: Vote_position_operator
   election: Vote_election_operator
+  RONPosition: Vote_RONPosition_operator
   preference: Vote_preference_operator
   updatedAt: Vote_updatedAt_operator
   createdAt: Vote_createdAt_operator
@@ -10577,6 +10589,7 @@ input Vote_where_and {
   username: Vote_username_operator
   position: Vote_position_operator
   election: Vote_election_operator
+  RONPosition: Vote_RONPosition_operator
   preference: Vote_preference_operator
   updatedAt: Vote_updatedAt_operator
   createdAt: Vote_createdAt_operator
@@ -10595,6 +10608,7 @@ type VotesDocAccessFields {
   username: VotesDocAccessFields_username
   position: VotesDocAccessFields_position
   election: VotesDocAccessFields_election
+  RONPosition: VotesDocAccessFields_RONPosition
   preference: VotesDocAccessFields_preference
   updatedAt: VotesDocAccessFields_updatedAt
   createdAt: VotesDocAccessFields_createdAt
@@ -10666,6 +10680,29 @@ type VotesDocAccessFields_election_Update {
 }
 
 type VotesDocAccessFields_election_Delete {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_RONPosition {
+  create: VotesDocAccessFields_RONPosition_Create
+  read: VotesDocAccessFields_RONPosition_Read
+  update: VotesDocAccessFields_RONPosition_Update
+  delete: VotesDocAccessFields_RONPosition_Delete
+}
+
+type VotesDocAccessFields_RONPosition_Create {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_RONPosition_Read {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_RONPosition_Update {
+  permission: Boolean!
+}
+
+type VotesDocAccessFields_RONPosition_Delete {
   permission: Boolean!
 }
 
@@ -15906,6 +15943,7 @@ type VotesFields {
   username: VotesFields_username
   position: VotesFields_position
   election: VotesFields_election
+  RONPosition: VotesFields_RONPosition
   preference: VotesFields_preference
   updatedAt: VotesFields_updatedAt
   createdAt: VotesFields_createdAt
@@ -15977,6 +16015,29 @@ type VotesFields_election_Update {
 }
 
 type VotesFields_election_Delete {
+  permission: Boolean!
+}
+
+type VotesFields_RONPosition {
+  create: VotesFields_RONPosition_Create
+  read: VotesFields_RONPosition_Read
+  update: VotesFields_RONPosition_Update
+  delete: VotesFields_RONPosition_Delete
+}
+
+type VotesFields_RONPosition_Create {
+  permission: Boolean!
+}
+
+type VotesFields_RONPosition_Read {
+  permission: Boolean!
+}
+
+type VotesFields_RONPosition_Update {
+  permission: Boolean!
+}
+
+type VotesFields_RONPosition_Delete {
   permission: Boolean!
 }
 
@@ -17642,6 +17703,7 @@ input mutationVoteInput {
   username: String!
   position: String
   election: String
+  RONPosition: Float!
   preference: [String]
   updatedAt: String
   createdAt: String
@@ -17651,6 +17713,7 @@ input mutationVoteUpdateInput {
   username: String
   position: String
   election: String
+  RONPosition: Float
   preference: [String]
   updatedAt: String
   createdAt: String

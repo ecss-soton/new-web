@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload/types';
 import Groups from '../groups';
 import { voteIsUnique } from './validate/voteIsUnique';
 import { validatePreferences } from './validate/validatePreferences';
+import { validateRONPosition } from './validate/validateRONPosition';
 
 const Votes: CollectionConfig = {
   slug: 'votes',
@@ -58,6 +59,13 @@ const Votes: CollectionConfig = {
           },
         ],
       }),
+    },
+    {
+      name: 'RONPosition',
+      type: 'number',
+      required: true,
+      validate: validateRONPosition,
+      min: 0,
     },
     {
       name: 'preference',
