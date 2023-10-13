@@ -42,6 +42,11 @@ type Query {
   Vote(id: String!, draft: Boolean): Vote
   Votes(where: Vote_where, draft: Boolean, page: Int, limit: Int, sort: String): Votes
   docAccessVote(id: String!): votesDocAccess
+  ElectionResult(id: String!, draft: Boolean): ElectionResult
+  ElectionResults(where: ElectionResult_where, draft: Boolean, page: Int, limit: Int, sort: String): ElectionResults
+  docAccessElectionResult(id: String!): electionResultsDocAccess
+  versionElectionResult(id: String): ElectionResultVersion
+  versionsElectionResults(where: versionsElectionResult_where, page: Int, limit: Int, sort: String): versionsElectionResults
   Redirect(id: String!, draft: Boolean): Redirect
   Redirects(where: Redirect_where, draft: Boolean, page: Int, limit: Int, sort: String): Redirects
   docAccessRedirect(id: String!): redirectsDocAccess
@@ -10795,6 +10800,1072 @@ type VotesDeleteDocAccess {
   where: JSONObject
 }
 
+type ElectionResult {
+  id: String
+  election: Election
+  position: Position
+  electedNominee: Nomination
+  ballot: String
+  roundTranscript: String
+  rounds: [ElectionResult_Rounds!]!
+  updatedAt: DateTime
+  createdAt: DateTime
+  _status: ElectionResult__status
+}
+
+type ElectionResult_Rounds {
+  outcome: ElectionResult_Rounds_outcome!
+  nomination: Nomination
+  votes: [ElectionResult_Rounds_Votes!]!
+  id: String
+}
+
+enum ElectionResult_Rounds_outcome {
+  Elect
+  Defeat
+}
+
+type ElectionResult_Rounds_Votes {
+  count: Float!
+  nomination: Nomination
+  state: ElectionResult_Rounds_Votes_state!
+  id: String
+}
+
+enum ElectionResult_Rounds_Votes_state {
+  Elected
+  Hopeful
+  Defeated
+}
+
+enum ElectionResult__status {
+  draft
+  published
+}
+
+type ElectionResults {
+  docs: [ElectionResult]
+  totalDocs: Int
+  offset: Int
+  limit: Int
+  totalPages: Int
+  page: Int
+  pagingCounter: Int
+  hasPrevPage: Boolean
+  hasNextPage: Boolean
+  prevPage: Int
+  nextPage: Int
+}
+
+input ElectionResult_where {
+  election: ElectionResult_election_operator
+  position: ElectionResult_position_operator
+  electedNominee: ElectionResult_electedNominee_operator
+  ballot: ElectionResult_ballot_operator
+  roundTranscript: ElectionResult_roundTranscript_operator
+  rounds__outcome: ElectionResult_rounds__outcome_operator
+  rounds__nomination: ElectionResult_rounds__nomination_operator
+  rounds__votes__count: ElectionResult_rounds__votes__count_operator
+  rounds__votes__nomination: ElectionResult_rounds__votes__nomination_operator
+  rounds__votes__state: ElectionResult_rounds__votes__state_operator
+  rounds__votes__id: ElectionResult_rounds__votes__id_operator
+  rounds__id: ElectionResult_rounds__id_operator
+  updatedAt: ElectionResult_updatedAt_operator
+  createdAt: ElectionResult_createdAt_operator
+  _status: ElectionResult__status_operator
+  id: ElectionResult_id_operator
+  OR: [ElectionResult_where_or]
+  AND: [ElectionResult_where_and]
+}
+
+input ElectionResult_election_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input ElectionResult_position_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input ElectionResult_electedNominee_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input ElectionResult_ballot_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+}
+
+input ElectionResult_roundTranscript_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+}
+
+input ElectionResult_rounds__outcome_operator {
+  equals: ElectionResult_rounds__outcome_Input
+  not_equals: ElectionResult_rounds__outcome_Input
+  in: [ElectionResult_rounds__outcome_Input]
+  not_in: [ElectionResult_rounds__outcome_Input]
+  all: [ElectionResult_rounds__outcome_Input]
+}
+
+enum ElectionResult_rounds__outcome_Input {
+  Elect
+  Defeat
+}
+
+input ElectionResult_rounds__nomination_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input ElectionResult_rounds__votes__count_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+}
+
+input ElectionResult_rounds__votes__nomination_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input ElectionResult_rounds__votes__state_operator {
+  equals: ElectionResult_rounds__votes__state_Input
+  not_equals: ElectionResult_rounds__votes__state_Input
+  in: [ElectionResult_rounds__votes__state_Input]
+  not_in: [ElectionResult_rounds__votes__state_Input]
+  all: [ElectionResult_rounds__votes__state_Input]
+}
+
+enum ElectionResult_rounds__votes__state_Input {
+  Elected
+  Hopeful
+  Defeated
+}
+
+input ElectionResult_rounds__votes__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input ElectionResult_rounds__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input ElectionResult_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input ElectionResult_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input ElectionResult__status_operator {
+  equals: ElectionResult__status_Input
+  not_equals: ElectionResult__status_Input
+  in: [ElectionResult__status_Input]
+  not_in: [ElectionResult__status_Input]
+  all: [ElectionResult__status_Input]
+  exists: Boolean
+}
+
+enum ElectionResult__status_Input {
+  draft
+  published
+}
+
+input ElectionResult_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input ElectionResult_where_or {
+  election: ElectionResult_election_operator
+  position: ElectionResult_position_operator
+  electedNominee: ElectionResult_electedNominee_operator
+  ballot: ElectionResult_ballot_operator
+  roundTranscript: ElectionResult_roundTranscript_operator
+  rounds__outcome: ElectionResult_rounds__outcome_operator
+  rounds__nomination: ElectionResult_rounds__nomination_operator
+  rounds__votes__count: ElectionResult_rounds__votes__count_operator
+  rounds__votes__nomination: ElectionResult_rounds__votes__nomination_operator
+  rounds__votes__state: ElectionResult_rounds__votes__state_operator
+  rounds__votes__id: ElectionResult_rounds__votes__id_operator
+  rounds__id: ElectionResult_rounds__id_operator
+  updatedAt: ElectionResult_updatedAt_operator
+  createdAt: ElectionResult_createdAt_operator
+  _status: ElectionResult__status_operator
+  id: ElectionResult_id_operator
+}
+
+input ElectionResult_where_and {
+  election: ElectionResult_election_operator
+  position: ElectionResult_position_operator
+  electedNominee: ElectionResult_electedNominee_operator
+  ballot: ElectionResult_ballot_operator
+  roundTranscript: ElectionResult_roundTranscript_operator
+  rounds__outcome: ElectionResult_rounds__outcome_operator
+  rounds__nomination: ElectionResult_rounds__nomination_operator
+  rounds__votes__count: ElectionResult_rounds__votes__count_operator
+  rounds__votes__nomination: ElectionResult_rounds__votes__nomination_operator
+  rounds__votes__state: ElectionResult_rounds__votes__state_operator
+  rounds__votes__id: ElectionResult_rounds__votes__id_operator
+  rounds__id: ElectionResult_rounds__id_operator
+  updatedAt: ElectionResult_updatedAt_operator
+  createdAt: ElectionResult_createdAt_operator
+  _status: ElectionResult__status_operator
+  id: ElectionResult_id_operator
+}
+
+type electionResultsDocAccess {
+  fields: ElectionResultsDocAccessFields
+  create: ElectionResultsCreateDocAccess
+  read: ElectionResultsReadDocAccess
+  update: ElectionResultsUpdateDocAccess
+  delete: ElectionResultsDeleteDocAccess
+  readVersions: ElectionResultsReadVersionsDocAccess
+}
+
+type ElectionResultsDocAccessFields {
+  election: ElectionResultsDocAccessFields_election
+  position: ElectionResultsDocAccessFields_position
+  electedNominee: ElectionResultsDocAccessFields_electedNominee
+  ballot: ElectionResultsDocAccessFields_ballot
+  roundTranscript: ElectionResultsDocAccessFields_roundTranscript
+  rounds: ElectionResultsDocAccessFields_rounds
+  updatedAt: ElectionResultsDocAccessFields_updatedAt
+  createdAt: ElectionResultsDocAccessFields_createdAt
+  _status: ElectionResultsDocAccessFields__status
+}
+
+type ElectionResultsDocAccessFields_election {
+  create: ElectionResultsDocAccessFields_election_Create
+  read: ElectionResultsDocAccessFields_election_Read
+  update: ElectionResultsDocAccessFields_election_Update
+  delete: ElectionResultsDocAccessFields_election_Delete
+}
+
+type ElectionResultsDocAccessFields_election_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_election_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_election_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_election_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_position {
+  create: ElectionResultsDocAccessFields_position_Create
+  read: ElectionResultsDocAccessFields_position_Read
+  update: ElectionResultsDocAccessFields_position_Update
+  delete: ElectionResultsDocAccessFields_position_Delete
+}
+
+type ElectionResultsDocAccessFields_position_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_position_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_position_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_position_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_electedNominee {
+  create: ElectionResultsDocAccessFields_electedNominee_Create
+  read: ElectionResultsDocAccessFields_electedNominee_Read
+  update: ElectionResultsDocAccessFields_electedNominee_Update
+  delete: ElectionResultsDocAccessFields_electedNominee_Delete
+}
+
+type ElectionResultsDocAccessFields_electedNominee_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_electedNominee_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_electedNominee_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_electedNominee_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_ballot {
+  create: ElectionResultsDocAccessFields_ballot_Create
+  read: ElectionResultsDocAccessFields_ballot_Read
+  update: ElectionResultsDocAccessFields_ballot_Update
+  delete: ElectionResultsDocAccessFields_ballot_Delete
+}
+
+type ElectionResultsDocAccessFields_ballot_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_ballot_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_ballot_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_ballot_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_roundTranscript {
+  create: ElectionResultsDocAccessFields_roundTranscript_Create
+  read: ElectionResultsDocAccessFields_roundTranscript_Read
+  update: ElectionResultsDocAccessFields_roundTranscript_Update
+  delete: ElectionResultsDocAccessFields_roundTranscript_Delete
+}
+
+type ElectionResultsDocAccessFields_roundTranscript_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_roundTranscript_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_roundTranscript_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_roundTranscript_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds {
+  create: ElectionResultsDocAccessFields_rounds_Create
+  read: ElectionResultsDocAccessFields_rounds_Read
+  update: ElectionResultsDocAccessFields_rounds_Update
+  delete: ElectionResultsDocAccessFields_rounds_Delete
+  fields: ElectionResultsDocAccessFields_rounds_Fields
+}
+
+type ElectionResultsDocAccessFields_rounds_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_Fields {
+  outcome: ElectionResultsDocAccessFields_rounds_outcome
+  nomination: ElectionResultsDocAccessFields_rounds_nomination
+  votes: ElectionResultsDocAccessFields_rounds_votes
+  id: ElectionResultsDocAccessFields_rounds_id
+}
+
+type ElectionResultsDocAccessFields_rounds_outcome {
+  create: ElectionResultsDocAccessFields_rounds_outcome_Create
+  read: ElectionResultsDocAccessFields_rounds_outcome_Read
+  update: ElectionResultsDocAccessFields_rounds_outcome_Update
+  delete: ElectionResultsDocAccessFields_rounds_outcome_Delete
+}
+
+type ElectionResultsDocAccessFields_rounds_outcome_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_outcome_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_outcome_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_outcome_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_nomination {
+  create: ElectionResultsDocAccessFields_rounds_nomination_Create
+  read: ElectionResultsDocAccessFields_rounds_nomination_Read
+  update: ElectionResultsDocAccessFields_rounds_nomination_Update
+  delete: ElectionResultsDocAccessFields_rounds_nomination_Delete
+}
+
+type ElectionResultsDocAccessFields_rounds_nomination_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_nomination_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_nomination_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_nomination_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes {
+  create: ElectionResultsDocAccessFields_rounds_votes_Create
+  read: ElectionResultsDocAccessFields_rounds_votes_Read
+  update: ElectionResultsDocAccessFields_rounds_votes_Update
+  delete: ElectionResultsDocAccessFields_rounds_votes_Delete
+  fields: ElectionResultsDocAccessFields_rounds_votes_Fields
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_Fields {
+  count: ElectionResultsDocAccessFields_rounds_votes_count
+  nomination: ElectionResultsDocAccessFields_rounds_votes_nomination
+  state: ElectionResultsDocAccessFields_rounds_votes_state
+  id: ElectionResultsDocAccessFields_rounds_votes_id
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_count {
+  create: ElectionResultsDocAccessFields_rounds_votes_count_Create
+  read: ElectionResultsDocAccessFields_rounds_votes_count_Read
+  update: ElectionResultsDocAccessFields_rounds_votes_count_Update
+  delete: ElectionResultsDocAccessFields_rounds_votes_count_Delete
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_count_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_count_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_count_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_count_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_nomination {
+  create: ElectionResultsDocAccessFields_rounds_votes_nomination_Create
+  read: ElectionResultsDocAccessFields_rounds_votes_nomination_Read
+  update: ElectionResultsDocAccessFields_rounds_votes_nomination_Update
+  delete: ElectionResultsDocAccessFields_rounds_votes_nomination_Delete
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_nomination_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_nomination_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_nomination_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_nomination_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_state {
+  create: ElectionResultsDocAccessFields_rounds_votes_state_Create
+  read: ElectionResultsDocAccessFields_rounds_votes_state_Read
+  update: ElectionResultsDocAccessFields_rounds_votes_state_Update
+  delete: ElectionResultsDocAccessFields_rounds_votes_state_Delete
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_state_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_state_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_state_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_state_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_id {
+  create: ElectionResultsDocAccessFields_rounds_votes_id_Create
+  read: ElectionResultsDocAccessFields_rounds_votes_id_Read
+  update: ElectionResultsDocAccessFields_rounds_votes_id_Update
+  delete: ElectionResultsDocAccessFields_rounds_votes_id_Delete
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_id_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_id_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_id_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_votes_id_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_id {
+  create: ElectionResultsDocAccessFields_rounds_id_Create
+  read: ElectionResultsDocAccessFields_rounds_id_Read
+  update: ElectionResultsDocAccessFields_rounds_id_Update
+  delete: ElectionResultsDocAccessFields_rounds_id_Delete
+}
+
+type ElectionResultsDocAccessFields_rounds_id_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_id_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_id_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_rounds_id_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_updatedAt {
+  create: ElectionResultsDocAccessFields_updatedAt_Create
+  read: ElectionResultsDocAccessFields_updatedAt_Read
+  update: ElectionResultsDocAccessFields_updatedAt_Update
+  delete: ElectionResultsDocAccessFields_updatedAt_Delete
+}
+
+type ElectionResultsDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_createdAt {
+  create: ElectionResultsDocAccessFields_createdAt_Create
+  read: ElectionResultsDocAccessFields_createdAt_Read
+  update: ElectionResultsDocAccessFields_createdAt_Update
+  delete: ElectionResultsDocAccessFields_createdAt_Delete
+}
+
+type ElectionResultsDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields__status {
+  create: ElectionResultsDocAccessFields__status_Create
+  read: ElectionResultsDocAccessFields__status_Read
+  update: ElectionResultsDocAccessFields__status_Update
+  delete: ElectionResultsDocAccessFields__status_Delete
+}
+
+type ElectionResultsDocAccessFields__status_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields__status_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields__status_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields__status_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionResultsReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionResultsUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionResultsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionResultsReadVersionsDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionResultVersion {
+  parent: ElectionResult
+  version: ElectionResultVersion_Version
+  createdAt: DateTime
+  updatedAt: DateTime
+  latest: Boolean
+  id: String
+}
+
+type ElectionResultVersion_Version {
+  election: Election!
+  position: Position!
+  electedNominee: Nomination
+  ballot: String!
+  roundTranscript: String!
+  rounds: [ElectionResultVersion_Version_Rounds!]!
+  updatedAt: DateTime
+  createdAt: DateTime
+  _status: ElectionResultVersion_Version__status
+}
+
+type ElectionResultVersion_Version_Rounds {
+  outcome: ElectionResultVersion_Version_Rounds_outcome!
+  nomination: Nomination
+  votes: [ElectionResultVersion_Version_Rounds_Votes!]!
+  id: String
+}
+
+enum ElectionResultVersion_Version_Rounds_outcome {
+  Elect
+  Defeat
+}
+
+type ElectionResultVersion_Version_Rounds_Votes {
+  count: Float!
+  nomination: Nomination
+  state: ElectionResultVersion_Version_Rounds_Votes_state!
+  id: String
+}
+
+enum ElectionResultVersion_Version_Rounds_Votes_state {
+  Elected
+  Hopeful
+  Defeated
+}
+
+enum ElectionResultVersion_Version__status {
+  draft
+  published
+}
+
+type versionsElectionResults {
+  docs: [ElectionResultVersion]
+  totalDocs: Int
+  offset: Int
+  limit: Int
+  totalPages: Int
+  page: Int
+  pagingCounter: Int
+  hasPrevPage: Boolean
+  hasNextPage: Boolean
+  prevPage: Int
+  nextPage: Int
+}
+
+input versionsElectionResult_where {
+  parent: versionsElectionResult_parent_operator
+  version__election: versionsElectionResult_version__election_operator
+  version__position: versionsElectionResult_version__position_operator
+  version__electedNominee: versionsElectionResult_version__electedNominee_operator
+  version__ballot: versionsElectionResult_version__ballot_operator
+  version__roundTranscript: versionsElectionResult_version__roundTranscript_operator
+  version__rounds__outcome: versionsElectionResult_version__rounds__outcome_operator
+  version__rounds__nomination: versionsElectionResult_version__rounds__nomination_operator
+  version__rounds__votes__count: versionsElectionResult_version__rounds__votes__count_operator
+  version__rounds__votes__nomination: versionsElectionResult_version__rounds__votes__nomination_operator
+  version__rounds__votes__state: versionsElectionResult_version__rounds__votes__state_operator
+  version__rounds__votes__id: versionsElectionResult_version__rounds__votes__id_operator
+  version__rounds__id: versionsElectionResult_version__rounds__id_operator
+  version__updatedAt: versionsElectionResult_version__updatedAt_operator
+  version__createdAt: versionsElectionResult_version__createdAt_operator
+  version___status: versionsElectionResult_version___status_operator
+  createdAt: versionsElectionResult_createdAt_operator
+  updatedAt: versionsElectionResult_updatedAt_operator
+  latest: versionsElectionResult_latest_operator
+  id: versionsElectionResult_id_operator
+  OR: [versionsElectionResult_where_or]
+  AND: [versionsElectionResult_where_and]
+}
+
+input versionsElectionResult_parent_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsElectionResult_version__election_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsElectionResult_version__position_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsElectionResult_version__electedNominee_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsElectionResult_version__ballot_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+}
+
+input versionsElectionResult_version__roundTranscript_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+}
+
+input versionsElectionResult_version__rounds__outcome_operator {
+  equals: versionsElectionResult_version__rounds__outcome_Input
+  not_equals: versionsElectionResult_version__rounds__outcome_Input
+  in: [versionsElectionResult_version__rounds__outcome_Input]
+  not_in: [versionsElectionResult_version__rounds__outcome_Input]
+  all: [versionsElectionResult_version__rounds__outcome_Input]
+}
+
+enum versionsElectionResult_version__rounds__outcome_Input {
+  Elect
+  Defeat
+}
+
+input versionsElectionResult_version__rounds__nomination_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsElectionResult_version__rounds__votes__count_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+}
+
+input versionsElectionResult_version__rounds__votes__nomination_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsElectionResult_version__rounds__votes__state_operator {
+  equals: versionsElectionResult_version__rounds__votes__state_Input
+  not_equals: versionsElectionResult_version__rounds__votes__state_Input
+  in: [versionsElectionResult_version__rounds__votes__state_Input]
+  not_in: [versionsElectionResult_version__rounds__votes__state_Input]
+  all: [versionsElectionResult_version__rounds__votes__state_Input]
+}
+
+enum versionsElectionResult_version__rounds__votes__state_Input {
+  Elected
+  Hopeful
+  Defeated
+}
+
+input versionsElectionResult_version__rounds__votes__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsElectionResult_version__rounds__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsElectionResult_version__updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsElectionResult_version__createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsElectionResult_version___status_operator {
+  equals: versionsElectionResult_version___status_Input
+  not_equals: versionsElectionResult_version___status_Input
+  in: [versionsElectionResult_version___status_Input]
+  not_in: [versionsElectionResult_version___status_Input]
+  all: [versionsElectionResult_version___status_Input]
+  exists: Boolean
+}
+
+enum versionsElectionResult_version___status_Input {
+  draft
+  published
+}
+
+input versionsElectionResult_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsElectionResult_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsElectionResult_latest_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsElectionResult_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsElectionResult_where_or {
+  parent: versionsElectionResult_parent_operator
+  version__election: versionsElectionResult_version__election_operator
+  version__position: versionsElectionResult_version__position_operator
+  version__electedNominee: versionsElectionResult_version__electedNominee_operator
+  version__ballot: versionsElectionResult_version__ballot_operator
+  version__roundTranscript: versionsElectionResult_version__roundTranscript_operator
+  version__rounds__outcome: versionsElectionResult_version__rounds__outcome_operator
+  version__rounds__nomination: versionsElectionResult_version__rounds__nomination_operator
+  version__rounds__votes__count: versionsElectionResult_version__rounds__votes__count_operator
+  version__rounds__votes__nomination: versionsElectionResult_version__rounds__votes__nomination_operator
+  version__rounds__votes__state: versionsElectionResult_version__rounds__votes__state_operator
+  version__rounds__votes__id: versionsElectionResult_version__rounds__votes__id_operator
+  version__rounds__id: versionsElectionResult_version__rounds__id_operator
+  version__updatedAt: versionsElectionResult_version__updatedAt_operator
+  version__createdAt: versionsElectionResult_version__createdAt_operator
+  version___status: versionsElectionResult_version___status_operator
+  createdAt: versionsElectionResult_createdAt_operator
+  updatedAt: versionsElectionResult_updatedAt_operator
+  latest: versionsElectionResult_latest_operator
+  id: versionsElectionResult_id_operator
+}
+
+input versionsElectionResult_where_and {
+  parent: versionsElectionResult_parent_operator
+  version__election: versionsElectionResult_version__election_operator
+  version__position: versionsElectionResult_version__position_operator
+  version__electedNominee: versionsElectionResult_version__electedNominee_operator
+  version__ballot: versionsElectionResult_version__ballot_operator
+  version__roundTranscript: versionsElectionResult_version__roundTranscript_operator
+  version__rounds__outcome: versionsElectionResult_version__rounds__outcome_operator
+  version__rounds__nomination: versionsElectionResult_version__rounds__nomination_operator
+  version__rounds__votes__count: versionsElectionResult_version__rounds__votes__count_operator
+  version__rounds__votes__nomination: versionsElectionResult_version__rounds__votes__nomination_operator
+  version__rounds__votes__state: versionsElectionResult_version__rounds__votes__state_operator
+  version__rounds__votes__id: versionsElectionResult_version__rounds__votes__id_operator
+  version__rounds__id: versionsElectionResult_version__rounds__id_operator
+  version__updatedAt: versionsElectionResult_version__updatedAt_operator
+  version__createdAt: versionsElectionResult_version__createdAt_operator
+  version___status: versionsElectionResult_version___status_operator
+  createdAt: versionsElectionResult_createdAt_operator
+  updatedAt: versionsElectionResult_updatedAt_operator
+  latest: versionsElectionResult_latest_operator
+  id: versionsElectionResult_id_operator
+}
+
 type Redirect {
   id: String
   from: String!
@@ -11897,6 +12968,7 @@ type Access {
   nominations: nominationsAccess
   positions: positionsAccess
   votes: votesAccess
+  electionResults: electionResultsAccess
   redirects: redirectsAccess
   settings: settingsAccess
   header: headerAccess
@@ -16130,6 +17202,459 @@ type VotesDeleteAccess {
   where: JSONObject
 }
 
+type electionResultsAccess {
+  fields: ElectionResultsFields
+  create: ElectionResultsCreateAccess
+  read: ElectionResultsReadAccess
+  update: ElectionResultsUpdateAccess
+  delete: ElectionResultsDeleteAccess
+  readVersions: ElectionResultsReadVersionsAccess
+}
+
+type ElectionResultsFields {
+  election: ElectionResultsFields_election
+  position: ElectionResultsFields_position
+  electedNominee: ElectionResultsFields_electedNominee
+  ballot: ElectionResultsFields_ballot
+  roundTranscript: ElectionResultsFields_roundTranscript
+  rounds: ElectionResultsFields_rounds
+  updatedAt: ElectionResultsFields_updatedAt
+  createdAt: ElectionResultsFields_createdAt
+  _status: ElectionResultsFields__status
+}
+
+type ElectionResultsFields_election {
+  create: ElectionResultsFields_election_Create
+  read: ElectionResultsFields_election_Read
+  update: ElectionResultsFields_election_Update
+  delete: ElectionResultsFields_election_Delete
+}
+
+type ElectionResultsFields_election_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_election_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_election_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_election_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_position {
+  create: ElectionResultsFields_position_Create
+  read: ElectionResultsFields_position_Read
+  update: ElectionResultsFields_position_Update
+  delete: ElectionResultsFields_position_Delete
+}
+
+type ElectionResultsFields_position_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_position_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_position_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_position_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_electedNominee {
+  create: ElectionResultsFields_electedNominee_Create
+  read: ElectionResultsFields_electedNominee_Read
+  update: ElectionResultsFields_electedNominee_Update
+  delete: ElectionResultsFields_electedNominee_Delete
+}
+
+type ElectionResultsFields_electedNominee_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_electedNominee_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_electedNominee_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_electedNominee_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_ballot {
+  create: ElectionResultsFields_ballot_Create
+  read: ElectionResultsFields_ballot_Read
+  update: ElectionResultsFields_ballot_Update
+  delete: ElectionResultsFields_ballot_Delete
+}
+
+type ElectionResultsFields_ballot_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_ballot_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_ballot_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_ballot_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_roundTranscript {
+  create: ElectionResultsFields_roundTranscript_Create
+  read: ElectionResultsFields_roundTranscript_Read
+  update: ElectionResultsFields_roundTranscript_Update
+  delete: ElectionResultsFields_roundTranscript_Delete
+}
+
+type ElectionResultsFields_roundTranscript_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_roundTranscript_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_roundTranscript_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_roundTranscript_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds {
+  create: ElectionResultsFields_rounds_Create
+  read: ElectionResultsFields_rounds_Read
+  update: ElectionResultsFields_rounds_Update
+  delete: ElectionResultsFields_rounds_Delete
+  fields: ElectionResultsFields_rounds_Fields
+}
+
+type ElectionResultsFields_rounds_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_Fields {
+  outcome: ElectionResultsFields_rounds_outcome
+  nomination: ElectionResultsFields_rounds_nomination
+  votes: ElectionResultsFields_rounds_votes
+  id: ElectionResultsFields_rounds_id
+}
+
+type ElectionResultsFields_rounds_outcome {
+  create: ElectionResultsFields_rounds_outcome_Create
+  read: ElectionResultsFields_rounds_outcome_Read
+  update: ElectionResultsFields_rounds_outcome_Update
+  delete: ElectionResultsFields_rounds_outcome_Delete
+}
+
+type ElectionResultsFields_rounds_outcome_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_outcome_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_outcome_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_outcome_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_nomination {
+  create: ElectionResultsFields_rounds_nomination_Create
+  read: ElectionResultsFields_rounds_nomination_Read
+  update: ElectionResultsFields_rounds_nomination_Update
+  delete: ElectionResultsFields_rounds_nomination_Delete
+}
+
+type ElectionResultsFields_rounds_nomination_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_nomination_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_nomination_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_nomination_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes {
+  create: ElectionResultsFields_rounds_votes_Create
+  read: ElectionResultsFields_rounds_votes_Read
+  update: ElectionResultsFields_rounds_votes_Update
+  delete: ElectionResultsFields_rounds_votes_Delete
+  fields: ElectionResultsFields_rounds_votes_Fields
+}
+
+type ElectionResultsFields_rounds_votes_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_Fields {
+  count: ElectionResultsFields_rounds_votes_count
+  nomination: ElectionResultsFields_rounds_votes_nomination
+  state: ElectionResultsFields_rounds_votes_state
+  id: ElectionResultsFields_rounds_votes_id
+}
+
+type ElectionResultsFields_rounds_votes_count {
+  create: ElectionResultsFields_rounds_votes_count_Create
+  read: ElectionResultsFields_rounds_votes_count_Read
+  update: ElectionResultsFields_rounds_votes_count_Update
+  delete: ElectionResultsFields_rounds_votes_count_Delete
+}
+
+type ElectionResultsFields_rounds_votes_count_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_count_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_count_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_count_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_nomination {
+  create: ElectionResultsFields_rounds_votes_nomination_Create
+  read: ElectionResultsFields_rounds_votes_nomination_Read
+  update: ElectionResultsFields_rounds_votes_nomination_Update
+  delete: ElectionResultsFields_rounds_votes_nomination_Delete
+}
+
+type ElectionResultsFields_rounds_votes_nomination_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_nomination_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_nomination_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_nomination_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_state {
+  create: ElectionResultsFields_rounds_votes_state_Create
+  read: ElectionResultsFields_rounds_votes_state_Read
+  update: ElectionResultsFields_rounds_votes_state_Update
+  delete: ElectionResultsFields_rounds_votes_state_Delete
+}
+
+type ElectionResultsFields_rounds_votes_state_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_state_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_state_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_state_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_id {
+  create: ElectionResultsFields_rounds_votes_id_Create
+  read: ElectionResultsFields_rounds_votes_id_Read
+  update: ElectionResultsFields_rounds_votes_id_Update
+  delete: ElectionResultsFields_rounds_votes_id_Delete
+}
+
+type ElectionResultsFields_rounds_votes_id_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_id_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_id_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_votes_id_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_id {
+  create: ElectionResultsFields_rounds_id_Create
+  read: ElectionResultsFields_rounds_id_Read
+  update: ElectionResultsFields_rounds_id_Update
+  delete: ElectionResultsFields_rounds_id_Delete
+}
+
+type ElectionResultsFields_rounds_id_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_id_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_id_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_rounds_id_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_updatedAt {
+  create: ElectionResultsFields_updatedAt_Create
+  read: ElectionResultsFields_updatedAt_Read
+  update: ElectionResultsFields_updatedAt_Update
+  delete: ElectionResultsFields_updatedAt_Delete
+}
+
+type ElectionResultsFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_createdAt {
+  create: ElectionResultsFields_createdAt_Create
+  read: ElectionResultsFields_createdAt_Read
+  update: ElectionResultsFields_createdAt_Update
+  delete: ElectionResultsFields_createdAt_Delete
+}
+
+type ElectionResultsFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsFields__status {
+  create: ElectionResultsFields__status_Create
+  read: ElectionResultsFields__status_Read
+  update: ElectionResultsFields__status_Update
+  delete: ElectionResultsFields__status_Delete
+}
+
+type ElectionResultsFields__status_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields__status_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields__status_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields__status_Delete {
+  permission: Boolean!
+}
+
+type ElectionResultsCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionResultsReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionResultsUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionResultsDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionResultsReadVersionsAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type redirectsAccess {
   fields: RedirectsFields
   create: RedirectsCreateAccess
@@ -17027,6 +18552,10 @@ type Mutation {
   createVote(data: mutationVoteInput!, draft: Boolean): Vote
   updateVote(id: String!, data: mutationVoteUpdateInput!, draft: Boolean, autosave: Boolean): Vote
   deleteVote(id: String!): Vote
+  createElectionResult(data: mutationElectionResultInput!, draft: Boolean): ElectionResult
+  updateElectionResult(id: String!, data: mutationElectionResultUpdateInput!, draft: Boolean, autosave: Boolean): ElectionResult
+  deleteElectionResult(id: String!): ElectionResult
+  restoreVersionElectionResult(id: String): ElectionResult
   createRedirect(data: mutationRedirectInput!, draft: Boolean): Redirect
   updateRedirect(id: String!, data: mutationRedirectUpdateInput!, draft: Boolean, autosave: Boolean): Redirect
   deleteRedirect(id: String!): Redirect
@@ -17717,6 +19246,90 @@ input mutationVoteUpdateInput {
   preference: [String]
   updatedAt: String
   createdAt: String
+}
+
+input mutationElectionResultInput {
+  election: String
+  position: String
+  electedNominee: String
+  ballot: String!
+  roundTranscript: String!
+  rounds: [mutationElectionResult_RoundsInput!]
+  updatedAt: String
+  createdAt: String
+  _status: ElectionResult__status_MutationInput
+}
+
+input mutationElectionResult_RoundsInput {
+  outcome: ElectionResult_Rounds_outcome_MutationInput!
+  nomination: String
+  votes: [mutationElectionResult_Rounds_VotesInput!]
+  id: String
+}
+
+enum ElectionResult_Rounds_outcome_MutationInput {
+  Elect
+  Defeat
+}
+
+input mutationElectionResult_Rounds_VotesInput {
+  count: Float!
+  nomination: String
+  state: ElectionResult_Rounds_Votes_state_MutationInput!
+  id: String
+}
+
+enum ElectionResult_Rounds_Votes_state_MutationInput {
+  Elected
+  Hopeful
+  Defeated
+}
+
+enum ElectionResult__status_MutationInput {
+  draft
+  published
+}
+
+input mutationElectionResultUpdateInput {
+  election: String
+  position: String
+  electedNominee: String
+  ballot: String
+  roundTranscript: String
+  rounds: [mutationElectionResultUpdate_RoundsInput]
+  updatedAt: String
+  createdAt: String
+  _status: ElectionResultUpdate__status_MutationInput
+}
+
+input mutationElectionResultUpdate_RoundsInput {
+  outcome: ElectionResultUpdate_Rounds_outcome_MutationInput!
+  nomination: String
+  votes: [mutationElectionResultUpdate_Rounds_VotesInput!]
+  id: String
+}
+
+enum ElectionResultUpdate_Rounds_outcome_MutationInput {
+  Elect
+  Defeat
+}
+
+input mutationElectionResultUpdate_Rounds_VotesInput {
+  count: Float!
+  nomination: String
+  state: ElectionResultUpdate_Rounds_Votes_state_MutationInput!
+  id: String
+}
+
+enum ElectionResultUpdate_Rounds_Votes_state_MutationInput {
+  Elected
+  Hopeful
+  Defeated
+}
+
+enum ElectionResultUpdate__status_MutationInput {
+  draft
+  published
 }
 
 input mutationRedirectInput {

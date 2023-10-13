@@ -20,6 +20,7 @@ export interface Config {
     nominations: Nomination;
     positions: Position;
     votes: Vote;
+    electionResults: ElectionResult;
     redirects: Redirect;
   };
   globals: {
@@ -712,6 +713,29 @@ export interface Vote {
   preference: string[] | Nomination[];
   updatedAt: string;
   createdAt: string;
+}
+
+export interface ElectionResult {
+  id: string;
+  election: string | Election;
+  position: string | Position;
+  electedNominee?: string | Nomination;
+  ballot: string;
+  roundTranscript: string;
+  rounds: {
+    outcome: 'Elect' | 'Defeat';
+    nomination?: string | Nomination;
+    votes: {
+      count: number;
+      nomination?: string | Nomination;
+      state: 'Elected' | 'Hopeful' | 'Defeated';
+      id?: string;
+    }[];
+    id?: string;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+  _status?: 'draft' | 'published';
 }
 
 export interface Redirect {

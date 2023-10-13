@@ -4,6 +4,7 @@ import { admins } from '../../access/admins';
 import Groups from '../groups';
 import { isAfterNomination, isNominationConstitutional, isVotingConstitutional } from './validate/dateValidate';
 import { checkNominations } from './hooks/checkNominations';
+import { countVotes } from './hooks/checkVotes';
 
 const Elections: CollectionConfig = {
   slug: 'elections',
@@ -58,7 +59,7 @@ const Elections: CollectionConfig = {
         },
       },
       hooks: {
-        afterChange: [checkNominations],
+        afterChange: [checkNominations, countVotes],
       },
       validate: isAfterNomination,
       required: true,

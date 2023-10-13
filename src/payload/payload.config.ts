@@ -10,6 +10,7 @@ import { buildConfig } from 'payload/config';
 
 import Categories from './collections/Categories';
 import Comments from './collections/Comments';
+import { ElectionResults } from './collections/ElectionResults';
 import Elections from './collections/Elections';
 import { Media } from './collections/Media';
 import Nominations from './collections/Nominations';
@@ -43,7 +44,19 @@ export default buildConfig({
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
       beforeDashboard: [BeforeDashboard],
     },
+    webpack: (config) => {
+      const mockModule = path.resolve(__dirname, 'emptyModuleMock.js');
+
+      const checkVotes = path.resolve(__dirname, 'collections/Elections/hooks/checkVotes.ts');
+      const checkNominations = path.resolve(__dirname, 'collections/Elections/hooks/checkNominations.ts');
+
+      config.resolve.alias[checkVotes] = mockModule;
+      config.resolve.alias[checkNominations] = mockModule;
+
+      return config;
+    },
   },
+
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL,
   collections: [
     Pages,
@@ -57,6 +70,7 @@ export default buildConfig({
     Nominations,
     Positions,
     Votes,
+    ElectionResults,
   ],
   globals: [Settings, Header, Footer],
   typescript: {
