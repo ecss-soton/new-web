@@ -189,14 +189,18 @@ export async function countVotesForPosition(electionID: string, positionID: stri
 
   stv.stdin.write(ballotFile);
 
-  stv.on('exit', (code) => {
-    if (code !== 0) {
-      payload.logger.error('Found an error with stv-rs, have you installed it using cargo install stv-rs?');
-    } else {
-      const result = parseVoteResult(electionID, positionID, resultFile);
-      result.ballot = ballotFile;
-      updateElectionResult(result);
-    }
+  await new Promise((resolve, reject) => {
+    stv.on('exit', (code) => {
+      if (code !== 0) {
+        payload.logger.error('Found an error with stv-rs, have you installed it using cargo install stv-rs?');
+        reject();
+      } else {
+        const result = parseVoteResult(electionID, positionID, resultFile);
+        result.ballot = ballotFile;
+        updateElectionResult(result);
+        resolve('OK');
+      }
+    });
   });
 }
 

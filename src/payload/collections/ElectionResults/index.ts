@@ -4,6 +4,7 @@ import { admins } from '../../access/admins';
 import Groups from '../groups';
 import { isAnInt } from '../../validate/isAnInt';
 import { recountVotes } from './endpoints/recountVotes';
+import { RecountVotesLink } from './react/recountVotesLink';
 
 // If nominee is `undef` assume RON.
 export const ElectionResults: CollectionConfig = {
@@ -30,6 +31,15 @@ export const ElectionResults: CollectionConfig = {
     },
   ],
   fields: [
+    {
+      name: 'reRunElection',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: RecountVotesLink,
+        },
+      },
+    },
     {
       name: 'election',
       type: 'relationship',
