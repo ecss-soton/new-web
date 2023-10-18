@@ -5,32 +5,31 @@ import jsSHA from 'jssha';
 import { spawn } from 'child_process';
 import { ElectionResult, Nomination, Vote } from '../../../payload-types';
 
-const ron = 'RON';
+const ron = 'ron';
 
 function parseVoteResult(
   electionID: string,
   positionID: string,
   resultFile: string,
 ): Partial<ElectionResult> {
-  const roundsRegExp = /Round (\d+):/gm;
+  const roundsRegExp = /Round \d+:/gm;
   const actionRegExp = /Action: (Defeat|Elect)[^:]*: (\w+)/gm;
   const resultRegExp = /(Elected|Hopeful|Defeated):  ?([\w, ]+) \(([\d/]+)\)/gm;
 
   const rounds = [];
 
-  for (const round of resultFile.split(roundsRegExp)) {
+  for (const round of resultFile.split(roundsRegExp).filter((_, i) => i !== 0)) {
     const actions = round.split(actionRegExp);
     const outcome = actions[1];
     const nomination = actions[2];
 
     let votes = [];
 
-    const matches = actions[3].match(resultRegExp);
-    for (let i = 0; i < matches.length; i += 4) {
-      const nominationOutcome = matches[i + 1];
-      const nominations = matches[i + 2].split(', ');
+    for (const matches of actions[3].matchAll(resultRegExp)) {
+      const nominationOutcome = matches[1];
+      const nominations = matches[2].split(', ');
 
-      const vote = matches[i + 3].split('/');
+      const vote = matches[3].split('/');
       let voteCount = 0;
       if (vote.length === 1) {
         voteCount = Number.parseFloat(vote[0]);
@@ -63,15 +62,17 @@ function generateBallotFile(votes: Vote[], nominees: Nomination[]): string {
   const ballots = {};
 
   for (const vote of votes) {
-    vote.preference.splice(vote.RONPosition, 0, ron);
-    const prefString = vote.preference.join(' ');
+    const preferences = vote.preference.map((p) => `u${p}`);
+    preferences.splice(vote.RONPosition, 0, ron);
+    const prefString = preferences.join(' ');
     ballots[prefString] = (ballots[prefString] ?? 0) + 1;
   }
 
-  const nicknames = nominees.map((n) => n.id).concat([ron]);
-  const withdrawn = nominees.filter((n) => n.droppedOut).map((n) => n.id);
+  const names = nominees.map((n) => n.id).concat([ron]);
+  const nicknames = nominees.map((n) => `u${n.id}`).concat([ron]);
+  const withdrawn = nominees.filter((n) => n.droppedOut).map((n) => `u${n.id}`);
 
-  let ballotFile = `${nicknames.length} 1\n[nick ${nicknames.join(' ')}]`;
+  let ballotFile = `${nominees.length + 1} 1\n[nick ${nicknames.join(' ')}]`;
 
   if (withdrawn.length > 0) {
     ballotFile += `\n[withdrawn ${withdrawn.join(' ')}`;
@@ -81,9 +82,9 @@ function generateBallotFile(votes: Vote[], nominees: Nomination[]): string {
 
   ballotFile += '\n0';
 
-  ballotFile += `\n${nicknames.map((nick) => `"${nick}"`).join('\n')}`;
+  ballotFile += `\n${names.map((name) => `"${name}"`).join('\n')}`;
 
-  ballotFile += '\n"ECSS Election"';
+  ballotFile += '\n"ECSS Election"\n';
 
   return ballotFile;
 }

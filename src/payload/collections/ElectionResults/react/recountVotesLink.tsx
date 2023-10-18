@@ -17,6 +17,8 @@ export const RecountVotesLink: React.FC = () => {
       try {
         await fetch(`/api/electionResults/${id}/recount`, { method: 'POST' });
         setRecounted(true);
+        // eslint-disable-next-line no-undef
+        window.location.reload();
       } catch (err) {
         setError(err);
       }
