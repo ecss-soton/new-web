@@ -47,6 +47,9 @@ type Query {
   docAccessElectionResult(id: String!): electionResultsDocAccess
   versionElectionResult(id: String): ElectionResultVersion
   versionsElectionResults(where: versionsElectionResult_where, page: Int, limit: Int, sort: String): versionsElectionResults
+  Merch(id: String!, draft: Boolean): Merch
+  allMerch(where: Merch_where, draft: Boolean, page: Int, limit: Int, sort: String): allMerch
+  docAccessMerch(id: String!): merchDocAccess
   Redirect(id: String!, draft: Boolean): Redirect
   Redirects(where: Redirect_where, draft: Boolean, page: Int, limit: Int, sort: String): Redirects
   docAccessRedirect(id: String!): redirectsDocAccess
@@ -11088,6 +11091,7 @@ type electionResultsDocAccess {
 }
 
 type ElectionResultsDocAccessFields {
+  reRunElection: ElectionResultsDocAccessFields_reRunElection
   election: ElectionResultsDocAccessFields_election
   position: ElectionResultsDocAccessFields_position
   electedNominee: ElectionResultsDocAccessFields_electedNominee
@@ -11097,6 +11101,29 @@ type ElectionResultsDocAccessFields {
   updatedAt: ElectionResultsDocAccessFields_updatedAt
   createdAt: ElectionResultsDocAccessFields_createdAt
   _status: ElectionResultsDocAccessFields__status
+}
+
+type ElectionResultsDocAccessFields_reRunElection {
+  create: ElectionResultsDocAccessFields_reRunElection_Create
+  read: ElectionResultsDocAccessFields_reRunElection_Read
+  update: ElectionResultsDocAccessFields_reRunElection_Update
+  delete: ElectionResultsDocAccessFields_reRunElection_Delete
+}
+
+type ElectionResultsDocAccessFields_reRunElection_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_reRunElection_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_reRunElection_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_reRunElection_Delete {
+  permission: Boolean!
 }
 
 type ElectionResultsDocAccessFields_election {
@@ -11864,6 +11891,1058 @@ input versionsElectionResult_where_and {
   updatedAt: versionsElectionResult_updatedAt_operator
   latest: versionsElectionResult_latest_operator
   id: versionsElectionResult_id_operator
+}
+
+type Merch {
+  id: String
+  name: String!
+  description(depth: Int): JSON
+  image(where: Merch_Image_where): Media
+  sizes: [Merch_Sizes!]
+  colours: [Merch_Colours!]
+  variations: [Merch_Variations!]!
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+input Merch_Image_where {
+  alt: Merch_Image_alt_operator
+  caption: Merch_Image_caption_operator
+  updatedAt: Merch_Image_updatedAt_operator
+  createdAt: Merch_Image_createdAt_operator
+  url: Merch_Image_url_operator
+  filename: Merch_Image_filename_operator
+  mimeType: Merch_Image_mimeType_operator
+  filesize: Merch_Image_filesize_operator
+  width: Merch_Image_width_operator
+  height: Merch_Image_height_operator
+  id: Merch_Image_id_operator
+  OR: [Merch_Image_where_or]
+  AND: [Merch_Image_where_and]
+}
+
+input Merch_Image_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Merch_Image_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Merch_Image_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Merch_Image_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Merch_Image_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_Image_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_Image_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_Image_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Merch_Image_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Merch_Image_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Merch_Image_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_Image_where_or {
+  alt: Merch_Image_alt_operator
+  caption: Merch_Image_caption_operator
+  updatedAt: Merch_Image_updatedAt_operator
+  createdAt: Merch_Image_createdAt_operator
+  url: Merch_Image_url_operator
+  filename: Merch_Image_filename_operator
+  mimeType: Merch_Image_mimeType_operator
+  filesize: Merch_Image_filesize_operator
+  width: Merch_Image_width_operator
+  height: Merch_Image_height_operator
+  id: Merch_Image_id_operator
+}
+
+input Merch_Image_where_and {
+  alt: Merch_Image_alt_operator
+  caption: Merch_Image_caption_operator
+  updatedAt: Merch_Image_updatedAt_operator
+  createdAt: Merch_Image_createdAt_operator
+  url: Merch_Image_url_operator
+  filename: Merch_Image_filename_operator
+  mimeType: Merch_Image_mimeType_operator
+  filesize: Merch_Image_filesize_operator
+  width: Merch_Image_width_operator
+  height: Merch_Image_height_operator
+  id: Merch_Image_id_operator
+}
+
+type Merch_Sizes {
+  size: String
+  id: String
+}
+
+type Merch_Colours {
+  colour: String
+  hexValue: String
+  id: String
+}
+
+type Merch_Variations {
+  variation: String!
+  image(where: Merch_Variations_Image_where): Media
+  price: Float!
+  form: String
+  id: String
+}
+
+input Merch_Variations_Image_where {
+  alt: Merch_Variations_Image_alt_operator
+  caption: Merch_Variations_Image_caption_operator
+  updatedAt: Merch_Variations_Image_updatedAt_operator
+  createdAt: Merch_Variations_Image_createdAt_operator
+  url: Merch_Variations_Image_url_operator
+  filename: Merch_Variations_Image_filename_operator
+  mimeType: Merch_Variations_Image_mimeType_operator
+  filesize: Merch_Variations_Image_filesize_operator
+  width: Merch_Variations_Image_width_operator
+  height: Merch_Variations_Image_height_operator
+  id: Merch_Variations_Image_id_operator
+  OR: [Merch_Variations_Image_where_or]
+  AND: [Merch_Variations_Image_where_and]
+}
+
+input Merch_Variations_Image_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Merch_Variations_Image_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Merch_Variations_Image_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Merch_Variations_Image_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Merch_Variations_Image_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_Variations_Image_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_Variations_Image_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_Variations_Image_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Merch_Variations_Image_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Merch_Variations_Image_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Merch_Variations_Image_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_Variations_Image_where_or {
+  alt: Merch_Variations_Image_alt_operator
+  caption: Merch_Variations_Image_caption_operator
+  updatedAt: Merch_Variations_Image_updatedAt_operator
+  createdAt: Merch_Variations_Image_createdAt_operator
+  url: Merch_Variations_Image_url_operator
+  filename: Merch_Variations_Image_filename_operator
+  mimeType: Merch_Variations_Image_mimeType_operator
+  filesize: Merch_Variations_Image_filesize_operator
+  width: Merch_Variations_Image_width_operator
+  height: Merch_Variations_Image_height_operator
+  id: Merch_Variations_Image_id_operator
+}
+
+input Merch_Variations_Image_where_and {
+  alt: Merch_Variations_Image_alt_operator
+  caption: Merch_Variations_Image_caption_operator
+  updatedAt: Merch_Variations_Image_updatedAt_operator
+  createdAt: Merch_Variations_Image_createdAt_operator
+  url: Merch_Variations_Image_url_operator
+  filename: Merch_Variations_Image_filename_operator
+  mimeType: Merch_Variations_Image_mimeType_operator
+  filesize: Merch_Variations_Image_filesize_operator
+  width: Merch_Variations_Image_width_operator
+  height: Merch_Variations_Image_height_operator
+  id: Merch_Variations_Image_id_operator
+}
+
+type allMerch {
+  docs: [Merch]
+  totalDocs: Int
+  offset: Int
+  limit: Int
+  totalPages: Int
+  page: Int
+  pagingCounter: Int
+  hasPrevPage: Boolean
+  hasNextPage: Boolean
+  prevPage: Int
+  nextPage: Int
+}
+
+input Merch_where {
+  name: Merch_name_operator
+  description: Merch_description_operator
+  image: Merch_image_operator
+  sizes__size: Merch_sizes__size_operator
+  sizes__id: Merch_sizes__id_operator
+  colours__colour: Merch_colours__colour_operator
+  colours__hexValue: Merch_colours__hexValue_operator
+  colours__id: Merch_colours__id_operator
+  variations__variation: Merch_variations__variation_operator
+  variations__image: Merch_variations__image_operator
+  variations__price: Merch_variations__price_operator
+  variations__form: Merch_variations__form_operator
+  variations__id: Merch_variations__id_operator
+  updatedAt: Merch_updatedAt_operator
+  createdAt: Merch_createdAt_operator
+  id: Merch_id_operator
+  OR: [Merch_where_or]
+  AND: [Merch_where_and]
+}
+
+input Merch_name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Merch_description_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Merch_image_operator {
+  equals: String
+  not_equals: String
+  exists: Boolean
+}
+
+input Merch_sizes__size_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Merch_sizes__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_colours__colour_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Merch_colours__hexValue_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_colours__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_variations__variation_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Merch_variations__image_operator {
+  equals: String
+  not_equals: String
+  exists: Boolean
+}
+
+input Merch_variations__price_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+}
+
+input Merch_variations__form_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_variations__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Merch_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Merch_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Merch_where_or {
+  name: Merch_name_operator
+  description: Merch_description_operator
+  image: Merch_image_operator
+  sizes__size: Merch_sizes__size_operator
+  sizes__id: Merch_sizes__id_operator
+  colours__colour: Merch_colours__colour_operator
+  colours__hexValue: Merch_colours__hexValue_operator
+  colours__id: Merch_colours__id_operator
+  variations__variation: Merch_variations__variation_operator
+  variations__image: Merch_variations__image_operator
+  variations__price: Merch_variations__price_operator
+  variations__form: Merch_variations__form_operator
+  variations__id: Merch_variations__id_operator
+  updatedAt: Merch_updatedAt_operator
+  createdAt: Merch_createdAt_operator
+  id: Merch_id_operator
+}
+
+input Merch_where_and {
+  name: Merch_name_operator
+  description: Merch_description_operator
+  image: Merch_image_operator
+  sizes__size: Merch_sizes__size_operator
+  sizes__id: Merch_sizes__id_operator
+  colours__colour: Merch_colours__colour_operator
+  colours__hexValue: Merch_colours__hexValue_operator
+  colours__id: Merch_colours__id_operator
+  variations__variation: Merch_variations__variation_operator
+  variations__image: Merch_variations__image_operator
+  variations__price: Merch_variations__price_operator
+  variations__form: Merch_variations__form_operator
+  variations__id: Merch_variations__id_operator
+  updatedAt: Merch_updatedAt_operator
+  createdAt: Merch_createdAt_operator
+  id: Merch_id_operator
+}
+
+type merchDocAccess {
+  fields: MerchDocAccessFields
+  create: MerchCreateDocAccess
+  read: MerchReadDocAccess
+  update: MerchUpdateDocAccess
+  delete: MerchDeleteDocAccess
+}
+
+type MerchDocAccessFields {
+  name: MerchDocAccessFields_name
+  description: MerchDocAccessFields_description
+  image: MerchDocAccessFields_image
+  sizes: MerchDocAccessFields_sizes
+  colours: MerchDocAccessFields_colours
+  variations: MerchDocAccessFields_variations
+  updatedAt: MerchDocAccessFields_updatedAt
+  createdAt: MerchDocAccessFields_createdAt
+}
+
+type MerchDocAccessFields_name {
+  create: MerchDocAccessFields_name_Create
+  read: MerchDocAccessFields_name_Read
+  update: MerchDocAccessFields_name_Update
+  delete: MerchDocAccessFields_name_Delete
+}
+
+type MerchDocAccessFields_name_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_name_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_name_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_name_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_description {
+  create: MerchDocAccessFields_description_Create
+  read: MerchDocAccessFields_description_Read
+  update: MerchDocAccessFields_description_Update
+  delete: MerchDocAccessFields_description_Delete
+}
+
+type MerchDocAccessFields_description_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_description_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_description_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_description_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_image {
+  create: MerchDocAccessFields_image_Create
+  read: MerchDocAccessFields_image_Read
+  update: MerchDocAccessFields_image_Update
+  delete: MerchDocAccessFields_image_Delete
+}
+
+type MerchDocAccessFields_image_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_image_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_image_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_image_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_sizes {
+  create: MerchDocAccessFields_sizes_Create
+  read: MerchDocAccessFields_sizes_Read
+  update: MerchDocAccessFields_sizes_Update
+  delete: MerchDocAccessFields_sizes_Delete
+  fields: MerchDocAccessFields_sizes_Fields
+}
+
+type MerchDocAccessFields_sizes_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_sizes_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_sizes_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_sizes_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_sizes_Fields {
+  size: MerchDocAccessFields_sizes_size
+  id: MerchDocAccessFields_sizes_id
+}
+
+type MerchDocAccessFields_sizes_size {
+  create: MerchDocAccessFields_sizes_size_Create
+  read: MerchDocAccessFields_sizes_size_Read
+  update: MerchDocAccessFields_sizes_size_Update
+  delete: MerchDocAccessFields_sizes_size_Delete
+}
+
+type MerchDocAccessFields_sizes_size_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_sizes_size_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_sizes_size_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_sizes_size_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_sizes_id {
+  create: MerchDocAccessFields_sizes_id_Create
+  read: MerchDocAccessFields_sizes_id_Read
+  update: MerchDocAccessFields_sizes_id_Update
+  delete: MerchDocAccessFields_sizes_id_Delete
+}
+
+type MerchDocAccessFields_sizes_id_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_sizes_id_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_sizes_id_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_sizes_id_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours {
+  create: MerchDocAccessFields_colours_Create
+  read: MerchDocAccessFields_colours_Read
+  update: MerchDocAccessFields_colours_Update
+  delete: MerchDocAccessFields_colours_Delete
+  fields: MerchDocAccessFields_colours_Fields
+}
+
+type MerchDocAccessFields_colours_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_Fields {
+  colour: MerchDocAccessFields_colours_colour
+  hexValue: MerchDocAccessFields_colours_hexValue
+  id: MerchDocAccessFields_colours_id
+}
+
+type MerchDocAccessFields_colours_colour {
+  create: MerchDocAccessFields_colours_colour_Create
+  read: MerchDocAccessFields_colours_colour_Read
+  update: MerchDocAccessFields_colours_colour_Update
+  delete: MerchDocAccessFields_colours_colour_Delete
+}
+
+type MerchDocAccessFields_colours_colour_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_colour_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_colour_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_colour_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_hexValue {
+  create: MerchDocAccessFields_colours_hexValue_Create
+  read: MerchDocAccessFields_colours_hexValue_Read
+  update: MerchDocAccessFields_colours_hexValue_Update
+  delete: MerchDocAccessFields_colours_hexValue_Delete
+}
+
+type MerchDocAccessFields_colours_hexValue_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_hexValue_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_hexValue_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_hexValue_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_id {
+  create: MerchDocAccessFields_colours_id_Create
+  read: MerchDocAccessFields_colours_id_Read
+  update: MerchDocAccessFields_colours_id_Update
+  delete: MerchDocAccessFields_colours_id_Delete
+}
+
+type MerchDocAccessFields_colours_id_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_id_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_id_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_colours_id_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations {
+  create: MerchDocAccessFields_variations_Create
+  read: MerchDocAccessFields_variations_Read
+  update: MerchDocAccessFields_variations_Update
+  delete: MerchDocAccessFields_variations_Delete
+  fields: MerchDocAccessFields_variations_Fields
+}
+
+type MerchDocAccessFields_variations_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_Fields {
+  variation: MerchDocAccessFields_variations_variation
+  image: MerchDocAccessFields_variations_image
+  price: MerchDocAccessFields_variations_price
+  form: MerchDocAccessFields_variations_form
+  id: MerchDocAccessFields_variations_id
+}
+
+type MerchDocAccessFields_variations_variation {
+  create: MerchDocAccessFields_variations_variation_Create
+  read: MerchDocAccessFields_variations_variation_Read
+  update: MerchDocAccessFields_variations_variation_Update
+  delete: MerchDocAccessFields_variations_variation_Delete
+}
+
+type MerchDocAccessFields_variations_variation_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_variation_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_variation_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_variation_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_image {
+  create: MerchDocAccessFields_variations_image_Create
+  read: MerchDocAccessFields_variations_image_Read
+  update: MerchDocAccessFields_variations_image_Update
+  delete: MerchDocAccessFields_variations_image_Delete
+}
+
+type MerchDocAccessFields_variations_image_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_image_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_image_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_image_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_price {
+  create: MerchDocAccessFields_variations_price_Create
+  read: MerchDocAccessFields_variations_price_Read
+  update: MerchDocAccessFields_variations_price_Update
+  delete: MerchDocAccessFields_variations_price_Delete
+}
+
+type MerchDocAccessFields_variations_price_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_price_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_price_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_price_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_form {
+  create: MerchDocAccessFields_variations_form_Create
+  read: MerchDocAccessFields_variations_form_Read
+  update: MerchDocAccessFields_variations_form_Update
+  delete: MerchDocAccessFields_variations_form_Delete
+}
+
+type MerchDocAccessFields_variations_form_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_form_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_form_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_form_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_id {
+  create: MerchDocAccessFields_variations_id_Create
+  read: MerchDocAccessFields_variations_id_Read
+  update: MerchDocAccessFields_variations_id_Update
+  delete: MerchDocAccessFields_variations_id_Delete
+}
+
+type MerchDocAccessFields_variations_id_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_id_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_id_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_variations_id_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_updatedAt {
+  create: MerchDocAccessFields_updatedAt_Create
+  read: MerchDocAccessFields_updatedAt_Read
+  update: MerchDocAccessFields_updatedAt_Update
+  delete: MerchDocAccessFields_updatedAt_Delete
+}
+
+type MerchDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_createdAt {
+  create: MerchDocAccessFields_createdAt_Create
+  read: MerchDocAccessFields_createdAt_Read
+  update: MerchDocAccessFields_createdAt_Update
+  delete: MerchDocAccessFields_createdAt_Delete
+}
+
+type MerchDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type MerchDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type MerchCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type MerchReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type MerchUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type MerchDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
 }
 
 type Redirect {
@@ -12969,6 +14048,7 @@ type Access {
   positions: positionsAccess
   votes: votesAccess
   electionResults: electionResultsAccess
+  merch: merchAccess
   redirects: redirectsAccess
   settings: settingsAccess
   header: headerAccess
@@ -17212,6 +18292,7 @@ type electionResultsAccess {
 }
 
 type ElectionResultsFields {
+  reRunElection: ElectionResultsFields_reRunElection
   election: ElectionResultsFields_election
   position: ElectionResultsFields_position
   electedNominee: ElectionResultsFields_electedNominee
@@ -17221,6 +18302,29 @@ type ElectionResultsFields {
   updatedAt: ElectionResultsFields_updatedAt
   createdAt: ElectionResultsFields_createdAt
   _status: ElectionResultsFields__status
+}
+
+type ElectionResultsFields_reRunElection {
+  create: ElectionResultsFields_reRunElection_Create
+  read: ElectionResultsFields_reRunElection_Read
+  update: ElectionResultsFields_reRunElection_Update
+  delete: ElectionResultsFields_reRunElection_Delete
+}
+
+type ElectionResultsFields_reRunElection_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_reRunElection_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_reRunElection_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_reRunElection_Delete {
+  permission: Boolean!
 }
 
 type ElectionResultsFields_election {
@@ -17651,6 +18755,481 @@ type ElectionResultsDeleteAccess {
 }
 
 type ElectionResultsReadVersionsAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type merchAccess {
+  fields: MerchFields
+  create: MerchCreateAccess
+  read: MerchReadAccess
+  update: MerchUpdateAccess
+  delete: MerchDeleteAccess
+}
+
+type MerchFields {
+  name: MerchFields_name
+  description: MerchFields_description
+  image: MerchFields_image
+  sizes: MerchFields_sizes
+  colours: MerchFields_colours
+  variations: MerchFields_variations
+  updatedAt: MerchFields_updatedAt
+  createdAt: MerchFields_createdAt
+}
+
+type MerchFields_name {
+  create: MerchFields_name_Create
+  read: MerchFields_name_Read
+  update: MerchFields_name_Update
+  delete: MerchFields_name_Delete
+}
+
+type MerchFields_name_Create {
+  permission: Boolean!
+}
+
+type MerchFields_name_Read {
+  permission: Boolean!
+}
+
+type MerchFields_name_Update {
+  permission: Boolean!
+}
+
+type MerchFields_name_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_description {
+  create: MerchFields_description_Create
+  read: MerchFields_description_Read
+  update: MerchFields_description_Update
+  delete: MerchFields_description_Delete
+}
+
+type MerchFields_description_Create {
+  permission: Boolean!
+}
+
+type MerchFields_description_Read {
+  permission: Boolean!
+}
+
+type MerchFields_description_Update {
+  permission: Boolean!
+}
+
+type MerchFields_description_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_image {
+  create: MerchFields_image_Create
+  read: MerchFields_image_Read
+  update: MerchFields_image_Update
+  delete: MerchFields_image_Delete
+}
+
+type MerchFields_image_Create {
+  permission: Boolean!
+}
+
+type MerchFields_image_Read {
+  permission: Boolean!
+}
+
+type MerchFields_image_Update {
+  permission: Boolean!
+}
+
+type MerchFields_image_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_sizes {
+  create: MerchFields_sizes_Create
+  read: MerchFields_sizes_Read
+  update: MerchFields_sizes_Update
+  delete: MerchFields_sizes_Delete
+  fields: MerchFields_sizes_Fields
+}
+
+type MerchFields_sizes_Create {
+  permission: Boolean!
+}
+
+type MerchFields_sizes_Read {
+  permission: Boolean!
+}
+
+type MerchFields_sizes_Update {
+  permission: Boolean!
+}
+
+type MerchFields_sizes_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_sizes_Fields {
+  size: MerchFields_sizes_size
+  id: MerchFields_sizes_id
+}
+
+type MerchFields_sizes_size {
+  create: MerchFields_sizes_size_Create
+  read: MerchFields_sizes_size_Read
+  update: MerchFields_sizes_size_Update
+  delete: MerchFields_sizes_size_Delete
+}
+
+type MerchFields_sizes_size_Create {
+  permission: Boolean!
+}
+
+type MerchFields_sizes_size_Read {
+  permission: Boolean!
+}
+
+type MerchFields_sizes_size_Update {
+  permission: Boolean!
+}
+
+type MerchFields_sizes_size_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_sizes_id {
+  create: MerchFields_sizes_id_Create
+  read: MerchFields_sizes_id_Read
+  update: MerchFields_sizes_id_Update
+  delete: MerchFields_sizes_id_Delete
+}
+
+type MerchFields_sizes_id_Create {
+  permission: Boolean!
+}
+
+type MerchFields_sizes_id_Read {
+  permission: Boolean!
+}
+
+type MerchFields_sizes_id_Update {
+  permission: Boolean!
+}
+
+type MerchFields_sizes_id_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_colours {
+  create: MerchFields_colours_Create
+  read: MerchFields_colours_Read
+  update: MerchFields_colours_Update
+  delete: MerchFields_colours_Delete
+  fields: MerchFields_colours_Fields
+}
+
+type MerchFields_colours_Create {
+  permission: Boolean!
+}
+
+type MerchFields_colours_Read {
+  permission: Boolean!
+}
+
+type MerchFields_colours_Update {
+  permission: Boolean!
+}
+
+type MerchFields_colours_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_colours_Fields {
+  colour: MerchFields_colours_colour
+  hexValue: MerchFields_colours_hexValue
+  id: MerchFields_colours_id
+}
+
+type MerchFields_colours_colour {
+  create: MerchFields_colours_colour_Create
+  read: MerchFields_colours_colour_Read
+  update: MerchFields_colours_colour_Update
+  delete: MerchFields_colours_colour_Delete
+}
+
+type MerchFields_colours_colour_Create {
+  permission: Boolean!
+}
+
+type MerchFields_colours_colour_Read {
+  permission: Boolean!
+}
+
+type MerchFields_colours_colour_Update {
+  permission: Boolean!
+}
+
+type MerchFields_colours_colour_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_colours_hexValue {
+  create: MerchFields_colours_hexValue_Create
+  read: MerchFields_colours_hexValue_Read
+  update: MerchFields_colours_hexValue_Update
+  delete: MerchFields_colours_hexValue_Delete
+}
+
+type MerchFields_colours_hexValue_Create {
+  permission: Boolean!
+}
+
+type MerchFields_colours_hexValue_Read {
+  permission: Boolean!
+}
+
+type MerchFields_colours_hexValue_Update {
+  permission: Boolean!
+}
+
+type MerchFields_colours_hexValue_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_colours_id {
+  create: MerchFields_colours_id_Create
+  read: MerchFields_colours_id_Read
+  update: MerchFields_colours_id_Update
+  delete: MerchFields_colours_id_Delete
+}
+
+type MerchFields_colours_id_Create {
+  permission: Boolean!
+}
+
+type MerchFields_colours_id_Read {
+  permission: Boolean!
+}
+
+type MerchFields_colours_id_Update {
+  permission: Boolean!
+}
+
+type MerchFields_colours_id_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_variations {
+  create: MerchFields_variations_Create
+  read: MerchFields_variations_Read
+  update: MerchFields_variations_Update
+  delete: MerchFields_variations_Delete
+  fields: MerchFields_variations_Fields
+}
+
+type MerchFields_variations_Create {
+  permission: Boolean!
+}
+
+type MerchFields_variations_Read {
+  permission: Boolean!
+}
+
+type MerchFields_variations_Update {
+  permission: Boolean!
+}
+
+type MerchFields_variations_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_variations_Fields {
+  variation: MerchFields_variations_variation
+  image: MerchFields_variations_image
+  price: MerchFields_variations_price
+  form: MerchFields_variations_form
+  id: MerchFields_variations_id
+}
+
+type MerchFields_variations_variation {
+  create: MerchFields_variations_variation_Create
+  read: MerchFields_variations_variation_Read
+  update: MerchFields_variations_variation_Update
+  delete: MerchFields_variations_variation_Delete
+}
+
+type MerchFields_variations_variation_Create {
+  permission: Boolean!
+}
+
+type MerchFields_variations_variation_Read {
+  permission: Boolean!
+}
+
+type MerchFields_variations_variation_Update {
+  permission: Boolean!
+}
+
+type MerchFields_variations_variation_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_variations_image {
+  create: MerchFields_variations_image_Create
+  read: MerchFields_variations_image_Read
+  update: MerchFields_variations_image_Update
+  delete: MerchFields_variations_image_Delete
+}
+
+type MerchFields_variations_image_Create {
+  permission: Boolean!
+}
+
+type MerchFields_variations_image_Read {
+  permission: Boolean!
+}
+
+type MerchFields_variations_image_Update {
+  permission: Boolean!
+}
+
+type MerchFields_variations_image_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_variations_price {
+  create: MerchFields_variations_price_Create
+  read: MerchFields_variations_price_Read
+  update: MerchFields_variations_price_Update
+  delete: MerchFields_variations_price_Delete
+}
+
+type MerchFields_variations_price_Create {
+  permission: Boolean!
+}
+
+type MerchFields_variations_price_Read {
+  permission: Boolean!
+}
+
+type MerchFields_variations_price_Update {
+  permission: Boolean!
+}
+
+type MerchFields_variations_price_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_variations_form {
+  create: MerchFields_variations_form_Create
+  read: MerchFields_variations_form_Read
+  update: MerchFields_variations_form_Update
+  delete: MerchFields_variations_form_Delete
+}
+
+type MerchFields_variations_form_Create {
+  permission: Boolean!
+}
+
+type MerchFields_variations_form_Read {
+  permission: Boolean!
+}
+
+type MerchFields_variations_form_Update {
+  permission: Boolean!
+}
+
+type MerchFields_variations_form_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_variations_id {
+  create: MerchFields_variations_id_Create
+  read: MerchFields_variations_id_Read
+  update: MerchFields_variations_id_Update
+  delete: MerchFields_variations_id_Delete
+}
+
+type MerchFields_variations_id_Create {
+  permission: Boolean!
+}
+
+type MerchFields_variations_id_Read {
+  permission: Boolean!
+}
+
+type MerchFields_variations_id_Update {
+  permission: Boolean!
+}
+
+type MerchFields_variations_id_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_updatedAt {
+  create: MerchFields_updatedAt_Create
+  read: MerchFields_updatedAt_Read
+  update: MerchFields_updatedAt_Update
+  delete: MerchFields_updatedAt_Delete
+}
+
+type MerchFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type MerchFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type MerchFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type MerchFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type MerchFields_createdAt {
+  create: MerchFields_createdAt_Create
+  read: MerchFields_createdAt_Read
+  update: MerchFields_createdAt_Update
+  delete: MerchFields_createdAt_Delete
+}
+
+type MerchFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type MerchFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type MerchFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type MerchFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type MerchCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type MerchReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type MerchUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type MerchDeleteAccess {
   permission: Boolean!
   where: JSONObject
 }
@@ -18556,6 +20135,9 @@ type Mutation {
   updateElectionResult(id: String!, data: mutationElectionResultUpdateInput!, draft: Boolean, autosave: Boolean): ElectionResult
   deleteElectionResult(id: String!): ElectionResult
   restoreVersionElectionResult(id: String): ElectionResult
+  createMerch(data: mutationMerchInput!, draft: Boolean): Merch
+  updateMerch(id: String!, data: mutationMerchUpdateInput!, draft: Boolean, autosave: Boolean): Merch
+  deleteMerch(id: String!): Merch
   createRedirect(data: mutationRedirectInput!, draft: Boolean): Redirect
   updateRedirect(id: String!, data: mutationRedirectUpdateInput!, draft: Boolean, autosave: Boolean): Redirect
   deleteRedirect(id: String!): Redirect
@@ -19330,6 +20912,66 @@ enum ElectionResultUpdate_Rounds_Votes_state_MutationInput {
 enum ElectionResultUpdate__status_MutationInput {
   draft
   published
+}
+
+input mutationMerchInput {
+  name: String!
+  description: JSON
+  image: String
+  sizes: [mutationMerch_SizesInput]
+  colours: [mutationMerch_ColoursInput]
+  variations: [mutationMerch_VariationsInput!]
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationMerch_SizesInput {
+  size: String!
+  id: String
+}
+
+input mutationMerch_ColoursInput {
+  colour: String!
+  hexValue: String
+  id: String
+}
+
+input mutationMerch_VariationsInput {
+  variation: String!
+  image: String
+  price: Float!
+  form: String
+  id: String
+}
+
+input mutationMerchUpdateInput {
+  name: String
+  description: JSON
+  image: String
+  sizes: [mutationMerchUpdate_SizesInput]
+  colours: [mutationMerchUpdate_ColoursInput]
+  variations: [mutationMerchUpdate_VariationsInput]
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationMerchUpdate_SizesInput {
+  size: String!
+  id: String
+}
+
+input mutationMerchUpdate_ColoursInput {
+  colour: String!
+  hexValue: String
+  id: String
+}
+
+input mutationMerchUpdate_VariationsInput {
+  variation: String!
+  image: String
+  price: Float!
+  form: String
+  id: String
 }
 
 input mutationRedirectInput {

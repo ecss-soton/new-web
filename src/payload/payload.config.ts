@@ -26,6 +26,7 @@ import { seed } from './endpoints/seed';
 import { Footer } from './globals/Footer';
 import { Header } from './globals/Header';
 import { Settings } from './globals/Settings';
+import Merch from './collections/Merch';
 
 const generateTitle: GenerateTitle = () => 'My Website';
 
@@ -71,6 +72,7 @@ export default buildConfig({
     Positions,
     Votes,
     ElectionResults,
+    Merch,
   ],
   globals: [Settings, Header, Footer],
   typescript: {

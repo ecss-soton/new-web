@@ -21,6 +21,7 @@ export interface Config {
     positions: Position;
     votes: Vote;
     electionResults: ElectionResult;
+    merch: Merch;
     redirects: Redirect;
   };
   globals: {
@@ -736,6 +737,33 @@ export interface ElectionResult {
   updatedAt: string;
   createdAt: string;
   _status?: 'draft' | 'published';
+}
+
+export interface Merch {
+  id: string;
+  name: string;
+  description?: {
+    [k: string]: unknown;
+  }[];
+  image?: string | Media;
+  sizes?: {
+    size: string;
+    id?: string;
+  }[];
+  colours?: {
+    colour: string;
+    hexValue?: string;
+    id?: string;
+  }[];
+  variations: {
+    variation: string;
+    image?: string | Media;
+    price: number;
+    form?: string;
+    id?: string;
+  }[];
+  updatedAt: string;
+  createdAt: string;
 }
 
 export interface Redirect {
