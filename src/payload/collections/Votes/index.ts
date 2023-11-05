@@ -4,6 +4,7 @@ import Groups from '../groups';
 import { voteIsUnique } from './validate/voteIsUnique';
 import { validatePreferences } from './validate/validatePreferences';
 import { validateRONPosition } from './validate/validateRONPosition';
+import { user } from '../../access/user';
 
 const Votes: CollectionConfig = {
   slug: 'votes',
@@ -11,7 +12,7 @@ const Votes: CollectionConfig = {
     read: () => false,
     update: () => false,
     delete: () => false,
-    create: () => true,
+    create: user,
   },
   admin: {
     group: Groups.Elections,

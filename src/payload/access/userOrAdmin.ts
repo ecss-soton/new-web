@@ -1,8 +1,8 @@
 import { Access } from 'payload/config';
 import { checkRole } from '../collections/Users/checkRole';
-import { Merch } from '../payload-types';
+import { User } from '../payload-types';
 
-export const userOrAdmin: Access<Merch> = ({ req: { user } }) => {
+export const userOrAdmin: Access<{ user: string | User }> = ({ req: { user } }) => {
   if (!user) {
     return false;
   }

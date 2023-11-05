@@ -4,12 +4,13 @@ import Groups from '../groups';
 import { admins } from '../../access/admins';
 import { userOrAdmin } from '../../access/userOrAdmin';
 import { includedForm } from './validate/includedForm';
+import { user } from '../../access/user';
 
 const OrderedTickets: CollectionConfig = {
   slug: 'orderedTickets',
   access: {
     read: userOrAdmin,
-    create: () => true,
+    create: user,
     update: admins,
     delete: admins,
   },

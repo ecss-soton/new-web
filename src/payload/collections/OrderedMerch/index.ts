@@ -5,6 +5,7 @@ import { admins } from '../../access/admins';
 import { userOrAdmin } from '../../access/userOrAdmin';
 import { matchesMerch } from './validate/matchesMerch';
 import { includedForm } from './validate/includedForm';
+import { user } from '../../access/user';
 
 const OrderedMerch: CollectionConfig = {
   slug: 'orderedMerch',
@@ -18,7 +19,7 @@ const OrderedMerch: CollectionConfig = {
   },
   access: {
     read: userOrAdmin,
-    create: () => true,
+    create: user,
     update: admins,
     delete: admins,
   },

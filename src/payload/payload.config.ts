@@ -29,6 +29,7 @@ import Sales from './collections/Sales';
 import Tickets from './collections/Tickets';
 import OrderedTickets from './collections/OrderedTickets';
 import OrderedMerch from './collections/OrderedMerch';
+import Orders from './collections/Orders';
 
 dotenv.config({
   path: path.resolve(__dirname, '../../.env'),
@@ -77,6 +78,7 @@ export default buildConfig({
     Tickets,
     OrderedTickets,
     OrderedMerch,
+    Orders,
   ],
   globals: [Settings, Header, Footer],
   typescript: {

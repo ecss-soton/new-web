@@ -26,6 +26,7 @@ export interface Config {
     tickets: Ticket;
     orderedTickets: OrderedTicket;
     orderedMerch: OrderedMerch;
+    orders: Order;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -929,6 +930,36 @@ export interface OrderedMerch {
   colour?: string;
   variation: string;
   form?: string | FormSubmission;
+  updatedAt: string;
+  createdAt: string;
+}
+
+export interface Order {
+  id: string;
+  user: string | User;
+  items:
+    | (
+    | {
+    value: string;
+    relationTo: 'orderedMerch';
+  }
+    | {
+    value: string;
+    relationTo: 'orderedTickets';
+  }
+    )[]
+    | (
+    | {
+    value: OrderedMerch;
+    relationTo: 'orderedMerch';
+  }
+    | {
+    value: OrderedTicket;
+    relationTo: 'orderedTickets';
+  }
+    )[];
+  price?: number;
+  status: 'basket' | 'pending' | 'failed' | 'completed';
   updatedAt: string;
   createdAt: string;
 }

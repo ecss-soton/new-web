@@ -62,6 +62,9 @@ type Query {
   OrderedMerch(id: String!, draft: Boolean): OrderedMerch
   allOrderedMerch(where: OrderedMerch_where, draft: Boolean, page: Int, limit: Int, sort: String): allOrderedMerch
   docAccessOrderedMerch(id: String!): orderedMerchDocAccess
+  Order(id: String!, draft: Boolean): Order
+  Orders(where: Order_where, draft: Boolean, page: Int, limit: Int, sort: String): Orders
+  docAccessOrder(id: String!): ordersDocAccess
   Redirect(id: String!, draft: Boolean): Redirect
   Redirects(where: Redirect_where, draft: Boolean, page: Int, limit: Int, sort: String): Redirects
   docAccessRedirect(id: String!): redirectsDocAccess
@@ -12785,6 +12788,332 @@ type OrderedMerchDeleteDocAccess {
   where: JSONObject
 }
 
+type Order {
+  id: String
+  user: User!
+  items: [Order_Items_Relationship!]!
+  price: Float
+  status: Order_status!
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+type Order_Items_Relationship {
+  relationTo: Order_Items_RelationTo
+  value: Order_Items
+}
+
+enum Order_Items_RelationTo {
+  orderedMerch
+  orderedTickets
+}
+
+union Order_Items = OrderedMerch | OrderedTicket
+
+enum Order_status {
+  basket
+  pending
+  failed
+  completed
+}
+
+type Orders {
+  docs: [Order]
+  totalDocs: Int
+  offset: Int
+  limit: Int
+  totalPages: Int
+  page: Int
+  pagingCounter: Int
+  hasPrevPage: Boolean
+  hasNextPage: Boolean
+  prevPage: Int
+  nextPage: Int
+}
+
+input Order_where {
+  user: Order_user_operator
+  items: Order_items_Relation
+  price: Order_price_operator
+  status: Order_status_operator
+  updatedAt: Order_updatedAt_operator
+  createdAt: Order_createdAt_operator
+  id: Order_id_operator
+  OR: [Order_where_or]
+  AND: [Order_where_and]
+}
+
+input Order_user_operator {
+  equals: String
+  not_equals: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Order_items_Relation {
+  relationTo: Order_items_Relation_RelationTo
+  value: String
+}
+
+enum Order_items_Relation_RelationTo {
+  orderedMerch
+  orderedTickets
+}
+
+input Order_price_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Order_status_operator {
+  equals: Order_status_Input
+  not_equals: Order_status_Input
+  in: [Order_status_Input]
+  not_in: [Order_status_Input]
+  all: [Order_status_Input]
+}
+
+enum Order_status_Input {
+  basket
+  pending
+  failed
+  completed
+}
+
+input Order_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Order_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Order_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Order_where_or {
+  user: Order_user_operator
+  items: Order_items_Relation
+  price: Order_price_operator
+  status: Order_status_operator
+  updatedAt: Order_updatedAt_operator
+  createdAt: Order_createdAt_operator
+  id: Order_id_operator
+}
+
+input Order_where_and {
+  user: Order_user_operator
+  items: Order_items_Relation
+  price: Order_price_operator
+  status: Order_status_operator
+  updatedAt: Order_updatedAt_operator
+  createdAt: Order_createdAt_operator
+  id: Order_id_operator
+}
+
+type ordersDocAccess {
+  fields: OrdersDocAccessFields
+  create: OrdersCreateDocAccess
+  read: OrdersReadDocAccess
+  update: OrdersUpdateDocAccess
+  delete: OrdersDeleteDocAccess
+}
+
+type OrdersDocAccessFields {
+  user: OrdersDocAccessFields_user
+  items: OrdersDocAccessFields_items
+  price: OrdersDocAccessFields_price
+  status: OrdersDocAccessFields_status
+  updatedAt: OrdersDocAccessFields_updatedAt
+  createdAt: OrdersDocAccessFields_createdAt
+}
+
+type OrdersDocAccessFields_user {
+  create: OrdersDocAccessFields_user_Create
+  read: OrdersDocAccessFields_user_Read
+  update: OrdersDocAccessFields_user_Update
+  delete: OrdersDocAccessFields_user_Delete
+}
+
+type OrdersDocAccessFields_user_Create {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_user_Read {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_user_Update {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_user_Delete {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_items {
+  create: OrdersDocAccessFields_items_Create
+  read: OrdersDocAccessFields_items_Read
+  update: OrdersDocAccessFields_items_Update
+  delete: OrdersDocAccessFields_items_Delete
+}
+
+type OrdersDocAccessFields_items_Create {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_items_Read {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_items_Update {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_items_Delete {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_price {
+  create: OrdersDocAccessFields_price_Create
+  read: OrdersDocAccessFields_price_Read
+  update: OrdersDocAccessFields_price_Update
+  delete: OrdersDocAccessFields_price_Delete
+}
+
+type OrdersDocAccessFields_price_Create {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_price_Read {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_price_Update {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_price_Delete {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_status {
+  create: OrdersDocAccessFields_status_Create
+  read: OrdersDocAccessFields_status_Read
+  update: OrdersDocAccessFields_status_Update
+  delete: OrdersDocAccessFields_status_Delete
+}
+
+type OrdersDocAccessFields_status_Create {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_status_Read {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_status_Update {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_status_Delete {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_updatedAt {
+  create: OrdersDocAccessFields_updatedAt_Create
+  read: OrdersDocAccessFields_updatedAt_Read
+  update: OrdersDocAccessFields_updatedAt_Update
+  delete: OrdersDocAccessFields_updatedAt_Delete
+}
+
+type OrdersDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_createdAt {
+  create: OrdersDocAccessFields_createdAt_Create
+  read: OrdersDocAccessFields_createdAt_Read
+  update: OrdersDocAccessFields_createdAt_Update
+  delete: OrdersDocAccessFields_createdAt_Delete
+}
+
+type OrdersDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type OrdersCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type OrdersReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type OrdersUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type OrdersDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type Redirect {
   id: String
   from: String!
@@ -14926,6 +15255,7 @@ type Access {
   tickets: ticketsAccess
   orderedTickets: orderedTicketsAccess
   orderedMerch: orderedMerchAccess
+  orders: ordersAccess
   redirects: redirectsAccess
   forms: formsAccess
   form_submissions: form_submissionsAccess
@@ -20441,6 +20771,181 @@ type OrderedMerchDeleteAccess {
   where: JSONObject
 }
 
+type ordersAccess {
+  fields: OrdersFields
+  create: OrdersCreateAccess
+  read: OrdersReadAccess
+  update: OrdersUpdateAccess
+  delete: OrdersDeleteAccess
+}
+
+type OrdersFields {
+  user: OrdersFields_user
+  items: OrdersFields_items
+  price: OrdersFields_price
+  status: OrdersFields_status
+  updatedAt: OrdersFields_updatedAt
+  createdAt: OrdersFields_createdAt
+}
+
+type OrdersFields_user {
+  create: OrdersFields_user_Create
+  read: OrdersFields_user_Read
+  update: OrdersFields_user_Update
+  delete: OrdersFields_user_Delete
+}
+
+type OrdersFields_user_Create {
+  permission: Boolean!
+}
+
+type OrdersFields_user_Read {
+  permission: Boolean!
+}
+
+type OrdersFields_user_Update {
+  permission: Boolean!
+}
+
+type OrdersFields_user_Delete {
+  permission: Boolean!
+}
+
+type OrdersFields_items {
+  create: OrdersFields_items_Create
+  read: OrdersFields_items_Read
+  update: OrdersFields_items_Update
+  delete: OrdersFields_items_Delete
+}
+
+type OrdersFields_items_Create {
+  permission: Boolean!
+}
+
+type OrdersFields_items_Read {
+  permission: Boolean!
+}
+
+type OrdersFields_items_Update {
+  permission: Boolean!
+}
+
+type OrdersFields_items_Delete {
+  permission: Boolean!
+}
+
+type OrdersFields_price {
+  create: OrdersFields_price_Create
+  read: OrdersFields_price_Read
+  update: OrdersFields_price_Update
+  delete: OrdersFields_price_Delete
+}
+
+type OrdersFields_price_Create {
+  permission: Boolean!
+}
+
+type OrdersFields_price_Read {
+  permission: Boolean!
+}
+
+type OrdersFields_price_Update {
+  permission: Boolean!
+}
+
+type OrdersFields_price_Delete {
+  permission: Boolean!
+}
+
+type OrdersFields_status {
+  create: OrdersFields_status_Create
+  read: OrdersFields_status_Read
+  update: OrdersFields_status_Update
+  delete: OrdersFields_status_Delete
+}
+
+type OrdersFields_status_Create {
+  permission: Boolean!
+}
+
+type OrdersFields_status_Read {
+  permission: Boolean!
+}
+
+type OrdersFields_status_Update {
+  permission: Boolean!
+}
+
+type OrdersFields_status_Delete {
+  permission: Boolean!
+}
+
+type OrdersFields_updatedAt {
+  create: OrdersFields_updatedAt_Create
+  read: OrdersFields_updatedAt_Read
+  update: OrdersFields_updatedAt_Update
+  delete: OrdersFields_updatedAt_Delete
+}
+
+type OrdersFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type OrdersFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type OrdersFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type OrdersFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type OrdersFields_createdAt {
+  create: OrdersFields_createdAt_Create
+  read: OrdersFields_createdAt_Read
+  update: OrdersFields_createdAt_Update
+  delete: OrdersFields_createdAt_Delete
+}
+
+type OrdersFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type OrdersFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type OrdersFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type OrdersFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type OrdersCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type OrdersReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type OrdersUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type OrdersDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type redirectsAccess {
   fields: RedirectsFields
   create: RedirectsCreateAccess
@@ -22031,6 +22536,9 @@ type Mutation {
   createOrderedMerch(data: mutationOrderedMerchInput!, draft: Boolean): OrderedMerch
   updateOrderedMerch(id: String!, data: mutationOrderedMerchUpdateInput!, draft: Boolean, autosave: Boolean): OrderedMerch
   deleteOrderedMerch(id: String!): OrderedMerch
+  createOrder(data: mutationOrderInput!, draft: Boolean): Order
+  updateOrder(id: String!, data: mutationOrderUpdateInput!, draft: Boolean, autosave: Boolean): Order
+  deleteOrder(id: String!): Order
   createRedirect(data: mutationRedirectInput!, draft: Boolean): Redirect
   updateRedirect(id: String!, data: mutationRedirectUpdateInput!, draft: Boolean, autosave: Boolean): Redirect
   deleteRedirect(id: String!): Redirect
@@ -22907,6 +23415,58 @@ input mutationOrderedMerchUpdateInput {
   form: String
   updatedAt: String
   createdAt: String
+}
+
+input mutationOrderInput {
+  user: String
+  items: [Order_ItemsRelationshipInput]
+  price: Float
+  status: Order_status_MutationInput!
+  updatedAt: String
+  createdAt: String
+}
+
+input Order_ItemsRelationshipInput {
+  relationTo: Order_ItemsRelationshipInputRelationTo
+  value: JSON
+}
+
+enum Order_ItemsRelationshipInputRelationTo {
+  orderedMerch
+  orderedTickets
+}
+
+enum Order_status_MutationInput {
+  basket
+  pending
+  failed
+  completed
+}
+
+input mutationOrderUpdateInput {
+  user: String
+  items: [OrderUpdate_ItemsRelationshipInput]
+  price: Float
+  status: OrderUpdate_status_MutationInput
+  updatedAt: String
+  createdAt: String
+}
+
+input OrderUpdate_ItemsRelationshipInput {
+  relationTo: OrderUpdate_ItemsRelationshipInputRelationTo
+  value: JSON
+}
+
+enum OrderUpdate_ItemsRelationshipInputRelationTo {
+  orderedMerch
+  orderedTickets
+}
+
+enum OrderUpdate_status_MutationInput {
+  basket
+  pending
+  failed
+  completed
 }
 
 input mutationRedirectInput {

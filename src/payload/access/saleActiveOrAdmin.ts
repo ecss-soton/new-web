@@ -8,17 +8,8 @@ export const saleActiveOrAdmin: Access<Merch> = ({ req: { user } }) => {
   }
 
   return {
-    and: [
-      {
-        'sale.saleStart': {
-          less_than_equal: new Date().toISOString(),
-        },
-      },
-      {
-        'sale.saleEnd': {
-          greater_than_equal: new Date().toISOString(),
-        },
-      },
-    ],
+    'sale.saleStart': {
+      less_than_equal: new Date().toISOString(),
+    },
   };
 };
