@@ -22,7 +22,13 @@ export interface Config {
     votes: Vote;
     electionResults: ElectionResult;
     merch: Merch;
+    sales: Sale;
+    tickets: Ticket;
+    orderedTickets: OrderedTicket;
+    orderedMerch: OrderedMerch;
     redirects: Redirect;
+    forms: Form;
+    'form-submissions': FormSubmission;
   };
   globals: {
     settings: Settings;
@@ -170,11 +176,6 @@ export interface Page {
   }
     )[];
   slug?: string;
-  meta?: {
-    title?: string;
-    description?: string;
-    image?: string | Media;
-  };
   updatedAt: string;
   createdAt: string;
   _status?: 'draft' | 'published';
@@ -470,11 +471,6 @@ export interface Post {
     )[];
   relatedPosts?: string[] | Post[];
   slug?: string;
-  meta?: {
-    title?: string;
-    description?: string;
-    image?: string | Media;
-  };
   updatedAt: string;
   createdAt: string;
   _status?: 'draft' | 'published';
@@ -638,11 +634,6 @@ export interface Project {
     )[];
   relatedProjects?: string[] | Project[];
   slug?: string;
-  meta?: {
-    title?: string;
-    description?: string;
-    image?: string | Media;
-  };
   updatedAt: string;
   createdAt: string;
   _status?: 'draft' | 'published';
@@ -742,16 +733,17 @@ export interface ElectionResult {
 export interface Merch {
   id: string;
   name: string;
+  sale: string | Sale;
   description?: {
     [k: string]: unknown;
   }[];
-  image?: string | Media;
   sizes?: {
     size: string;
     id?: string;
   }[];
   colours?: {
     colour: string;
+    image?: string | Media;
     hexValue?: string;
     id?: string;
   }[];
@@ -759,9 +751,184 @@ export interface Merch {
     variation: string;
     image?: string | Media;
     price: number;
-    form?: string;
+    form?: string | Form;
     id?: string;
   }[];
+  updatedAt: string;
+  createdAt: string;
+}
+
+export interface Sale {
+  id: string;
+  name: string;
+  saleStart: string;
+  saleEnd: string;
+  updatedAt: string;
+  createdAt: string;
+}
+
+export interface Form {
+  id: string;
+  title: string;
+  fields?: (
+    | {
+    name: string;
+    label?: string;
+    width?: number;
+    defaultValue?: string;
+    required?: boolean;
+    id?: string;
+    blockName?: string;
+    blockType: 'text';
+  }
+    | {
+    name: string;
+    label?: string;
+    width?: number;
+    defaultValue?: string;
+    required?: boolean;
+    id?: string;
+    blockName?: string;
+    blockType: 'textarea';
+  }
+    | {
+    name: string;
+    label?: string;
+    width?: number;
+    defaultValue?: string;
+    options?: {
+      label: string;
+      value: string;
+      id?: string;
+    }[];
+    required?: boolean;
+    id?: string;
+    blockName?: string;
+    blockType: 'select';
+  }
+    | {
+    name: string;
+    label?: string;
+    width?: number;
+    required?: boolean;
+    id?: string;
+    blockName?: string;
+    blockType: 'email';
+  }
+    | {
+    name: string;
+    label?: string;
+    width?: number;
+    required?: boolean;
+    id?: string;
+    blockName?: string;
+    blockType: 'state';
+  }
+    | {
+    name: string;
+    label?: string;
+    width?: number;
+    required?: boolean;
+    id?: string;
+    blockName?: string;
+    blockType: 'country';
+  }
+    | {
+    name: string;
+    label?: string;
+    width?: number;
+    defaultValue?: number;
+    required?: boolean;
+    id?: string;
+    blockName?: string;
+    blockType: 'number';
+  }
+    | {
+    name: string;
+    label?: string;
+    width?: number;
+    required?: boolean;
+    defaultValue?: boolean;
+    id?: string;
+    blockName?: string;
+    blockType: 'checkbox';
+  }
+    | {
+    message?: {
+      [k: string]: unknown;
+    }[];
+    id?: string;
+    blockName?: string;
+    blockType: 'message';
+  }
+    )[];
+  submitButtonLabel?: string;
+  confirmationType?: 'message' | 'redirect';
+  confirmationMessage: {
+    [k: string]: unknown;
+  }[];
+  redirect?: {
+    url: string;
+  };
+  emails?: {
+    emailTo?: string;
+    cc?: string;
+    bcc?: string;
+    replyTo?: string;
+    emailFrom?: string;
+    subject: string;
+    message?: {
+      [k: string]: unknown;
+    }[];
+    id?: string;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+
+export interface Ticket {
+  id: string;
+  name: string;
+  sale: string | Sale;
+  description?: {
+    [k: string]: unknown;
+  }[];
+  count?: number;
+  price: number;
+  form?: string | Form;
+  updatedAt: string;
+  createdAt: string;
+}
+
+export interface OrderedTicket {
+  id: string;
+  ticket: string | Ticket;
+  user: string | User;
+  form?: string | FormSubmission;
+  updatedAt: string;
+  createdAt: string;
+}
+
+export interface FormSubmission {
+  id: string;
+  form: string | Form;
+  submissionData?: {
+    field: string;
+    value: string;
+    id?: string;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+
+export interface OrderedMerch {
+  id: string;
+  merch: string | Merch;
+  user: string | User;
+  size?: string;
+  colour?: string;
+  variation: string;
+  form?: string | FormSubmission;
   updatedAt: string;
   createdAt: string;
 }

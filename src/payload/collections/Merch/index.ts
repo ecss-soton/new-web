@@ -4,6 +4,7 @@ import { admins } from '../../access/admins';
 import Groups from '../groups';
 import { uniqueFields } from './validate/uniqueFields';
 import { isAnInt } from '../../validate/isAnInt';
+import { saleActiveOrAdmin } from '../../access/saleActiveOrAdmin';
 
 const Merch: CollectionConfig = {
   slug: 'merch',
@@ -16,8 +17,7 @@ const Merch: CollectionConfig = {
     plural: 'Merch',
   },
   access: {
-    // TODO: Update to only allow non-admins to see the item if it is on sale
-    read: (): boolean => true,
+    read: saleActiveOrAdmin,
     create: admins,
     update: admins,
     delete: admins,
@@ -25,7 +25,7 @@ const Merch: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     group: Groups.Commerce,
-    defaultColumns: ['image', 'name', 'description'],
+    defaultColumns: ['name', 'sale', 'description'],
   },
   fields: [
     {
@@ -35,18 +35,13 @@ const Merch: CollectionConfig = {
     },
     {
       name: 'sale',
-      // TODO: Change to relationship
-      type: 'text',
+      type: 'relationship',
+      relationTo: 'sales',
       required: true,
     },
     {
       name: 'description',
       type: 'richText',
-    },
-    {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
     },
     {
       name: 'sizes',
@@ -92,7 +87,7 @@ const Merch: CollectionConfig = {
           name: 'variation',
           type: 'text',
           required: true,
-          defaultValue: 'Main',
+          defaultValue: 'main',
         },
         {
           name: 'image',
@@ -106,11 +101,14 @@ const Merch: CollectionConfig = {
           min: 1,
           validate: isAnInt,
           required: true,
+          admin: {
+            description: 'e.g. £23.52 should be 2352',
+          },
         },
         {
           name: 'form',
-          // TODO: Change to relationship
-          type: 'text',
+          type: 'relationship',
+          relationTo: 'forms',
         },
       ],
     },

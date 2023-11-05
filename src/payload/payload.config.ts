@@ -1,9 +1,7 @@
 import { payloadCloud } from '@payloadcms/plugin-cloud';
-// import formBuilder from '@payloadcms/plugin-form-builder'
+import formBuilder from '@payloadcms/plugin-form-builder';
 import nestedDocs from '@payloadcms/plugin-nested-docs';
 import redirects from '@payloadcms/plugin-redirects';
-import seo from '@payloadcms/plugin-seo';
-import type { GenerateTitle } from '@payloadcms/plugin-seo/types';
 import dotenv from 'dotenv';
 import path from 'path';
 import { buildConfig } from 'payload/config';
@@ -27,8 +25,10 @@ import { Footer } from './globals/Footer';
 import { Header } from './globals/Header';
 import { Settings } from './globals/Settings';
 import Merch from './collections/Merch';
-
-const generateTitle: GenerateTitle = () => 'My Website';
+import Sales from './collections/Sales';
+import Tickets from './collections/Tickets';
+import OrderedTickets from './collections/OrderedTickets';
+import OrderedMerch from './collections/OrderedMerch';
 
 dotenv.config({
   path: path.resolve(__dirname, '../../.env'),
@@ -73,6 +73,10 @@ export default buildConfig({
     Votes,
     ElectionResults,
     Merch,
+    Sales,
+    Tickets,
+    OrderedTickets,
+    OrderedMerch,
   ],
   globals: [Settings, Header, Footer],
   typescript: {
@@ -100,11 +104,7 @@ export default buildConfig({
     nestedDocs({
       collections: ['categories'],
     }),
-    seo({
-      collections: ['pages', 'posts', 'projects'],
-      generateTitle,
-      uploadsCollection: 'media',
-    }),
+    formBuilder({}),
     payloadCloud(),
   ],
 });
