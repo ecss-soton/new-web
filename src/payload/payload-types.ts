@@ -937,27 +937,8 @@ export interface OrderedMerch {
 export interface Order {
   id: string;
   user: string | User;
-  items:
-    | (
-    | {
-    value: string;
-    relationTo: 'orderedMerch';
-  }
-    | {
-    value: string;
-    relationTo: 'orderedTickets';
-  }
-    )[]
-    | (
-    | {
-    value: OrderedMerch;
-    relationTo: 'orderedMerch';
-  }
-    | {
-    value: OrderedTicket;
-    relationTo: 'orderedTickets';
-  }
-    )[];
+  tickets?: string[] | OrderedTicket[];
+  merch?: string[] | OrderedMerch[];
   price?: number;
   status: 'basket' | 'pending' | 'failed' | 'completed';
   updatedAt: string;

@@ -26,10 +26,10 @@ import { Header } from './globals/Header';
 import { Settings } from './globals/Settings';
 import Merch from './collections/Merch';
 import Sales from './collections/Sales';
-import Tickets from './collections/Tickets';
 import OrderedTickets from './collections/OrderedTickets';
 import OrderedMerch from './collections/OrderedMerch';
 import Orders from './collections/Orders';
+import Tickets from './collections/Tickets';
 
 dotenv.config({
   path: path.resolve(__dirname, '../../.env'),

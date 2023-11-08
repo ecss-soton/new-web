@@ -7,6 +7,7 @@ import { updatePrice } from './hooks/updatePrice';
 import { onlyOneBasket } from './access/onlyOneBasket';
 import { userOrAdmin } from '../../access/userOrAdmin';
 import { isBasket } from './access/isBasket';
+import { atLeastOneItem } from './validate/atLeastOneItem';
 
 // TODO: Check if sale active before checkout
 const Orders: CollectionConfig = {
@@ -35,12 +36,22 @@ const Orders: CollectionConfig = {
       },
     },
     {
-      name: 'items',
+      name: 'tickets',
       type: 'relationship',
-      relationTo: ['orderedMerch', 'orderedTickets'],
-      required: true,
+      relationTo: 'orderedTickets',
       hasMany: true,
-      minRows: 1,
+      filterOptions: ({ user }) => ({
+        user: {
+          equals: user.id,
+        },
+      }),
+    },
+    {
+      name: 'merch',
+      type: 'relationship',
+      relationTo: 'orderedMerch',
+      hasMany: true,
+      validate: atLeastOneItem,
       filterOptions: ({ user }) => ({
         user: {
           equals: user.id,
@@ -51,18 +62,18 @@ const Orders: CollectionConfig = {
       name: 'price',
       label: 'Price (in pence)',
       type: 'number',
-      min: 1,
+      min: 0,
       validate: isAnInt,
       admin: {
-        condition: (data) => data.price === 0 || typeof data === 'undefined',
+        readOnly: true,
         description: 'The price in pence of the order.',
       },
       hooks: {
         beforeChange: [updatePrice],
       },
       access: {
-        create: admins,
-        update: admins,
+        create: () => false,
+        update: () => false,
       },
     },
     {

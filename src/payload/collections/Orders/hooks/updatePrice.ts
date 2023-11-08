@@ -4,18 +4,15 @@ import type { Order } from '../../../payload-types';
 import { getArrayID } from '../../../utilities/getID';
 
 export const updatePrice: FieldHook<Order> = async ({
-  data, originalDoc, previousValue, req,
-}) => {
-  const IDs = getArrayID(data.items.map((i) => i.value));
+                                                      data, originalDoc, previousValue, req,
+                                                    }) => {
+  const orderedTicketIDs = getArrayID(data.tickets);
+  const orderedMerchIDs = getArrayID(data.merch);
 
-  if (originalDoc?.items && IDs === getArrayID(originalDoc.items.map((i) => i.value))) {
+  // eslint-disable-next-line max-len
+  if (getArrayID(originalDoc?.tickets) === orderedTicketIDs && getArrayID(originalDoc?.merch) === orderedMerchIDs) {
     return previousValue;
   }
-
-  // @ts-ignore
-  const orderedTicketIDs = getArrayID(data.items.filter((i) => i.relationTo === 'orderedTickets').map((i) => i.value));
-  // @ts-ignore
-  const orderedMerchIDs = getArrayID(data.items.filter((i) => i.relationTo === 'orderedMerch').map((i) => i.value));
 
   const orderedTickets = await req.payload.find({
     collection: 'orderedTickets',
