@@ -52,8 +52,11 @@ export default buildConfig({
       const checkVotes = path.resolve(__dirname, 'collections/Elections/hooks/checkVotes.ts');
       const checkNominations = path.resolve(__dirname, 'collections/Elections/hooks/checkNominations.ts');
 
+      const quickfileModule = path.resolve(__dirname, 'quickfile/index.ts');
+
       config.resolve.alias[checkVotes] = mockModule;
       config.resolve.alias[checkNominations] = mockModule;
+      config.resolve.alias[quickfileModule] = mockModule;
 
       return config;
     },
