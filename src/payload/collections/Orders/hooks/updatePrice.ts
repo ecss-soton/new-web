@@ -43,7 +43,7 @@ export const updatePrice: BeforeChangeHook<Order> = async ({
   }, 0);
 
   data.price = ticketPrice + merchPrice;
-  data.stripeTax = Math.ceil(data.price * 0.015) + 20;
+  data.stripeTax = data.price === 0 ? 0 : Math.ceil(data.price * 0.015) + 20;
 
   return data;
 };

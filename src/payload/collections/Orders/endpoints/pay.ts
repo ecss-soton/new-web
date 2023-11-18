@@ -55,6 +55,7 @@ async function stripePay(order: Order, payload: Payload): Promise<string> {
     data:
       {
         stripeID: session.id,
+        quickfileID: undefined,
         status: 'pending',
       },
   });
@@ -86,6 +87,7 @@ async function quickfilePay(order: Order, payload: Payload, user: User): Promise
     id: order.id,
     data:
       {
+        stripeID: undefined,
         quickfileID: invoiceID,
         status: 'pending',
       },
@@ -120,6 +122,20 @@ export const pay: PayloadHandler = async (req, res): Promise<void> => {
     const tickets: Set<string> = new Set(order.tickets.map((ot) => getID(ot.ticket)));
     if (!await checkTicketValid(tickets, req.payload)) {
       res.status(403).json({ error: 'Ticket no longer available' });
+      return;
+    }
+
+    if (order.price === 0) {
+      await req.payload.update({
+        collection: 'orders',
+        id,
+        data:
+          {
+            status: 'completed',
+          },
+      });
+
+      res.status(200);
       return;
     }
 
