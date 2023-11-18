@@ -2,6 +2,10 @@ import { Access } from 'payload/config';
 import { Order } from '../../../payload-types';
 
 export const onlyOneBasket: Access<Order> = async ({ req: { user, payload } }) => {
+  if (!user) {
+    return false;
+  }
+
   const orders = await payload.find({
     collection: 'orders',
     limit: 0,

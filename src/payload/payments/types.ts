@@ -9,3 +9,8 @@ export interface Invoice {
   name: string,
   items: InvoiceItem[]
 }
+
+export interface CheckoutSession {
+  url: string,
+  id: string,
+}

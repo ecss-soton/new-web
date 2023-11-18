@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { md5 } from 'md5';
+import md5 from 'md5';
 import { Invoice } from './types';
 
 const BASE_API = 'https://api.quickfile.co.uk/1_2';
@@ -20,7 +20,7 @@ function getAPIHeader(): { [key: string]: any } {
   const accountNumber = process.env.QUICK_ACCOUNT_NUMBER;
   const apiKey = process.env.QUICK_ACCOUNT_API_KEY;
   const subNumber = uuidv4();
-  const md5Hash = md5(accountNumber + apiKey + applicationID);
+  const md5Hash = md5(`${accountNumber}${apiKey}${subNumber}`);
 
   return {
     MessageType: 'Request',
@@ -46,6 +46,7 @@ async function postJSON(url: string, data: any): Promise<any> {
 }
 
 export async function createClient(username: string): Promise<number> {
+  const password = uuidv4().replaceAll('-', '').substring(0, 15);
   const payload = {
     Header: getAPIHeader(),
     Body: {
@@ -53,10 +54,10 @@ export async function createClient(username: string): Promise<number> {
       ClientContacts: {
         DefaultContact: {
           FirstName: username,
-          LastName: username,
+          Surname: username,
           Email: `${username}@soton.ac.uk`,
           TelephoneNumbers: {},
-          Password: `${username}${username}`,
+          Password: password,
         },
       },
     },
@@ -104,7 +105,7 @@ export async function sendInvoices(invoiceIDs: number[]) {
     Body: {
       SendItem: invoiceIDs.map((id) => ({
         InvoiceID: id,
-        SendByEmail: true,
+        SendByEmail: false,
         SendBySnailMail: false,
       })),
     },
@@ -127,13 +128,17 @@ export async function getInvoice(invoiceID: number): Promise<{status: string, pr
 }
 
 export async function createInvoice(invoice: Invoice): Promise<number> {
-  const items = invoice.items.map((i) => ({
-    ItemID: '0',
-    ItemName: i.name,
-    ItemDescription: i.description,
-    UnitCost: `${i.cost}`,
-    Qty: '1',
-  }));
+  const items = invoice.items.map((i) => {
+    const pounds = Math.floor((Math.abs(i.cost) / 100)) * (i.cost > 0 ? 1 : -1);
+    const pence = (Math.abs(i.cost) % 100).toString().padStart(2, '0');
+    return {
+      ItemID: 0,
+      ItemName: i.name,
+      ItemDescription: i.description,
+      UnitCost: `${pounds}.${pence}`,
+      Qty: 1,
+    };
+  });
 
   const payload = {
     Header: getAPIHeader(),
@@ -142,11 +147,15 @@ export async function createInvoice(invoice: Invoice): Promise<number> {
         InvoiceType: 'INVOICE',
         ClientID: invoice.clientID,
         Currency: 'GBP',
-        TermDays: '7',
+        TermDays: 2,
         Language: 'en',
         InvoiceDescription: invoice.name,
         InvoiceLines: { ItemLines: { ItemLine: items } },
-        Scheduling: { SingleInvoiceData: { IssueDate: new Date().toISOString() } },
+        Scheduling: {
+          SingleInvoiceData: {
+            IssueDate: new Date().toLocaleDateString('en-ca'), // yyyy-mm-dd
+          },
+        },
       },
     },
   };

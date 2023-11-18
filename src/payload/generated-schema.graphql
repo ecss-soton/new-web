@@ -674,6 +674,7 @@ type User {
   id: String
   name: String
   username: String!
+  quickfileClientID: Float
   roles: [User_roles!]
   updatedAt: DateTime
   createdAt: DateTime
@@ -6456,6 +6457,7 @@ type Users {
 input User_where {
   name: User_name_operator
   username: User_username_operator
+  quickfileClientID: User_quickfileClientID_operator
   roles: User_roles_operator
   updatedAt: User_updatedAt_operator
   createdAt: User_createdAt_operator
@@ -6484,6 +6486,16 @@ input User_username_operator {
   in: [String]
   not_in: [String]
   all: [String]
+}
+
+input User_quickfileClientID_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
 }
 
 input User_roles_operator {
@@ -6546,6 +6558,7 @@ input User_id_operator {
 input User_where_or {
   name: User_name_operator
   username: User_username_operator
+  quickfileClientID: User_quickfileClientID_operator
   roles: User_roles_operator
   updatedAt: User_updatedAt_operator
   createdAt: User_createdAt_operator
@@ -6556,6 +6569,7 @@ input User_where_or {
 input User_where_and {
   name: User_name_operator
   username: User_username_operator
+  quickfileClientID: User_quickfileClientID_operator
   roles: User_roles_operator
   updatedAt: User_updatedAt_operator
   createdAt: User_createdAt_operator
@@ -6575,6 +6589,7 @@ type usersDocAccess {
 type UsersDocAccessFields {
   name: UsersDocAccessFields_name
   username: UsersDocAccessFields_username
+  quickfileClientID: UsersDocAccessFields_quickfileClientID
   roles: UsersDocAccessFields_roles
   updatedAt: UsersDocAccessFields_updatedAt
   createdAt: UsersDocAccessFields_createdAt
@@ -6625,6 +6640,29 @@ type UsersDocAccessFields_username_Update {
 }
 
 type UsersDocAccessFields_username_Delete {
+  permission: Boolean!
+}
+
+type UsersDocAccessFields_quickfileClientID {
+  create: UsersDocAccessFields_quickfileClientID_Create
+  read: UsersDocAccessFields_quickfileClientID_Read
+  update: UsersDocAccessFields_quickfileClientID_Update
+  delete: UsersDocAccessFields_quickfileClientID_Delete
+}
+
+type UsersDocAccessFields_quickfileClientID_Create {
+  permission: Boolean!
+}
+
+type UsersDocAccessFields_quickfileClientID_Read {
+  permission: Boolean!
+}
+
+type UsersDocAccessFields_quickfileClientID_Update {
+  permission: Boolean!
+}
+
+type UsersDocAccessFields_quickfileClientID_Delete {
   permission: Boolean!
 }
 
@@ -12794,6 +12832,9 @@ type Order {
   tickets: [OrderedTicket!]
   merch: [OrderedMerch!]
   price: Float
+  stripeTax: Float
+  quickfileID: Float
+  stripeID: String
   status: Order_status!
   updatedAt: DateTime
   createdAt: DateTime
@@ -12825,6 +12866,9 @@ input Order_where {
   tickets: Order_tickets_operator
   merch: Order_merch_operator
   price: Order_price_operator
+  stripeTax: Order_stripeTax_operator
+  quickfileID: Order_quickfileID_operator
+  stripeID: Order_stripeID_operator
   status: Order_status_operator
   updatedAt: Order_updatedAt_operator
   createdAt: Order_createdAt_operator
@@ -12866,6 +12910,37 @@ input Order_price_operator {
   greater_than: Float
   less_than_equal: Float
   less_than: Float
+  exists: Boolean
+}
+
+input Order_stripeTax_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Order_quickfileID_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Order_stripeID_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
   exists: Boolean
 }
 
@@ -12922,6 +12997,9 @@ input Order_where_or {
   tickets: Order_tickets_operator
   merch: Order_merch_operator
   price: Order_price_operator
+  stripeTax: Order_stripeTax_operator
+  quickfileID: Order_quickfileID_operator
+  stripeID: Order_stripeID_operator
   status: Order_status_operator
   updatedAt: Order_updatedAt_operator
   createdAt: Order_createdAt_operator
@@ -12933,6 +13011,9 @@ input Order_where_and {
   tickets: Order_tickets_operator
   merch: Order_merch_operator
   price: Order_price_operator
+  stripeTax: Order_stripeTax_operator
+  quickfileID: Order_quickfileID_operator
+  stripeID: Order_stripeID_operator
   status: Order_status_operator
   updatedAt: Order_updatedAt_operator
   createdAt: Order_createdAt_operator
@@ -12952,6 +13033,9 @@ type OrdersDocAccessFields {
   tickets: OrdersDocAccessFields_tickets
   merch: OrdersDocAccessFields_merch
   price: OrdersDocAccessFields_price
+  stripeTax: OrdersDocAccessFields_stripeTax
+  quickfileID: OrdersDocAccessFields_quickfileID
+  stripeID: OrdersDocAccessFields_stripeID
   status: OrdersDocAccessFields_status
   updatedAt: OrdersDocAccessFields_updatedAt
   createdAt: OrdersDocAccessFields_createdAt
@@ -13046,6 +13130,75 @@ type OrdersDocAccessFields_price_Update {
 }
 
 type OrdersDocAccessFields_price_Delete {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_stripeTax {
+  create: OrdersDocAccessFields_stripeTax_Create
+  read: OrdersDocAccessFields_stripeTax_Read
+  update: OrdersDocAccessFields_stripeTax_Update
+  delete: OrdersDocAccessFields_stripeTax_Delete
+}
+
+type OrdersDocAccessFields_stripeTax_Create {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_stripeTax_Read {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_stripeTax_Update {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_stripeTax_Delete {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_quickfileID {
+  create: OrdersDocAccessFields_quickfileID_Create
+  read: OrdersDocAccessFields_quickfileID_Read
+  update: OrdersDocAccessFields_quickfileID_Update
+  delete: OrdersDocAccessFields_quickfileID_Delete
+}
+
+type OrdersDocAccessFields_quickfileID_Create {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_quickfileID_Read {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_quickfileID_Update {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_quickfileID_Delete {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_stripeID {
+  create: OrdersDocAccessFields_stripeID_Create
+  read: OrdersDocAccessFields_stripeID_Read
+  update: OrdersDocAccessFields_stripeID_Update
+  delete: OrdersDocAccessFields_stripeID_Delete
+}
+
+type OrdersDocAccessFields_stripeID_Create {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_stripeID_Read {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_stripeID_Update {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_stripeID_Delete {
   permission: Boolean!
 }
 
@@ -17653,6 +17806,7 @@ type usersAccess {
 type UsersFields {
   name: UsersFields_name
   username: UsersFields_username
+  quickfileClientID: UsersFields_quickfileClientID
   roles: UsersFields_roles
   updatedAt: UsersFields_updatedAt
   createdAt: UsersFields_createdAt
@@ -17703,6 +17857,29 @@ type UsersFields_username_Update {
 }
 
 type UsersFields_username_Delete {
+  permission: Boolean!
+}
+
+type UsersFields_quickfileClientID {
+  create: UsersFields_quickfileClientID_Create
+  read: UsersFields_quickfileClientID_Read
+  update: UsersFields_quickfileClientID_Update
+  delete: UsersFields_quickfileClientID_Delete
+}
+
+type UsersFields_quickfileClientID_Create {
+  permission: Boolean!
+}
+
+type UsersFields_quickfileClientID_Read {
+  permission: Boolean!
+}
+
+type UsersFields_quickfileClientID_Update {
+  permission: Boolean!
+}
+
+type UsersFields_quickfileClientID_Delete {
   permission: Boolean!
 }
 
@@ -20808,6 +20985,9 @@ type OrdersFields {
   tickets: OrdersFields_tickets
   merch: OrdersFields_merch
   price: OrdersFields_price
+  stripeTax: OrdersFields_stripeTax
+  quickfileID: OrdersFields_quickfileID
+  stripeID: OrdersFields_stripeID
   status: OrdersFields_status
   updatedAt: OrdersFields_updatedAt
   createdAt: OrdersFields_createdAt
@@ -20902,6 +21082,75 @@ type OrdersFields_price_Update {
 }
 
 type OrdersFields_price_Delete {
+  permission: Boolean!
+}
+
+type OrdersFields_stripeTax {
+  create: OrdersFields_stripeTax_Create
+  read: OrdersFields_stripeTax_Read
+  update: OrdersFields_stripeTax_Update
+  delete: OrdersFields_stripeTax_Delete
+}
+
+type OrdersFields_stripeTax_Create {
+  permission: Boolean!
+}
+
+type OrdersFields_stripeTax_Read {
+  permission: Boolean!
+}
+
+type OrdersFields_stripeTax_Update {
+  permission: Boolean!
+}
+
+type OrdersFields_stripeTax_Delete {
+  permission: Boolean!
+}
+
+type OrdersFields_quickfileID {
+  create: OrdersFields_quickfileID_Create
+  read: OrdersFields_quickfileID_Read
+  update: OrdersFields_quickfileID_Update
+  delete: OrdersFields_quickfileID_Delete
+}
+
+type OrdersFields_quickfileID_Create {
+  permission: Boolean!
+}
+
+type OrdersFields_quickfileID_Read {
+  permission: Boolean!
+}
+
+type OrdersFields_quickfileID_Update {
+  permission: Boolean!
+}
+
+type OrdersFields_quickfileID_Delete {
+  permission: Boolean!
+}
+
+type OrdersFields_stripeID {
+  create: OrdersFields_stripeID_Create
+  read: OrdersFields_stripeID_Read
+  update: OrdersFields_stripeID_Update
+  delete: OrdersFields_stripeID_Delete
+}
+
+type OrdersFields_stripeID_Create {
+  permission: Boolean!
+}
+
+type OrdersFields_stripeID_Read {
+  permission: Boolean!
+}
+
+type OrdersFields_stripeID_Update {
+  permission: Boolean!
+}
+
+type OrdersFields_stripeID_Delete {
   permission: Boolean!
 }
 
@@ -23042,6 +23291,7 @@ input mutationCategoryUpdate_BreadcrumbsInput {
 input mutationUserInput {
   name: String
   username: String!
+  quickfileClientID: Float
   roles: [User_roles_MutationInput]
   updatedAt: String
   createdAt: String
@@ -23063,6 +23313,7 @@ enum User_roles_MutationInput {
 input mutationUserUpdateInput {
   name: String
   username: String
+  quickfileClientID: Float
   roles: [UserUpdate_roles_MutationInput]
   updatedAt: String
   createdAt: String
@@ -23470,6 +23721,9 @@ input mutationOrderInput {
   tickets: [String]
   merch: [String]
   price: Float
+  stripeTax: Float
+  quickfileID: Float
+  stripeID: String
   status: Order_status_MutationInput!
   updatedAt: String
   createdAt: String
@@ -23487,6 +23741,9 @@ input mutationOrderUpdateInput {
   tickets: [String]
   merch: [String]
   price: Float
+  stripeTax: Float
+  quickfileID: Float
+  stripeID: String
   status: OrderUpdate_status_MutationInput
   updatedAt: String
   createdAt: String

@@ -8,6 +8,8 @@ import { onlyOneBasket } from './access/onlyOneBasket';
 import { userOrAdmin } from '../../access/userOrAdmin';
 import { isBasket } from './access/isBasket';
 import { atLeastOneItem } from './validate/atLeastOneItem';
+import { handleWebhook } from '../../payments';
+import { pay } from './endpoints/pay';
 
 // TODO: Check if sale active before checkout
 const Orders: CollectionConfig = {
@@ -17,6 +19,9 @@ const Orders: CollectionConfig = {
     create: onlyOneBasket,
     update: isBasket,
     delete: admins,
+  },
+  hooks: {
+    beforeChange: [updatePrice],
   },
   admin: {
     useAsTitle: 'name',
@@ -40,11 +45,20 @@ const Orders: CollectionConfig = {
       type: 'relationship',
       relationTo: 'orderedTickets',
       hasMany: true,
-      filterOptions: ({ user }) => ({
-        user: {
-          equals: user.id,
-        },
-      }),
+      filterOptions: ({ user }) => {
+        if (user) {
+          return {
+            user: {
+              equals: user.id,
+            },
+          };
+        }
+        return {
+          user: {
+            not_equals: undefined,
+          },
+        };
+      },
     },
     {
       name: 'merch',
@@ -52,11 +66,20 @@ const Orders: CollectionConfig = {
       relationTo: 'orderedMerch',
       hasMany: true,
       validate: atLeastOneItem,
-      filterOptions: ({ user }) => ({
-        user: {
-          equals: user.id,
-        },
-      }),
+      filterOptions: ({ user }) => {
+        if (user) {
+          return {
+            user: {
+              equals: user.id,
+            },
+          };
+        }
+        return {
+          user: {
+            not_equals: undefined,
+          },
+        };
+      },
     },
     {
       name: 'price',
@@ -68,8 +91,47 @@ const Orders: CollectionConfig = {
         readOnly: true,
         description: 'The price in pence of the order.',
       },
-      hooks: {
-        beforeChange: [updatePrice],
+      access: {
+        create: () => false,
+        update: () => false,
+      },
+    },
+    {
+      name: 'stripeTax',
+      label: 'Stripe Tax (in pence)',
+      type: 'number',
+      min: 0,
+      validate: isAnInt,
+      admin: {
+        readOnly: true,
+        description: 'The stripe tax in pence of the order.',
+      },
+      access: {
+        create: () => false,
+        update: () => false,
+      },
+    },
+    {
+      name: 'quickfileID',
+      label: 'Quickfile ID',
+      type: 'number',
+      validate: isAnInt,
+      admin: {
+        readOnly: true,
+        description: 'The quickfile invoice ID.',
+      },
+      access: {
+        create: () => false,
+        update: () => false,
+      },
+    },
+    {
+      name: 'stripeID',
+      label: 'Stripe ID',
+      type: 'text',
+      admin: {
+        readOnly: true,
+        description: 'The stripe checkout ID.',
       },
       access: {
         create: () => false,
@@ -87,6 +149,13 @@ const Orders: CollectionConfig = {
         create: admins,
         update: admins,
       },
+    },
+  ],
+  endpoints: [
+    {
+      path: '/:id/pay/:method',
+      method: 'post',
+      handler: pay,
     },
   ],
 };

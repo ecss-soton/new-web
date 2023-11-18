@@ -5,6 +5,7 @@ import adminsAndUser from './access/adminsAndUser';
 import { checkRole } from './checkRole';
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin';
 import { loginAfterCreate } from './hooks/loginAfterCreate';
+import { isAnInt } from '../../validate/isAnInt';
 
 const Users: CollectionConfig = {
   slug: 'users',
@@ -32,6 +33,12 @@ const Users: CollectionConfig = {
       name: 'username',
       type: 'text',
       required: true,
+    },
+    {
+      name: 'quickfileClientID',
+      label: 'Quickfile Client ID',
+      type: 'number',
+      validate: isAnInt,
     },
     {
       name: 'roles',

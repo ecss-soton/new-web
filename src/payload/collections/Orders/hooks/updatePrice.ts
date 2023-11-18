@@ -1,17 +1,16 @@
-import type { FieldHook } from 'payload/types';
-
+import { BeforeChangeHook } from 'payload/dist/collections/config/types';
 import type { Order } from '../../../payload-types';
 import { getArrayID } from '../../../utilities/getID';
 
-export const updatePrice: FieldHook<Order> = async ({
-                                                      data, originalDoc, previousValue, req,
-                                                    }) => {
+export const updatePrice: BeforeChangeHook<Order> = async ({
+  data, originalDoc, req,
+}) => {
   const orderedTicketIDs = getArrayID(data.tickets);
   const orderedMerchIDs = getArrayID(data.merch);
 
   // eslint-disable-next-line max-len
   if (getArrayID(originalDoc?.tickets) === orderedTicketIDs && getArrayID(originalDoc?.merch) === orderedMerchIDs) {
-    return previousValue;
+    return originalDoc;
   }
 
   const orderedTickets = await req.payload.find({
@@ -43,5 +42,8 @@ export const updatePrice: FieldHook<Order> = async ({
     return sum + variation.price;
   }, 0);
 
-  return ticketPrice + merchPrice;
+  data.price = ticketPrice + merchPrice;
+  data.stripeTax = Math.ceil(data.price * 0.015) + 20;
+
+  return data;
 };

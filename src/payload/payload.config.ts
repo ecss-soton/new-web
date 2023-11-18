@@ -30,6 +30,7 @@ import OrderedTickets from './collections/OrderedTickets';
 import OrderedMerch from './collections/OrderedMerch';
 import Orders from './collections/Orders';
 import Tickets from './collections/Tickets';
+import { handleRawExpress, handleWebhook } from './payments';
 
 dotenv.config({
   path: path.resolve(__dirname, '../../.env'),
@@ -52,7 +53,7 @@ export default buildConfig({
       const checkVotes = path.resolve(__dirname, 'collections/Elections/hooks/checkVotes.ts');
       const checkNominations = path.resolve(__dirname, 'collections/Elections/hooks/checkNominations.ts');
 
-      const quickfileModule = path.resolve(__dirname, 'quickfile/index.ts');
+      const quickfileModule = path.resolve(__dirname, 'payments/index.ts');
 
       config.resolve.alias[checkVotes] = mockModule;
       config.resolve.alias[checkNominations] = mockModule;
@@ -99,6 +100,15 @@ export default buildConfig({
       path: '/seed',
       method: 'get',
       handler: seed,
+    },
+    {
+      path: '/stripe/webhooks',
+      method: 'post',
+      root: true,
+      handler: [
+        handleRawExpress,
+        handleWebhook,
+      ],
     },
   ],
   plugins: [
