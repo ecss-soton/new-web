@@ -8,7 +8,6 @@ import { onlyOneBasket } from './access/onlyOneBasket';
 import { userOrAdmin } from '../../access/userOrAdmin';
 import { isBasket } from './access/isBasket';
 import { atLeastOneItem } from './validate/atLeastOneItem';
-import { handleWebhook } from '../../payments';
 import { pay } from './endpoints/pay';
 
 // TODO: Check if sale active before checkout
@@ -146,8 +145,22 @@ const Orders: CollectionConfig = {
       options: ['basket', 'pending', 'failed', 'completed'],
       hasMany: false,
       access: {
-        create: admins,
+        create: () => false,
+        update: () => false,
+      },
+    },
+    {
+      name: 'forceUpdate',
+      type: 'checkbox',
+      required: true,
+      defaultValue: false,
+      admin: {
+        description: 'Used to force update the price.',
+      },
+      access: {
+        read: admins,
         update: admins,
+        create: () => false,
       },
     },
   ],

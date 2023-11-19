@@ -2,15 +2,21 @@ import { BeforeChangeHook } from 'payload/dist/collections/config/types';
 import type { Order } from '../../../payload-types';
 import { getArrayID } from '../../../utilities/getID';
 
+function sameElements<T>(lhs: T[], rhs: T[]): boolean {
+  return (lhs.length === rhs.length) && lhs.every((element, index) => element === rhs[index]);
+}
 export const updatePrice: BeforeChangeHook<Order> = async ({
   data, originalDoc, req,
 }) => {
   const orderedTicketIDs = getArrayID(data.tickets);
   const orderedMerchIDs = getArrayID(data.merch);
 
-  // eslint-disable-next-line max-len
-  if (getArrayID(originalDoc?.tickets) === orderedTicketIDs && getArrayID(originalDoc?.merch) === orderedMerchIDs) {
-    return originalDoc;
+  if (
+    !data.forceUpdate
+    && sameElements(getArrayID(originalDoc?.tickets), orderedTicketIDs)
+    && sameElements(getArrayID(originalDoc?.merch), orderedMerchIDs)
+  ) {
+    return data;
   }
 
   const orderedTickets = await req.payload.find({
@@ -42,8 +48,14 @@ export const updatePrice: BeforeChangeHook<Order> = async ({
     return sum + variation.price;
   }, 0);
 
+  data.forceUpdate = false;
   data.price = ticketPrice + merchPrice;
-  data.stripeTax = data.price === 0 ? 0 : Math.ceil(data.price * 0.015) + 20;
+  data.stripeTax = 0;
+  if (data.price > 0) {
+    // Calculated by doing some simple napkin math
+    // price = (price + stripeTax) * 0.985 - 20
+    data.stripeTax = Math.ceil((3 * data.price + 4000) / 197);
+  }
 
   return data;
 };

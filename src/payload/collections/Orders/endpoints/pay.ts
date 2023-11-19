@@ -11,7 +11,9 @@ import { InvoiceItem } from '../../../payments/types';
 
 const mutex = new Mutex();
 
-function checkTicketValid(ticketIDs: Set<string>, payload: Payload): Promise<boolean> {
+function checkTicketValid(order: Order, payload: Payload): Promise<boolean> {
+  const ticketIDs = new Set(order.tickets.map((ot) => getID(ot.ticket)));
+
   return Promise.all([...ticketIDs].map(async (id) => {
     const { sold, pending } = await soldCount(id, payload);
     const ticket = await payload.findByID({ collection: 'tickets', id, depth: 0 });
@@ -96,6 +98,39 @@ async function quickfilePay(order: Order, payload: Payload, user: User): Promise
   return previewURI;
 }
 
+async function checkSalesActive(order: Order, payload: Payload): Promise<boolean> {
+  const sales: Set<string> = new Set([
+    ...order?.tickets ? order.tickets.map((ot) => getID(ot.ticket.sale)) : [],
+    ...order?.merch ? order.merch.map((ot) => getID(ot.merch.sale)) : [],
+  ]);
+
+  const results = await payload.find({
+    collection: 'sales',
+    limit: 0,
+    where: {
+      and: [
+        {
+          id: {
+            in: [...sales],
+          },
+        },
+        {
+          saleStart: {
+            less_than_equal: new Date().toISOString(),
+          },
+        },
+        {
+          saleEnd: {
+            greater_than_equal: new Date().toISOString(),
+          },
+        },
+      ],
+    },
+  });
+
+  return results.totalDocs === sales.size;
+}
+
 export const pay: PayloadHandler = async (req, res): Promise<void> => {
   const { id, method } = req.params;
 
@@ -105,7 +140,9 @@ export const pay: PayloadHandler = async (req, res): Promise<void> => {
   const release = await mutex.acquire();
 
   try {
-    const order = await req.payload.findByID({ collection: 'orders', id, depth: 2 });
+    const order = await req.payload.update({
+      collection: 'orders', id, depth: 2, data: { forceUpdate: true },
+    });
     if (!order) {
       res.status(404).json({ error: 'Unknown order' });
       return;
@@ -115,13 +152,16 @@ export const pay: PayloadHandler = async (req, res): Promise<void> => {
       return;
     }
     if (order.status !== 'basket') {
-      res.status(403).json({ error: 'Cannot pay for non-basket order.' });
+      res.status(403).json({ error: 'Cannot pay for non-basket order' });
       return;
     }
 
-    const tickets: Set<string> = new Set(order.tickets.map((ot) => getID(ot.ticket)));
-    if (!await checkTicketValid(tickets, req.payload)) {
+    if (!await checkTicketValid(order, req.payload)) {
       res.status(403).json({ error: 'Ticket no longer available' });
+      return;
+    }
+    if (!await checkSalesActive(order, req.payload)) {
+      res.status(403).json({ error: 'Sale is no longer active' });
       return;
     }
 

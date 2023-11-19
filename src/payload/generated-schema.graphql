@@ -12836,6 +12836,7 @@ type Order {
   quickfileID: Float
   stripeID: String
   status: Order_status!
+  forceUpdate: Boolean
   updatedAt: DateTime
   createdAt: DateTime
 }
@@ -12870,6 +12871,7 @@ input Order_where {
   quickfileID: Order_quickfileID_operator
   stripeID: Order_stripeID_operator
   status: Order_status_operator
+  forceUpdate: Order_forceUpdate_operator
   updatedAt: Order_updatedAt_operator
   createdAt: Order_createdAt_operator
   id: Order_id_operator
@@ -12959,6 +12961,11 @@ enum Order_status_Input {
   completed
 }
 
+input Order_forceUpdate_operator {
+  equals: Boolean
+  not_equals: Boolean
+}
+
 input Order_updatedAt_operator {
   equals: DateTime
   not_equals: DateTime
@@ -13001,6 +13008,7 @@ input Order_where_or {
   quickfileID: Order_quickfileID_operator
   stripeID: Order_stripeID_operator
   status: Order_status_operator
+  forceUpdate: Order_forceUpdate_operator
   updatedAt: Order_updatedAt_operator
   createdAt: Order_createdAt_operator
   id: Order_id_operator
@@ -13015,6 +13023,7 @@ input Order_where_and {
   quickfileID: Order_quickfileID_operator
   stripeID: Order_stripeID_operator
   status: Order_status_operator
+  forceUpdate: Order_forceUpdate_operator
   updatedAt: Order_updatedAt_operator
   createdAt: Order_createdAt_operator
   id: Order_id_operator
@@ -13037,6 +13046,7 @@ type OrdersDocAccessFields {
   quickfileID: OrdersDocAccessFields_quickfileID
   stripeID: OrdersDocAccessFields_stripeID
   status: OrdersDocAccessFields_status
+  forceUpdate: OrdersDocAccessFields_forceUpdate
   updatedAt: OrdersDocAccessFields_updatedAt
   createdAt: OrdersDocAccessFields_createdAt
 }
@@ -13222,6 +13232,29 @@ type OrdersDocAccessFields_status_Update {
 }
 
 type OrdersDocAccessFields_status_Delete {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_forceUpdate {
+  create: OrdersDocAccessFields_forceUpdate_Create
+  read: OrdersDocAccessFields_forceUpdate_Read
+  update: OrdersDocAccessFields_forceUpdate_Update
+  delete: OrdersDocAccessFields_forceUpdate_Delete
+}
+
+type OrdersDocAccessFields_forceUpdate_Create {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_forceUpdate_Read {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_forceUpdate_Update {
+  permission: Boolean!
+}
+
+type OrdersDocAccessFields_forceUpdate_Delete {
   permission: Boolean!
 }
 
@@ -20989,6 +21022,7 @@ type OrdersFields {
   quickfileID: OrdersFields_quickfileID
   stripeID: OrdersFields_stripeID
   status: OrdersFields_status
+  forceUpdate: OrdersFields_forceUpdate
   updatedAt: OrdersFields_updatedAt
   createdAt: OrdersFields_createdAt
 }
@@ -21174,6 +21208,29 @@ type OrdersFields_status_Update {
 }
 
 type OrdersFields_status_Delete {
+  permission: Boolean!
+}
+
+type OrdersFields_forceUpdate {
+  create: OrdersFields_forceUpdate_Create
+  read: OrdersFields_forceUpdate_Read
+  update: OrdersFields_forceUpdate_Update
+  delete: OrdersFields_forceUpdate_Delete
+}
+
+type OrdersFields_forceUpdate_Create {
+  permission: Boolean!
+}
+
+type OrdersFields_forceUpdate_Read {
+  permission: Boolean!
+}
+
+type OrdersFields_forceUpdate_Update {
+  permission: Boolean!
+}
+
+type OrdersFields_forceUpdate_Delete {
   permission: Boolean!
 }
 
@@ -23725,6 +23782,7 @@ input mutationOrderInput {
   quickfileID: Float
   stripeID: String
   status: Order_status_MutationInput!
+  forceUpdate: Boolean
   updatedAt: String
   createdAt: String
 }
@@ -23745,6 +23803,7 @@ input mutationOrderUpdateInput {
   quickfileID: Float
   stripeID: String
   status: OrderUpdate_status_MutationInput
+  forceUpdate: Boolean
   updatedAt: String
   createdAt: String
 }

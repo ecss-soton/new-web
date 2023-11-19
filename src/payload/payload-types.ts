@@ -924,6 +924,7 @@ export interface Order {
   quickfileID?: number;
   stripeID?: string;
   status: 'basket' | 'pending' | 'failed' | 'completed';
+  forceUpdate: boolean;
   updatedAt: string;
   createdAt: string;
 }
