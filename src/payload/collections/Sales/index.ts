@@ -27,11 +27,21 @@ const Merch: CollectionConfig = {
     {
       name: 'saleStart',
       type: 'date',
+      admin: {
+        date: {
+          pickerAppearance: 'dayAndTime',
+        },
+      },
       required: true,
     },
     {
       name: 'saleEnd',
       type: 'date',
+      admin: {
+        date: {
+          pickerAppearance: 'dayAndTime',
+        },
+      },
       validate: isDateCorrect,
       required: true,
     },
