@@ -675,6 +675,7 @@ type User {
   name: String
   username: String!
   quickfileClientID: Float
+  stripeClientID: String
   roles: [User_roles!]
   updatedAt: DateTime
   createdAt: DateTime
@@ -6458,6 +6459,7 @@ input User_where {
   name: User_name_operator
   username: User_username_operator
   quickfileClientID: User_quickfileClientID_operator
+  stripeClientID: User_stripeClientID_operator
   roles: User_roles_operator
   updatedAt: User_updatedAt_operator
   createdAt: User_createdAt_operator
@@ -6495,6 +6497,17 @@ input User_quickfileClientID_operator {
   greater_than: Float
   less_than_equal: Float
   less_than: Float
+  exists: Boolean
+}
+
+input User_stripeClientID_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
   exists: Boolean
 }
 
@@ -6559,6 +6572,7 @@ input User_where_or {
   name: User_name_operator
   username: User_username_operator
   quickfileClientID: User_quickfileClientID_operator
+  stripeClientID: User_stripeClientID_operator
   roles: User_roles_operator
   updatedAt: User_updatedAt_operator
   createdAt: User_createdAt_operator
@@ -6570,6 +6584,7 @@ input User_where_and {
   name: User_name_operator
   username: User_username_operator
   quickfileClientID: User_quickfileClientID_operator
+  stripeClientID: User_stripeClientID_operator
   roles: User_roles_operator
   updatedAt: User_updatedAt_operator
   createdAt: User_createdAt_operator
@@ -6590,6 +6605,7 @@ type UsersDocAccessFields {
   name: UsersDocAccessFields_name
   username: UsersDocAccessFields_username
   quickfileClientID: UsersDocAccessFields_quickfileClientID
+  stripeClientID: UsersDocAccessFields_stripeClientID
   roles: UsersDocAccessFields_roles
   updatedAt: UsersDocAccessFields_updatedAt
   createdAt: UsersDocAccessFields_createdAt
@@ -6663,6 +6679,29 @@ type UsersDocAccessFields_quickfileClientID_Update {
 }
 
 type UsersDocAccessFields_quickfileClientID_Delete {
+  permission: Boolean!
+}
+
+type UsersDocAccessFields_stripeClientID {
+  create: UsersDocAccessFields_stripeClientID_Create
+  read: UsersDocAccessFields_stripeClientID_Read
+  update: UsersDocAccessFields_stripeClientID_Update
+  delete: UsersDocAccessFields_stripeClientID_Delete
+}
+
+type UsersDocAccessFields_stripeClientID_Create {
+  permission: Boolean!
+}
+
+type UsersDocAccessFields_stripeClientID_Read {
+  permission: Boolean!
+}
+
+type UsersDocAccessFields_stripeClientID_Update {
+  permission: Boolean!
+}
+
+type UsersDocAccessFields_stripeClientID_Delete {
   permission: Boolean!
 }
 
@@ -17840,6 +17879,7 @@ type UsersFields {
   name: UsersFields_name
   username: UsersFields_username
   quickfileClientID: UsersFields_quickfileClientID
+  stripeClientID: UsersFields_stripeClientID
   roles: UsersFields_roles
   updatedAt: UsersFields_updatedAt
   createdAt: UsersFields_createdAt
@@ -17913,6 +17953,29 @@ type UsersFields_quickfileClientID_Update {
 }
 
 type UsersFields_quickfileClientID_Delete {
+  permission: Boolean!
+}
+
+type UsersFields_stripeClientID {
+  create: UsersFields_stripeClientID_Create
+  read: UsersFields_stripeClientID_Read
+  update: UsersFields_stripeClientID_Update
+  delete: UsersFields_stripeClientID_Delete
+}
+
+type UsersFields_stripeClientID_Create {
+  permission: Boolean!
+}
+
+type UsersFields_stripeClientID_Read {
+  permission: Boolean!
+}
+
+type UsersFields_stripeClientID_Update {
+  permission: Boolean!
+}
+
+type UsersFields_stripeClientID_Delete {
   permission: Boolean!
 }
 
@@ -23349,6 +23412,7 @@ input mutationUserInput {
   name: String
   username: String!
   quickfileClientID: Float
+  stripeClientID: String
   roles: [User_roles_MutationInput]
   updatedAt: String
   createdAt: String
@@ -23371,6 +23435,7 @@ input mutationUserUpdateInput {
   name: String
   username: String
   quickfileClientID: Float
+  stripeClientID: String
   roles: [UserUpdate_roles_MutationInput]
   updatedAt: String
   createdAt: String

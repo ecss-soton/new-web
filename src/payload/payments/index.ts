@@ -3,7 +3,8 @@ import {
 } from './quickfile';
 
 import {
-  createCheckoutSession, expireSession, getSessionStatus, handleWebhook, handleRawExpress,
+  createCheckoutSession, expireSession, getSessionStatus,
+  handleWebhook, handleRawExpress, createCustomer,
 } from './stripe';
 
 export {
@@ -18,4 +19,5 @@ export {
   getSessionStatus,
   handleWebhook,
   handleRawExpress,
+  createCustomer,
 };

@@ -33,12 +33,31 @@ const Users: CollectionConfig = {
       name: 'username',
       type: 'text',
       required: true,
+      access: {
+        update: admins,
+        create: admins,
+      },
     },
     {
       name: 'quickfileClientID',
       label: 'Quickfile Client ID',
       type: 'number',
       validate: isAnInt,
+      access: {
+        read: admins,
+        update: admins,
+        create: admins,
+      },
+    },
+    {
+      name: 'stripeClientID',
+      label: 'Stripe Client ID',
+      type: 'text',
+      access: {
+        read: admins,
+        update: admins,
+        create: admins,
+      },
     },
     {
       name: 'roles',

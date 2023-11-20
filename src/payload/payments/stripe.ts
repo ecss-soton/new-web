@@ -4,6 +4,7 @@ import express, { Request, Response } from 'express';
 import payload from 'payload';
 import path from 'path';
 import { CheckoutSession, InvoiceItem } from './types';
+import { User } from '../payload-types';
 
 dotenv.config({
   path: path.resolve(__dirname, '../../../.env'),
@@ -51,9 +52,19 @@ export const handleWebhook = async (req: Request, res: Response): Promise<void> 
   res.send();
 };
 
+export async function createCustomer(user: User): Promise<string> {
+  const customer = await stripe.customers.create({
+    name: user.name ?? user.username,
+    email: user.email,
+  });
+
+  return customer.id;
+}
+
 export async function createCheckoutSession(
   items: InvoiceItem[],
   stripeTax: number,
+  customerID: string,
 ): Promise<CheckoutSession> {
   const lineItems = items.map((i) => ({
     // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
@@ -86,6 +97,7 @@ export async function createCheckoutSession(
     line_items: lineItems,
     mode: 'payment',
     success_url: successURL,
+    customer: customerID,
   });
 
   return { id: session.id, url: session.url };

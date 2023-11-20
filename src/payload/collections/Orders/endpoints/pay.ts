@@ -4,7 +4,7 @@ import { Payload } from 'payload';
 import { getID } from '../../../utilities/getID';
 import { soldCount } from '../../Tickets/endpoints/getSoldCount';
 import {
-  createCheckoutSession, createClient, createInvoice, getInvoice, sendInvoices,
+  createCheckoutSession, createClient, createCustomer, createInvoice, getInvoice, sendInvoices,
 } from '../../../payments';
 import { Order, User } from '../../../payload-types';
 import { InvoiceItem } from '../../../payments/types';
@@ -48,8 +48,17 @@ function generateInvoiceItems(order: Order): InvoiceItem[] {
   return [...tickets, ...merch];
 }
 
-async function stripePay(order: Order, payload: Payload): Promise<string> {
-  const session = await createCheckoutSession(generateInvoiceItems(order), order.stripeTax);
+async function stripePay(order: Order, payload: Payload, user: User): Promise<string> {
+  let customerID = user.stripeClientID;
+  if (!user.stripeClientID) {
+    customerID = await createCustomer(user);
+    await payload.update({
+      collection: 'users', id: user.id, data: { stripeClientID: customerID }, depth: 0,
+    });
+  }
+
+  const items = generateInvoiceItems(order);
+  const session = await createCheckoutSession(items, order.stripeTax, customerID);
 
   await payload.update({
     collection: 'orders',
@@ -181,7 +190,7 @@ export const pay: PayloadHandler = async (req, res): Promise<void> => {
 
     let redirectURI: string;
     if (method === 'stripe') {
-      redirectURI = await stripePay(order, req.payload);
+      redirectURI = await stripePay(order, req.payload, req.user);
     } else {
       redirectURI = await quickfilePay(order, req.payload, req.user);
     }

@@ -476,6 +476,7 @@ export interface User {
   name?: string;
   username: string;
   quickfileClientID?: number;
+  stripeClientID?: string;
   roles?: ('admin' | 'user')[];
   updatedAt: string;
   createdAt: string;
