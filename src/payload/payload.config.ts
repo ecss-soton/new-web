@@ -1,9 +1,7 @@
 import { payloadCloud } from '@payloadcms/plugin-cloud';
-// import formBuilder from '@payloadcms/plugin-form-builder'
+import formBuilder from '@payloadcms/plugin-form-builder';
 import nestedDocs from '@payloadcms/plugin-nested-docs';
 import redirects from '@payloadcms/plugin-redirects';
-import seo from '@payloadcms/plugin-seo';
-import type { GenerateTitle } from '@payloadcms/plugin-seo/types';
 import dotenv from 'dotenv';
 import path from 'path';
 import { buildConfig } from 'payload/config';
@@ -26,8 +24,13 @@ import { seed } from './endpoints/seed';
 import { Footer } from './globals/Footer';
 import { Header } from './globals/Header';
 import { Settings } from './globals/Settings';
-
-const generateTitle: GenerateTitle = () => 'My Website';
+import Merch from './collections/Merch';
+import Sales from './collections/Sales';
+import OrderedTickets from './collections/OrderedTickets';
+import OrderedMerch from './collections/OrderedMerch';
+import Orders from './collections/Orders';
+import Tickets from './collections/Tickets';
+import { handleRawExpress, handleWebhook } from './payments';
 
 dotenv.config({
   path: path.resolve(__dirname, '../../.env'),
@@ -50,8 +53,11 @@ export default buildConfig({
       const checkVotes = path.resolve(__dirname, 'collections/Elections/hooks/checkVotes.ts');
       const checkNominations = path.resolve(__dirname, 'collections/Elections/hooks/checkNominations.ts');
 
+      const quickfileModule = path.resolve(__dirname, 'payments/index.ts');
+
       config.resolve.alias[checkVotes] = mockModule;
       config.resolve.alias[checkNominations] = mockModule;
+      config.resolve.alias[quickfileModule] = mockModule;
 
       return config;
     },
@@ -71,6 +77,12 @@ export default buildConfig({
     Positions,
     Votes,
     ElectionResults,
+    Merch,
+    Sales,
+    Tickets,
+    OrderedTickets,
+    OrderedMerch,
+    Orders,
   ],
   globals: [Settings, Header, Footer],
   typescript: {
@@ -89,6 +101,15 @@ export default buildConfig({
       method: 'get',
       handler: seed,
     },
+    {
+      path: '/stripe/webhooks',
+      method: 'post',
+      root: true,
+      handler: [
+        handleRawExpress,
+        handleWebhook,
+      ],
+    },
   ],
   plugins: [
     // formBuilder({}),
@@ -98,11 +119,7 @@ export default buildConfig({
     nestedDocs({
       collections: ['categories'],
     }),
-    seo({
-      collections: ['pages', 'posts', 'projects'],
-      generateTitle,
-      uploadsCollection: 'media',
-    }),
+    formBuilder({}),
     payloadCloud(),
   ],
 });

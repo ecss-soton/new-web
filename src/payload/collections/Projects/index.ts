@@ -54,6 +54,9 @@ export const Projects: CollectionConfig = {
       name: 'publishedDate',
       type: 'date',
       admin: {
+        date: {
+          displayFormat: 'dd/mm/yy',
+        },
         position: 'sidebar',
       },
     },
