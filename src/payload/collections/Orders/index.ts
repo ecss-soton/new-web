@@ -120,6 +120,7 @@ const Orders: CollectionConfig = {
         description: 'The quickfile invoice ID.',
       },
       access: {
+        read: admins,
         create: () => false,
         update: () => false,
       },
@@ -133,6 +134,7 @@ const Orders: CollectionConfig = {
         description: 'The stripe checkout ID.',
       },
       access: {
+        read: admins,
         create: () => false,
         update: () => false,
       },
