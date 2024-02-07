@@ -10,7 +10,6 @@ import { isBasket } from './access/isBasket';
 import { atLeastOneItem } from './validate/atLeastOneItem';
 import { pay } from './endpoints/pay';
 
-// TODO: Check if sale active before checkout
 const Orders: CollectionConfig = {
   slug: 'orders',
   access: {
