@@ -16,6 +16,11 @@ export const recountVotes: PayloadHandler = async (req, res): Promise<void> => {
     depth: 0,
   });
 
+  if (!electionResult) {
+    res.status(404).json({ error: 'Unknown election result' });
+    return;
+  }
+
   try {
     await countVotesForPosition(electionResult.election, electionResult.position);
 
