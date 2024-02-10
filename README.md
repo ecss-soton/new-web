@@ -3,7 +3,19 @@
 This website is used as the primary digital interface between the ECS Society and it's members. We hope that this
 website allows our members to show off what they are all capable of
 
-## Run Locally
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/download/)
+- [Rust](https://www.rust-lang.org/tools/install)
+- [MongoDB](https://www.mongodb.com/try/download/community)
+
+### Environment Variables
+
+To run this project, copy the `.env.example` file to `.env` and fill in the environment variables
+
+### Run Locally
 
 Clone the project
 
@@ -33,6 +45,6 @@ cargo install stv-rs
 Start the server
 
 ```bash
-npm run start
+npm run dev
 ```
 
