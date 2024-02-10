@@ -1,9 +1,14 @@
+import dotenv from 'dotenv';
+import path from 'path';
+
 import { payloadCloud } from '@payloadcms/plugin-cloud';
 import formBuilder from '@payloadcms/plugin-form-builder';
 import nestedDocs from '@payloadcms/plugin-nested-docs';
 import redirects from '@payloadcms/plugin-redirects';
-import dotenv from 'dotenv';
-import path from 'path';
+import { slateEditor } from "@payloadcms/richtext-slate";
+import { mongooseAdapter } from "@payloadcms/db-mongodb";
+import { webpackBundler } from "@payloadcms/bundler-webpack";
+
 import { buildConfig } from 'payload/config';
 
 import Categories from './collections/Categories';
@@ -47,6 +52,7 @@ export default buildConfig({
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
       beforeDashboard: [BeforeDashboard],
     },
+    bundler: webpackBundler(),
     webpack: (config) => {
       const mockModule = path.resolve(__dirname, 'emptyModuleMock.js');
 
@@ -122,4 +128,10 @@ export default buildConfig({
     formBuilder({}),
     payloadCloud(),
   ],
+  editor: slateEditor({}),
+  db: mongooseAdapter({
+    // Mongoose-specific arguments go here.
+    // URL is required.
+    url: process.env.MONGODB_URI || '',
+  }),
 });
