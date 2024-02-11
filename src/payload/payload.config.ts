@@ -5,9 +5,9 @@ import { payloadCloud } from '@payloadcms/plugin-cloud';
 import formBuilder from '@payloadcms/plugin-form-builder';
 import nestedDocs from '@payloadcms/plugin-nested-docs';
 import redirects from '@payloadcms/plugin-redirects';
-import { slateEditor } from "@payloadcms/richtext-slate";
-import { mongooseAdapter } from "@payloadcms/db-mongodb";
-import { webpackBundler } from "@payloadcms/bundler-webpack";
+import { slateEditor } from '@payloadcms/richtext-slate';
+import { mongooseAdapter } from '@payloadcms/db-mongodb';
+import { webpackBundler } from '@payloadcms/bundler-webpack';
 
 import { buildConfig } from 'payload/config';
 
@@ -47,8 +47,7 @@ export default buildConfig({
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeLogin` statement on line 15.
-      beforeLogin: [BeforeLogin],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
+      beforeLogin: [BeforeLogin], // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
       beforeDashboard: [BeforeDashboard],
     },
@@ -57,13 +56,18 @@ export default buildConfig({
       const mockModule = path.resolve(__dirname, 'emptyModuleMock.js');
 
       const checkVotes = path.resolve(__dirname, 'collections/Elections/hooks/checkVotes.ts');
-      const checkNominations = path.resolve(__dirname, 'collections/Elections/hooks/checkNominations.ts');
+      const checkNominations = path.resolve(
+        __dirname,
+        'collections/Elections/hooks/checkNominations.ts',
+      );
 
       const quickfileModule = path.resolve(__dirname, 'payments/index.ts');
 
       config.resolve.alias[checkVotes] = mockModule;
       config.resolve.alias[checkNominations] = mockModule;
       config.resolve.alias[quickfileModule] = mockModule;
+      // eslint-disable-next-line dot-notation
+      config.resolve.alias['fs'] = mockModule;
 
       return config;
     },
@@ -111,10 +115,7 @@ export default buildConfig({
       path: '/stripe/webhooks',
       method: 'post',
       root: true,
-      handler: [
-        handleRawExpress,
-        handleWebhook,
-      ],
+      handler: [handleRawExpress, handleWebhook],
     },
   ],
   plugins: [
