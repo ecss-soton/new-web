@@ -6,9 +6,9 @@ import { revalidate } from '../../../utilities/revalidate';
 // Notice that the hook itself is not async and we are not awaiting `revalidate`
 // Only revalidate existing docs that are published
 // Don't scope to `operation` in order to purge static demo pages
-export const revalidatePage: AfterChangeHook = ({ doc, req: { payload } }) => {
+export const revalidatePage: AfterChangeHook = async ({ doc, req: { payload } }) => {
   if (doc._status === 'published') {
-    revalidate({ payload, collection: 'pages', slug: doc.slug });
+    await revalidate({ collection: 'pages', payload, slug: doc.slug });
   }
 
   return doc;

@@ -1,83 +1,84 @@
-import type { RichTextElement, RichTextField, RichTextLeaf } from 'payload/dist/fields/config/types';
+import type { FeatureProvider } from '@payloadcms/richtext-lexical';
+import { lexicalEditor, ParagraphFeature, UploadFeature } from '@payloadcms/richtext-lexical';
+import type { RichTextField } from 'payload/types';
 
 import deepMerge from '../../utilities/deepMerge';
 import link from '../link';
-import elements from './elements';
-import leaves from './leaves';
+import { defaultPublicDemoFeatures } from './defaultFeatures';
 
 type RichText = (
+  // eslint-disable-next-line no-unused-vars
   overrides?: Partial<RichTextField>,
+  // eslint-disable-next-line no-unused-vars
   additions?: {
-    elements?: RichTextElement[]
-    leaves?: RichTextLeaf[]
+    features?: FeatureProvider[]
   },
 ) => RichTextField
 
 const richText: RichText = (
   overrides,
   additions = {
-    elements: [],
-    leaves: [],
+    features: [],
   },
 ) => deepMerge<RichTextField, Partial<RichTextField>>(
   {
     name: 'richText',
-    type: 'richText',
-    required: true,
-    admin: {
-      upload: {
-        collections: {
-          media: {
-            fields: [
-              {
-                type: 'richText',
-                name: 'caption',
-                label: 'Caption',
-                admin: {
-                  elements: [...elements],
-                  leaves: [...leaves],
+    editor: lexicalEditor({
+      features: () => [
+        ...[...defaultPublicDemoFeatures, ...(additions.features || [])],
+        UploadFeature({
+          collections: {
+            media: {
+              fields: [
+                {
+                  name: 'caption',
+                  editor: lexicalEditor({
+                    features: () => [ParagraphFeature(), ...defaultPublicDemoFeatures],
+                  }),
+                  label: 'Caption',
+                  type: 'richText',
                 },
-              },
-              {
-                type: 'radio',
-                name: 'alignment',
-                label: 'Alignment',
-                options: [
-                  {
-                    label: 'Left',
-                    value: 'left',
-                  },
-                  {
-                    label: 'Center',
-                    value: 'center',
-                  },
-                  {
-                    label: 'Right',
-                    value: 'right',
-                  },
-                ],
-              },
-              {
-                name: 'enableLink',
-                type: 'checkbox',
-                label: 'Enable Link',
-              },
-              link({
-                appearances: false,
-                disableLabel: true,
-                overrides: {
-                  admin: {
-                    condition: (_, data) => Boolean(data?.enableLink),
-                  },
+                {
+                  name: 'alignment',
+                  label: 'Alignment',
+                  options: [
+                    {
+                      label: 'Left',
+                      value: 'left',
+                    },
+                    {
+                      label: 'Center',
+                      value: 'center',
+                    },
+                    {
+                      label: 'Right',
+                      value: 'right',
+                    },
+                  ],
+                  type: 'radio',
                 },
-              }),
-            ],
+                {
+                  name: 'enableLink',
+                  label: 'Enable Link',
+                  type: 'checkbox',
+                },
+                link({
+                  appearances: false,
+                  disableLabel: true,
+                  overrides: {
+                    admin: {
+                      condition: (_, data) => Boolean(data?.enableLink),
+                    },
+                  },
+                }),
+              ],
+            },
           },
-        },
-      },
-      elements: [...elements, ...(additions.elements || [])],
-      leaves: [...leaves, ...(additions.leaves || [])],
-    },
+        }),
+      ],
+    }),
+    required: true,
+    type: 'richText',
   },
   overrides || {},
 );
