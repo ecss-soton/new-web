@@ -1,11 +1,10 @@
-import { Payload } from 'payload';
-import {
-  deleteInvoices, expireSession, getPaidInvoices, getSessionStatus,
-} from '../../../payments';
-import { getArrayID } from '../../../utilities/getID';
+import type { Payload } from 'payload'
 
-async function deleteQuick(payload: Payload, ids: number[]) {
-  if (ids.length === 0) return;
+import { deleteInvoices, expireSession, getPaidInvoices, getSessionStatus } from '../../../payments'
+import { getArrayID } from '../../../utilities/getID'
+
+async function deleteQuick(payload: Payload, ids: number[]): Promise<void> {
+  if (ids.length === 0) return
 
   await payload.update({
     collection: 'orders',
@@ -14,22 +13,21 @@ async function deleteQuick(payload: Payload, ids: number[]) {
         in: ids,
       },
     },
-    data:
-      {
-        status: 'failed',
-      },
-  });
+    data: {
+      status: 'failed',
+    },
+  })
 
-  await deleteInvoices(ids);
+  await deleteInvoices(ids)
 }
 
-async function deleteStripe(payload: Payload, ids: string[]) {
+async function deleteStripe(payload: Payload, ids: string[]): Promise<void> {
   const sessions = await Promise.all(
-    ids.map(async (id) => ({ id, status: await getSessionStatus(id) })),
-  );
+    ids.map(async id => ({ id, status: await getSessionStatus(id) })),
+  )
 
-  const completed = sessions.filter((({ status }) => status === 'complete'));
-  const failed = sessions.filter((({ status }) => status !== 'complete'));
+  const completed = sessions.filter(({ status }) => status === 'complete')
+  const failed = sessions.filter(({ status }) => status !== 'complete')
 
   if (completed.length > 0) {
     await payload.update({
@@ -39,11 +37,10 @@ async function deleteStripe(payload: Payload, ids: string[]) {
           in: getArrayID(completed),
         },
       },
-      data:
-        {
-          status: 'completed',
-        },
-    });
+      data: {
+        status: 'completed',
+      },
+    })
   }
 
   if (failed.length > 0) {
@@ -54,21 +51,22 @@ async function deleteStripe(payload: Payload, ids: string[]) {
           in: getArrayID(failed),
         },
       },
-      data:
-        {
-          status: 'failed',
-        },
-    });
+      data: {
+        status: 'failed',
+      },
+    })
   }
 
-  await Promise.all(failed.filter((({ status }) => status === 'open')).map(({ id }) => expireSession(id)));
+  await Promise.all(
+    failed.filter(({ status }) => status === 'open').map(({ id }) => expireSession(id)),
+  )
 }
 
 async function checkQuickfile(payload: Payload, ids: number[]): Promise<number[]> {
-  if (ids.length === 0) return [];
+  if (ids.length === 0) return []
 
-  const paidInvoices = await getPaidInvoices();
-  const completedInvoices = ids.filter((id) => paidInvoices.find((paid) => paid === id));
+  const paidInvoices = await getPaidInvoices()
+  const completedInvoices = ids.filter(id => paidInvoices.find(paid => paid === id))
 
   if (completedInvoices.length > 0) {
     await payload.update({
@@ -78,17 +76,16 @@ async function checkQuickfile(payload: Payload, ids: number[]): Promise<number[]
           in: completedInvoices,
         },
       },
-      data:
-        {
-          status: 'completed',
-        },
-    });
+      data: {
+        status: 'completed',
+      },
+    })
   }
 
-  return completedInvoices;
+  return completedInvoices
 }
 
-export async function checkOrders(payload: Payload) {
+export async function checkOrders(payload: Payload): Promise<void> {
   const orders = await payload.find({
     collection: 'orders',
     depth: 0,
@@ -98,19 +95,21 @@ export async function checkOrders(payload: Payload) {
         equals: 'pending',
       },
     },
-  });
+  })
 
-  if (orders.totalDocs === 0) return;
+  if (orders.totalDocs === 0) return
 
-  const quickfileIDs = orders.docs.map((o) => o.quickfileID).filter((id) => id);
-  const completedInvoices = await checkQuickfile(payload, quickfileIDs);
+  const quickfileIDs = orders.docs.map(o => o.quickfileID).filter(id => id)
+  const completedInvoices = await checkQuickfile(payload, quickfileIDs)
 
-  const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
-  const toDelete = orders.docs.filter((o) => new Date(o.updatedAt) < fifteenMinutesAgo);
+  const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000)
+  const toDelete = orders.docs.filter(o => new Date(o.updatedAt) < fifteenMinutesAgo)
 
-  const toDeleteQuick = toDelete.map((o) => o.quickfileID).filter((id) => id)
-    .filter((id) => !completedInvoices.find((c) => c === id));
-  const toDeleteStripe = toDelete.map((o) => o.stripeID).filter((id) => id);
+  const toDeleteQuick = toDelete
+    .map(o => o.quickfileID)
+    .filter(id => id)
+    .filter(id => !completedInvoices.find(c => c === id))
+  const toDeleteStripe = toDelete.map(o => o.stripeID).filter(id => id)
 
-  await Promise.all([deleteQuick(payload, toDeleteQuick), deleteStripe(payload, toDeleteStripe)]);
+  await Promise.all([deleteQuick(payload, toDeleteQuick), deleteStripe(payload, toDeleteStripe)])
 }

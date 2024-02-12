@@ -1,6 +1,7 @@
-import { Validate } from 'payload/types';
-import { array } from 'payload/dist/fields/validations';
-import { Merch } from '../../../payload-types';
+import { array } from 'payload/dist/fields/validations'
+import type { Validate } from 'payload/types'
+
+import type { Merch } from '../../../payload-types'
 
 // eslint-disable-next-line no-unused-vars
 type getData<In, Out> = (data: Partial<In>) => Out | undefined
@@ -10,19 +11,19 @@ export function uniqueFields<T>(
   getField: getData<T, string>,
   checkSizeNotOne: boolean,
 ): Validate {
-  return ((length, args) => {
+  return (length, args) => {
     if (checkSizeNotOne && length === 1) {
-      return 'Cannot have an array of size 1';
+      return 'Cannot have an array of size 1'
     }
 
-    const dataArray = getArray(args.data);
+    const dataArray = getArray(args.data)
 
-    const fieldNames = Array.isArray(dataArray) ? dataArray.map(getField) : [];
+    const fieldNames = Array.isArray(dataArray) ? dataArray.map(getField) : []
 
     if (fieldNames.length !== new Set(fieldNames).size) {
-      return 'Array names are not unique';
+      return 'Array names are not unique'
     }
 
-    return array(length, args);
-  });
+    return array(length, args)
+  }
 }

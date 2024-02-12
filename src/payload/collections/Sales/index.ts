@@ -1,9 +1,9 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload/types'
 
-import { admins } from '../../access/admins';
-import Groups from '../groups';
-import { saleActiveOrAdmin } from './access/saleActiveOrAdmin';
-import { isDateCorrect } from '../Merch/validate/isDateCorrect';
+import { admins } from '../../access/admins'
+import Groups from '../groups'
+import { isDateCorrect } from '../Merch/validate/isDateCorrect'
+import { saleActiveOrAdmin } from './access/saleActiveOrAdmin'
 
 const Merch: CollectionConfig = {
   slug: 'sales',
@@ -46,6 +46,6 @@ const Merch: CollectionConfig = {
       required: true,
     },
   ],
-};
+}
 
-export default Merch;
+export default Merch

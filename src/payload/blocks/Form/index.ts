@@ -1,6 +1,6 @@
-import type { Block } from 'payload/types';
+import type { Block } from 'payload/types'
 
-import richText from '../../fields/richText';
+import richText from '../../fields/richText'
 
 export const FormBlock: Block = {
   slug: 'formBlock',
@@ -31,4 +31,4 @@ export const FormBlock: Block = {
       },
     }),
   ],
-};
+}

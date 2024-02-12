@@ -1,4 +1,4 @@
-import type { Project } from '../payload-types';
+import type { Project } from '../payload-types'
 
 export const project1: Partial<Project> = {
   title: 'Project 1',
@@ -40,10 +40,7 @@ export const project1: Partial<Project> = {
             },
           ],
           link: {
-            reference: {
-              relationTo: 'pages',
-              value: '',
-            },
+            reference: null,
             url: '',
             label: '',
           },
@@ -52,4 +49,4 @@ export const project1: Partial<Project> = {
     },
   ],
   relatedProjects: [], // this is populated by the seed script
-};
+}

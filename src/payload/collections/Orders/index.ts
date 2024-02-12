@@ -1,14 +1,14 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload/types'
 
-import Groups from '../groups';
-import { admins } from '../../access/admins';
-import { isAnInt } from '../../validate/isAnInt';
-import { updatePrice } from './hooks/updatePrice';
-import { onlyOneBasket } from './access/onlyOneBasket';
-import { userOrAdmin } from '../../access/userOrAdmin';
-import { isBasket } from './access/isBasket';
-import { atLeastOneItem } from './validate/atLeastOneItem';
-import { pay } from './endpoints/pay';
+import { admins } from '../../access/admins'
+import { userOrAdmin } from '../../access/userOrAdmin'
+import { isAnInt } from '../../validate/isAnInt'
+import Groups from '../groups'
+import { isBasket } from './access/isBasket'
+import { onlyOneBasket } from './access/onlyOneBasket'
+import { pay } from './endpoints/pay'
+import { updatePrice } from './hooks/updatePrice'
+import { atLeastOneItem } from './validate/atLeastOneItem'
 
 const Orders: CollectionConfig = {
   slug: 'orders',
@@ -49,13 +49,13 @@ const Orders: CollectionConfig = {
             user: {
               equals: user.id,
             },
-          };
+          }
         }
         return {
           user: {
             not_equals: undefined,
           },
-        };
+        }
       },
     },
     {
@@ -70,13 +70,13 @@ const Orders: CollectionConfig = {
             user: {
               equals: user.id,
             },
-          };
+          }
         }
         return {
           user: {
             not_equals: undefined,
           },
-        };
+        }
       },
     },
     {
@@ -172,6 +172,6 @@ const Orders: CollectionConfig = {
       handler: pay,
     },
   ],
-};
+}
 
-export default Orders;
+export default Orders

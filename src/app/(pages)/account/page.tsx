@@ -1,30 +1,30 @@
-import React, { Fragment } from 'react';
-import { Metadata } from 'next';
-import Link from 'next/link';
+import React, { Fragment } from 'react'
+import { Metadata } from 'next'
+import Link from 'next/link'
 
-import { fetchComments } from '../../_api/fetchComments';
-import { Button } from '../../_components/Button';
-import { Gutter } from '../../_components/Gutter';
-import { HR } from '../../_components/HR';
-import { RenderParams } from '../../_components/RenderParams';
-import { LowImpactHero } from '../../_heros/LowImpact';
-import { formatDateTime } from '../../_utilities/formatDateTime';
-import { getMeUser } from '../../_utilities/getMeUser';
-import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph';
-import AccountForm from './AccountForm';
+import { fetchComments } from '../../_api/fetchComments'
+import { Button } from '../../_components/Button'
+import { Gutter } from '../../_components/Gutter'
+import { HR } from '../../_components/HR'
+import { RenderParams } from '../../_components/RenderParams'
+import { LowImpactHero } from '../../_heros/LowImpact'
+import { formatDateTime } from '../../_utilities/formatDateTime'
+import { getMeUser } from '../../_utilities/getMeUser'
+import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
+import AccountForm from './AccountForm'
 
-import classes from './index.module.scss';
+import classes from './index.module.scss'
 
 export default async function Account() {
   const { user } = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to access your account.',
     )}&redirect=${encodeURIComponent('/account')}`,
-  });
+  })
 
   const comments = await fetchComments({
     user: user?.id,
-  });
+  })
 
   return (
     <Fragment>
@@ -72,20 +72,16 @@ export default async function Account() {
         </p>
         <HR />
         {comments?.length === 0 && <p>You have not made any comments yet.</p>}
-        {comments.length > 0
-          && comments?.map((com, index) => {
-            const { doc, comment, createdAt } = com;
+        {comments.length > 0 &&
+          comments?.map((com, index) => {
+            const { doc, comment, createdAt } = com
 
-            if (!comment) return null;
+            if (!comment) return null
 
             return (
               <Fragment key={index}>
                 <div className={classes.column}>
-                  <p className={classes.comment}>
-                    "
-                    {comment}
-                    "
-                  </p>
+                  <p className={classes.comment}>"{comment}"</p>
                   <p className={classes.meta}>
                     {'Posted '}
                     {doc && typeof doc === 'object' && (
@@ -99,17 +95,13 @@ export default async function Account() {
                 </div>
                 {index < comments.length - 1 && <HR />}
               </Fragment>
-            );
+            )
           })}
         <HR />
-        <Button
-          href="/logout"
-          appearance="secondary"
-          label="Log out"
-        />
+        <Button href="/logout" appearance="secondary" label="Log out" />
       </Gutter>
     </Fragment>
-  );
+  )
 }
 
 export const metadata: Metadata = {
@@ -119,4 +111,4 @@ export const metadata: Metadata = {
     title: 'Account',
     url: '/account',
   }),
-};
+}
