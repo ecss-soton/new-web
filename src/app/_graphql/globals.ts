@@ -1,4 +1,4 @@
-import { LINK_FIELDS } from './link';
+import { LINK_FIELDS } from './link'
 
 export const HEADER = `
   Header {
@@ -6,27 +6,27 @@ export const HEADER = `
       link ${LINK_FIELDS({ disableAppearance: true })}
 		}
   }
-`;
+`
 
 export const HEADER_QUERY = `
 query Header {
   ${HEADER}
 }
-`;
+`
 
 export const FOOTER = `
-  Header {
+  Footer {
     navItems {
       link ${LINK_FIELDS({ disableAppearance: true })}
 		}
   }
-`;
+`
 
 export const FOOTER_QUERY = `
-query Header {
+query Footer {
   ${FOOTER}
 }
-`;
+`
 
 export const SETTINGS = `
   Settings {
@@ -37,10 +37,10 @@ export const SETTINGS = `
       slug
     }
   }
-`;
+`
 
 export const SETTINGS_QUERY = `
 query Settings {
   ${SETTINGS}
 }
-`;
+`

@@ -1,4 +1,4 @@
-import type { Page } from '../payload-types';
+import type { Page } from '../payload-types'
 
 export const staticHome: Page = {
   id: '',
@@ -61,7 +61,7 @@ export const staticHome: Page = {
           {
             type: 'link',
             linkType: 'custom',
-            url: 'https://github.com/payloadcms/payload/tree/master/templates/website',
+            url: 'https://github.com/payloadcms/payload/tree/main/templates/website',
             newTab: true,
             children: [
               {
@@ -124,4 +124,4 @@ export const staticHome: Page = {
       blockType: 'cta',
     },
   ],
-};
+}

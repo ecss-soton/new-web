@@ -1,4 +1,4 @@
-import type { Post } from '../payload-types';
+import type { Post } from '../payload-types'
 
 export const post1: Partial<Post> = {
   title: 'Post 1',
@@ -41,10 +41,7 @@ export const post1: Partial<Post> = {
             },
           ],
           link: {
-            reference: {
-              relationTo: 'pages',
-              value: '',
-            },
+            reference: null,
             url: '',
             label: '',
           },
@@ -73,10 +70,7 @@ export const post1: Partial<Post> = {
             },
           ],
           link: {
-            reference: {
-              relationTo: 'pages',
-              value: '',
-            },
+            reference: null,
             url: '',
             label: '',
           },
@@ -85,4 +79,4 @@ export const post1: Partial<Post> = {
     },
   ],
   relatedPosts: [], // this is populated by the seed script
-};
+}

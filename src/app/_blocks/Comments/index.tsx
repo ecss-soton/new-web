@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import React, { Fragment } from 'react';
-import Link from 'next/link';
+import React, { Fragment } from 'react'
+import Link from 'next/link'
 
-import { Comment, Post, Project } from '../../../payload/payload-types';
-import { Gutter } from '../../_components/Gutter';
-import { HR } from '../../_components/HR';
-import { Message } from '../../_components/Message';
-import RichText from '../../_components/RichText';
-import { formatDateTime } from '../../_utilities/formatDateTime';
-import { CommentForm } from './CommentForm';
+import { Comment, Post, Project } from '../../../payload/payload-types'
+import { Gutter } from '../../_components/Gutter'
+import { HR } from '../../_components/HR'
+import { Message } from '../../_components/Message'
+import RichText from '../../_components/RichText'
+import { formatDateTime } from '../../_utilities/formatDateTime'
+import { CommentForm } from './CommentForm'
 
-import classes from './index.module.scss';
+import classes from './index.module.scss'
 
 export type CommentsBlockProps = {
   blockType: 'comments'
@@ -22,8 +22,8 @@ export type CommentsBlockProps = {
   comments: Comment[]
 }
 
-export const CommentsBlock: React.FC<CommentsBlockProps> = (props) => {
-  const { introContent, doc, comments } = props;
+export const CommentsBlock: React.FC<CommentsBlockProps> = props => {
+  const { introContent, doc, comments } = props
 
   return (
     <div className={classes.commentsBlock}>
@@ -36,9 +36,9 @@ export const CommentsBlock: React.FC<CommentsBlockProps> = (props) => {
         <div className={classes.comments}>
           <HR />
           {comments?.map((com, index) => {
-            const { populatedUser, comment, createdAt, _status } = com;
+            const { populatedUser, comment, createdAt, _status } = com
 
-            if (!comment) return null;
+            if (!comment) return null
 
             return (
               <Fragment key={index}>
@@ -53,7 +53,7 @@ export const CommentsBlock: React.FC<CommentsBlockProps> = (props) => {
                 >
                   {_status === 'draft' && (
                     <Message
-                      message={(
+                      message={
                         <Fragment>
                           {
                             'This is a draft comment. You are seeing it because you are an admin. To approve this comment, '
@@ -65,14 +65,10 @@ export const CommentsBlock: React.FC<CommentsBlockProps> = (props) => {
                           </Link>
                           {' and click "publish".'}
                         </Fragment>
-                      )}
+                      }
                     />
                   )}
-                  <p className={classes.comment}>
-                    "
-                    {comment}
-                    "
-                  </p>
+                  <p className={classes.comment}>"{comment}"</p>
                   {populatedUser && (
                     <p className={classes.meta}>
                       {populatedUser?.name || 'Unnamed User'}
@@ -82,12 +78,12 @@ export const CommentsBlock: React.FC<CommentsBlockProps> = (props) => {
                 </div>
                 {index < comments.length - 1 && <HR />}
               </Fragment>
-            );
+            )
           })}
           <HR />
           <CommentForm docID={doc.id} />
         </div>
       </Gutter>
     </div>
-  );
-};
+  )
+}

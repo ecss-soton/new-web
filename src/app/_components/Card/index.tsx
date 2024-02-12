@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react';
-import Link from 'next/link';
+import React, { Fragment } from 'react'
+import Link from 'next/link'
 
-import { Post, Project } from '../../../payload/payload-types';
-import { Media } from '../Media';
+import { Post, Project } from '../../../payload/payload-types'
+import { Media } from '../Media'
 
-import classes from './index.module.scss';
+import classes from './index.module.scss'
 
 export const Card: React.FC<{
   alignItems?: 'center'
@@ -15,7 +15,7 @@ export const Card: React.FC<{
   relationTo?: 'projects' | 'posts'
   doc?: Project | Post
   orientation?: 'horizontal' | 'vertical'
-}> = (props) => {
+}> = props => {
   const {
     relationTo,
     showCategories,
@@ -23,15 +23,15 @@ export const Card: React.FC<{
     doc,
     className,
     orientation = 'vertical',
-  } = props;
+  } = props
 
-  const { slug, title, categories, meta } = doc || {};
-  const { description, image: metaImage } = meta || {};
+  const { slug, title, categories, meta } = doc || {}
+  const { description, image: metaImage } = meta || {}
 
-  const hasCategories = categories && Array.isArray(categories) && categories.length > 0;
-  const titleToUse = titleFromProps || title;
-  const sanitizedDescription = description?.replace(/\s/g, ' '); // replace non-breaking space with white space
-  const href = `/${relationTo}/${slug}`;
+  const hasCategories = categories && Array.isArray(categories) && categories.length > 0
+  const titleToUse = titleFromProps || title
+  const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
+  const href = `/${relationTo}/${slug}`
 
   return (
     <div
@@ -39,17 +39,10 @@ export const Card: React.FC<{
         .filter(Boolean)
         .join(' ')}
     >
-      <Link
-        href={href}
-        className={classes.mediaWrapper}
-      >
+      <Link href={href} className={classes.mediaWrapper}>
         {!metaImage && <div className={classes.placeholder}>No image</div>}
         {metaImage && typeof metaImage !== 'string' && (
-          <Media
-            imgClassName={classes.image}
-            resource={metaImage}
-            fill
-          />
+          <Media imgClassName={classes.image} resource={metaImage} fill />
         )}
       </Link>
       <div className={classes.content}>
@@ -58,18 +51,22 @@ export const Card: React.FC<{
             {showCategories && hasCategories && (
               <div>
                 {categories?.map((category, index) => {
-                  const { title: titleFromCategory } = category;
+                  if (typeof category === 'object') {
+                    const { title: titleFromCategory } = category
 
-                  const categoryTitle = titleFromCategory || 'Untitled category';
+                    const categoryTitle = titleFromCategory || 'Untitled category'
 
-                  const isLast = index === categories.length - 1;
+                    const isLast = index === categories.length - 1
 
-                  return (
-                    <Fragment key={index}>
-                      {categoryTitle}
-                      {!isLast && <Fragment>, &nbsp;</Fragment>}
-                    </Fragment>
-                  );
+                    return (
+                      <Fragment key={index}>
+                        {categoryTitle}
+                        {!isLast && <Fragment>, &nbsp;</Fragment>}
+                      </Fragment>
+                    )
+                  }
+
+                  return null
                 })}
               </div>
             )}
@@ -77,10 +74,7 @@ export const Card: React.FC<{
         )}
         {titleToUse && (
           <h4 className={classes.title}>
-            <Link
-              href={href}
-              className={classes.titleLink}
-            >
+            <Link href={href} className={classes.titleLink}>
               {titleToUse}
             </Link>
           </h4>
@@ -92,5 +86,5 @@ export const Card: React.FC<{
         )}
       </div>
     </div>
-  );
-};
+  )
+}

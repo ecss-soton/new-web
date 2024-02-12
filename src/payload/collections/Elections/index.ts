@@ -1,10 +1,14 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload/types'
 
-import { admins } from '../../access/admins';
-import Groups from '../groups';
-import { isAfterNomination, isNominationConstitutional, isVotingConstitutional } from './validate/dateValidate';
-import { checkNominations } from './hooks/checkNominations';
-import { countVotes } from './hooks/checkVotes';
+import { admins } from '../../access/admins'
+import Groups from '../groups'
+import { checkNominations } from './hooks/checkNominations'
+import { countVotes } from './hooks/checkVotes'
+import {
+  isAfterNomination,
+  isNominationConstitutional,
+  isVotingConstitutional,
+} from './validate/dateValidate'
 
 const Elections: CollectionConfig = {
   slug: 'elections',
@@ -87,6 +91,6 @@ const Elections: CollectionConfig = {
       },
     },
   ],
-};
+}
 
-export default Elections;
+export default Elections

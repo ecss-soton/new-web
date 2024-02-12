@@ -1,10 +1,11 @@
-import { Validate } from 'payload/types';
-import { relationship } from 'payload/dist/fields/validations';
-import { getArrayID, getID } from '../../../utilities/getID';
+import { relationship } from 'payload/dist/fields/validations'
+import type { Validate } from 'payload/types'
+
+import { getArrayID, getID } from '../../../utilities/getID'
 
 export const nominationIsUnique: Validate = async (nominees, args) => {
   if (args.payload && nominees.length > 0) {
-    const { election, position } = args.data;
+    const { election, position } = args.data
 
     const result = await args.payload.find({
       collection: 'nominations',
@@ -39,12 +40,12 @@ export const nominationIsUnique: Validate = async (nominees, args) => {
           },
         ],
       },
-    });
+    })
 
     if (result.totalDocs > 0) {
-      return 'Nomination is not unique.';
+      return 'Nomination is not unique.'
     }
   }
 
-  return relationship(nominees, args);
-};
+  return relationship(nominees, args)
+}

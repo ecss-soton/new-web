@@ -1,7 +1,7 @@
-import { CATEGORIES } from './categories';
-import { LINK_FIELDS } from './link';
-import { MEDIA } from './media';
-import { META } from './meta';
+import { CATEGORIES } from './categories'
+import { LINK_FIELDS } from './link'
+import { MEDIA } from './media'
+import { META } from './meta'
 
 export const CALL_TO_ACTION = `
 ...on Cta {
@@ -12,7 +12,7 @@ export const CALL_TO_ACTION = `
     link ${LINK_FIELDS()}
   }
 }
-`;
+`
 
 export const CONTENT = `
 ...on Content {
@@ -25,7 +25,7 @@ export const CONTENT = `
     link ${LINK_FIELDS()}
   }
 }
-`;
+`
 
 export const MEDIA_BLOCK = `
 ...on MediaBlock {
@@ -34,7 +34,7 @@ export const MEDIA_BLOCK = `
   position
   ${MEDIA}
 }
-`;
+`
 
 export const ARCHIVE_BLOCK = `
 ...on Archive {
@@ -51,11 +51,13 @@ export const ARCHIVE_BLOCK = `
         id
         slug
         title
+        ${META}
       }
       ...on Project {
         id
         slug
         title
+        ${META}
       }
     }
   }
@@ -80,4 +82,4 @@ export const ARCHIVE_BLOCK = `
   }
   populatedDocsTotal
 }
-`;
+`

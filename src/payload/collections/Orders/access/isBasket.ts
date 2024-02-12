@@ -1,17 +1,18 @@
-import { Access } from 'payload/config';
-import { User } from '../../../payload-types';
-import { checkRole } from '../../Users/checkRole';
+import type { Access } from 'payload/config'
+
+import type { User } from '../../../payload-types'
+import { checkRole } from '../../Users/checkRole'
 
 export const isBasket: Access<{ user: string | User }> = ({ req: { user } }) => {
   if (!user) {
-    return false;
+    return false
   }
 
   if (checkRole(['admin'], user)) {
-    return true;
+    return true
   }
 
-  return ({
+  return {
     and: [
       {
         user: {
@@ -24,6 +25,5 @@ export const isBasket: Access<{ user: string | User }> = ({ req: { user } }) => 
         },
       },
     ],
-
-  });
-};
+  }
+}
