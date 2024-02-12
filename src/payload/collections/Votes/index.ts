@@ -1,10 +1,10 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload/types'
 
-import Groups from '../groups';
-import { voteIsUnique } from './validate/voteIsUnique';
-import { validatePreferences } from './validate/validatePreferences';
-import { validateRONPosition } from './validate/validateRONPosition';
-import { user } from '../../access/user';
+import { user } from '../../access/user'
+import Groups from '../groups'
+import { validatePreferences } from './validate/validatePreferences'
+import { validateRONPosition } from './validate/validateRONPosition'
+import { voteIsUnique } from './validate/voteIsUnique'
 
 const Votes: CollectionConfig = {
   slug: 'votes',
@@ -25,7 +25,7 @@ const Votes: CollectionConfig = {
       access: {
         create: () => false,
       },
-      defaultValue: ({ user }) => user.username,
+      defaultValue: ({ user: u }) => u.username,
       validate: voteIsUnique,
     },
     {
@@ -78,6 +78,6 @@ const Votes: CollectionConfig = {
       validate: validatePreferences,
     },
   ],
-};
+}
 
-export default Votes;
+export default Votes

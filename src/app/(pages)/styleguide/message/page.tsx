@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react';
-import { Metadata } from 'next';
-import Link from 'next/link';
+import React, { Fragment } from 'react'
+import { Metadata } from 'next'
+import Link from 'next/link'
 
-import { Gutter } from '../../../_components/Gutter';
-import { Message } from '../../../_components/Message';
-import { VerticalPadding } from '../../../_components/VerticalPadding';
-import { mergeOpenGraph } from '../../../_utilities/mergeOpenGraph';
+import { Gutter } from '../../../_components/Gutter'
+import { Message } from '../../../_components/Message'
+import { VerticalPadding } from '../../../_components/VerticalPadding'
+import { mergeOpenGraph } from '../../../_utilities/mergeOpenGraph'
 
 export default async function MessageComponentPage() {
   return (
@@ -19,10 +19,7 @@ export default async function MessageComponentPage() {
         <h1>Message Component</h1>
       </Gutter>
       <Gutter>
-        <VerticalPadding
-          bottom="large"
-          top="none"
-        >
+        <VerticalPadding bottom="large" top="none">
           <Message message="This is a message" />
           <br />
           <Message error="This is an error" />
@@ -33,7 +30,7 @@ export default async function MessageComponentPage() {
         </VerticalPadding>
       </Gutter>
     </Fragment>
-  );
+  )
 }
 
 export const metadata: Metadata = {
@@ -43,4 +40,4 @@ export const metadata: Metadata = {
     title: 'Message Component',
     url: '/styleguide/message',
   }),
-};
+}

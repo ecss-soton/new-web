@@ -1,13 +1,14 @@
-import type { CollectionConfig } from 'payload/types';
-import { v4 as uuidv4 } from 'uuid';
-import { admins } from '../../access/admins';
-import Groups from '../groups';
-import { adminOrNominee } from './access/nominees';
-import { joinNomination } from './endpoints/joinNomination';
-import { beforeVoting } from './access/beforeVoting';
-import { addOwnId } from './validate/addOwnId';
-import { populateNominees } from './hooks/populateNominees';
-import { nominationIsUnique } from './validate/nominationIsUnique';
+import type { CollectionConfig } from 'payload/types'
+import { v4 as uuidv4 } from 'uuid'
+
+import { admins } from '../../access/admins'
+import Groups from '../groups'
+import { beforeVoting } from './access/beforeVoting'
+import { adminOrNominee } from './access/nominees'
+import { joinNomination } from './endpoints/joinNomination'
+import { populateNominees } from './hooks/populateNominees'
+import { addOwnId } from './validate/addOwnId'
+import { nominationIsUnique } from './validate/nominationIsUnique'
 
 const Nominations: CollectionConfig = {
   slug: 'nominations',
@@ -169,6 +170,6 @@ const Nominations: CollectionConfig = {
       handler: joinNomination,
     },
   ],
-};
+}
 
-export default Nominations;
+export default Nominations

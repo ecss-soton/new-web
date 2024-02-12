@@ -1,4 +1,4 @@
-import type { Page } from '../payload-types';
+import type { Page } from '../payload-types'
 
 export const home: Partial<Page> = {
   title: 'Home',
@@ -41,7 +41,7 @@ export const home: Partial<Page> = {
           {
             type: 'link',
             linkType: 'custom',
-            url: 'https://github.com/payloadcms/payload/tree/master/templates/website',
+            url: 'https://github.com/payloadcms/payload/tree/main/templates/website',
             newTab: true,
             children: [
               {
@@ -143,10 +143,7 @@ export const home: Partial<Page> = {
           ],
           enableLink: false,
           link: {
-            reference: {
-              value: '',
-              relationTo: 'pages',
-            },
+            reference: null,
             url: '',
             label: '',
           },
@@ -198,10 +195,7 @@ export const home: Partial<Page> = {
           ],
           enableLink: false,
           link: {
-            reference: {
-              value: '',
-              relationTo: 'pages',
-            },
+            reference: null,
             url: '',
             label: '',
           },
@@ -228,10 +222,7 @@ export const home: Partial<Page> = {
           ],
           enableLink: false,
           link: {
-            reference: {
-              value: '',
-              relationTo: 'pages',
-            },
+            reference: null,
             url: '',
             label: '',
           },
@@ -270,10 +261,7 @@ export const home: Partial<Page> = {
           ],
           enableLink: false,
           link: {
-            reference: {
-              value: '',
-              relationTo: 'pages',
-            },
+            reference: null,
             url: '',
             label: '',
           },
@@ -312,10 +300,7 @@ export const home: Partial<Page> = {
           ],
           enableLink: false,
           link: {
-            reference: {
-              value: '',
-              relationTo: 'pages',
-            },
+            reference: null,
             url: '',
             label: '',
           },
@@ -341,10 +326,7 @@ export const home: Partial<Page> = {
           ],
           enableLink: false,
           link: {
-            reference: {
-              value: '',
-              relationTo: 'pages',
-            },
+            reference: null,
             url: '',
             label: '',
           },
@@ -370,10 +352,7 @@ export const home: Partial<Page> = {
           ],
           enableLink: false,
           link: {
-            reference: {
-              value: '',
-              relationTo: 'pages',
-            },
+            reference: null,
             url: '',
             label: '',
           },
@@ -412,10 +391,7 @@ export const home: Partial<Page> = {
           ],
           enableLink: false,
           link: {
-            reference: {
-              value: '',
-              relationTo: 'pages',
-            },
+            reference: null,
             url: '',
             label: '',
           },
@@ -441,10 +417,7 @@ export const home: Partial<Page> = {
           ],
           enableLink: false,
           link: {
-            reference: {
-              value: '',
-              relationTo: 'pages',
-            },
+            reference: null,
             url: '',
             label: '',
           },
@@ -568,4 +541,4 @@ export const home: Partial<Page> = {
       ],
     },
   ],
-};
+}

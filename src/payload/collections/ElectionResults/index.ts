@@ -1,10 +1,11 @@
-import type { CollectionConfig } from 'payload/types';
-import { publishedOrAdmin } from './access/publishedOrAdmin';
-import { admins } from '../../access/admins';
-import Groups from '../groups';
-import { isAnInt } from '../../validate/isAnInt';
-import { recountVotes } from './endpoints/recountVotes';
-import { RecountVotesLink } from './react/recountVotesLink';
+import type { CollectionConfig } from 'payload/types'
+
+import { admins } from '../../access/admins'
+import { isAnInt } from '../../validate/isAnInt'
+import Groups from '../groups'
+import { publishedOrAdmin } from './access/publishedOrAdmin'
+import { recountVotes } from './endpoints/recountVotes'
+import { RecountVotesLink } from './react/recountVotesLink'
 
 // If nominee is `undef` assume RON.
 export const ElectionResults: CollectionConfig = {
@@ -131,4 +132,4 @@ export const ElectionResults: CollectionConfig = {
       ],
     },
   ],
-};
+}

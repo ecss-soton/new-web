@@ -1,6 +1,6 @@
 enum Groups {
   Elections = 'Elections',
-  Commerce = 'Commerce'
+  Commerce = 'Commerce',
 }
 
-export default Groups;
+export default Groups

@@ -1,12 +1,8 @@
-import type { Field } from 'payload/types';
+import type { Field } from 'payload/types'
 
-import deepMerge from '../utilities/deepMerge';
+import deepMerge from '../utilities/deepMerge'
 
 export const appearanceOptions = {
-  default: {
-    label: 'Default',
-    value: 'default',
-  },
   primary: {
     label: 'Primary Button',
     value: 'primary',
@@ -15,11 +11,14 @@ export const appearanceOptions = {
     label: 'Secondary Button',
     value: 'secondary',
   },
-};
+  default: {
+    label: 'Default',
+    value: 'default',
+  },
+}
 
-export type LinkAppearances = 'default' | 'primary' | 'secondary'
+export type LinkAppearances = 'primary' | 'secondary' | 'default'
 
-// eslint-disable-next-line no-unused-vars
 type LinkType = (options?: {
   appearances?: LinkAppearances[] | false
   disableLabel?: boolean
@@ -29,19 +28,17 @@ type LinkType = (options?: {
 const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = {}) => {
   const linkResult: Field = {
     name: 'link',
+    type: 'group',
     admin: {
       hideGutter: true,
     },
     fields: [
       {
+        type: 'row',
         fields: [
           {
             name: 'type',
-            admin: {
-              layout: 'horizontal',
-              width: '50%',
-            },
-            defaultValue: 'reference',
+            type: 'radio',
             options: [
               {
                 label: 'Internal link',
@@ -52,75 +49,77 @@ const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = 
                 value: 'custom',
               },
             ],
-            type: 'radio',
+            defaultValue: 'reference',
+            admin: {
+              layout: 'horizontal',
+              width: '50%',
+            },
           },
           {
             name: 'newTab',
+            label: 'Open in new tab',
+            type: 'checkbox',
             admin: {
+              width: '50%',
               style: {
                 alignSelf: 'flex-end',
               },
-              width: '50%',
             },
-            label: 'Open in new tab',
-            type: 'checkbox',
           },
         ],
-        type: 'row',
       },
     ],
-    type: 'group',
-  };
+  }
 
   const linkTypes: Field[] = [
     {
       name: 'reference',
+      label: 'Document to link to',
+      type: 'relationship',
+      relationTo: ['pages'],
+      required: true,
+      maxDepth: 1,
       admin: {
         condition: (_, siblingData) => siblingData?.type === 'reference',
       },
-      label: 'Document to link to',
-      maxDepth: 1,
-      relationTo: ['pages'],
-      required: true,
-      type: 'relationship',
     },
     {
       name: 'url',
+      label: 'Custom URL',
+      type: 'text',
+      required: true,
       admin: {
         condition: (_, siblingData) => siblingData?.type === 'custom',
       },
-      label: 'Custom URL',
-      required: true,
-      type: 'text',
     },
-  ];
+  ]
 
   if (!disableLabel) {
-    linkTypes.map((linkType) => ({
+    linkTypes.map(linkType => ({
       ...linkType,
       admin: {
         ...linkType.admin,
         width: '50%',
       },
-    }));
+    }))
 
     linkResult.fields.push({
+      type: 'row',
       fields: [
         ...linkTypes,
         {
           name: 'label',
+          label: 'Label',
+          type: 'text',
+          required: true,
           admin: {
             width: '50%',
           },
-          label: 'Label',
-          required: true,
-          type: 'text',
         },
       ],
-      type: 'row',
-    });
+    })
   } else {
-    linkResult.fields = [...linkResult.fields, ...linkTypes];
+    linkResult.fields = [...linkResult.fields, ...linkTypes]
   }
 
   if (appearances !== false) {
@@ -128,24 +127,24 @@ const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = 
       appearanceOptions.default,
       appearanceOptions.primary,
       appearanceOptions.secondary,
-    ];
+    ]
 
     if (appearances) {
-      appearanceOptionsToUse = appearances.map((appearance) => appearanceOptions[appearance]);
+      appearanceOptionsToUse = appearances.map(appearance => appearanceOptions[appearance])
     }
 
     linkResult.fields.push({
       name: 'appearance',
+      type: 'select',
+      defaultValue: 'default',
+      options: appearanceOptionsToUse,
       admin: {
         description: 'Choose how the link should be rendered.',
       },
-      defaultValue: 'default',
-      options: appearanceOptionsToUse,
-      type: 'select',
-    });
+    })
   }
 
-  return deepMerge(linkResult, overrides);
-};
+  return deepMerge(linkResult, overrides)
+}
 
-export default link;
+export default link

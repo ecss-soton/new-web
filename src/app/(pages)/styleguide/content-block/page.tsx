@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react';
-import { Metadata } from 'next';
-import Link from 'next/link';
+import React, { Fragment } from 'react'
+import { Metadata } from 'next'
+import Link from 'next/link'
 
-import { ContentBlock } from '../../../_blocks/Content';
-import { Gutter } from '../../../_components/Gutter';
-import { VerticalPadding } from '../../../_components/VerticalPadding';
-import { mergeOpenGraph } from '../../../_utilities/mergeOpenGraph';
+import { ContentBlock } from '../../../_blocks/Content'
+import { Gutter } from '../../../_components/Gutter'
+import { VerticalPadding } from '../../../_components/VerticalPadding'
+import { mergeOpenGraph } from '../../../_utilities/mergeOpenGraph'
 
 export default async function ContentBlockPage() {
   return (
@@ -18,10 +18,7 @@ export default async function ContentBlockPage() {
         </p>
         <h1>Content Block</h1>
       </Gutter>
-      <VerticalPadding
-        bottom="large"
-        top="none"
-      >
+      <VerticalPadding bottom="large" top="none">
         <ContentBlock
           blockType="content"
           columns={[
@@ -37,7 +34,7 @@ export default async function ContentBlockPage() {
         />
       </VerticalPadding>
     </Fragment>
-  );
+  )
 }
 
 export const metadata: Metadata = {
@@ -47,4 +44,4 @@ export const metadata: Metadata = {
     title: 'Content Block',
     url: '/styleguide/content-block',
   }),
-};
+}

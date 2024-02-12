@@ -1,78 +1,75 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload/types'
 
-import { admins } from '../../access/admins';
-import { adminsOrPublished } from '../../access/adminsOrPublished';
-import { Archive } from '../../blocks/ArchiveBlock';
-import { CallToAction } from '../../blocks/CallToAction';
-import { Content } from '../../blocks/Content';
-import { MediaBlock } from '../../blocks/MediaBlock';
-import { hero } from '../../fields/hero';
-import { slugField } from '../../fields/slug';
-import { populateArchiveBlock } from '../../hooks/populateArchiveBlock';
-import { populatePublishedDate } from '../../hooks/populatePublishedDate';
-import { revalidatePage } from './hooks/revalidatePage';
+import { admins } from '../../access/admins'
+import { adminsOrPublished } from '../../access/adminsOrPublished'
+import { Archive } from '../../blocks/ArchiveBlock'
+import { CallToAction } from '../../blocks/CallToAction'
+import { Content } from '../../blocks/Content'
+import { MediaBlock } from '../../blocks/MediaBlock'
+import { hero } from '../../fields/hero'
+import { slugField } from '../../fields/slug'
+import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
+import { populatePublishedAt } from '../../hooks/populatePublishedAt'
+import { revalidatePage } from './hooks/revalidatePage'
 
 export const Pages: CollectionConfig = {
+  slug: 'pages',
+  admin: {
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'slug', 'updatedAt'],
+    preview: doc => {
+      return `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/next/preview?url=${encodeURIComponent(
+        `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/${doc.slug !== 'home' ? doc.slug : ''}`,
+      )}&secret=${process.env.PAYLOAD_PUBLIC_DRAFT_SECRET}`
+    },
+  },
+  hooks: {
+    beforeChange: [populatePublishedAt],
+    afterChange: [revalidatePage],
+    afterRead: [populateArchiveBlock],
+  },
+  versions: {
+    drafts: true,
+  },
   access: {
-    create: admins,
-    delete: () => false,
     read: adminsOrPublished,
     update: admins,
-  },
-  admin: {
-    defaultColumns: ['title', 'slug', 'updatedAt'], // livePreview: {
-    //   url: ({ data }) =>
-    //     `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/${data.slug !== 'home' ? data.slug : ''}`,
-    // },
-    preview: (doc) => `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/preview?url=${encodeURIComponent(
-      `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/${
-        doc.slug !== 'home' ? (doc.slug as string) : ''
-      }`,
-    )}&secret=${process.env.PAYLOAD_PUBLIC_DRAFT_SECRET}`,
-    useAsTitle: 'title',
+    create: admins,
+    delete: admins,
   },
   fields: [
     {
       name: 'title',
-      required: true,
       type: 'text',
+      required: true,
     },
     {
-      name: 'publishedDate',
+      name: 'publishedAt',
+      type: 'date',
       admin: {
         position: 'sidebar',
       },
-      type: 'date',
     },
     {
+      type: 'tabs',
       tabs: [
         {
-          fields: [hero],
           label: 'Hero',
+          fields: [hero],
         },
         {
+          label: 'Content',
           fields: [
             {
               name: 'layout',
-              blocks: [CallToAction, Content, MediaBlock, Archive],
-              required: true,
               type: 'blocks',
+              required: true,
+              blocks: [CallToAction, Content, MediaBlock, Archive],
             },
           ],
-          label: 'Content',
         },
       ],
-      type: 'tabs',
     },
     slugField(),
   ],
-  hooks: {
-    afterChange: [revalidatePage],
-    afterRead: [populateArchiveBlock],
-    beforeChange: [populatePublishedDate],
-  },
-  slug: 'pages',
-  versions: {
-    drafts: true,
-  },
-};
+}

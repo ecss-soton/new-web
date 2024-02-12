@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 
-import classes from './index.module.scss';
+import classes from './index.module.scss'
 
 export type VerticalPaddingOptions = 'large' | 'medium' | 'none'
 
@@ -16,12 +16,14 @@ export const VerticalPadding: React.FC<Props> = ({
   bottom = 'medium',
   className,
   children,
-}) => (
-  <div
-    className={[className, classes[`top-${top}`], classes[`bottom-${bottom}`]]
-      .filter(Boolean)
-      .join(' ')}
-  >
-    {children}
-  </div>
-);
+}) => {
+  return (
+    <div
+      className={[className, classes[`top-${top}`], classes[`bottom-${bottom}`]]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      {children}
+    </div>
+  )
+}

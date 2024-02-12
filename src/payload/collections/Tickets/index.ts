@@ -1,10 +1,10 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload/types'
 
-import Groups from '../groups';
-import { admins } from '../../access/admins';
-import { saleActiveOrAdmin } from '../../access/saleActiveOrAdmin';
-import { isAnInt } from '../../validate/isAnInt';
-import { getSoldCount } from './endpoints/getSoldCount';
+import { admins } from '../../access/admins'
+import { saleActiveOrAdmin } from '../../access/saleActiveOrAdmin'
+import { isAnInt } from '../../validate/isAnInt'
+import Groups from '../groups'
+import { getSoldCount } from './endpoints/getSoldCount'
 
 const Tickets: CollectionConfig = {
   slug: 'tickets',
@@ -69,6 +69,6 @@ const Tickets: CollectionConfig = {
       relationTo: 'forms',
     },
   ],
-};
+}
 
-export default Tickets;
+export default Tickets

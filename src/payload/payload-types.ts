@@ -45,24 +45,12 @@ export interface Config {
 export interface Page {
   id: string;
   title: string;
-  publishedDate?: string | null;
+  publishedAt?: string | null;
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
     richText: {
-      root: {
-        children: {
-          type: string;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        type: string;
-        version: number;
-      };
       [k: string]: unknown;
-    };
+    }[];
     links?:
       | {
           link: {
@@ -85,20 +73,8 @@ export interface Page {
     | {
         invertBackground?: boolean | null;
         richText: {
-          root: {
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            type: string;
-            version: number;
-          };
           [k: string]: unknown;
-        };
+        }[];
         links?:
           | {
               link: {
@@ -125,20 +101,8 @@ export interface Page {
           | {
               size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
               richText: {
-                root: {
-                  children: {
-                    type: string;
-                    version: number;
-                    [k: string]: unknown;
-                  }[];
-                  direction: ('ltr' | 'rtl') | null;
-                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                  indent: number;
-                  type: string;
-                  version: number;
-                };
                 [k: string]: unknown;
-              };
+              }[];
               enableLink?: boolean | null;
               link?: {
                 type?: ('reference' | 'custom') | null;
@@ -168,20 +132,8 @@ export interface Page {
       }
     | {
         introContent: {
-          root: {
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            type: string;
-            version: number;
-          };
           [k: string]: unknown;
-        };
+        }[];
         populateBy?: ('collection' | 'selection') | null;
         relationTo?: ('posts' | 'projects') | null;
         categories?: (string | Category)[] | null;
@@ -217,6 +169,11 @@ export interface Page {
       }
   )[];
   slug?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: string | Media | null;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -228,21 +185,11 @@ export interface Page {
 export interface Media {
   id: string;
   alt: string;
-  caption?: {
-    root: {
-      children: {
-        type: string;
-        version: number;
+  caption?:
+    | {
         [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      type: string;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -279,7 +226,7 @@ export interface Post {
   id: string;
   title: string;
   categories?: (string | Category)[] | null;
-  publishedOn?: string | null;
+  publishedAt?: string | null;
   authors?: (string | User)[] | null;
   populatedAuthors?:
     | {
@@ -290,20 +237,8 @@ export interface Post {
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
     richText: {
-      root: {
-        children: {
-          type: string;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        type: string;
-        version: number;
-      };
       [k: string]: unknown;
-    };
+    }[];
     links?:
       | {
           link: {
@@ -326,20 +261,8 @@ export interface Post {
     | {
         invertBackground?: boolean | null;
         richText: {
-          root: {
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            type: string;
-            version: number;
-          };
           [k: string]: unknown;
-        };
+        }[];
         links?:
           | {
               link: {
@@ -366,20 +289,8 @@ export interface Post {
           | {
               size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
               richText: {
-                root: {
-                  children: {
-                    type: string;
-                    version: number;
-                    [k: string]: unknown;
-                  }[];
-                  direction: ('ltr' | 'rtl') | null;
-                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                  indent: number;
-                  type: string;
-                  version: number;
-                };
                 [k: string]: unknown;
-              };
+              }[];
               enableLink?: boolean | null;
               link?: {
                 type?: ('reference' | 'custom') | null;
@@ -409,20 +320,8 @@ export interface Post {
       }
     | {
         introContent: {
-          root: {
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            type: string;
-            version: number;
-          };
           [k: string]: unknown;
-        };
+        }[];
         populateBy?: ('collection' | 'selection') | null;
         relationTo?: ('posts' | 'projects') | null;
         categories?: (string | Category)[] | null;
@@ -463,20 +362,8 @@ export interface Post {
         | {
             invertBackground?: boolean | null;
             richText: {
-              root: {
-                children: {
-                  type: string;
-                  version: number;
-                  [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                type: string;
-                version: number;
-              };
               [k: string]: unknown;
-            };
+            }[];
             links?:
               | {
                   link: {
@@ -503,20 +390,8 @@ export interface Post {
               | {
                   size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
                   richText: {
-                    root: {
-                      children: {
-                        type: string;
-                        version: number;
-                        [k: string]: unknown;
-                      }[];
-                      direction: ('ltr' | 'rtl') | null;
-                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                      indent: number;
-                      type: string;
-                      version: number;
-                    };
                     [k: string]: unknown;
-                  };
+                  }[];
                   enableLink?: boolean | null;
                   link?: {
                     type?: ('reference' | 'custom') | null;
@@ -546,20 +421,8 @@ export interface Post {
           }
         | {
             introContent: {
-              root: {
-                children: {
-                  type: string;
-                  version: number;
-                  [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                type: string;
-                version: number;
-              };
               [k: string]: unknown;
-            };
+            }[];
             populateBy?: ('collection' | 'selection') | null;
             relationTo?: ('posts' | 'projects') | null;
             categories?: (string | Category)[] | null;
@@ -597,6 +460,11 @@ export interface Post {
     | null;
   relatedPosts?: (string | Post)[] | null;
   slug?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: string | Media | null;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -608,7 +476,7 @@ export interface Post {
 export interface User {
   id: string;
   name?: string | null;
-  username: string;
+  username?: string | null;
   quickfileClientID?: number | null;
   stripeClientID?: string | null;
   roles?: ('admin' | 'user')[] | null;
@@ -631,24 +499,12 @@ export interface Project {
   id: string;
   title: string;
   categories?: (string | Category)[] | null;
-  publishedDate?: string | null;
+  publishedAt?: string | null;
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
     richText: {
-      root: {
-        children: {
-          type: string;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        type: string;
-        version: number;
-      };
       [k: string]: unknown;
-    };
+    }[];
     links?:
       | {
           link: {
@@ -671,20 +527,8 @@ export interface Project {
     | {
         invertBackground?: boolean | null;
         richText: {
-          root: {
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            type: string;
-            version: number;
-          };
           [k: string]: unknown;
-        };
+        }[];
         links?:
           | {
               link: {
@@ -711,20 +555,8 @@ export interface Project {
           | {
               size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
               richText: {
-                root: {
-                  children: {
-                    type: string;
-                    version: number;
-                    [k: string]: unknown;
-                  }[];
-                  direction: ('ltr' | 'rtl') | null;
-                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                  indent: number;
-                  type: string;
-                  version: number;
-                };
                 [k: string]: unknown;
-              };
+              }[];
               enableLink?: boolean | null;
               link?: {
                 type?: ('reference' | 'custom') | null;
@@ -754,20 +586,8 @@ export interface Project {
       }
     | {
         introContent: {
-          root: {
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            type: string;
-            version: number;
-          };
           [k: string]: unknown;
-        };
+        }[];
         populateBy?: ('collection' | 'selection') | null;
         relationTo?: ('posts' | 'projects') | null;
         categories?: (string | Category)[] | null;
@@ -804,6 +624,11 @@ export interface Project {
   )[];
   relatedProjects?: (string | Project)[] | null;
   slug?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: string | Media | null;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;

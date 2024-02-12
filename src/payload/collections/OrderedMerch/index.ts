@@ -1,11 +1,11 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload/types'
 
-import Groups from '../groups';
-import { admins } from '../../access/admins';
-import { userOrAdmin } from '../../access/userOrAdmin';
-import { matchesMerch } from './validate/matchesMerch';
-import { includedForm } from './validate/includedForm';
-import { user } from '../../access/user';
+import { admins } from '../../access/admins'
+import { user } from '../../access/user'
+import { userOrAdmin } from '../../access/userOrAdmin'
+import Groups from '../groups'
+import { includedForm } from './validate/includedForm'
+import { matchesMerch } from './validate/matchesMerch'
 
 const OrderedMerch: CollectionConfig = {
   slug: 'orderedMerch',
@@ -39,7 +39,7 @@ const OrderedMerch: CollectionConfig = {
       type: 'relationship',
       relationTo: 'users',
       required: true,
-      defaultValue: ({ user }) => user.id,
+      defaultValue: ({ user: u }) => u.id,
       access: {
         create: admins,
       },
@@ -47,19 +47,28 @@ const OrderedMerch: CollectionConfig = {
     {
       name: 'size',
       type: 'text',
-      validate: matchesMerch((d) => d?.sizes, (s) => s?.size),
+      validate: matchesMerch(
+        d => d?.sizes,
+        s => s?.size,
+      ),
     },
     {
       name: 'colour',
       type: 'text',
-      validate: matchesMerch((d) => d?.colours, (c) => c?.colour),
+      validate: matchesMerch(
+        d => d?.colours,
+        c => c?.colour,
+      ),
     },
     {
       name: 'variation',
       type: 'text',
       required: true,
       defaultValue: 'main',
-      validate: matchesMerch((d) => d?.variations, (v) => v?.variation),
+      validate: matchesMerch(
+        d => d?.variations,
+        v => v?.variation,
+      ),
     },
     {
       name: 'form',
@@ -68,6 +77,6 @@ const OrderedMerch: CollectionConfig = {
       validate: includedForm,
     },
   ],
-};
+}
 
-export default OrderedMerch;
+export default OrderedMerch
