@@ -1,64 +1,64 @@
-import dotenv from 'dotenv';
-import Stripe from 'stripe';
-import express, { Request, Response } from 'express';
-import payload from 'payload';
-import path from 'path';
-import { CheckoutSession, InvoiceItem } from './types';
-import { User } from '../payload-types';
+import dotenv from 'dotenv'
+import type { Request, Response } from 'express'
+import express from 'express'
+import path from 'path'
+import payload from 'payload'
+import Stripe from 'stripe'
+
+import type { User } from '../payload-types'
+import type { CheckoutSession, InvoiceItem } from './types'
 
 dotenv.config({
   path: path.resolve(__dirname, '../../../.env'),
-});
+})
 
-const successURL = `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/orders`;
-const stripe = new Stripe(process.env.STRIPE_API_KEY);
+const successURL = `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/orders`
+const stripe = new Stripe(process.env.STRIPE_API_KEY)
 
-export const handleRawExpress = express.raw({ type: 'application/json' });
+export const handleRawExpress = express.raw({ type: 'application/json' })
 export const handleWebhook = async (req: Request, res: Response): Promise<void> => {
-  const sig = req.headers['stripe-signature'];
-  let event: Stripe.Event;
+  const sig = req.headers['stripe-signature']
+  let event: Stripe.Event
 
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_ENDPOINT_SECRET);
-  } catch (err) {
-    res.status(400).send(`Webhook Error: ${err.message}`);
-    payload.logger.warn(`Webhook Error: ${err.message}`);
-    return;
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_ENDPOINT_SECRET)
+  } catch (e: unknown) {
+    let err = e as { message: string }
+    res.status(400).send(`Webhook Error: ${err.message}`)
+    payload.logger.warn(`Webhook Error: ${err.message}`)
+    return
   }
 
   switch (event.type) {
     case 'checkout.session.completed': {
-      const session: Stripe.Checkout.Session = event.data.object;
+      const session: Stripe.Checkout.Session = event.data.object
       await payload.update({
         collection: 'orders',
-        where:
-          {
-            stripeID:
-              {
-                equals: session.id,
-              },
+        where: {
+          stripeID: {
+            equals: session.id,
           },
-        data:
-          {
-            status: 'completed',
-          },
-      });
-      break;
+        },
+        data: {
+          status: 'completed',
+        },
+      })
+      break
     }
     default:
-      payload.logger.warn(`Unhandled event type ${event.type}`);
+      payload.logger.warn(`Unhandled event type ${event.type}`)
   }
 
-  res.send();
-};
+  res.send()
+}
 
 export async function createCustomer(user: User): Promise<string> {
   const customer = await stripe.customers.create({
     name: user.name ?? user.username,
     email: user.email,
-  });
+  })
 
-  return customer.id;
+  return customer.id
 }
 
 export async function createCheckoutSession(
@@ -66,7 +66,7 @@ export async function createCheckoutSession(
   stripeTax: number,
   customerID: string,
 ): Promise<CheckoutSession> {
-  const lineItems = items.map((i) => ({
+  const lineItems = items.map(i => ({
     // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
     price_data: {
       currency: 'gbp',
@@ -77,7 +77,7 @@ export async function createCheckoutSession(
       },
     },
     quantity: 1,
-  }));
+  }))
 
   if (stripeTax > 0) {
     lineItems.push({
@@ -90,7 +90,7 @@ export async function createCheckoutSession(
         },
       },
       quantity: 1,
-    });
+    })
   }
 
   const session = await stripe.checkout.sessions.create({
@@ -98,17 +98,16 @@ export async function createCheckoutSession(
     mode: 'payment',
     success_url: successURL,
     customer: customerID,
-  });
+  })
 
-  return { id: session.id, url: session.url };
+  return { id: session.id, url: session.url }
 }
 
-export async function expireSession(sessionID: string) {
-  await stripe.checkout.sessions.expire(sessionID);
+export async function expireSession(sessionID: string): Promise<void> {
+  await stripe.checkout.sessions.expire(sessionID)
 }
 
-export async function getSessionStatus(sessionID: string):
-Promise<Stripe.Checkout.Session.Status> {
-  const session = await stripe.checkout.sessions.retrieve(sessionID);
-  return session.status;
+export async function getSessionStatus(sessionID: string): Promise<Stripe.Checkout.Session.Status> {
+  const session = await stripe.checkout.sessions.retrieve(sessionID)
+  return session.status
 }

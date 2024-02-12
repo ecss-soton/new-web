@@ -1,10 +1,10 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload/types'
 
-import { admins } from '../../access/admins';
-import Groups from '../groups';
-import { uniqueFields } from './validate/uniqueFields';
-import { isAnInt } from '../../validate/isAnInt';
-import { saleActiveOrAdmin } from '../../access/saleActiveOrAdmin';
+import { admins } from '../../access/admins'
+import { saleActiveOrAdmin } from '../../access/saleActiveOrAdmin'
+import { isAnInt } from '../../validate/isAnInt'
+import Groups from '../groups'
+import { uniqueFields } from './validate/uniqueFields'
 
 const Merch: CollectionConfig = {
   slug: 'merch',
@@ -46,7 +46,11 @@ const Merch: CollectionConfig = {
     {
       name: 'sizes',
       type: 'array',
-      validate: uniqueFields((d) => d?.sizes, (s) => s?.size, true),
+      validate: uniqueFields(
+        d => d?.sizes,
+        s => s?.size,
+        true,
+      ),
       fields: [
         {
           name: 'size',
@@ -59,7 +63,11 @@ const Merch: CollectionConfig = {
     {
       name: 'colours',
       type: 'array',
-      validate: uniqueFields((d) => d?.colours, (c) => c?.colour, true),
+      validate: uniqueFields(
+        d => d?.colours,
+        c => c?.colour,
+        true,
+      ),
       fields: [
         {
           name: 'colour',
@@ -81,7 +89,11 @@ const Merch: CollectionConfig = {
       name: 'variations',
       type: 'array',
       required: true,
-      validate: uniqueFields((d) => d?.variations, (v) => v?.variation, false),
+      validate: uniqueFields(
+        d => d?.variations,
+        v => v?.variation,
+        false,
+      ),
       fields: [
         {
           name: 'variation',
@@ -113,6 +125,6 @@ const Merch: CollectionConfig = {
       ],
     },
   ],
-};
+}
 
-export default Merch;
+export default Merch

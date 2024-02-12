@@ -32,7 +32,7 @@ cd new-web
 Install dependencies
 
 ```bash
-npm install
+yarn install
 ```
 
 The election backend requires the [stv-rs](https://crates.io/crates/stv-rs) command line tool. It can be installed using
@@ -45,6 +45,6 @@ cargo install stv-rs
 Start the server
 
 ```bash
-npm run dev
+yarn run dev
 ```
 

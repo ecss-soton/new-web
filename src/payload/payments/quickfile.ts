@@ -1,26 +1,27 @@
-import { v4 as uuidv4 } from 'uuid';
-import md5 from 'md5';
-import { Invoice } from './types';
+import md5 from 'md5'
+import { v4 as uuidv4 } from 'uuid'
 
-const BASE_API = 'https://api.quickfile.co.uk/1_2';
-let API_KEYS: string[];
-let API_INDEX = 0;
+import type { Invoice } from './types'
+
+const BASE_API = 'https://api.quickfile.co.uk/1_2'
+let API_KEYS: string[]
+let API_INDEX = 0
 
 function getAPIHeader(): { [key: string]: any } {
   if (!API_KEYS) {
     API_KEYS = process.env.QUICK_APPLICATION_IDS.split(',')
-      .map((value) => ({ value, sort: Math.random() }))
+      .map(value => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value);
+      .map(({ value }) => value)
   }
 
-  const applicationID = API_KEYS[API_INDEX];
-  API_INDEX = (API_INDEX + 1) % API_KEYS.length;
+  const applicationID = API_KEYS[API_INDEX]
+  API_INDEX = (API_INDEX + 1) % API_KEYS.length
 
-  const accountNumber = process.env.QUICK_ACCOUNT_NUMBER;
-  const apiKey = process.env.QUICK_ACCOUNT_API_KEY;
-  const subNumber = uuidv4();
-  const md5Hash = md5(`${accountNumber}${apiKey}${subNumber}`);
+  const accountNumber = process.env.QUICK_ACCOUNT_NUMBER
+  const apiKey = process.env.QUICK_ACCOUNT_API_KEY
+  const subNumber = uuidv4()
+  const md5Hash = md5(`${accountNumber}${apiKey}${subNumber}`)
 
   return {
     MessageType: 'Request',
@@ -30,7 +31,7 @@ function getAPIHeader(): { [key: string]: any } {
       ApplicationID: applicationID,
       MD5Value: md5Hash,
     },
-  };
+  }
 }
 
 async function postJSON(url: string, data: any): Promise<any> {
@@ -40,13 +41,13 @@ async function postJSON(url: string, data: any): Promise<any> {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ payload: data }),
-  });
+  })
 
-  return response.json();
+  return response.json()
 }
 
 export async function createClient(username: string): Promise<number> {
-  const password = uuidv4().replaceAll('-', '').substring(0, 15);
+  const password = uuidv4().replaceAll('-', '').substring(0, 15)
   const payload = {
     Header: getAPIHeader(),
     Body: {
@@ -61,15 +62,15 @@ export async function createClient(username: string): Promise<number> {
         },
       },
     },
-  };
+  }
 
-  const res = await postJSON('Client/Create', payload);
+  const res = await postJSON('Client/Create', payload)
 
-  return res.Client_Create.Body.ClientID;
+  return res.Client_Create.Body.ClientID
 }
 
 export async function getPaidInvoices(): Promise<number[]> {
-  const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+  const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
   const payload = {
     Header: getAPIHeader(),
     Body: {
@@ -83,62 +84,64 @@ export async function getPaidInvoices(): Promise<number[]> {
         IssueDateFrom: twoDaysAgo.toLocaleDateString('en-ca'), // yyyy-mm-dd
       },
     },
-  };
+  }
 
-  const res = await postJSON('Invoice/Search', payload);
+  const res = await postJSON('Invoice/Search', payload)
 
-  return res.Invoice_Search.Body.Record.map((record) => record.InvoiceID);
+  return res.Invoice_Search.Body.Record.map(record => record.InvoiceID)
 }
 
-export async function deleteInvoices(invoiceIDs: number[]) {
+export async function deleteInvoices(invoiceIDs: number[]): Promise<void> {
   const payload = {
     Header: getAPIHeader(),
     Body: { InvoiceDetails: { InvoiceIDs: { InvoiceID: invoiceIDs } } },
-  };
+  }
 
-  await postJSON('Invoice/Delete', payload);
+  await postJSON('Invoice/Delete', payload)
 }
 
-export async function sendInvoices(invoiceIDs: number[]) {
+export async function sendInvoices(invoiceIDs: number[]): Promise<void> {
   const payload = {
     Header: getAPIHeader(),
     Body: {
-      SendItem: invoiceIDs.map((id) => ({
+      SendItem: invoiceIDs.map(id => ({
         InvoiceID: id,
         SendByEmail: false,
         SendBySnailMail: false,
       })),
     },
-  };
+  }
 
-  await postJSON('Invoice/Send', payload);
+  await postJSON('Invoice/Send', payload)
 }
 
-export async function getInvoice(invoiceID: number): Promise<{status: string, previewURI: string}> {
+export async function getInvoice(
+  invoiceID: number,
+): Promise<{ status: string; previewURI: string }> {
   const payload = {
     Header: getAPIHeader(),
     Body: {
       InvoiceID: invoiceID,
     },
-  };
+  }
 
-  const res = (await postJSON('Invoice/Get', payload)).Invoice_Get.Body.InvoiceDetails;
+  const res = (await postJSON('Invoice/Get', payload)).Invoice_Get.Body.InvoiceDetails
 
-  return ({ status: res.Status, previewURI: res.DirectPreviewUri });
+  return { status: res.Status, previewURI: res.DirectPreviewUri }
 }
 
 export async function createInvoice(invoice: Invoice): Promise<number> {
-  const items = invoice.items.map((i) => {
-    const pounds = Math.floor((Math.abs(i.cost) / 100)) * (i.cost > 0 ? 1 : -1);
-    const pence = (Math.abs(i.cost) % 100).toString().padStart(2, '0');
+  const items = invoice.items.map(i => {
+    const pounds = Math.floor(Math.abs(i.cost) / 100) * (i.cost > 0 ? 1 : -1)
+    const pence = (Math.abs(i.cost) % 100).toString().padStart(2, '0')
     return {
       ItemID: 0,
       ItemName: i.name,
       ItemDescription: i.description,
       UnitCost: `${pounds}.${pence}`,
       Qty: 1,
-    };
-  });
+    }
+  })
 
   const payload = {
     Header: getAPIHeader(),
@@ -158,9 +161,9 @@ export async function createInvoice(invoice: Invoice): Promise<number> {
         },
       },
     },
-  };
+  }
 
-  const res = await postJSON('Invoice/Create', payload);
+  const res = await postJSON('Invoice/Create', payload)
 
-  return res.Invoice_Create.Body.InvoiceID;
+  return res.Invoice_Create.Body.InvoiceID
 }

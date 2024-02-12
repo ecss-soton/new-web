@@ -1,28 +1,28 @@
-'use client';
+'use client'
 
-import React, { Fragment, useCallback, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import Link from 'next/link';
+import React, { Fragment, useCallback, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import Link from 'next/link'
 
-import { Button } from '../../../_components/Button';
-import { Input } from '../../../_components/Input';
-import { Message } from '../../../_components/Message';
+import { Button } from '../../../_components/Button'
+import { Input } from '../../../_components/Input'
+import { Message } from '../../../_components/Message'
 
-import classes from './index.module.scss';
+import classes from './index.module.scss'
 
 type FormData = {
   email: string
 }
 
 export const RecoverPasswordForm: React.FC = () => {
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<FormData>()
 
   const onSubmit = useCallback(async (data: FormData) => {
     const response = await fetch(
@@ -34,17 +34,17 @@ export const RecoverPasswordForm: React.FC = () => {
           'Content-Type': 'application/json',
         },
       },
-    );
+    )
 
     if (response.ok) {
-      setSuccess(true);
-      setError('');
+      setSuccess(true)
+      setError('')
     } else {
       setError(
         'There was a problem while attempting to send you a password reset email. Please try again.',
-      );
+      )
     }
-  }, []);
+  }, [])
 
   return (
     <Fragment>
@@ -56,16 +56,10 @@ export const RecoverPasswordForm: React.FC = () => {
               {`Please enter your email below. You will receive an email message with instructions on
               how to reset your password. To manage your all users, `}
               <Link href="/admin/collections/users">login to the admin dashboard</Link>
-              .
+              {'.'}
             </p>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className={classes.form}
-            >
-              <Message
-                error={error}
-                className={classes.message}
-              />
+            <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+              <Message error={error} className={classes.message} />
               <Input
                 name="email"
                 label="Email Address"
@@ -91,5 +85,5 @@ export const RecoverPasswordForm: React.FC = () => {
         </React.Fragment>
       )}
     </Fragment>
-  );
-};
+  )
+}

@@ -1,9 +1,10 @@
-import { Access } from 'payload/config';
-import { Order } from '../../../payload-types';
+import type { Access } from 'payload/config'
+
+import type { Order } from '../../../payload-types'
 
 export const onlyOneBasket: Access<Order> = async ({ req: { user, payload } }) => {
   if (!user) {
-    return false;
+    return false
   }
 
   const orders = await payload.find({
@@ -23,7 +24,7 @@ export const onlyOneBasket: Access<Order> = async ({ req: { user, payload } }) =
         },
       ],
     },
-  });
+  })
 
-  return orders.totalDocs === 0;
-};
+  return orders.totalDocs === 0
+}

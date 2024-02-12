@@ -1,10 +1,10 @@
-import type { CollectionConfig } from 'payload/types';
+import type { CollectionConfig } from 'payload/types'
 
-import Groups from '../groups';
-import { admins } from '../../access/admins';
-import { userOrAdmin } from '../../access/userOrAdmin';
-import { includedForm } from './validate/includedForm';
-import { user } from '../../access/user';
+import { admins } from '../../access/admins'
+import { user } from '../../access/user'
+import { userOrAdmin } from '../../access/userOrAdmin'
+import Groups from '../groups'
+import { includedForm } from './validate/includedForm'
 
 const OrderedTickets: CollectionConfig = {
   slug: 'orderedTickets',
@@ -30,7 +30,7 @@ const OrderedTickets: CollectionConfig = {
       type: 'relationship',
       relationTo: 'users',
       required: true,
-      defaultValue: ({ user }) => user.id,
+      defaultValue: ({ user: u }) => u.id,
       access: {
         create: admins,
       },
@@ -42,6 +42,6 @@ const OrderedTickets: CollectionConfig = {
       validate: includedForm,
     },
   ],
-};
+}
 
-export default OrderedTickets;
+export default OrderedTickets

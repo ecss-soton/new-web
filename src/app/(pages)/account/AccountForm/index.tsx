@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 
-import { Button } from '../../../_components/Button';
-import { Input } from '../../../_components/Input';
-import { Message } from '../../../_components/Message';
-import { useAuth } from '../../../_providers/Auth';
+import { Button } from '../../../_components/Button'
+import { Input } from '../../../_components/Input'
+import { Message } from '../../../_components/Message'
+import { useAuth } from '../../../_providers/Auth'
 
-import classes from './index.module.scss';
+import classes from './index.module.scss'
 
 type FormData = {
   email: string
@@ -19,10 +19,10 @@ type FormData = {
 }
 
 const AccountForm: React.FC = () => {
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const { user, setUser } = useAuth();
-  const [changePassword, setChangePassword] = useState(false);
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const { user, setUser } = useAuth()
+  const [changePassword, setChangePassword] = useState(false)
 
   const {
     register,
@@ -30,12 +30,12 @@ const AccountForm: React.FC = () => {
     formState: { errors, isLoading },
     reset,
     watch,
-  } = useForm<FormData>();
+  } = useForm<FormData>()
 
-  const password = useRef({});
-  password.current = watch('password', '');
+  const password = useRef({})
+  password.current = watch('password', '')
 
-  const router = useRouter();
+  const router = useRouter()
 
   const onSubmit = useCallback(
     async (data: FormData) => {
@@ -48,27 +48,27 @@ const AccountForm: React.FC = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-        });
+        })
 
         if (response.ok) {
-          const json = await response.json();
-          setUser(json.doc);
-          setSuccess('Successfully updated account.');
-          setError('');
-          setChangePassword(false);
+          const json = await response.json()
+          setUser(json.doc)
+          setSuccess('Successfully updated account.')
+          setError('')
+          setChangePassword(false)
           reset({
             email: json.doc.email,
             name: json.doc.name,
             password: '',
             passwordConfirm: '',
-          });
+          })
         } else {
-          setError('There was a problem updating your account.');
+          setError('There was a problem updating your account.')
         }
       }
     },
     [user, setUser, reset],
-  );
+  )
 
   useEffect(() => {
     if (user === null) {
@@ -76,7 +76,7 @@ const AccountForm: React.FC = () => {
         `/login?error=${encodeURIComponent(
           'You must be logged in to view this page.',
         )}&redirect=${encodeURIComponent('/account')}`,
-      );
+      )
     }
 
     // Once user is loaded, reset form to have default values
@@ -86,20 +86,13 @@ const AccountForm: React.FC = () => {
         name: user.name,
         password: '',
         passwordConfirm: '',
-      });
+      })
     }
-  }, [user, router, reset, changePassword]);
+  }, [user, router, reset, changePassword])
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className={classes.form}
-    >
-      <Message
-        error={error}
-        success={success}
-        className={classes.message}
-      />
+    <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+      <Message error={error} success={success} className={classes.message} />
       {!changePassword ? (
         <Fragment>
           <p>
@@ -121,12 +114,7 @@ const AccountForm: React.FC = () => {
             error={errors.email}
             type="email"
           />
-          <Input
-            name="name"
-            label="Name"
-            register={register}
-            error={errors.name}
-          />
+          <Input name="name" label="Name" register={register} error={errors.name} />
         </Fragment>
       ) : (
         <Fragment>
@@ -155,7 +143,7 @@ const AccountForm: React.FC = () => {
             label="Confirm Password"
             required
             register={register}
-            validate={(value) => value === password.current || 'The passwords do not match'}
+            validate={value => value === password.current || 'The passwords do not match'}
             error={errors.passwordConfirm}
           />
         </Fragment>
@@ -168,7 +156,7 @@ const AccountForm: React.FC = () => {
         className={classes.submit}
       />
     </form>
-  );
-};
+  )
+}
 
-export default AccountForm;
+export default AccountForm
