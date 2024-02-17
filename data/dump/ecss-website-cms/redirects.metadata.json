@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"createdAt":{"$numberInt":"1"}},"name":"createdAt_1","background":true},{"v":{"$numberInt":"2"},"key":{"from":{"$numberInt":"1"}},"name":"from_1","background":true}],"uuid":"94e1674f06af47f5855247594c0828f1","collectionName":"redirects","type":"collection"}
