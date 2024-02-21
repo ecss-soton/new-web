@@ -8,3 +8,15 @@ export const isAnInt: Validate = (num, args) => {
 
   return number(num, args)
 }
+
+export function testMatchesRegex(regex: RegExp): Validate {
+  return async value => {
+    if (typeof value !== 'string') {
+      return 'expected a string'
+    }
+    if (!regex.test(value)) {
+      return 'did not match regex: ' + regex
+    }
+    return true
+  }
+}
