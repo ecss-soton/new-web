@@ -1,8 +1,8 @@
 import type { CollectionConfig } from 'payload/types'
 
-import { admins } from '../../access/admins'
-import { testMatchesRegex } from '../../validate/isAnInt'
-import { isHTTPS } from './validate/isHTTPS'
+import { admins } from '../access/admins'
+import { testMatchesRegex } from '../validate/isAnInt'
+import { isHTTPS } from '../validate/isHTTPS'
 
 const Societies: CollectionConfig = {
   slug: 'societies',
@@ -13,8 +13,8 @@ const Societies: CollectionConfig = {
     delete: admins,
   },
   admin: {
-    useAsTitle: 'name',
-    defaultColumns: ['name', 'importance', 'description'],
+    useAsTitle: 'id',
+    defaultColumns: ['id', 'name'],
   },
   fields: [
     {
@@ -32,7 +32,7 @@ const Societies: CollectionConfig = {
     {
       name: 'description',
       label: 'Description',
-      type: 'text',
+      type: 'richText',
     },
     {
       name: 'logo',
