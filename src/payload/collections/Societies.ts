@@ -80,6 +80,7 @@ const Societies: CollectionConfig = {
         {
           name: 'url',
           type: 'text',
+          required: true,
           validate: isHTTPS,
         },
       ],
