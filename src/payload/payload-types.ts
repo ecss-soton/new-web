@@ -26,6 +26,9 @@ export interface Config {
     orderedTickets: OrderedTicket;
     orderedMerch: OrderedMerch;
     orders: Order;
+    sponsors: Sponsor;
+    societies: Society;
+    committees: Committee;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -1007,6 +1010,114 @@ export interface Order {
   stripeID?: string | null;
   status: 'basket' | 'pending' | 'failed' | 'completed';
   forceUpdate: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sponsors".
+ */
+export interface Sponsor {
+  id: string;
+  name: string;
+  level?: ('gold' | 'silver' | 'bronze' | '64bit' | '32bit' | '16bit') | null;
+  description?:
+    | {
+        [k: string]: unknown;
+      }[]
+    | null;
+  logo: string | Media;
+  website?: string | null;
+  links?:
+    | {
+        name?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "societies".
+ */
+export interface Society {
+  id: string;
+  name?: string | null;
+  description?:
+    | {
+        [k: string]: unknown;
+      }[]
+    | null;
+  logo: string | Media;
+  email?: string | null;
+  website?: string | null;
+  github?: string | null;
+  instagram?: string | null;
+  discord?: string | null;
+  links?:
+    | {
+        name?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "committees".
+ */
+export interface Committee {
+  id: string;
+  type: 'old' | 'current';
+  members?:
+    | (
+        | {
+            relationTo: 'nominations';
+            value: string | Nomination;
+          }
+        | {
+            relationTo: 'positions';
+            value: string | Position;
+          }
+      )[]
+    | null;
+  simplifiedMembers?:
+    | {
+        position:
+          | 'Academic Secretary'
+          | 'Events Officer'
+          | 'Gamesmaster'
+          | 'Games Officer'
+          | 'Hackathon Officer'
+          | 'Industry Officer'
+          | 'International Representative'
+          | 'Marketing Officer'
+          | 'Masters Rep'
+          | 'Postgraduate Representative'
+          | 'President'
+          | 'Publicity Officer'
+          | 'Secretary'
+          | 'Social Secretary'
+          | 'Sports Officer'
+          | 'Sports Representative'
+          | 'Staff Representative'
+          | 'Treasurer'
+          | 'Unknown Role'
+          | 'Vice President'
+          | 'Vice President Engagement'
+          | 'Vice President Operations'
+          | 'Webmaster'
+          | 'Web Officer'
+          | 'Welfare Officer'
+          | "Women's Representative";
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }

@@ -13,6 +13,7 @@ import { buildConfig } from 'payload/config'
 
 import Categories from './collections/Categories'
 import Comments from './collections/Comments'
+import Committees from './collections/Committees'
 import { ElectionResults } from './collections/ElectionResults'
 import Elections from './collections/Elections'
 import { Media } from './collections/Media'
@@ -26,6 +27,8 @@ import Positions from './collections/Position'
 import { Posts } from './collections/Posts'
 import { Projects } from './collections/Projects'
 import Sales from './collections/Sales'
+import Societies from './collections/Societies'
+import Sponsors from './collections/Sponsors'
 import Tickets from './collections/Tickets'
 import Users from './collections/Users'
 import Votes from './collections/Votes'
@@ -107,6 +110,9 @@ export default buildConfig({
     OrderedTickets,
     OrderedMerch,
     Orders,
+    Sponsors,
+    Societies,
+    Committees,
   ],
   globals: [Settings, Header, Footer],
   typescript: {

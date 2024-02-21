@@ -41,6 +41,11 @@ const Societies: CollectionConfig = {
       required: true,
     },
     {
+      name: 'email',
+      label: 'Email',
+      type: 'email',
+    },
+    {
       name: 'website',
       label: 'The main website URL',
       type: 'text',
