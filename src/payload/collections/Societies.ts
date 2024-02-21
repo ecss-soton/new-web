@@ -52,6 +52,12 @@ const Societies: CollectionConfig = {
       validate: isHTTPS,
     },
     {
+      name: 'susu',
+      label: 'SUSU group page',
+      type: 'text',
+      validate: testMatchesRegex(/^https:\/\/www\.susu\.org\/groups\/[a-z]+(?:-?[a-z]+)+$/i),
+    },
+    {
       name: 'github',
       label: 'The github username or organisation',
       type: 'text',
