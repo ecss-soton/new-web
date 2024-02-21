@@ -65,6 +65,15 @@ type Query {
   Order(id: String!, draft: Boolean): Order
   Orders(draft: Boolean, where: Order_where, limit: Int, page: Int, sort: String): Orders
   docAccessOrder(id: String!): ordersDocAccess
+  Sponsor(id: String!, draft: Boolean): Sponsor
+  Sponsors(draft: Boolean, where: Sponsor_where, limit: Int, page: Int, sort: String): Sponsors
+  docAccessSponsor(id: String!): sponsorsDocAccess
+  Society(id: String!, draft: Boolean): Society
+  Societies(draft: Boolean, where: Society_where, limit: Int, page: Int, sort: String): Societies
+  docAccessSociety(id: String!): societiesDocAccess
+  Committee(id: String!, draft: Boolean): Committee
+  Committees(draft: Boolean, where: Committee_where, limit: Int, page: Int, sort: String): Committees
+  docAccessCommittee(id: String!): committeesDocAccess
   Redirect(id: String!, draft: Boolean): Redirect
   Redirects(draft: Boolean, where: Redirect_where, limit: Int, page: Int, sort: String): Redirects
   docAccessRedirect(id: String!): redirectsDocAccess
@@ -14992,6 +15001,1944 @@ type OrdersDeleteDocAccess {
   where: JSONObject
 }
 
+type Sponsor {
+  id: String
+  name: String!
+  level: Sponsor_level
+  description(depth: Int): JSON
+  logo(where: Sponsor_Logo_where): Media!
+  website: String
+  links: [Sponsor_Links!]
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+enum Sponsor_level {
+  gold
+  silver
+  bronze
+  _64bit
+  _32bit
+  _16bit
+}
+
+input Sponsor_Logo_where {
+  alt: Sponsor_Logo_alt_operator
+  caption: Sponsor_Logo_caption_operator
+  updatedAt: Sponsor_Logo_updatedAt_operator
+  createdAt: Sponsor_Logo_createdAt_operator
+  url: Sponsor_Logo_url_operator
+  filename: Sponsor_Logo_filename_operator
+  mimeType: Sponsor_Logo_mimeType_operator
+  filesize: Sponsor_Logo_filesize_operator
+  width: Sponsor_Logo_width_operator
+  height: Sponsor_Logo_height_operator
+  id: Sponsor_Logo_id_operator
+  AND: [Sponsor_Logo_where_and]
+  OR: [Sponsor_Logo_where_or]
+}
+
+input Sponsor_Logo_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Sponsor_Logo_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Sponsor_Logo_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Sponsor_Logo_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Sponsor_Logo_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Sponsor_Logo_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Sponsor_Logo_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Sponsor_Logo_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Sponsor_Logo_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Sponsor_Logo_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Sponsor_Logo_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Sponsor_Logo_where_and {
+  alt: Sponsor_Logo_alt_operator
+  caption: Sponsor_Logo_caption_operator
+  updatedAt: Sponsor_Logo_updatedAt_operator
+  createdAt: Sponsor_Logo_createdAt_operator
+  url: Sponsor_Logo_url_operator
+  filename: Sponsor_Logo_filename_operator
+  mimeType: Sponsor_Logo_mimeType_operator
+  filesize: Sponsor_Logo_filesize_operator
+  width: Sponsor_Logo_width_operator
+  height: Sponsor_Logo_height_operator
+  id: Sponsor_Logo_id_operator
+  AND: [Sponsor_Logo_where_and]
+  OR: [Sponsor_Logo_where_or]
+}
+
+input Sponsor_Logo_where_or {
+  alt: Sponsor_Logo_alt_operator
+  caption: Sponsor_Logo_caption_operator
+  updatedAt: Sponsor_Logo_updatedAt_operator
+  createdAt: Sponsor_Logo_createdAt_operator
+  url: Sponsor_Logo_url_operator
+  filename: Sponsor_Logo_filename_operator
+  mimeType: Sponsor_Logo_mimeType_operator
+  filesize: Sponsor_Logo_filesize_operator
+  width: Sponsor_Logo_width_operator
+  height: Sponsor_Logo_height_operator
+  id: Sponsor_Logo_id_operator
+  AND: [Sponsor_Logo_where_and]
+  OR: [Sponsor_Logo_where_or]
+}
+
+type Sponsor_Links {
+  name: String
+  url: String
+  id: String
+}
+
+type Sponsors {
+  docs: [Sponsor]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input Sponsor_where {
+  name: Sponsor_name_operator
+  level: Sponsor_level_operator
+  description: Sponsor_description_operator
+  logo: Sponsor_logo_operator
+  website: Sponsor_website_operator
+  links__name: Sponsor_links__name_operator
+  links__url: Sponsor_links__url_operator
+  links__id: Sponsor_links__id_operator
+  updatedAt: Sponsor_updatedAt_operator
+  createdAt: Sponsor_createdAt_operator
+  id: Sponsor_id_operator
+  AND: [Sponsor_where_and]
+  OR: [Sponsor_where_or]
+}
+
+input Sponsor_name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Sponsor_level_operator {
+  equals: Sponsor_level_Input
+  not_equals: Sponsor_level_Input
+  in: [Sponsor_level_Input]
+  not_in: [Sponsor_level_Input]
+  all: [Sponsor_level_Input]
+  exists: Boolean
+}
+
+enum Sponsor_level_Input {
+  gold
+  silver
+  bronze
+  _64bit
+  _32bit
+  _16bit
+}
+
+input Sponsor_description_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Sponsor_logo_operator {
+  equals: String
+  not_equals: String
+}
+
+input Sponsor_website_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Sponsor_links__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Sponsor_links__url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Sponsor_links__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Sponsor_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Sponsor_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Sponsor_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Sponsor_where_and {
+  name: Sponsor_name_operator
+  level: Sponsor_level_operator
+  description: Sponsor_description_operator
+  logo: Sponsor_logo_operator
+  website: Sponsor_website_operator
+  links__name: Sponsor_links__name_operator
+  links__url: Sponsor_links__url_operator
+  links__id: Sponsor_links__id_operator
+  updatedAt: Sponsor_updatedAt_operator
+  createdAt: Sponsor_createdAt_operator
+  id: Sponsor_id_operator
+  AND: [Sponsor_where_and]
+  OR: [Sponsor_where_or]
+}
+
+input Sponsor_where_or {
+  name: Sponsor_name_operator
+  level: Sponsor_level_operator
+  description: Sponsor_description_operator
+  logo: Sponsor_logo_operator
+  website: Sponsor_website_operator
+  links__name: Sponsor_links__name_operator
+  links__url: Sponsor_links__url_operator
+  links__id: Sponsor_links__id_operator
+  updatedAt: Sponsor_updatedAt_operator
+  createdAt: Sponsor_createdAt_operator
+  id: Sponsor_id_operator
+  AND: [Sponsor_where_and]
+  OR: [Sponsor_where_or]
+}
+
+type sponsorsDocAccess {
+  fields: SponsorsDocAccessFields
+  create: SponsorsCreateDocAccess
+  read: SponsorsReadDocAccess
+  update: SponsorsUpdateDocAccess
+  delete: SponsorsDeleteDocAccess
+}
+
+type SponsorsDocAccessFields {
+  name: SponsorsDocAccessFields_name
+  level: SponsorsDocAccessFields_level
+  description: SponsorsDocAccessFields_description
+  logo: SponsorsDocAccessFields_logo
+  website: SponsorsDocAccessFields_website
+  links: SponsorsDocAccessFields_links
+  updatedAt: SponsorsDocAccessFields_updatedAt
+  createdAt: SponsorsDocAccessFields_createdAt
+}
+
+type SponsorsDocAccessFields_name {
+  create: SponsorsDocAccessFields_name_Create
+  read: SponsorsDocAccessFields_name_Read
+  update: SponsorsDocAccessFields_name_Update
+  delete: SponsorsDocAccessFields_name_Delete
+}
+
+type SponsorsDocAccessFields_name_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_name_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_name_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_name_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_level {
+  create: SponsorsDocAccessFields_level_Create
+  read: SponsorsDocAccessFields_level_Read
+  update: SponsorsDocAccessFields_level_Update
+  delete: SponsorsDocAccessFields_level_Delete
+}
+
+type SponsorsDocAccessFields_level_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_level_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_level_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_level_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_description {
+  create: SponsorsDocAccessFields_description_Create
+  read: SponsorsDocAccessFields_description_Read
+  update: SponsorsDocAccessFields_description_Update
+  delete: SponsorsDocAccessFields_description_Delete
+}
+
+type SponsorsDocAccessFields_description_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_description_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_description_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_description_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_logo {
+  create: SponsorsDocAccessFields_logo_Create
+  read: SponsorsDocAccessFields_logo_Read
+  update: SponsorsDocAccessFields_logo_Update
+  delete: SponsorsDocAccessFields_logo_Delete
+}
+
+type SponsorsDocAccessFields_logo_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_logo_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_logo_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_logo_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_website {
+  create: SponsorsDocAccessFields_website_Create
+  read: SponsorsDocAccessFields_website_Read
+  update: SponsorsDocAccessFields_website_Update
+  delete: SponsorsDocAccessFields_website_Delete
+}
+
+type SponsorsDocAccessFields_website_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_website_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_website_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_website_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links {
+  create: SponsorsDocAccessFields_links_Create
+  read: SponsorsDocAccessFields_links_Read
+  update: SponsorsDocAccessFields_links_Update
+  delete: SponsorsDocAccessFields_links_Delete
+  fields: SponsorsDocAccessFields_links_Fields
+}
+
+type SponsorsDocAccessFields_links_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_Fields {
+  name: SponsorsDocAccessFields_links_name
+  url: SponsorsDocAccessFields_links_url
+  id: SponsorsDocAccessFields_links_id
+}
+
+type SponsorsDocAccessFields_links_name {
+  create: SponsorsDocAccessFields_links_name_Create
+  read: SponsorsDocAccessFields_links_name_Read
+  update: SponsorsDocAccessFields_links_name_Update
+  delete: SponsorsDocAccessFields_links_name_Delete
+}
+
+type SponsorsDocAccessFields_links_name_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_name_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_name_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_name_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_url {
+  create: SponsorsDocAccessFields_links_url_Create
+  read: SponsorsDocAccessFields_links_url_Read
+  update: SponsorsDocAccessFields_links_url_Update
+  delete: SponsorsDocAccessFields_links_url_Delete
+}
+
+type SponsorsDocAccessFields_links_url_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_url_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_url_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_url_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_id {
+  create: SponsorsDocAccessFields_links_id_Create
+  read: SponsorsDocAccessFields_links_id_Read
+  update: SponsorsDocAccessFields_links_id_Update
+  delete: SponsorsDocAccessFields_links_id_Delete
+}
+
+type SponsorsDocAccessFields_links_id_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_id_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_id_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_id_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_updatedAt {
+  create: SponsorsDocAccessFields_updatedAt_Create
+  read: SponsorsDocAccessFields_updatedAt_Read
+  update: SponsorsDocAccessFields_updatedAt_Update
+  delete: SponsorsDocAccessFields_updatedAt_Delete
+}
+
+type SponsorsDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_createdAt {
+  create: SponsorsDocAccessFields_createdAt_Create
+  read: SponsorsDocAccessFields_createdAt_Read
+  update: SponsorsDocAccessFields_createdAt_Update
+  delete: SponsorsDocAccessFields_createdAt_Delete
+}
+
+type SponsorsDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type SponsorsCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SponsorsReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SponsorsUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SponsorsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type Society {
+  id: String!
+  name: String
+  description(depth: Int): JSON
+  logo(where: Society_Logo_where): Media!
+  email: EmailAddress
+  website: String
+  github: String
+  instagram: String
+  discord: String
+  links: [Society_Links!]
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+input Society_Logo_where {
+  alt: Society_Logo_alt_operator
+  caption: Society_Logo_caption_operator
+  updatedAt: Society_Logo_updatedAt_operator
+  createdAt: Society_Logo_createdAt_operator
+  url: Society_Logo_url_operator
+  filename: Society_Logo_filename_operator
+  mimeType: Society_Logo_mimeType_operator
+  filesize: Society_Logo_filesize_operator
+  width: Society_Logo_width_operator
+  height: Society_Logo_height_operator
+  id: Society_Logo_id_operator
+  AND: [Society_Logo_where_and]
+  OR: [Society_Logo_where_or]
+}
+
+input Society_Logo_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Society_Logo_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Society_Logo_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Society_Logo_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Society_Logo_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_Logo_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_Logo_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_Logo_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Society_Logo_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Society_Logo_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Society_Logo_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_Logo_where_and {
+  alt: Society_Logo_alt_operator
+  caption: Society_Logo_caption_operator
+  updatedAt: Society_Logo_updatedAt_operator
+  createdAt: Society_Logo_createdAt_operator
+  url: Society_Logo_url_operator
+  filename: Society_Logo_filename_operator
+  mimeType: Society_Logo_mimeType_operator
+  filesize: Society_Logo_filesize_operator
+  width: Society_Logo_width_operator
+  height: Society_Logo_height_operator
+  id: Society_Logo_id_operator
+  AND: [Society_Logo_where_and]
+  OR: [Society_Logo_where_or]
+}
+
+input Society_Logo_where_or {
+  alt: Society_Logo_alt_operator
+  caption: Society_Logo_caption_operator
+  updatedAt: Society_Logo_updatedAt_operator
+  createdAt: Society_Logo_createdAt_operator
+  url: Society_Logo_url_operator
+  filename: Society_Logo_filename_operator
+  mimeType: Society_Logo_mimeType_operator
+  filesize: Society_Logo_filesize_operator
+  width: Society_Logo_width_operator
+  height: Society_Logo_height_operator
+  id: Society_Logo_id_operator
+  AND: [Society_Logo_where_and]
+  OR: [Society_Logo_where_or]
+}
+
+type Society_Links {
+  name: String
+  url: String
+  id: String
+}
+
+type Societies {
+  docs: [Society]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input Society_where {
+  id: Society_id_operator
+  name: Society_name_operator
+  description: Society_description_operator
+  logo: Society_logo_operator
+  email: Society_email_operator
+  website: Society_website_operator
+  github: Society_github_operator
+  instagram: Society_instagram_operator
+  discord: Society_discord_operator
+  links__name: Society_links__name_operator
+  links__url: Society_links__url_operator
+  links__id: Society_links__id_operator
+  updatedAt: Society_updatedAt_operator
+  createdAt: Society_createdAt_operator
+  AND: [Society_where_and]
+  OR: [Society_where_or]
+}
+
+input Society_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Society_name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_description_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Society_logo_operator {
+  equals: String
+  not_equals: String
+}
+
+input Society_email_operator {
+  equals: EmailAddress
+  not_equals: EmailAddress
+  like: EmailAddress
+  contains: EmailAddress
+  in: [EmailAddress]
+  not_in: [EmailAddress]
+  all: [EmailAddress]
+  exists: Boolean
+}
+
+input Society_website_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_github_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_instagram_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_discord_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_links__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_links__url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Society_links__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Society_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Society_where_and {
+  id: Society_id_operator
+  name: Society_name_operator
+  description: Society_description_operator
+  logo: Society_logo_operator
+  email: Society_email_operator
+  website: Society_website_operator
+  github: Society_github_operator
+  instagram: Society_instagram_operator
+  discord: Society_discord_operator
+  links__name: Society_links__name_operator
+  links__url: Society_links__url_operator
+  links__id: Society_links__id_operator
+  updatedAt: Society_updatedAt_operator
+  createdAt: Society_createdAt_operator
+  AND: [Society_where_and]
+  OR: [Society_where_or]
+}
+
+input Society_where_or {
+  id: Society_id_operator
+  name: Society_name_operator
+  description: Society_description_operator
+  logo: Society_logo_operator
+  email: Society_email_operator
+  website: Society_website_operator
+  github: Society_github_operator
+  instagram: Society_instagram_operator
+  discord: Society_discord_operator
+  links__name: Society_links__name_operator
+  links__url: Society_links__url_operator
+  links__id: Society_links__id_operator
+  updatedAt: Society_updatedAt_operator
+  createdAt: Society_createdAt_operator
+  AND: [Society_where_and]
+  OR: [Society_where_or]
+}
+
+type societiesDocAccess {
+  fields: SocietiesDocAccessFields
+  create: SocietiesCreateDocAccess
+  read: SocietiesReadDocAccess
+  update: SocietiesUpdateDocAccess
+  delete: SocietiesDeleteDocAccess
+}
+
+type SocietiesDocAccessFields {
+  id: SocietiesDocAccessFields_id
+  name: SocietiesDocAccessFields_name
+  description: SocietiesDocAccessFields_description
+  logo: SocietiesDocAccessFields_logo
+  email: SocietiesDocAccessFields_email
+  website: SocietiesDocAccessFields_website
+  github: SocietiesDocAccessFields_github
+  instagram: SocietiesDocAccessFields_instagram
+  discord: SocietiesDocAccessFields_discord
+  links: SocietiesDocAccessFields_links
+  updatedAt: SocietiesDocAccessFields_updatedAt
+  createdAt: SocietiesDocAccessFields_createdAt
+}
+
+type SocietiesDocAccessFields_id {
+  create: SocietiesDocAccessFields_id_Create
+  read: SocietiesDocAccessFields_id_Read
+  update: SocietiesDocAccessFields_id_Update
+  delete: SocietiesDocAccessFields_id_Delete
+}
+
+type SocietiesDocAccessFields_id_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_id_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_id_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_id_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_name {
+  create: SocietiesDocAccessFields_name_Create
+  read: SocietiesDocAccessFields_name_Read
+  update: SocietiesDocAccessFields_name_Update
+  delete: SocietiesDocAccessFields_name_Delete
+}
+
+type SocietiesDocAccessFields_name_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_name_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_name_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_name_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_description {
+  create: SocietiesDocAccessFields_description_Create
+  read: SocietiesDocAccessFields_description_Read
+  update: SocietiesDocAccessFields_description_Update
+  delete: SocietiesDocAccessFields_description_Delete
+}
+
+type SocietiesDocAccessFields_description_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_description_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_description_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_description_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_logo {
+  create: SocietiesDocAccessFields_logo_Create
+  read: SocietiesDocAccessFields_logo_Read
+  update: SocietiesDocAccessFields_logo_Update
+  delete: SocietiesDocAccessFields_logo_Delete
+}
+
+type SocietiesDocAccessFields_logo_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_logo_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_logo_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_logo_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_email {
+  create: SocietiesDocAccessFields_email_Create
+  read: SocietiesDocAccessFields_email_Read
+  update: SocietiesDocAccessFields_email_Update
+  delete: SocietiesDocAccessFields_email_Delete
+}
+
+type SocietiesDocAccessFields_email_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_email_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_email_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_email_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_website {
+  create: SocietiesDocAccessFields_website_Create
+  read: SocietiesDocAccessFields_website_Read
+  update: SocietiesDocAccessFields_website_Update
+  delete: SocietiesDocAccessFields_website_Delete
+}
+
+type SocietiesDocAccessFields_website_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_website_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_website_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_website_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_github {
+  create: SocietiesDocAccessFields_github_Create
+  read: SocietiesDocAccessFields_github_Read
+  update: SocietiesDocAccessFields_github_Update
+  delete: SocietiesDocAccessFields_github_Delete
+}
+
+type SocietiesDocAccessFields_github_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_github_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_github_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_github_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_instagram {
+  create: SocietiesDocAccessFields_instagram_Create
+  read: SocietiesDocAccessFields_instagram_Read
+  update: SocietiesDocAccessFields_instagram_Update
+  delete: SocietiesDocAccessFields_instagram_Delete
+}
+
+type SocietiesDocAccessFields_instagram_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_instagram_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_instagram_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_instagram_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_discord {
+  create: SocietiesDocAccessFields_discord_Create
+  read: SocietiesDocAccessFields_discord_Read
+  update: SocietiesDocAccessFields_discord_Update
+  delete: SocietiesDocAccessFields_discord_Delete
+}
+
+type SocietiesDocAccessFields_discord_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_discord_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_discord_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_discord_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links {
+  create: SocietiesDocAccessFields_links_Create
+  read: SocietiesDocAccessFields_links_Read
+  update: SocietiesDocAccessFields_links_Update
+  delete: SocietiesDocAccessFields_links_Delete
+  fields: SocietiesDocAccessFields_links_Fields
+}
+
+type SocietiesDocAccessFields_links_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_Fields {
+  name: SocietiesDocAccessFields_links_name
+  url: SocietiesDocAccessFields_links_url
+  id: SocietiesDocAccessFields_links_id
+}
+
+type SocietiesDocAccessFields_links_name {
+  create: SocietiesDocAccessFields_links_name_Create
+  read: SocietiesDocAccessFields_links_name_Read
+  update: SocietiesDocAccessFields_links_name_Update
+  delete: SocietiesDocAccessFields_links_name_Delete
+}
+
+type SocietiesDocAccessFields_links_name_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_name_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_name_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_name_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_url {
+  create: SocietiesDocAccessFields_links_url_Create
+  read: SocietiesDocAccessFields_links_url_Read
+  update: SocietiesDocAccessFields_links_url_Update
+  delete: SocietiesDocAccessFields_links_url_Delete
+}
+
+type SocietiesDocAccessFields_links_url_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_url_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_url_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_url_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_id {
+  create: SocietiesDocAccessFields_links_id_Create
+  read: SocietiesDocAccessFields_links_id_Read
+  update: SocietiesDocAccessFields_links_id_Update
+  delete: SocietiesDocAccessFields_links_id_Delete
+}
+
+type SocietiesDocAccessFields_links_id_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_id_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_id_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_id_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_updatedAt {
+  create: SocietiesDocAccessFields_updatedAt_Create
+  read: SocietiesDocAccessFields_updatedAt_Read
+  update: SocietiesDocAccessFields_updatedAt_Update
+  delete: SocietiesDocAccessFields_updatedAt_Delete
+}
+
+type SocietiesDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_createdAt {
+  create: SocietiesDocAccessFields_createdAt_Create
+  read: SocietiesDocAccessFields_createdAt_Read
+  update: SocietiesDocAccessFields_createdAt_Update
+  delete: SocietiesDocAccessFields_createdAt_Delete
+}
+
+type SocietiesDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type SocietiesCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SocietiesReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SocietiesUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SocietiesDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type Committee {
+  id: String!
+  type: Committee_type!
+  members: [Committee_Members_Relationship!]
+  simplifiedMembers: [Committee_SimplifiedMembers!]
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+enum Committee_type {
+  old
+  current
+}
+
+type Committee_Members_Relationship {
+  relationTo: Committee_Members_RelationTo
+  value: Committee_Members
+}
+
+enum Committee_Members_RelationTo {
+  nominations
+  positions
+}
+
+union Committee_Members = Nomination | Position
+
+type Committee_SimplifiedMembers {
+  position: Committee_SimplifiedMembers_position
+  name: String
+  id: String
+}
+
+enum Committee_SimplifiedMembers_position {
+  AcademicSecretary
+  EventsOfficer
+  Gamesmaster
+  GamesOfficer
+  HackathonOfficer
+  IndustryOfficer
+  InternationalRepresentative
+  MarketingOfficer
+  MastersRep
+  PostgraduateRepresentative
+  President
+  PublicityOfficer
+  Secretary
+  SocialSecretary
+  SportsOfficer
+  SportsRepresentative
+  StaffRepresentative
+  Treasurer
+  UnknownRole
+  VicePresident
+  VicePresidentEngagement
+  VicePresidentOperations
+  Webmaster
+  WebOfficer
+  WelfareOfficer
+  Women_sRepresentative
+}
+
+type Committees {
+  docs: [Committee]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input Committee_where {
+  id: Committee_id_operator
+  type: Committee_type_operator
+  members: Committee_members_Relation
+  simplifiedMembers__position: Committee_simplifiedMembers__position_operator
+  simplifiedMembers__name: Committee_simplifiedMembers__name_operator
+  simplifiedMembers__id: Committee_simplifiedMembers__id_operator
+  updatedAt: Committee_updatedAt_operator
+  createdAt: Committee_createdAt_operator
+  AND: [Committee_where_and]
+  OR: [Committee_where_or]
+}
+
+input Committee_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Committee_type_operator {
+  equals: Committee_type_Input
+  not_equals: Committee_type_Input
+  in: [Committee_type_Input]
+  not_in: [Committee_type_Input]
+  all: [Committee_type_Input]
+}
+
+enum Committee_type_Input {
+  old
+  current
+}
+
+input Committee_members_Relation {
+  relationTo: Committee_members_Relation_RelationTo
+  value: JSON
+}
+
+enum Committee_members_Relation_RelationTo {
+  nominations
+  positions
+}
+
+input Committee_simplifiedMembers__position_operator {
+  equals: Committee_simplifiedMembers__position_Input
+  not_equals: Committee_simplifiedMembers__position_Input
+  in: [Committee_simplifiedMembers__position_Input]
+  not_in: [Committee_simplifiedMembers__position_Input]
+  all: [Committee_simplifiedMembers__position_Input]
+}
+
+enum Committee_simplifiedMembers__position_Input {
+  AcademicSecretary
+  EventsOfficer
+  Gamesmaster
+  GamesOfficer
+  HackathonOfficer
+  IndustryOfficer
+  InternationalRepresentative
+  MarketingOfficer
+  MastersRep
+  PostgraduateRepresentative
+  President
+  PublicityOfficer
+  Secretary
+  SocialSecretary
+  SportsOfficer
+  SportsRepresentative
+  StaffRepresentative
+  Treasurer
+  UnknownRole
+  VicePresident
+  VicePresidentEngagement
+  VicePresidentOperations
+  Webmaster
+  WebOfficer
+  WelfareOfficer
+  Women_sRepresentative
+}
+
+input Committee_simplifiedMembers__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Committee_simplifiedMembers__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Committee_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Committee_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Committee_where_and {
+  id: Committee_id_operator
+  type: Committee_type_operator
+  members: Committee_members_Relation
+  simplifiedMembers__position: Committee_simplifiedMembers__position_operator
+  simplifiedMembers__name: Committee_simplifiedMembers__name_operator
+  simplifiedMembers__id: Committee_simplifiedMembers__id_operator
+  updatedAt: Committee_updatedAt_operator
+  createdAt: Committee_createdAt_operator
+  AND: [Committee_where_and]
+  OR: [Committee_where_or]
+}
+
+input Committee_where_or {
+  id: Committee_id_operator
+  type: Committee_type_operator
+  members: Committee_members_Relation
+  simplifiedMembers__position: Committee_simplifiedMembers__position_operator
+  simplifiedMembers__name: Committee_simplifiedMembers__name_operator
+  simplifiedMembers__id: Committee_simplifiedMembers__id_operator
+  updatedAt: Committee_updatedAt_operator
+  createdAt: Committee_createdAt_operator
+  AND: [Committee_where_and]
+  OR: [Committee_where_or]
+}
+
+type committeesDocAccess {
+  fields: CommitteesDocAccessFields
+  create: CommitteesCreateDocAccess
+  read: CommitteesReadDocAccess
+  update: CommitteesUpdateDocAccess
+  delete: CommitteesDeleteDocAccess
+}
+
+type CommitteesDocAccessFields {
+  id: CommitteesDocAccessFields_id
+  type: CommitteesDocAccessFields_type
+  members: CommitteesDocAccessFields_members
+  simplifiedMembers: CommitteesDocAccessFields_simplifiedMembers
+  updatedAt: CommitteesDocAccessFields_updatedAt
+  createdAt: CommitteesDocAccessFields_createdAt
+}
+
+type CommitteesDocAccessFields_id {
+  create: CommitteesDocAccessFields_id_Create
+  read: CommitteesDocAccessFields_id_Read
+  update: CommitteesDocAccessFields_id_Update
+  delete: CommitteesDocAccessFields_id_Delete
+}
+
+type CommitteesDocAccessFields_id_Create {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_id_Read {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_id_Update {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_id_Delete {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_type {
+  create: CommitteesDocAccessFields_type_Create
+  read: CommitteesDocAccessFields_type_Read
+  update: CommitteesDocAccessFields_type_Update
+  delete: CommitteesDocAccessFields_type_Delete
+}
+
+type CommitteesDocAccessFields_type_Create {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_type_Read {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_type_Update {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_type_Delete {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_members {
+  create: CommitteesDocAccessFields_members_Create
+  read: CommitteesDocAccessFields_members_Read
+  update: CommitteesDocAccessFields_members_Update
+  delete: CommitteesDocAccessFields_members_Delete
+}
+
+type CommitteesDocAccessFields_members_Create {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_members_Read {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_members_Update {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_members_Delete {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers {
+  create: CommitteesDocAccessFields_simplifiedMembers_Create
+  read: CommitteesDocAccessFields_simplifiedMembers_Read
+  update: CommitteesDocAccessFields_simplifiedMembers_Update
+  delete: CommitteesDocAccessFields_simplifiedMembers_Delete
+  fields: CommitteesDocAccessFields_simplifiedMembers_Fields
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_Create {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_Read {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_Update {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_Delete {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_Fields {
+  position: CommitteesDocAccessFields_simplifiedMembers_position
+  name: CommitteesDocAccessFields_simplifiedMembers_name
+  id: CommitteesDocAccessFields_simplifiedMembers_id
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_position {
+  create: CommitteesDocAccessFields_simplifiedMembers_position_Create
+  read: CommitteesDocAccessFields_simplifiedMembers_position_Read
+  update: CommitteesDocAccessFields_simplifiedMembers_position_Update
+  delete: CommitteesDocAccessFields_simplifiedMembers_position_Delete
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_position_Create {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_position_Read {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_position_Update {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_position_Delete {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_name {
+  create: CommitteesDocAccessFields_simplifiedMembers_name_Create
+  read: CommitteesDocAccessFields_simplifiedMembers_name_Read
+  update: CommitteesDocAccessFields_simplifiedMembers_name_Update
+  delete: CommitteesDocAccessFields_simplifiedMembers_name_Delete
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_name_Create {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_name_Read {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_name_Update {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_name_Delete {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_id {
+  create: CommitteesDocAccessFields_simplifiedMembers_id_Create
+  read: CommitteesDocAccessFields_simplifiedMembers_id_Read
+  update: CommitteesDocAccessFields_simplifiedMembers_id_Update
+  delete: CommitteesDocAccessFields_simplifiedMembers_id_Delete
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_id_Create {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_id_Read {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_id_Update {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_simplifiedMembers_id_Delete {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_updatedAt {
+  create: CommitteesDocAccessFields_updatedAt_Create
+  read: CommitteesDocAccessFields_updatedAt_Read
+  update: CommitteesDocAccessFields_updatedAt_Update
+  delete: CommitteesDocAccessFields_updatedAt_Delete
+}
+
+type CommitteesDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_createdAt {
+  create: CommitteesDocAccessFields_createdAt_Create
+  read: CommitteesDocAccessFields_createdAt_Read
+  update: CommitteesDocAccessFields_createdAt_Update
+  delete: CommitteesDocAccessFields_createdAt_Delete
+}
+
+type CommitteesDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type CommitteesDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type CommitteesCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CommitteesReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CommitteesUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CommitteesDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type Redirect {
   id: String
   from: String!
@@ -17420,6 +19367,9 @@ type Access {
   orderedTickets: orderedTicketsAccess
   orderedMerch: orderedMerchAccess
   orders: ordersAccess
+  sponsors: sponsorsAccess
+  societies: societiesAccess
+  committees: committeesAccess
   redirects: redirectsAccess
   forms: formsAccess
   form_submissions: form_submissionsAccess
@@ -23555,6 +25505,951 @@ type OrdersDeleteAccess {
   where: JSONObject
 }
 
+type sponsorsAccess {
+  fields: SponsorsFields
+  create: SponsorsCreateAccess
+  read: SponsorsReadAccess
+  update: SponsorsUpdateAccess
+  delete: SponsorsDeleteAccess
+}
+
+type SponsorsFields {
+  name: SponsorsFields_name
+  level: SponsorsFields_level
+  description: SponsorsFields_description
+  logo: SponsorsFields_logo
+  website: SponsorsFields_website
+  links: SponsorsFields_links
+  updatedAt: SponsorsFields_updatedAt
+  createdAt: SponsorsFields_createdAt
+}
+
+type SponsorsFields_name {
+  create: SponsorsFields_name_Create
+  read: SponsorsFields_name_Read
+  update: SponsorsFields_name_Update
+  delete: SponsorsFields_name_Delete
+}
+
+type SponsorsFields_name_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_name_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_name_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_name_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_level {
+  create: SponsorsFields_level_Create
+  read: SponsorsFields_level_Read
+  update: SponsorsFields_level_Update
+  delete: SponsorsFields_level_Delete
+}
+
+type SponsorsFields_level_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_level_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_level_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_level_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_description {
+  create: SponsorsFields_description_Create
+  read: SponsorsFields_description_Read
+  update: SponsorsFields_description_Update
+  delete: SponsorsFields_description_Delete
+}
+
+type SponsorsFields_description_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_description_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_description_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_description_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_logo {
+  create: SponsorsFields_logo_Create
+  read: SponsorsFields_logo_Read
+  update: SponsorsFields_logo_Update
+  delete: SponsorsFields_logo_Delete
+}
+
+type SponsorsFields_logo_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_logo_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_logo_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_logo_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_website {
+  create: SponsorsFields_website_Create
+  read: SponsorsFields_website_Read
+  update: SponsorsFields_website_Update
+  delete: SponsorsFields_website_Delete
+}
+
+type SponsorsFields_website_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_website_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_website_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_website_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_links {
+  create: SponsorsFields_links_Create
+  read: SponsorsFields_links_Read
+  update: SponsorsFields_links_Update
+  delete: SponsorsFields_links_Delete
+  fields: SponsorsFields_links_Fields
+}
+
+type SponsorsFields_links_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_Fields {
+  name: SponsorsFields_links_name
+  url: SponsorsFields_links_url
+  id: SponsorsFields_links_id
+}
+
+type SponsorsFields_links_name {
+  create: SponsorsFields_links_name_Create
+  read: SponsorsFields_links_name_Read
+  update: SponsorsFields_links_name_Update
+  delete: SponsorsFields_links_name_Delete
+}
+
+type SponsorsFields_links_name_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_name_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_name_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_name_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_url {
+  create: SponsorsFields_links_url_Create
+  read: SponsorsFields_links_url_Read
+  update: SponsorsFields_links_url_Update
+  delete: SponsorsFields_links_url_Delete
+}
+
+type SponsorsFields_links_url_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_url_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_url_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_url_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_id {
+  create: SponsorsFields_links_id_Create
+  read: SponsorsFields_links_id_Read
+  update: SponsorsFields_links_id_Update
+  delete: SponsorsFields_links_id_Delete
+}
+
+type SponsorsFields_links_id_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_id_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_id_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_id_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_updatedAt {
+  create: SponsorsFields_updatedAt_Create
+  read: SponsorsFields_updatedAt_Read
+  update: SponsorsFields_updatedAt_Update
+  delete: SponsorsFields_updatedAt_Delete
+}
+
+type SponsorsFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_createdAt {
+  create: SponsorsFields_createdAt_Create
+  read: SponsorsFields_createdAt_Read
+  update: SponsorsFields_createdAt_Update
+  delete: SponsorsFields_createdAt_Delete
+}
+
+type SponsorsFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type SponsorsCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SponsorsReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SponsorsUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SponsorsDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type societiesAccess {
+  fields: SocietiesFields
+  create: SocietiesCreateAccess
+  read: SocietiesReadAccess
+  update: SocietiesUpdateAccess
+  delete: SocietiesDeleteAccess
+}
+
+type SocietiesFields {
+  id: SocietiesFields_id
+  name: SocietiesFields_name
+  description: SocietiesFields_description
+  logo: SocietiesFields_logo
+  email: SocietiesFields_email
+  website: SocietiesFields_website
+  github: SocietiesFields_github
+  instagram: SocietiesFields_instagram
+  discord: SocietiesFields_discord
+  links: SocietiesFields_links
+  updatedAt: SocietiesFields_updatedAt
+  createdAt: SocietiesFields_createdAt
+}
+
+type SocietiesFields_id {
+  create: SocietiesFields_id_Create
+  read: SocietiesFields_id_Read
+  update: SocietiesFields_id_Update
+  delete: SocietiesFields_id_Delete
+}
+
+type SocietiesFields_id_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_id_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_id_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_id_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_name {
+  create: SocietiesFields_name_Create
+  read: SocietiesFields_name_Read
+  update: SocietiesFields_name_Update
+  delete: SocietiesFields_name_Delete
+}
+
+type SocietiesFields_name_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_name_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_name_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_name_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_description {
+  create: SocietiesFields_description_Create
+  read: SocietiesFields_description_Read
+  update: SocietiesFields_description_Update
+  delete: SocietiesFields_description_Delete
+}
+
+type SocietiesFields_description_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_description_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_description_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_description_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_logo {
+  create: SocietiesFields_logo_Create
+  read: SocietiesFields_logo_Read
+  update: SocietiesFields_logo_Update
+  delete: SocietiesFields_logo_Delete
+}
+
+type SocietiesFields_logo_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_logo_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_logo_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_logo_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_email {
+  create: SocietiesFields_email_Create
+  read: SocietiesFields_email_Read
+  update: SocietiesFields_email_Update
+  delete: SocietiesFields_email_Delete
+}
+
+type SocietiesFields_email_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_email_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_email_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_email_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_website {
+  create: SocietiesFields_website_Create
+  read: SocietiesFields_website_Read
+  update: SocietiesFields_website_Update
+  delete: SocietiesFields_website_Delete
+}
+
+type SocietiesFields_website_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_website_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_website_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_website_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_github {
+  create: SocietiesFields_github_Create
+  read: SocietiesFields_github_Read
+  update: SocietiesFields_github_Update
+  delete: SocietiesFields_github_Delete
+}
+
+type SocietiesFields_github_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_github_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_github_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_github_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_instagram {
+  create: SocietiesFields_instagram_Create
+  read: SocietiesFields_instagram_Read
+  update: SocietiesFields_instagram_Update
+  delete: SocietiesFields_instagram_Delete
+}
+
+type SocietiesFields_instagram_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_instagram_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_instagram_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_instagram_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_discord {
+  create: SocietiesFields_discord_Create
+  read: SocietiesFields_discord_Read
+  update: SocietiesFields_discord_Update
+  delete: SocietiesFields_discord_Delete
+}
+
+type SocietiesFields_discord_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_discord_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_discord_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_discord_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_links {
+  create: SocietiesFields_links_Create
+  read: SocietiesFields_links_Read
+  update: SocietiesFields_links_Update
+  delete: SocietiesFields_links_Delete
+  fields: SocietiesFields_links_Fields
+}
+
+type SocietiesFields_links_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_Fields {
+  name: SocietiesFields_links_name
+  url: SocietiesFields_links_url
+  id: SocietiesFields_links_id
+}
+
+type SocietiesFields_links_name {
+  create: SocietiesFields_links_name_Create
+  read: SocietiesFields_links_name_Read
+  update: SocietiesFields_links_name_Update
+  delete: SocietiesFields_links_name_Delete
+}
+
+type SocietiesFields_links_name_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_name_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_name_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_name_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_url {
+  create: SocietiesFields_links_url_Create
+  read: SocietiesFields_links_url_Read
+  update: SocietiesFields_links_url_Update
+  delete: SocietiesFields_links_url_Delete
+}
+
+type SocietiesFields_links_url_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_url_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_url_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_url_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_id {
+  create: SocietiesFields_links_id_Create
+  read: SocietiesFields_links_id_Read
+  update: SocietiesFields_links_id_Update
+  delete: SocietiesFields_links_id_Delete
+}
+
+type SocietiesFields_links_id_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_id_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_id_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_id_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_updatedAt {
+  create: SocietiesFields_updatedAt_Create
+  read: SocietiesFields_updatedAt_Read
+  update: SocietiesFields_updatedAt_Update
+  delete: SocietiesFields_updatedAt_Delete
+}
+
+type SocietiesFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_createdAt {
+  create: SocietiesFields_createdAt_Create
+  read: SocietiesFields_createdAt_Read
+  update: SocietiesFields_createdAt_Update
+  delete: SocietiesFields_createdAt_Delete
+}
+
+type SocietiesFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type SocietiesCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SocietiesReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SocietiesUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SocietiesDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type committeesAccess {
+  fields: CommitteesFields
+  create: CommitteesCreateAccess
+  read: CommitteesReadAccess
+  update: CommitteesUpdateAccess
+  delete: CommitteesDeleteAccess
+}
+
+type CommitteesFields {
+  id: CommitteesFields_id
+  type: CommitteesFields_type
+  members: CommitteesFields_members
+  simplifiedMembers: CommitteesFields_simplifiedMembers
+  updatedAt: CommitteesFields_updatedAt
+  createdAt: CommitteesFields_createdAt
+}
+
+type CommitteesFields_id {
+  create: CommitteesFields_id_Create
+  read: CommitteesFields_id_Read
+  update: CommitteesFields_id_Update
+  delete: CommitteesFields_id_Delete
+}
+
+type CommitteesFields_id_Create {
+  permission: Boolean!
+}
+
+type CommitteesFields_id_Read {
+  permission: Boolean!
+}
+
+type CommitteesFields_id_Update {
+  permission: Boolean!
+}
+
+type CommitteesFields_id_Delete {
+  permission: Boolean!
+}
+
+type CommitteesFields_type {
+  create: CommitteesFields_type_Create
+  read: CommitteesFields_type_Read
+  update: CommitteesFields_type_Update
+  delete: CommitteesFields_type_Delete
+}
+
+type CommitteesFields_type_Create {
+  permission: Boolean!
+}
+
+type CommitteesFields_type_Read {
+  permission: Boolean!
+}
+
+type CommitteesFields_type_Update {
+  permission: Boolean!
+}
+
+type CommitteesFields_type_Delete {
+  permission: Boolean!
+}
+
+type CommitteesFields_members {
+  create: CommitteesFields_members_Create
+  read: CommitteesFields_members_Read
+  update: CommitteesFields_members_Update
+  delete: CommitteesFields_members_Delete
+}
+
+type CommitteesFields_members_Create {
+  permission: Boolean!
+}
+
+type CommitteesFields_members_Read {
+  permission: Boolean!
+}
+
+type CommitteesFields_members_Update {
+  permission: Boolean!
+}
+
+type CommitteesFields_members_Delete {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers {
+  create: CommitteesFields_simplifiedMembers_Create
+  read: CommitteesFields_simplifiedMembers_Read
+  update: CommitteesFields_simplifiedMembers_Update
+  delete: CommitteesFields_simplifiedMembers_Delete
+  fields: CommitteesFields_simplifiedMembers_Fields
+}
+
+type CommitteesFields_simplifiedMembers_Create {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_Read {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_Update {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_Delete {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_Fields {
+  position: CommitteesFields_simplifiedMembers_position
+  name: CommitteesFields_simplifiedMembers_name
+  id: CommitteesFields_simplifiedMembers_id
+}
+
+type CommitteesFields_simplifiedMembers_position {
+  create: CommitteesFields_simplifiedMembers_position_Create
+  read: CommitteesFields_simplifiedMembers_position_Read
+  update: CommitteesFields_simplifiedMembers_position_Update
+  delete: CommitteesFields_simplifiedMembers_position_Delete
+}
+
+type CommitteesFields_simplifiedMembers_position_Create {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_position_Read {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_position_Update {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_position_Delete {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_name {
+  create: CommitteesFields_simplifiedMembers_name_Create
+  read: CommitteesFields_simplifiedMembers_name_Read
+  update: CommitteesFields_simplifiedMembers_name_Update
+  delete: CommitteesFields_simplifiedMembers_name_Delete
+}
+
+type CommitteesFields_simplifiedMembers_name_Create {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_name_Read {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_name_Update {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_name_Delete {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_id {
+  create: CommitteesFields_simplifiedMembers_id_Create
+  read: CommitteesFields_simplifiedMembers_id_Read
+  update: CommitteesFields_simplifiedMembers_id_Update
+  delete: CommitteesFields_simplifiedMembers_id_Delete
+}
+
+type CommitteesFields_simplifiedMembers_id_Create {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_id_Read {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_id_Update {
+  permission: Boolean!
+}
+
+type CommitteesFields_simplifiedMembers_id_Delete {
+  permission: Boolean!
+}
+
+type CommitteesFields_updatedAt {
+  create: CommitteesFields_updatedAt_Create
+  read: CommitteesFields_updatedAt_Read
+  update: CommitteesFields_updatedAt_Update
+  delete: CommitteesFields_updatedAt_Delete
+}
+
+type CommitteesFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type CommitteesFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type CommitteesFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type CommitteesFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type CommitteesFields_createdAt {
+  create: CommitteesFields_createdAt_Create
+  read: CommitteesFields_createdAt_Read
+  update: CommitteesFields_createdAt_Update
+  delete: CommitteesFields_createdAt_Delete
+}
+
+type CommitteesFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type CommitteesFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type CommitteesFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type CommitteesFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type CommitteesCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CommitteesReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CommitteesUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CommitteesDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type redirectsAccess {
   fields: RedirectsFields
   create: RedirectsCreateAccess
@@ -25299,6 +28194,15 @@ type Mutation {
   createOrder(data: mutationOrderInput!, draft: Boolean): Order
   updateOrder(id: String!, autosave: Boolean, data: mutationOrderUpdateInput!, draft: Boolean): Order
   deleteOrder(id: String!): Order
+  createSponsor(data: mutationSponsorInput!, draft: Boolean): Sponsor
+  updateSponsor(id: String!, autosave: Boolean, data: mutationSponsorUpdateInput!, draft: Boolean): Sponsor
+  deleteSponsor(id: String!): Sponsor
+  createSociety(data: mutationSocietyInput!, draft: Boolean): Society
+  updateSociety(id: String!, autosave: Boolean, data: mutationSocietyUpdateInput!, draft: Boolean): Society
+  deleteSociety(id: String!): Society
+  createCommittee(data: mutationCommitteeInput!, draft: Boolean): Committee
+  updateCommittee(id: String!, autosave: Boolean, data: mutationCommitteeUpdateInput!, draft: Boolean): Committee
+  deleteCommittee(id: String!): Committee
   createRedirect(data: mutationRedirectInput!, draft: Boolean): Redirect
   updateRedirect(id: String!, autosave: Boolean, data: mutationRedirectUpdateInput!, draft: Boolean): Redirect
   deleteRedirect(id: String!): Redirect
@@ -26264,6 +29168,216 @@ enum OrderUpdate_status_MutationInput {
   pending
   failed
   completed
+}
+
+input mutationSponsorInput {
+  name: String!
+  level: Sponsor_level_MutationInput
+  description: JSON
+  logo: String!
+  website: String
+  links: [mutationSponsor_LinksInput]
+  updatedAt: String
+  createdAt: String
+}
+
+enum Sponsor_level_MutationInput {
+  gold
+  silver
+  bronze
+  _64bit
+  _32bit
+  _16bit
+}
+
+input mutationSponsor_LinksInput {
+  name: String
+  url: String
+  id: String
+}
+
+input mutationSponsorUpdateInput {
+  name: String
+  level: SponsorUpdate_level_MutationInput
+  description: JSON
+  logo: String
+  website: String
+  links: [mutationSponsorUpdate_LinksInput]
+  updatedAt: String
+  createdAt: String
+}
+
+enum SponsorUpdate_level_MutationInput {
+  gold
+  silver
+  bronze
+  _64bit
+  _32bit
+  _16bit
+}
+
+input mutationSponsorUpdate_LinksInput {
+  name: String
+  url: String
+  id: String
+}
+
+input mutationSocietyInput {
+  id: String!
+  name: String
+  description: JSON
+  logo: String!
+  email: String
+  website: String
+  github: String
+  instagram: String
+  discord: String
+  links: [mutationSociety_LinksInput]
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationSociety_LinksInput {
+  name: String
+  url: String!
+  id: String
+}
+
+input mutationSocietyUpdateInput {
+  name: String
+  description: JSON
+  logo: String
+  email: String
+  website: String
+  github: String
+  instagram: String
+  discord: String
+  links: [mutationSocietyUpdate_LinksInput]
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationSocietyUpdate_LinksInput {
+  name: String
+  url: String!
+  id: String
+}
+
+input mutationCommitteeInput {
+  id: String!
+  type: Committee_type_MutationInput!
+  members: [Committee_MembersRelationshipInput]
+  simplifiedMembers: [mutationCommittee_SimplifiedMembersInput]
+  updatedAt: String
+  createdAt: String
+}
+
+enum Committee_type_MutationInput {
+  old
+  current
+}
+
+input Committee_MembersRelationshipInput {
+  relationTo: Committee_MembersRelationshipInputRelationTo
+  value: JSON
+}
+
+enum Committee_MembersRelationshipInputRelationTo {
+  nominations
+  positions
+}
+
+input mutationCommittee_SimplifiedMembersInput {
+  position: Committee_SimplifiedMembers_position_MutationInput!
+  name: String!
+  id: String
+}
+
+enum Committee_SimplifiedMembers_position_MutationInput {
+  AcademicSecretary
+  EventsOfficer
+  Gamesmaster
+  GamesOfficer
+  HackathonOfficer
+  IndustryOfficer
+  InternationalRepresentative
+  MarketingOfficer
+  MastersRep
+  PostgraduateRepresentative
+  President
+  PublicityOfficer
+  Secretary
+  SocialSecretary
+  SportsOfficer
+  SportsRepresentative
+  StaffRepresentative
+  Treasurer
+  UnknownRole
+  VicePresident
+  VicePresidentEngagement
+  VicePresidentOperations
+  Webmaster
+  WebOfficer
+  WelfareOfficer
+  Women_sRepresentative
+}
+
+input mutationCommitteeUpdateInput {
+  type: CommitteeUpdate_type_MutationInput
+  members: [CommitteeUpdate_MembersRelationshipInput]
+  simplifiedMembers: [mutationCommitteeUpdate_SimplifiedMembersInput]
+  updatedAt: String
+  createdAt: String
+}
+
+enum CommitteeUpdate_type_MutationInput {
+  old
+  current
+}
+
+input CommitteeUpdate_MembersRelationshipInput {
+  relationTo: CommitteeUpdate_MembersRelationshipInputRelationTo
+  value: JSON
+}
+
+enum CommitteeUpdate_MembersRelationshipInputRelationTo {
+  nominations
+  positions
+}
+
+input mutationCommitteeUpdate_SimplifiedMembersInput {
+  position: CommitteeUpdate_SimplifiedMembers_position_MutationInput!
+  name: String!
+  id: String
+}
+
+enum CommitteeUpdate_SimplifiedMembers_position_MutationInput {
+  AcademicSecretary
+  EventsOfficer
+  Gamesmaster
+  GamesOfficer
+  HackathonOfficer
+  IndustryOfficer
+  InternationalRepresentative
+  MarketingOfficer
+  MastersRep
+  PostgraduateRepresentative
+  President
+  PublicityOfficer
+  Secretary
+  SocialSecretary
+  SportsOfficer
+  SportsRepresentative
+  StaffRepresentative
+  Treasurer
+  UnknownRole
+  VicePresident
+  VicePresidentEngagement
+  VicePresidentOperations
+  Webmaster
+  WebOfficer
+  WelfareOfficer
+  Women_sRepresentative
 }
 
 input mutationRedirectInput {

@@ -1,7 +1,9 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../access/admins'
+import type { Committee } from '../payload-types'
 import { testMatchesRegex } from '../validate/isAnInt'
+import { uniqueFields } from './Merch/validate/uniqueFields'
 
 const Committees: CollectionConfig = {
   slug: 'committees',
@@ -52,6 +54,11 @@ const Committees: CollectionConfig = {
           return data?.type === 'old'
         },
       },
+      validate: uniqueFields<{ position: string }, Committee>(
+        (d: Committee) => d?.simplifiedMembers,
+        s => s?.position,
+        false,
+      ),
       fields: [
         {
           name: 'position',
@@ -85,7 +92,6 @@ const Committees: CollectionConfig = {
             "Women's Representative",
           ],
           required: true,
-          unique: true,
         },
         {
           name: 'name',

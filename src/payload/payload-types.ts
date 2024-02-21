@@ -1059,7 +1059,7 @@ export interface Society {
   links?:
     | {
         name?: string | null;
-        url?: string | null;
+        url: string;
         id?: string | null;
       }[]
     | null;
