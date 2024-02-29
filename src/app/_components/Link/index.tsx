@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Page } from '../../../payload/payload-types'
 import { Button, Props as ButtonProps } from '../Button'
 
-type CMSLinkType = {
+export type CMSLinkType = {
   type?: 'custom' | 'reference'
   url?: string
   newTab?: boolean

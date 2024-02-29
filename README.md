@@ -15,6 +15,20 @@ website allows our members to show off what they are all capable of
 
 To run this project, copy the `.env.example` file to `.env` and fill in the environment variables
 
+### Seeding the Database
+
+When running the website for the first time, you will need to seed the database with some initial data. This can be done
+
+```bash
+mongorestore --uri="mongodb://127.0.0.1/" --db=ecss-website-cms data/dump/ecss-website-cms
+```
+
+Note after development you may want to save the database for others to use. This can be done using the following command
+
+```bash
+mongodump --uri="mongodb://127.0.0.1/" --db=ecss-website-cms --out=[file path to ./data]
+```
+
 ### Run Locally
 
 Clone the project

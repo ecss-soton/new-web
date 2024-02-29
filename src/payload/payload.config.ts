@@ -10,9 +10,11 @@ import { slateEditor } from '@payloadcms/richtext-slate' // editor-import
 import dotenv from 'dotenv'
 import path from 'path'
 import { buildConfig } from 'payload/config'
+import { oAuthPlugin } from 'payload-plugin-oauth'
 
 import Categories from './collections/Categories'
 import Comments from './collections/Comments'
+import Committees from './collections/Committees'
 import { ElectionResults } from './collections/ElectionResults'
 import Elections from './collections/Elections'
 import { Media } from './collections/Media'
@@ -26,6 +28,8 @@ import Positions from './collections/Position'
 import { Posts } from './collections/Posts'
 import { Projects } from './collections/Projects'
 import Sales from './collections/Sales'
+import Societies from './collections/Societies'
+import Sponsors from './collections/Sponsors'
 import Tickets from './collections/Tickets'
 import Users from './collections/Users'
 import Votes from './collections/Votes'
@@ -107,6 +111,9 @@ export default buildConfig({
     OrderedTickets,
     OrderedMerch,
     Orders,
+    Sponsors,
+    Societies,
+    Committees,
   ],
   globals: [Settings, Header, Footer],
   typescript: {
@@ -139,6 +146,44 @@ export default buildConfig({
       uploadsCollection: 'media',
     }),
     payloadCloud(),
+    oAuthPlugin({
+      databaseUri: process.env.DATABASE_URI,
+      clientID: process.env.AZURE_AD_CLIENT_ID,
+      clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
+      authorizationURL: `https://login.microsoftonline.com/${process.env.AZURE_AD_TENANT_ID}/oauth2/v2.0/authorize`,
+      tokenURL: `https://login.microsoftonline.com/${process.env.AZURE_AD_TENANT_ID}/oauth2/v2.0/token`,
+      callbackURL: `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/oauth2/callback`,
+      scope: 'openid profile User.Read email',
+      // @ts-expect-error expecting sub but we are returning username instead
+      async userinfo(accessToken: string) {
+        const data = await fetch(`https://graph.microsoft.com/v1.0/me/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        const sotonData = await data.json()
+        if (sotonData?.error) {
+          // eslint-disable-next-line no-console -- logging error here is fine
+          console.error(sotonData.error)
+          throw new Error(sotonData.error)
+        }
+        return {
+          username: sotonData.mail.split('@')[0],
+
+          // Custom fields to fill in if user is created
+          name: sotonData.displayName,
+          email: sotonData.mail,
+        }
+      },
+      userCollection: Users,
+      subField: { name: 'username' },
+      sessionOptions: {
+        resave: false,
+        saveUninitialized: false,
+        // PAYLOAD_SECRET existing is verified in server.ts
+        secret: process.env.PAYLOAD_SECRET ?? '',
+      },
+    }),
     formBuilder({}),
   ],
 })
