@@ -5,7 +5,7 @@ export const isHTTPS: Validate = async (value, args) => {
   if (value) {
     try {
       let url = new URL(value)
-      if (url.protocol !== 'https') {
+      if (url.protocol !== 'https:') {
         return 'Expected an https link'
       }
       return text(value, args)
