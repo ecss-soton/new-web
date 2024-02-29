@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload/types'
 import { admins } from '../access/admins'
 import { testMatchesRegex } from '../validate/isAnInt'
 import { isHTTPS } from '../validate/isHTTPS'
+import linkGroup from "../fields/linkGroup";
 
 const Societies: CollectionConfig = {
   slug: 'societies',
@@ -75,22 +76,7 @@ const Societies: CollectionConfig = {
       type: 'text',
       validate: testMatchesRegex(/^https:\/\/discord.gg\/[a-zA-Z0-9]+$/),
     },
-    {
-      name: 'links',
-      type: 'array',
-      fields: [
-        {
-          name: 'name',
-          type: 'text',
-        },
-        {
-          name: 'url',
-          type: 'text',
-          required: true,
-          validate: isHTTPS,
-        },
-      ],
-    },
+    linkGroup(),
   ],
 }
 

@@ -3,6 +3,8 @@ import type { CollectionConfig } from 'payload/types'
 import { admins } from '../access/admins'
 import { isHTTPS } from '../validate/isHTTPS'
 import { checkRole } from './Users/checkRole'
+import {slugField} from "../fields/slug";
+import linkGroup from "../fields/linkGroup";
 
 const Sponsors: CollectionConfig = {
   slug: 'sponsors',
@@ -23,6 +25,7 @@ const Sponsors: CollectionConfig = {
     defaultColumns: ['name', 'level'],
   },
   fields: [
+    slugField(),
     {
       name: 'name',
       label: 'Name',
@@ -50,26 +53,12 @@ const Sponsors: CollectionConfig = {
       required: true,
     },
     {
-      name: 'website',
+      name: 'websiteUrl',
       label: 'The main website URL',
       type: 'text',
       validate: isHTTPS,
     },
-    {
-      name: 'links',
-      type: 'array',
-      fields: [
-        {
-          name: 'name',
-          type: 'text',
-        },
-        {
-          name: 'url',
-          type: 'text',
-          validate: isHTTPS,
-        },
-      ],
-    },
+    linkGroup(),
   ],
 }
 
