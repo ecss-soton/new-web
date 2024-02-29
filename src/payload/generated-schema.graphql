@@ -642,6 +642,9 @@ enum Archive_populateBy {
 enum Archive_relationTo {
   posts
   projects
+  sponsors
+  committee
+  societies
 }
 
 type Category {
@@ -668,9 +671,10 @@ type Archive_SelectedDocs_Relationship {
 enum Archive_SelectedDocs_RelationTo {
   posts
   projects
+  sponsors
 }
 
-union Archive_SelectedDocs = Post | Project
+union Archive_SelectedDocs = Post | Project | Sponsor
 
 type Post {
   id: String
@@ -1516,6 +1520,226 @@ enum Project__status {
   published
 }
 
+type Sponsor {
+  id: String
+  slug: String
+  name: String!
+  level: Sponsor_level
+  description(depth: Int): JSON
+  logo(where: Sponsor_Logo_where): Media!
+  websiteUrl: String
+  links: [Sponsor_Links!]
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+enum Sponsor_level {
+  gold
+  silver
+  bronze
+  _64bit
+  _32bit
+  _16bit
+}
+
+input Sponsor_Logo_where {
+  alt: Sponsor_Logo_alt_operator
+  caption: Sponsor_Logo_caption_operator
+  updatedAt: Sponsor_Logo_updatedAt_operator
+  createdAt: Sponsor_Logo_createdAt_operator
+  url: Sponsor_Logo_url_operator
+  filename: Sponsor_Logo_filename_operator
+  mimeType: Sponsor_Logo_mimeType_operator
+  filesize: Sponsor_Logo_filesize_operator
+  width: Sponsor_Logo_width_operator
+  height: Sponsor_Logo_height_operator
+  id: Sponsor_Logo_id_operator
+  AND: [Sponsor_Logo_where_and]
+  OR: [Sponsor_Logo_where_or]
+}
+
+input Sponsor_Logo_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Sponsor_Logo_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Sponsor_Logo_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Sponsor_Logo_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Sponsor_Logo_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Sponsor_Logo_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Sponsor_Logo_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Sponsor_Logo_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Sponsor_Logo_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Sponsor_Logo_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Sponsor_Logo_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Sponsor_Logo_where_and {
+  alt: Sponsor_Logo_alt_operator
+  caption: Sponsor_Logo_caption_operator
+  updatedAt: Sponsor_Logo_updatedAt_operator
+  createdAt: Sponsor_Logo_createdAt_operator
+  url: Sponsor_Logo_url_operator
+  filename: Sponsor_Logo_filename_operator
+  mimeType: Sponsor_Logo_mimeType_operator
+  filesize: Sponsor_Logo_filesize_operator
+  width: Sponsor_Logo_width_operator
+  height: Sponsor_Logo_height_operator
+  id: Sponsor_Logo_id_operator
+  AND: [Sponsor_Logo_where_and]
+  OR: [Sponsor_Logo_where_or]
+}
+
+input Sponsor_Logo_where_or {
+  alt: Sponsor_Logo_alt_operator
+  caption: Sponsor_Logo_caption_operator
+  updatedAt: Sponsor_Logo_updatedAt_operator
+  createdAt: Sponsor_Logo_createdAt_operator
+  url: Sponsor_Logo_url_operator
+  filename: Sponsor_Logo_filename_operator
+  mimeType: Sponsor_Logo_mimeType_operator
+  filesize: Sponsor_Logo_filesize_operator
+  width: Sponsor_Logo_width_operator
+  height: Sponsor_Logo_height_operator
+  id: Sponsor_Logo_id_operator
+  AND: [Sponsor_Logo_where_and]
+  OR: [Sponsor_Logo_where_or]
+}
+
+type Sponsor_Links {
+  link: Sponsor_Links_Link
+  id: String
+}
+
+type Sponsor_Links_Link {
+  type: Sponsor_Links_Link_type
+  newTab: Boolean
+  reference: Sponsor_Links_Link_Reference_Relationship
+  url: String
+  label: String
+  appearance: Sponsor_Links_Link_appearance
+}
+
+enum Sponsor_Links_Link_type {
+  reference
+  custom
+}
+
+type Sponsor_Links_Link_Reference_Relationship {
+  relationTo: Sponsor_Links_Link_Reference_RelationTo
+  value: Sponsor_Links_Link_Reference
+}
+
+enum Sponsor_Links_Link_Reference_RelationTo {
+  pages
+}
+
+union Sponsor_Links_Link_Reference = Page
+
+enum Sponsor_Links_Link_appearance {
+  default
+  primary
+  secondary
+}
+
 type Archive_PopulatedDocs_Relationship {
   relationTo: Archive_PopulatedDocs_RelationTo
   value: Archive_PopulatedDocs
@@ -1524,9 +1748,10 @@ type Archive_PopulatedDocs_Relationship {
 enum Archive_PopulatedDocs_RelationTo {
   posts
   projects
+  sponsors
 }
 
-union Archive_PopulatedDocs = Post | Project
+union Archive_PopulatedDocs = Post | Project | Sponsor
 
 type Page_Meta {
   title: String
@@ -15001,195 +15226,6 @@ type OrdersDeleteDocAccess {
   where: JSONObject
 }
 
-type Sponsor {
-  id: String
-  name: String!
-  level: Sponsor_level
-  description(depth: Int): JSON
-  logo(where: Sponsor_Logo_where): Media!
-  website: String
-  links: [Sponsor_Links!]
-  updatedAt: DateTime
-  createdAt: DateTime
-}
-
-enum Sponsor_level {
-  gold
-  silver
-  bronze
-  _64bit
-  _32bit
-  _16bit
-}
-
-input Sponsor_Logo_where {
-  alt: Sponsor_Logo_alt_operator
-  caption: Sponsor_Logo_caption_operator
-  updatedAt: Sponsor_Logo_updatedAt_operator
-  createdAt: Sponsor_Logo_createdAt_operator
-  url: Sponsor_Logo_url_operator
-  filename: Sponsor_Logo_filename_operator
-  mimeType: Sponsor_Logo_mimeType_operator
-  filesize: Sponsor_Logo_filesize_operator
-  width: Sponsor_Logo_width_operator
-  height: Sponsor_Logo_height_operator
-  id: Sponsor_Logo_id_operator
-  AND: [Sponsor_Logo_where_and]
-  OR: [Sponsor_Logo_where_or]
-}
-
-input Sponsor_Logo_alt_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-}
-
-input Sponsor_Logo_caption_operator {
-  equals: JSON
-  not_equals: JSON
-  like: JSON
-  contains: JSON
-  exists: Boolean
-}
-
-input Sponsor_Logo_updatedAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input Sponsor_Logo_createdAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input Sponsor_Logo_url_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input Sponsor_Logo_filename_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input Sponsor_Logo_mimeType_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input Sponsor_Logo_filesize_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input Sponsor_Logo_width_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input Sponsor_Logo_height_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input Sponsor_Logo_id_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input Sponsor_Logo_where_and {
-  alt: Sponsor_Logo_alt_operator
-  caption: Sponsor_Logo_caption_operator
-  updatedAt: Sponsor_Logo_updatedAt_operator
-  createdAt: Sponsor_Logo_createdAt_operator
-  url: Sponsor_Logo_url_operator
-  filename: Sponsor_Logo_filename_operator
-  mimeType: Sponsor_Logo_mimeType_operator
-  filesize: Sponsor_Logo_filesize_operator
-  width: Sponsor_Logo_width_operator
-  height: Sponsor_Logo_height_operator
-  id: Sponsor_Logo_id_operator
-  AND: [Sponsor_Logo_where_and]
-  OR: [Sponsor_Logo_where_or]
-}
-
-input Sponsor_Logo_where_or {
-  alt: Sponsor_Logo_alt_operator
-  caption: Sponsor_Logo_caption_operator
-  updatedAt: Sponsor_Logo_updatedAt_operator
-  createdAt: Sponsor_Logo_createdAt_operator
-  url: Sponsor_Logo_url_operator
-  filename: Sponsor_Logo_filename_operator
-  mimeType: Sponsor_Logo_mimeType_operator
-  filesize: Sponsor_Logo_filesize_operator
-  width: Sponsor_Logo_width_operator
-  height: Sponsor_Logo_height_operator
-  id: Sponsor_Logo_id_operator
-  AND: [Sponsor_Logo_where_and]
-  OR: [Sponsor_Logo_where_or]
-}
-
-type Sponsor_Links {
-  name: String
-  url: String
-  id: String
-}
-
 type Sponsors {
   docs: [Sponsor]
   hasNextPage: Boolean
@@ -15205,19 +15241,35 @@ type Sponsors {
 }
 
 input Sponsor_where {
+  slug: Sponsor_slug_operator
   name: Sponsor_name_operator
   level: Sponsor_level_operator
   description: Sponsor_description_operator
   logo: Sponsor_logo_operator
-  website: Sponsor_website_operator
-  links__name: Sponsor_links__name_operator
-  links__url: Sponsor_links__url_operator
+  websiteUrl: Sponsor_websiteUrl_operator
+  links__link__type: Sponsor_links__link__type_operator
+  links__link__newTab: Sponsor_links__link__newTab_operator
+  links__link__reference: Sponsor_links__link__reference_Relation
+  links__link__url: Sponsor_links__link__url_operator
+  links__link__label: Sponsor_links__link__label_operator
+  links__link__appearance: Sponsor_links__link__appearance_operator
   links__id: Sponsor_links__id_operator
   updatedAt: Sponsor_updatedAt_operator
   createdAt: Sponsor_createdAt_operator
   id: Sponsor_id_operator
   AND: [Sponsor_where_and]
   OR: [Sponsor_where_or]
+}
+
+input Sponsor_slug_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
 }
 
 input Sponsor_name_operator {
@@ -15261,7 +15313,7 @@ input Sponsor_logo_operator {
   not_equals: String
 }
 
-input Sponsor_website_operator {
+input Sponsor_websiteUrl_operator {
   equals: String
   not_equals: String
   like: String
@@ -15272,18 +15324,35 @@ input Sponsor_website_operator {
   exists: Boolean
 }
 
-input Sponsor_links__name_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
+input Sponsor_links__link__type_operator {
+  equals: Sponsor_links__link__type_Input
+  not_equals: Sponsor_links__link__type_Input
+  like: Sponsor_links__link__type_Input
+  contains: Sponsor_links__link__type_Input
   exists: Boolean
 }
 
-input Sponsor_links__url_operator {
+enum Sponsor_links__link__type_Input {
+  reference
+  custom
+}
+
+input Sponsor_links__link__newTab_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input Sponsor_links__link__reference_Relation {
+  relationTo: Sponsor_links__link__reference_Relation_RelationTo
+  value: JSON
+}
+
+enum Sponsor_links__link__reference_Relation_RelationTo {
+  pages
+}
+
+input Sponsor_links__link__url_operator {
   equals: String
   not_equals: String
   like: String
@@ -15291,7 +15360,31 @@ input Sponsor_links__url_operator {
   in: [String]
   not_in: [String]
   all: [String]
+}
+
+input Sponsor_links__link__label_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Sponsor_links__link__appearance_operator {
+  equals: Sponsor_links__link__appearance_Input
+  not_equals: Sponsor_links__link__appearance_Input
+  in: [Sponsor_links__link__appearance_Input]
+  not_in: [Sponsor_links__link__appearance_Input]
+  all: [Sponsor_links__link__appearance_Input]
   exists: Boolean
+}
+
+enum Sponsor_links__link__appearance_Input {
+  default
+  primary
+  secondary
 }
 
 input Sponsor_links__id_operator {
@@ -15339,13 +15432,18 @@ input Sponsor_id_operator {
 }
 
 input Sponsor_where_and {
+  slug: Sponsor_slug_operator
   name: Sponsor_name_operator
   level: Sponsor_level_operator
   description: Sponsor_description_operator
   logo: Sponsor_logo_operator
-  website: Sponsor_website_operator
-  links__name: Sponsor_links__name_operator
-  links__url: Sponsor_links__url_operator
+  websiteUrl: Sponsor_websiteUrl_operator
+  links__link__type: Sponsor_links__link__type_operator
+  links__link__newTab: Sponsor_links__link__newTab_operator
+  links__link__reference: Sponsor_links__link__reference_Relation
+  links__link__url: Sponsor_links__link__url_operator
+  links__link__label: Sponsor_links__link__label_operator
+  links__link__appearance: Sponsor_links__link__appearance_operator
   links__id: Sponsor_links__id_operator
   updatedAt: Sponsor_updatedAt_operator
   createdAt: Sponsor_createdAt_operator
@@ -15355,13 +15453,18 @@ input Sponsor_where_and {
 }
 
 input Sponsor_where_or {
+  slug: Sponsor_slug_operator
   name: Sponsor_name_operator
   level: Sponsor_level_operator
   description: Sponsor_description_operator
   logo: Sponsor_logo_operator
-  website: Sponsor_website_operator
-  links__name: Sponsor_links__name_operator
-  links__url: Sponsor_links__url_operator
+  websiteUrl: Sponsor_websiteUrl_operator
+  links__link__type: Sponsor_links__link__type_operator
+  links__link__newTab: Sponsor_links__link__newTab_operator
+  links__link__reference: Sponsor_links__link__reference_Relation
+  links__link__url: Sponsor_links__link__url_operator
+  links__link__label: Sponsor_links__link__label_operator
+  links__link__appearance: Sponsor_links__link__appearance_operator
   links__id: Sponsor_links__id_operator
   updatedAt: Sponsor_updatedAt_operator
   createdAt: Sponsor_createdAt_operator
@@ -15379,14 +15482,38 @@ type sponsorsDocAccess {
 }
 
 type SponsorsDocAccessFields {
+  slug: SponsorsDocAccessFields_slug
   name: SponsorsDocAccessFields_name
   level: SponsorsDocAccessFields_level
   description: SponsorsDocAccessFields_description
   logo: SponsorsDocAccessFields_logo
-  website: SponsorsDocAccessFields_website
+  websiteUrl: SponsorsDocAccessFields_websiteUrl
   links: SponsorsDocAccessFields_links
   updatedAt: SponsorsDocAccessFields_updatedAt
   createdAt: SponsorsDocAccessFields_createdAt
+}
+
+type SponsorsDocAccessFields_slug {
+  create: SponsorsDocAccessFields_slug_Create
+  read: SponsorsDocAccessFields_slug_Read
+  update: SponsorsDocAccessFields_slug_Update
+  delete: SponsorsDocAccessFields_slug_Delete
+}
+
+type SponsorsDocAccessFields_slug_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_slug_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_slug_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_slug_Delete {
+  permission: Boolean!
 }
 
 type SponsorsDocAccessFields_name {
@@ -15481,26 +15608,26 @@ type SponsorsDocAccessFields_logo_Delete {
   permission: Boolean!
 }
 
-type SponsorsDocAccessFields_website {
-  create: SponsorsDocAccessFields_website_Create
-  read: SponsorsDocAccessFields_website_Read
-  update: SponsorsDocAccessFields_website_Update
-  delete: SponsorsDocAccessFields_website_Delete
+type SponsorsDocAccessFields_websiteUrl {
+  create: SponsorsDocAccessFields_websiteUrl_Create
+  read: SponsorsDocAccessFields_websiteUrl_Read
+  update: SponsorsDocAccessFields_websiteUrl_Update
+  delete: SponsorsDocAccessFields_websiteUrl_Delete
 }
 
-type SponsorsDocAccessFields_website_Create {
+type SponsorsDocAccessFields_websiteUrl_Create {
   permission: Boolean!
 }
 
-type SponsorsDocAccessFields_website_Read {
+type SponsorsDocAccessFields_websiteUrl_Read {
   permission: Boolean!
 }
 
-type SponsorsDocAccessFields_website_Update {
+type SponsorsDocAccessFields_websiteUrl_Update {
   permission: Boolean!
 }
 
-type SponsorsDocAccessFields_website_Delete {
+type SponsorsDocAccessFields_websiteUrl_Delete {
   permission: Boolean!
 }
 
@@ -15529,54 +15656,178 @@ type SponsorsDocAccessFields_links_Delete {
 }
 
 type SponsorsDocAccessFields_links_Fields {
-  name: SponsorsDocAccessFields_links_name
-  url: SponsorsDocAccessFields_links_url
+  link: SponsorsDocAccessFields_links_link
   id: SponsorsDocAccessFields_links_id
 }
 
-type SponsorsDocAccessFields_links_name {
-  create: SponsorsDocAccessFields_links_name_Create
-  read: SponsorsDocAccessFields_links_name_Read
-  update: SponsorsDocAccessFields_links_name_Update
-  delete: SponsorsDocAccessFields_links_name_Delete
+type SponsorsDocAccessFields_links_link {
+  create: SponsorsDocAccessFields_links_link_Create
+  read: SponsorsDocAccessFields_links_link_Read
+  update: SponsorsDocAccessFields_links_link_Update
+  delete: SponsorsDocAccessFields_links_link_Delete
+  fields: SponsorsDocAccessFields_links_link_Fields
 }
 
-type SponsorsDocAccessFields_links_name_Create {
+type SponsorsDocAccessFields_links_link_Create {
   permission: Boolean!
 }
 
-type SponsorsDocAccessFields_links_name_Read {
+type SponsorsDocAccessFields_links_link_Read {
   permission: Boolean!
 }
 
-type SponsorsDocAccessFields_links_name_Update {
+type SponsorsDocAccessFields_links_link_Update {
   permission: Boolean!
 }
 
-type SponsorsDocAccessFields_links_name_Delete {
+type SponsorsDocAccessFields_links_link_Delete {
   permission: Boolean!
 }
 
-type SponsorsDocAccessFields_links_url {
-  create: SponsorsDocAccessFields_links_url_Create
-  read: SponsorsDocAccessFields_links_url_Read
-  update: SponsorsDocAccessFields_links_url_Update
-  delete: SponsorsDocAccessFields_links_url_Delete
+type SponsorsDocAccessFields_links_link_Fields {
+  type: SponsorsDocAccessFields_links_link_type
+  newTab: SponsorsDocAccessFields_links_link_newTab
+  reference: SponsorsDocAccessFields_links_link_reference
+  url: SponsorsDocAccessFields_links_link_url
+  label: SponsorsDocAccessFields_links_link_label
+  appearance: SponsorsDocAccessFields_links_link_appearance
 }
 
-type SponsorsDocAccessFields_links_url_Create {
+type SponsorsDocAccessFields_links_link_type {
+  create: SponsorsDocAccessFields_links_link_type_Create
+  read: SponsorsDocAccessFields_links_link_type_Read
+  update: SponsorsDocAccessFields_links_link_type_Update
+  delete: SponsorsDocAccessFields_links_link_type_Delete
+}
+
+type SponsorsDocAccessFields_links_link_type_Create {
   permission: Boolean!
 }
 
-type SponsorsDocAccessFields_links_url_Read {
+type SponsorsDocAccessFields_links_link_type_Read {
   permission: Boolean!
 }
 
-type SponsorsDocAccessFields_links_url_Update {
+type SponsorsDocAccessFields_links_link_type_Update {
   permission: Boolean!
 }
 
-type SponsorsDocAccessFields_links_url_Delete {
+type SponsorsDocAccessFields_links_link_type_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_newTab {
+  create: SponsorsDocAccessFields_links_link_newTab_Create
+  read: SponsorsDocAccessFields_links_link_newTab_Read
+  update: SponsorsDocAccessFields_links_link_newTab_Update
+  delete: SponsorsDocAccessFields_links_link_newTab_Delete
+}
+
+type SponsorsDocAccessFields_links_link_newTab_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_newTab_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_newTab_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_newTab_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_reference {
+  create: SponsorsDocAccessFields_links_link_reference_Create
+  read: SponsorsDocAccessFields_links_link_reference_Read
+  update: SponsorsDocAccessFields_links_link_reference_Update
+  delete: SponsorsDocAccessFields_links_link_reference_Delete
+}
+
+type SponsorsDocAccessFields_links_link_reference_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_reference_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_reference_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_reference_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_url {
+  create: SponsorsDocAccessFields_links_link_url_Create
+  read: SponsorsDocAccessFields_links_link_url_Read
+  update: SponsorsDocAccessFields_links_link_url_Update
+  delete: SponsorsDocAccessFields_links_link_url_Delete
+}
+
+type SponsorsDocAccessFields_links_link_url_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_url_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_url_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_url_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_label {
+  create: SponsorsDocAccessFields_links_link_label_Create
+  read: SponsorsDocAccessFields_links_link_label_Read
+  update: SponsorsDocAccessFields_links_link_label_Update
+  delete: SponsorsDocAccessFields_links_link_label_Delete
+}
+
+type SponsorsDocAccessFields_links_link_label_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_label_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_label_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_label_Delete {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_appearance {
+  create: SponsorsDocAccessFields_links_link_appearance_Create
+  read: SponsorsDocAccessFields_links_link_appearance_Read
+  update: SponsorsDocAccessFields_links_link_appearance_Update
+  delete: SponsorsDocAccessFields_links_link_appearance_Delete
+}
+
+type SponsorsDocAccessFields_links_link_appearance_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_appearance_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_appearance_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields_links_link_appearance_Delete {
   permission: Boolean!
 }
 
@@ -15676,6 +15927,7 @@ type Society {
   logo(where: Society_Logo_where): Media!
   email: EmailAddress
   website: String
+  susu: String
   github: String
   instagram: String
   discord: String
@@ -15847,9 +16099,39 @@ input Society_Logo_where_or {
 }
 
 type Society_Links {
-  name: String
-  url: String
+  link: Society_Links_Link
   id: String
+}
+
+type Society_Links_Link {
+  type: Society_Links_Link_type
+  newTab: Boolean
+  reference: Society_Links_Link_Reference_Relationship
+  url: String
+  label: String
+  appearance: Society_Links_Link_appearance
+}
+
+enum Society_Links_Link_type {
+  reference
+  custom
+}
+
+type Society_Links_Link_Reference_Relationship {
+  relationTo: Society_Links_Link_Reference_RelationTo
+  value: Society_Links_Link_Reference
+}
+
+enum Society_Links_Link_Reference_RelationTo {
+  pages
+}
+
+union Society_Links_Link_Reference = Page
+
+enum Society_Links_Link_appearance {
+  default
+  primary
+  secondary
 }
 
 type Societies {
@@ -15873,11 +16155,16 @@ input Society_where {
   logo: Society_logo_operator
   email: Society_email_operator
   website: Society_website_operator
+  susu: Society_susu_operator
   github: Society_github_operator
   instagram: Society_instagram_operator
   discord: Society_discord_operator
-  links__name: Society_links__name_operator
-  links__url: Society_links__url_operator
+  links__link__type: Society_links__link__type_operator
+  links__link__newTab: Society_links__link__newTab_operator
+  links__link__reference: Society_links__link__reference_Relation
+  links__link__url: Society_links__link__url_operator
+  links__link__label: Society_links__link__label_operator
+  links__link__appearance: Society_links__link__appearance_operator
   links__id: Society_links__id_operator
   updatedAt: Society_updatedAt_operator
   createdAt: Society_createdAt_operator
@@ -15941,6 +16228,17 @@ input Society_website_operator {
   exists: Boolean
 }
 
+input Society_susu_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
 input Society_github_operator {
   equals: String
   not_equals: String
@@ -15974,18 +16272,35 @@ input Society_discord_operator {
   exists: Boolean
 }
 
-input Society_links__name_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
+input Society_links__link__type_operator {
+  equals: Society_links__link__type_Input
+  not_equals: Society_links__link__type_Input
+  like: Society_links__link__type_Input
+  contains: Society_links__link__type_Input
   exists: Boolean
 }
 
-input Society_links__url_operator {
+enum Society_links__link__type_Input {
+  reference
+  custom
+}
+
+input Society_links__link__newTab_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input Society_links__link__reference_Relation {
+  relationTo: Society_links__link__reference_Relation_RelationTo
+  value: JSON
+}
+
+enum Society_links__link__reference_Relation_RelationTo {
+  pages
+}
+
+input Society_links__link__url_operator {
   equals: String
   not_equals: String
   like: String
@@ -15993,6 +16308,31 @@ input Society_links__url_operator {
   in: [String]
   not_in: [String]
   all: [String]
+}
+
+input Society_links__link__label_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Society_links__link__appearance_operator {
+  equals: Society_links__link__appearance_Input
+  not_equals: Society_links__link__appearance_Input
+  in: [Society_links__link__appearance_Input]
+  not_in: [Society_links__link__appearance_Input]
+  all: [Society_links__link__appearance_Input]
+  exists: Boolean
+}
+
+enum Society_links__link__appearance_Input {
+  default
+  primary
+  secondary
 }
 
 input Society_links__id_operator {
@@ -16035,11 +16375,16 @@ input Society_where_and {
   logo: Society_logo_operator
   email: Society_email_operator
   website: Society_website_operator
+  susu: Society_susu_operator
   github: Society_github_operator
   instagram: Society_instagram_operator
   discord: Society_discord_operator
-  links__name: Society_links__name_operator
-  links__url: Society_links__url_operator
+  links__link__type: Society_links__link__type_operator
+  links__link__newTab: Society_links__link__newTab_operator
+  links__link__reference: Society_links__link__reference_Relation
+  links__link__url: Society_links__link__url_operator
+  links__link__label: Society_links__link__label_operator
+  links__link__appearance: Society_links__link__appearance_operator
   links__id: Society_links__id_operator
   updatedAt: Society_updatedAt_operator
   createdAt: Society_createdAt_operator
@@ -16054,11 +16399,16 @@ input Society_where_or {
   logo: Society_logo_operator
   email: Society_email_operator
   website: Society_website_operator
+  susu: Society_susu_operator
   github: Society_github_operator
   instagram: Society_instagram_operator
   discord: Society_discord_operator
-  links__name: Society_links__name_operator
-  links__url: Society_links__url_operator
+  links__link__type: Society_links__link__type_operator
+  links__link__newTab: Society_links__link__newTab_operator
+  links__link__reference: Society_links__link__reference_Relation
+  links__link__url: Society_links__link__url_operator
+  links__link__label: Society_links__link__label_operator
+  links__link__appearance: Society_links__link__appearance_operator
   links__id: Society_links__id_operator
   updatedAt: Society_updatedAt_operator
   createdAt: Society_createdAt_operator
@@ -16081,6 +16431,7 @@ type SocietiesDocAccessFields {
   logo: SocietiesDocAccessFields_logo
   email: SocietiesDocAccessFields_email
   website: SocietiesDocAccessFields_website
+  susu: SocietiesDocAccessFields_susu
   github: SocietiesDocAccessFields_github
   instagram: SocietiesDocAccessFields_instagram
   discord: SocietiesDocAccessFields_discord
@@ -16227,6 +16578,29 @@ type SocietiesDocAccessFields_website_Delete {
   permission: Boolean!
 }
 
+type SocietiesDocAccessFields_susu {
+  create: SocietiesDocAccessFields_susu_Create
+  read: SocietiesDocAccessFields_susu_Read
+  update: SocietiesDocAccessFields_susu_Update
+  delete: SocietiesDocAccessFields_susu_Delete
+}
+
+type SocietiesDocAccessFields_susu_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_susu_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_susu_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_susu_Delete {
+  permission: Boolean!
+}
+
 type SocietiesDocAccessFields_github {
   create: SocietiesDocAccessFields_github_Create
   read: SocietiesDocAccessFields_github_Read
@@ -16321,54 +16695,178 @@ type SocietiesDocAccessFields_links_Delete {
 }
 
 type SocietiesDocAccessFields_links_Fields {
-  name: SocietiesDocAccessFields_links_name
-  url: SocietiesDocAccessFields_links_url
+  link: SocietiesDocAccessFields_links_link
   id: SocietiesDocAccessFields_links_id
 }
 
-type SocietiesDocAccessFields_links_name {
-  create: SocietiesDocAccessFields_links_name_Create
-  read: SocietiesDocAccessFields_links_name_Read
-  update: SocietiesDocAccessFields_links_name_Update
-  delete: SocietiesDocAccessFields_links_name_Delete
+type SocietiesDocAccessFields_links_link {
+  create: SocietiesDocAccessFields_links_link_Create
+  read: SocietiesDocAccessFields_links_link_Read
+  update: SocietiesDocAccessFields_links_link_Update
+  delete: SocietiesDocAccessFields_links_link_Delete
+  fields: SocietiesDocAccessFields_links_link_Fields
 }
 
-type SocietiesDocAccessFields_links_name_Create {
+type SocietiesDocAccessFields_links_link_Create {
   permission: Boolean!
 }
 
-type SocietiesDocAccessFields_links_name_Read {
+type SocietiesDocAccessFields_links_link_Read {
   permission: Boolean!
 }
 
-type SocietiesDocAccessFields_links_name_Update {
+type SocietiesDocAccessFields_links_link_Update {
   permission: Boolean!
 }
 
-type SocietiesDocAccessFields_links_name_Delete {
+type SocietiesDocAccessFields_links_link_Delete {
   permission: Boolean!
 }
 
-type SocietiesDocAccessFields_links_url {
-  create: SocietiesDocAccessFields_links_url_Create
-  read: SocietiesDocAccessFields_links_url_Read
-  update: SocietiesDocAccessFields_links_url_Update
-  delete: SocietiesDocAccessFields_links_url_Delete
+type SocietiesDocAccessFields_links_link_Fields {
+  type: SocietiesDocAccessFields_links_link_type
+  newTab: SocietiesDocAccessFields_links_link_newTab
+  reference: SocietiesDocAccessFields_links_link_reference
+  url: SocietiesDocAccessFields_links_link_url
+  label: SocietiesDocAccessFields_links_link_label
+  appearance: SocietiesDocAccessFields_links_link_appearance
 }
 
-type SocietiesDocAccessFields_links_url_Create {
+type SocietiesDocAccessFields_links_link_type {
+  create: SocietiesDocAccessFields_links_link_type_Create
+  read: SocietiesDocAccessFields_links_link_type_Read
+  update: SocietiesDocAccessFields_links_link_type_Update
+  delete: SocietiesDocAccessFields_links_link_type_Delete
+}
+
+type SocietiesDocAccessFields_links_link_type_Create {
   permission: Boolean!
 }
 
-type SocietiesDocAccessFields_links_url_Read {
+type SocietiesDocAccessFields_links_link_type_Read {
   permission: Boolean!
 }
 
-type SocietiesDocAccessFields_links_url_Update {
+type SocietiesDocAccessFields_links_link_type_Update {
   permission: Boolean!
 }
 
-type SocietiesDocAccessFields_links_url_Delete {
+type SocietiesDocAccessFields_links_link_type_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_newTab {
+  create: SocietiesDocAccessFields_links_link_newTab_Create
+  read: SocietiesDocAccessFields_links_link_newTab_Read
+  update: SocietiesDocAccessFields_links_link_newTab_Update
+  delete: SocietiesDocAccessFields_links_link_newTab_Delete
+}
+
+type SocietiesDocAccessFields_links_link_newTab_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_newTab_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_newTab_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_newTab_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_reference {
+  create: SocietiesDocAccessFields_links_link_reference_Create
+  read: SocietiesDocAccessFields_links_link_reference_Read
+  update: SocietiesDocAccessFields_links_link_reference_Update
+  delete: SocietiesDocAccessFields_links_link_reference_Delete
+}
+
+type SocietiesDocAccessFields_links_link_reference_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_reference_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_reference_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_reference_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_url {
+  create: SocietiesDocAccessFields_links_link_url_Create
+  read: SocietiesDocAccessFields_links_link_url_Read
+  update: SocietiesDocAccessFields_links_link_url_Update
+  delete: SocietiesDocAccessFields_links_link_url_Delete
+}
+
+type SocietiesDocAccessFields_links_link_url_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_url_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_url_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_url_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_label {
+  create: SocietiesDocAccessFields_links_link_label_Create
+  read: SocietiesDocAccessFields_links_link_label_Read
+  update: SocietiesDocAccessFields_links_link_label_Update
+  delete: SocietiesDocAccessFields_links_link_label_Delete
+}
+
+type SocietiesDocAccessFields_links_link_label_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_label_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_label_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_label_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_appearance {
+  create: SocietiesDocAccessFields_links_link_appearance_Create
+  read: SocietiesDocAccessFields_links_link_appearance_Read
+  update: SocietiesDocAccessFields_links_link_appearance_Update
+  delete: SocietiesDocAccessFields_links_link_appearance_Delete
+}
+
+type SocietiesDocAccessFields_links_link_appearance_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_appearance_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_appearance_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_links_link_appearance_Delete {
   permission: Boolean!
 }
 
@@ -25514,14 +26012,38 @@ type sponsorsAccess {
 }
 
 type SponsorsFields {
+  slug: SponsorsFields_slug
   name: SponsorsFields_name
   level: SponsorsFields_level
   description: SponsorsFields_description
   logo: SponsorsFields_logo
-  website: SponsorsFields_website
+  websiteUrl: SponsorsFields_websiteUrl
   links: SponsorsFields_links
   updatedAt: SponsorsFields_updatedAt
   createdAt: SponsorsFields_createdAt
+}
+
+type SponsorsFields_slug {
+  create: SponsorsFields_slug_Create
+  read: SponsorsFields_slug_Read
+  update: SponsorsFields_slug_Update
+  delete: SponsorsFields_slug_Delete
+}
+
+type SponsorsFields_slug_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_slug_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_slug_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_slug_Delete {
+  permission: Boolean!
 }
 
 type SponsorsFields_name {
@@ -25616,26 +26138,26 @@ type SponsorsFields_logo_Delete {
   permission: Boolean!
 }
 
-type SponsorsFields_website {
-  create: SponsorsFields_website_Create
-  read: SponsorsFields_website_Read
-  update: SponsorsFields_website_Update
-  delete: SponsorsFields_website_Delete
+type SponsorsFields_websiteUrl {
+  create: SponsorsFields_websiteUrl_Create
+  read: SponsorsFields_websiteUrl_Read
+  update: SponsorsFields_websiteUrl_Update
+  delete: SponsorsFields_websiteUrl_Delete
 }
 
-type SponsorsFields_website_Create {
+type SponsorsFields_websiteUrl_Create {
   permission: Boolean!
 }
 
-type SponsorsFields_website_Read {
+type SponsorsFields_websiteUrl_Read {
   permission: Boolean!
 }
 
-type SponsorsFields_website_Update {
+type SponsorsFields_websiteUrl_Update {
   permission: Boolean!
 }
 
-type SponsorsFields_website_Delete {
+type SponsorsFields_websiteUrl_Delete {
   permission: Boolean!
 }
 
@@ -25664,54 +26186,178 @@ type SponsorsFields_links_Delete {
 }
 
 type SponsorsFields_links_Fields {
-  name: SponsorsFields_links_name
-  url: SponsorsFields_links_url
+  link: SponsorsFields_links_link
   id: SponsorsFields_links_id
 }
 
-type SponsorsFields_links_name {
-  create: SponsorsFields_links_name_Create
-  read: SponsorsFields_links_name_Read
-  update: SponsorsFields_links_name_Update
-  delete: SponsorsFields_links_name_Delete
+type SponsorsFields_links_link {
+  create: SponsorsFields_links_link_Create
+  read: SponsorsFields_links_link_Read
+  update: SponsorsFields_links_link_Update
+  delete: SponsorsFields_links_link_Delete
+  fields: SponsorsFields_links_link_Fields
 }
 
-type SponsorsFields_links_name_Create {
+type SponsorsFields_links_link_Create {
   permission: Boolean!
 }
 
-type SponsorsFields_links_name_Read {
+type SponsorsFields_links_link_Read {
   permission: Boolean!
 }
 
-type SponsorsFields_links_name_Update {
+type SponsorsFields_links_link_Update {
   permission: Boolean!
 }
 
-type SponsorsFields_links_name_Delete {
+type SponsorsFields_links_link_Delete {
   permission: Boolean!
 }
 
-type SponsorsFields_links_url {
-  create: SponsorsFields_links_url_Create
-  read: SponsorsFields_links_url_Read
-  update: SponsorsFields_links_url_Update
-  delete: SponsorsFields_links_url_Delete
+type SponsorsFields_links_link_Fields {
+  type: SponsorsFields_links_link_type
+  newTab: SponsorsFields_links_link_newTab
+  reference: SponsorsFields_links_link_reference
+  url: SponsorsFields_links_link_url
+  label: SponsorsFields_links_link_label
+  appearance: SponsorsFields_links_link_appearance
 }
 
-type SponsorsFields_links_url_Create {
+type SponsorsFields_links_link_type {
+  create: SponsorsFields_links_link_type_Create
+  read: SponsorsFields_links_link_type_Read
+  update: SponsorsFields_links_link_type_Update
+  delete: SponsorsFields_links_link_type_Delete
+}
+
+type SponsorsFields_links_link_type_Create {
   permission: Boolean!
 }
 
-type SponsorsFields_links_url_Read {
+type SponsorsFields_links_link_type_Read {
   permission: Boolean!
 }
 
-type SponsorsFields_links_url_Update {
+type SponsorsFields_links_link_type_Update {
   permission: Boolean!
 }
 
-type SponsorsFields_links_url_Delete {
+type SponsorsFields_links_link_type_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_newTab {
+  create: SponsorsFields_links_link_newTab_Create
+  read: SponsorsFields_links_link_newTab_Read
+  update: SponsorsFields_links_link_newTab_Update
+  delete: SponsorsFields_links_link_newTab_Delete
+}
+
+type SponsorsFields_links_link_newTab_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_newTab_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_newTab_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_newTab_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_reference {
+  create: SponsorsFields_links_link_reference_Create
+  read: SponsorsFields_links_link_reference_Read
+  update: SponsorsFields_links_link_reference_Update
+  delete: SponsorsFields_links_link_reference_Delete
+}
+
+type SponsorsFields_links_link_reference_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_reference_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_reference_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_reference_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_url {
+  create: SponsorsFields_links_link_url_Create
+  read: SponsorsFields_links_link_url_Read
+  update: SponsorsFields_links_link_url_Update
+  delete: SponsorsFields_links_link_url_Delete
+}
+
+type SponsorsFields_links_link_url_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_url_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_url_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_url_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_label {
+  create: SponsorsFields_links_link_label_Create
+  read: SponsorsFields_links_link_label_Read
+  update: SponsorsFields_links_link_label_Update
+  delete: SponsorsFields_links_link_label_Delete
+}
+
+type SponsorsFields_links_link_label_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_label_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_label_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_label_Delete {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_appearance {
+  create: SponsorsFields_links_link_appearance_Create
+  read: SponsorsFields_links_link_appearance_Read
+  update: SponsorsFields_links_link_appearance_Update
+  delete: SponsorsFields_links_link_appearance_Delete
+}
+
+type SponsorsFields_links_link_appearance_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_appearance_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_appearance_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields_links_link_appearance_Delete {
   permission: Boolean!
 }
 
@@ -25819,6 +26465,7 @@ type SocietiesFields {
   logo: SocietiesFields_logo
   email: SocietiesFields_email
   website: SocietiesFields_website
+  susu: SocietiesFields_susu
   github: SocietiesFields_github
   instagram: SocietiesFields_instagram
   discord: SocietiesFields_discord
@@ -25965,6 +26612,29 @@ type SocietiesFields_website_Delete {
   permission: Boolean!
 }
 
+type SocietiesFields_susu {
+  create: SocietiesFields_susu_Create
+  read: SocietiesFields_susu_Read
+  update: SocietiesFields_susu_Update
+  delete: SocietiesFields_susu_Delete
+}
+
+type SocietiesFields_susu_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_susu_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_susu_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_susu_Delete {
+  permission: Boolean!
+}
+
 type SocietiesFields_github {
   create: SocietiesFields_github_Create
   read: SocietiesFields_github_Read
@@ -26059,54 +26729,178 @@ type SocietiesFields_links_Delete {
 }
 
 type SocietiesFields_links_Fields {
-  name: SocietiesFields_links_name
-  url: SocietiesFields_links_url
+  link: SocietiesFields_links_link
   id: SocietiesFields_links_id
 }
 
-type SocietiesFields_links_name {
-  create: SocietiesFields_links_name_Create
-  read: SocietiesFields_links_name_Read
-  update: SocietiesFields_links_name_Update
-  delete: SocietiesFields_links_name_Delete
+type SocietiesFields_links_link {
+  create: SocietiesFields_links_link_Create
+  read: SocietiesFields_links_link_Read
+  update: SocietiesFields_links_link_Update
+  delete: SocietiesFields_links_link_Delete
+  fields: SocietiesFields_links_link_Fields
 }
 
-type SocietiesFields_links_name_Create {
+type SocietiesFields_links_link_Create {
   permission: Boolean!
 }
 
-type SocietiesFields_links_name_Read {
+type SocietiesFields_links_link_Read {
   permission: Boolean!
 }
 
-type SocietiesFields_links_name_Update {
+type SocietiesFields_links_link_Update {
   permission: Boolean!
 }
 
-type SocietiesFields_links_name_Delete {
+type SocietiesFields_links_link_Delete {
   permission: Boolean!
 }
 
-type SocietiesFields_links_url {
-  create: SocietiesFields_links_url_Create
-  read: SocietiesFields_links_url_Read
-  update: SocietiesFields_links_url_Update
-  delete: SocietiesFields_links_url_Delete
+type SocietiesFields_links_link_Fields {
+  type: SocietiesFields_links_link_type
+  newTab: SocietiesFields_links_link_newTab
+  reference: SocietiesFields_links_link_reference
+  url: SocietiesFields_links_link_url
+  label: SocietiesFields_links_link_label
+  appearance: SocietiesFields_links_link_appearance
 }
 
-type SocietiesFields_links_url_Create {
+type SocietiesFields_links_link_type {
+  create: SocietiesFields_links_link_type_Create
+  read: SocietiesFields_links_link_type_Read
+  update: SocietiesFields_links_link_type_Update
+  delete: SocietiesFields_links_link_type_Delete
+}
+
+type SocietiesFields_links_link_type_Create {
   permission: Boolean!
 }
 
-type SocietiesFields_links_url_Read {
+type SocietiesFields_links_link_type_Read {
   permission: Boolean!
 }
 
-type SocietiesFields_links_url_Update {
+type SocietiesFields_links_link_type_Update {
   permission: Boolean!
 }
 
-type SocietiesFields_links_url_Delete {
+type SocietiesFields_links_link_type_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_newTab {
+  create: SocietiesFields_links_link_newTab_Create
+  read: SocietiesFields_links_link_newTab_Read
+  update: SocietiesFields_links_link_newTab_Update
+  delete: SocietiesFields_links_link_newTab_Delete
+}
+
+type SocietiesFields_links_link_newTab_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_newTab_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_newTab_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_newTab_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_reference {
+  create: SocietiesFields_links_link_reference_Create
+  read: SocietiesFields_links_link_reference_Read
+  update: SocietiesFields_links_link_reference_Update
+  delete: SocietiesFields_links_link_reference_Delete
+}
+
+type SocietiesFields_links_link_reference_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_reference_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_reference_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_reference_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_url {
+  create: SocietiesFields_links_link_url_Create
+  read: SocietiesFields_links_link_url_Read
+  update: SocietiesFields_links_link_url_Update
+  delete: SocietiesFields_links_link_url_Delete
+}
+
+type SocietiesFields_links_link_url_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_url_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_url_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_url_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_label {
+  create: SocietiesFields_links_link_label_Create
+  read: SocietiesFields_links_link_label_Read
+  update: SocietiesFields_links_link_label_Update
+  delete: SocietiesFields_links_link_label_Delete
+}
+
+type SocietiesFields_links_link_label_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_label_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_label_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_label_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_appearance {
+  create: SocietiesFields_links_link_appearance_Create
+  read: SocietiesFields_links_link_appearance_Read
+  update: SocietiesFields_links_link_appearance_Update
+  delete: SocietiesFields_links_link_appearance_Delete
+}
+
+type SocietiesFields_links_link_appearance_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_appearance_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_appearance_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_links_link_appearance_Delete {
   permission: Boolean!
 }
 
@@ -29171,11 +29965,12 @@ enum OrderUpdate_status_MutationInput {
 }
 
 input mutationSponsorInput {
+  slug: String
   name: String!
   level: Sponsor_level_MutationInput
   description: JSON
   logo: String!
-  website: String
+  websiteUrl: String
   links: [mutationSponsor_LinksInput]
   updatedAt: String
   createdAt: String
@@ -29191,17 +29986,41 @@ enum Sponsor_level_MutationInput {
 }
 
 input mutationSponsor_LinksInput {
-  name: String
-  url: String
+  link: mutationSponsor_Links_LinkInput
   id: String
 }
 
+input mutationSponsor_Links_LinkInput {
+  type: String
+  newTab: Boolean
+  reference: Sponsor_Links_Link_ReferenceRelationshipInput
+  url: String
+  label: String!
+  appearance: Sponsor_Links_Link_appearance_MutationInput
+}
+
+input Sponsor_Links_Link_ReferenceRelationshipInput {
+  relationTo: Sponsor_Links_Link_ReferenceRelationshipInputRelationTo
+  value: JSON
+}
+
+enum Sponsor_Links_Link_ReferenceRelationshipInputRelationTo {
+  pages
+}
+
+enum Sponsor_Links_Link_appearance_MutationInput {
+  default
+  primary
+  secondary
+}
+
 input mutationSponsorUpdateInput {
+  slug: String
   name: String
   level: SponsorUpdate_level_MutationInput
   description: JSON
   logo: String
-  website: String
+  websiteUrl: String
   links: [mutationSponsorUpdate_LinksInput]
   updatedAt: String
   createdAt: String
@@ -29217,9 +30036,32 @@ enum SponsorUpdate_level_MutationInput {
 }
 
 input mutationSponsorUpdate_LinksInput {
-  name: String
-  url: String
+  link: mutationSponsorUpdate_Links_LinkInput
   id: String
+}
+
+input mutationSponsorUpdate_Links_LinkInput {
+  type: String
+  newTab: Boolean
+  reference: SponsorUpdate_Links_Link_ReferenceRelationshipInput
+  url: String
+  label: String!
+  appearance: SponsorUpdate_Links_Link_appearance_MutationInput
+}
+
+input SponsorUpdate_Links_Link_ReferenceRelationshipInput {
+  relationTo: SponsorUpdate_Links_Link_ReferenceRelationshipInputRelationTo
+  value: JSON
+}
+
+enum SponsorUpdate_Links_Link_ReferenceRelationshipInputRelationTo {
+  pages
+}
+
+enum SponsorUpdate_Links_Link_appearance_MutationInput {
+  default
+  primary
+  secondary
 }
 
 input mutationSocietyInput {
@@ -29229,6 +30071,7 @@ input mutationSocietyInput {
   logo: String!
   email: String
   website: String
+  susu: String
   github: String
   instagram: String
   discord: String
@@ -29238,9 +30081,32 @@ input mutationSocietyInput {
 }
 
 input mutationSociety_LinksInput {
-  name: String
-  url: String!
+  link: mutationSociety_Links_LinkInput
   id: String
+}
+
+input mutationSociety_Links_LinkInput {
+  type: String
+  newTab: Boolean
+  reference: Society_Links_Link_ReferenceRelationshipInput
+  url: String
+  label: String!
+  appearance: Society_Links_Link_appearance_MutationInput
+}
+
+input Society_Links_Link_ReferenceRelationshipInput {
+  relationTo: Society_Links_Link_ReferenceRelationshipInputRelationTo
+  value: JSON
+}
+
+enum Society_Links_Link_ReferenceRelationshipInputRelationTo {
+  pages
+}
+
+enum Society_Links_Link_appearance_MutationInput {
+  default
+  primary
+  secondary
 }
 
 input mutationSocietyUpdateInput {
@@ -29249,6 +30115,7 @@ input mutationSocietyUpdateInput {
   logo: String
   email: String
   website: String
+  susu: String
   github: String
   instagram: String
   discord: String
@@ -29258,9 +30125,32 @@ input mutationSocietyUpdateInput {
 }
 
 input mutationSocietyUpdate_LinksInput {
-  name: String
-  url: String!
+  link: mutationSocietyUpdate_Links_LinkInput
   id: String
+}
+
+input mutationSocietyUpdate_Links_LinkInput {
+  type: String
+  newTab: Boolean
+  reference: SocietyUpdate_Links_Link_ReferenceRelationshipInput
+  url: String
+  label: String!
+  appearance: SocietyUpdate_Links_Link_appearance_MutationInput
+}
+
+input SocietyUpdate_Links_Link_ReferenceRelationshipInput {
+  relationTo: SocietyUpdate_Links_Link_ReferenceRelationshipInputRelationTo
+  value: JSON
+}
+
+enum SocietyUpdate_Links_Link_ReferenceRelationshipInputRelationTo {
+  pages
+}
+
+enum SocietyUpdate_Links_Link_appearance_MutationInput {
+  default
+  primary
+  secondary
 }
 
 input mutationCommitteeInput {
