@@ -6,8 +6,8 @@ import type { Merch } from '../../../payload-types'
 // eslint-disable-next-line no-unused-vars
 type getData<In, Out> = (data: Partial<In>) => Out | undefined
 
-export function uniqueFields<T>(
-  getArray: getData<Merch, T[]>,
+export function uniqueFields<T, C = Merch>(
+  getArray: getData<C, T[]>,
   getField: getData<T, string>,
   checkSizeNotOne: boolean,
 ): Validate {

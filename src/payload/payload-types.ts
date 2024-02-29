@@ -26,6 +26,9 @@ export interface Config {
     orderedTickets: OrderedTicket;
     orderedMerch: OrderedMerch;
     orders: Order;
+    sponsors: Sponsor;
+    societies: Society;
+    committees: Committee;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -135,7 +138,7 @@ export interface Page {
           [k: string]: unknown;
         }[];
         populateBy?: ('collection' | 'selection') | null;
-        relationTo?: ('posts' | 'projects') | null;
+        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies') | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
         selectedDocs?:
@@ -148,6 +151,10 @@ export interface Page {
                   relationTo: 'projects';
                   value: string | Project;
                 }
+              | {
+                  relationTo: 'sponsors';
+                  value: string | Sponsor;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -159,6 +166,10 @@ export interface Page {
               | {
                   relationTo: 'projects';
                   value: string | Project;
+                }
+              | {
+                  relationTo: 'sponsors';
+                  value: string | Sponsor;
                 }
             )[]
           | null;
@@ -323,7 +334,7 @@ export interface Post {
           [k: string]: unknown;
         }[];
         populateBy?: ('collection' | 'selection') | null;
-        relationTo?: ('posts' | 'projects') | null;
+        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies') | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
         selectedDocs?:
@@ -336,6 +347,10 @@ export interface Post {
                   relationTo: 'projects';
                   value: string | Project;
                 }
+              | {
+                  relationTo: 'sponsors';
+                  value: string | Sponsor;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -347,6 +362,10 @@ export interface Post {
               | {
                   relationTo: 'projects';
                   value: string | Project;
+                }
+              | {
+                  relationTo: 'sponsors';
+                  value: string | Sponsor;
                 }
             )[]
           | null;
@@ -424,7 +443,7 @@ export interface Post {
               [k: string]: unknown;
             }[];
             populateBy?: ('collection' | 'selection') | null;
-            relationTo?: ('posts' | 'projects') | null;
+            relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies') | null;
             categories?: (string | Category)[] | null;
             limit?: number | null;
             selectedDocs?:
@@ -437,6 +456,10 @@ export interface Post {
                       relationTo: 'projects';
                       value: string | Project;
                     }
+                  | {
+                      relationTo: 'sponsors';
+                      value: string | Sponsor;
+                    }
                 )[]
               | null;
             populatedDocs?:
@@ -448,6 +471,10 @@ export interface Post {
                   | {
                       relationTo: 'projects';
                       value: string | Project;
+                    }
+                  | {
+                      relationTo: 'sponsors';
+                      value: string | Sponsor;
                     }
                 )[]
               | null;
@@ -589,7 +616,7 @@ export interface Project {
           [k: string]: unknown;
         }[];
         populateBy?: ('collection' | 'selection') | null;
-        relationTo?: ('posts' | 'projects') | null;
+        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies') | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
         selectedDocs?:
@@ -602,6 +629,10 @@ export interface Project {
                   relationTo: 'projects';
                   value: string | Project;
                 }
+              | {
+                  relationTo: 'sponsors';
+                  value: string | Sponsor;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -613,6 +644,10 @@ export interface Project {
               | {
                   relationTo: 'projects';
                   value: string | Project;
+                }
+              | {
+                  relationTo: 'sponsors';
+                  value: string | Sponsor;
                 }
             )[]
           | null;
@@ -632,6 +667,41 @@ export interface Project {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sponsors".
+ */
+export interface Sponsor {
+  id: string;
+  slug?: string | null;
+  name: string;
+  level?: ('gold' | 'silver' | 'bronze' | '64bit' | '32bit' | '16bit') | null;
+  description?:
+    | {
+        [k: string]: unknown;
+      }[]
+    | null;
+  logo: string | Media;
+  websiteUrl?: string | null;
+  links?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?: {
+            relationTo: 'pages';
+            value: string | Page;
+          } | null;
+          url?: string | null;
+          label: string;
+          appearance?: ('default' | 'primary' | 'secondary') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1007,6 +1077,99 @@ export interface Order {
   stripeID?: string | null;
   status: 'basket' | 'pending' | 'failed' | 'completed';
   forceUpdate: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "societies".
+ */
+export interface Society {
+  id: string;
+  name?: string | null;
+  description?:
+    | {
+        [k: string]: unknown;
+      }[]
+    | null;
+  logo: string | Media;
+  email?: string | null;
+  website?: string | null;
+  susu?: string | null;
+  github?: string | null;
+  instagram?: string | null;
+  discord?: string | null;
+  links?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?: {
+            relationTo: 'pages';
+            value: string | Page;
+          } | null;
+          url?: string | null;
+          label: string;
+          appearance?: ('default' | 'primary' | 'secondary') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "committees".
+ */
+export interface Committee {
+  id: string;
+  type: 'old' | 'current';
+  members?:
+    | (
+        | {
+            relationTo: 'nominations';
+            value: string | Nomination;
+          }
+        | {
+            relationTo: 'positions';
+            value: string | Position;
+          }
+      )[]
+    | null;
+  simplifiedMembers?:
+    | {
+        position:
+          | 'Academic Secretary'
+          | 'Events Officer'
+          | 'Gamesmaster'
+          | 'Games Officer'
+          | 'Hackathon Officer'
+          | 'Industry Officer'
+          | 'International Representative'
+          | 'Marketing Officer'
+          | 'Masters Rep'
+          | 'Postgraduate Representative'
+          | 'President'
+          | 'Publicity Officer'
+          | 'Secretary'
+          | 'Social Secretary'
+          | 'Sports Officer'
+          | 'Sports Representative'
+          | 'Staff Representative'
+          | 'Treasurer'
+          | 'Unknown Role'
+          | 'Vice President'
+          | 'Vice President Engagement'
+          | 'Vice President Operations'
+          | 'Webmaster'
+          | 'Web Officer'
+          | 'Welfare Officer'
+          | "Women's Representative";
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
