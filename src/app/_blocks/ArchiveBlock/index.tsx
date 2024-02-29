@@ -28,19 +28,49 @@ export const ArchiveBlock: React.FC<
     <div id={`block-${id}`} className={classes.archiveBlock}>
       {introContent && (
         <Gutter className={classes.introContent}>
-          <RichText content={introContent} />
+          <RichText content={introContent}/>
         </Gutter>
       )}
-      <CollectionArchive
-        populateBy={populateBy}
-        relationTo={relationTo}
-        populatedDocs={populatedDocs}
-        populatedDocsTotal={populatedDocsTotal}
-        selectedDocs={selectedDocs}
-        categories={categories}
-        limit={limit}
-        sort="-publishedAt"
-      />
+      {relationTo === 'societies' &&
+        <SocietyArchive
+          populateBy={populateBy}
+          relationTo={relationTo}
+          populatedDocs={populatedDocs}
+          populatedDocsTotal={populatedDocsTotal}
+          selectedDocs={selectedDocs}
+          categories={categories}
+          limit={limit}
+          sort="-publishedAt"
+        />
+      }
+      {relationTo === 'committee' &&
+        <CommitteeArchive
+          populateBy={populateBy}
+          relationTo={relationTo}
+          populatedDocs={populatedDocs}
+          populatedDocsTotal={populatedDocsTotal}
+          selectedDocs={selectedDocs}
+          categories={categories}
+          limit={limit}
+          sort="-publishedAt"
+        />
+      }
+      {relationTo === 'sponsors' &&
+        <SponsorArchive/>
+      }
+      {relationTo === 'posts' || relationTo === 'projects' &&
+        <CollectionArchive
+          populateBy={populateBy}
+          relationTo={relationTo}
+          populatedDocs={populatedDocs}
+          populatedDocsTotal={populatedDocsTotal}
+          selectedDocs={selectedDocs}
+          categories={categories}
+          limit={limit}
+          sort="-publishedAt"
+        />
+      }
+
     </div>
   )
 }
