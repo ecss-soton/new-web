@@ -4,11 +4,8 @@ import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react
 import qs from 'qs'
 
 import type { Sponsor } from '../../../payload/payload-types'
-import type { ArchiveBlockProps } from '../../_blocks/ArchiveBlock/types'
 import { SponsorItem } from '../SponsorItem'
 import { Gutter } from '../Gutter'
-import { PageRange } from '../PageRange'
-import { Pagination } from '../Pagination'
 
 import classes from './index.module.scss'
 

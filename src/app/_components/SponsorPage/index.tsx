@@ -1,14 +1,13 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import Link from 'next/link'
 
-import { Media, Sponsor } from '../../../payload/payload-types'
+import { Sponsor } from '../../../payload/payload-types'
 import { Media as MediaComp } from '../Media'
 
 import classes from './index.module.scss'
 import { LinkList } from '../LinkList'
 import RichText from '../RichText'
 import { Gutter } from '../Gutter'
-import { CMSLinkType } from '../Link'
 
 export const SponsorPage: React.FC<{
   sponsor?: Sponsor

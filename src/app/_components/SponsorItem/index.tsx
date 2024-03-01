@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import Link from 'next/link'
 
-import { Media, Sponsor } from '../../../payload/payload-types'
+import { Media } from '../../../payload/payload-types'
 import { Media as MediaComp } from '../Media'
 
 import classes from './index.module.scss'
