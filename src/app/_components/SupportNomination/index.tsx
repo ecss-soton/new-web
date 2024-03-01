@@ -107,8 +107,8 @@ export const SupportNomination: React.FC<{
         setIsSupporting(su)
       }}
     >
-      {isSupporting ? <p>UnSupport</p> : <p>Support</p>}
-      <span>({supporterIds.length})</span>
+      {isSupporting ? <span>UnSupport</span> : <span>Support</span>}
+      <span> ({supporterIds.length})</span>
     </button>
   )
 }

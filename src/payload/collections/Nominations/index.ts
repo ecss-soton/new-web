@@ -42,7 +42,7 @@ const Nominations: CollectionConfig = {
         update: admins,
       },
       validate: nominationIsUnique,
-      defaultValue: ({ user }) => user.id,
+      defaultValue: ({ user }) => [user.id],
     },
     // This field is only used to populate the nominees data via the `populateUser` hook
     // This is because the `user` collection has access control locked to protect user privacy
@@ -81,7 +81,7 @@ const Nominations: CollectionConfig = {
     {
       name: 'manifesto',
       label: 'Manifesto',
-      type: 'richText',
+      type: 'textarea',
     },
     {
       name: 'position',
@@ -107,16 +107,6 @@ const Nominations: CollectionConfig = {
           {
             positions: {
               contains: data.position,
-            },
-          },
-          {
-            nominationStart: {
-              less_than_equal: data.createdAt,
-            },
-          },
-          {
-            nominationEnd: {
-              greater_than_equal: data.createdAt,
             },
           },
         ],
@@ -149,6 +139,7 @@ const Nominations: CollectionConfig = {
         update: beforeVoting,
       },
       validate: addOwnId,
+      defaultValue: () => [],
     },
     {
       name: 'joinUUID',

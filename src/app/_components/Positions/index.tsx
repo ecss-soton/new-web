@@ -4,6 +4,7 @@ import Link from 'next/link'
 import qs from 'qs'
 
 import { Election, Media, Nomination, Position, Sponsor } from '../../../payload/payload-types'
+import { Button } from '../Button'
 import { Gutter } from '../Gutter'
 import { CMSLinkType } from '../Link'
 import { LinkList } from '../LinkList'
@@ -16,8 +17,9 @@ import classes from './index.module.scss'
 export const Positions: React.FC<{
   positions?: Position[]
   electionId?: string
+  canCreateNominations?: boolean
 }> = props => {
-  const { positions, electionId } = props
+  const { positions, electionId, canCreateNominations } = props
 
   // const { slug, title, categories, meta } = doc || {}
   // const { description, image: metaImage } = meta || {}
@@ -36,6 +38,13 @@ export const Positions: React.FC<{
           <Fragment key={name}>
             <h3>{name}</h3>
             <p>{description}</p>
+            {canCreateNominations && (
+              <Button
+                href={`/nominations/${electionId}/${position.id}`}
+                appearance="primary"
+                label={'Create Nomination'}
+              ></Button>
+            )}
             <Nominations positionId={position.id} electionId={electionId} />
           </Fragment>
         )

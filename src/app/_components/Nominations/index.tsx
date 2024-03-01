@@ -66,11 +66,14 @@ export const Nominations: React.FC<{
     <div>
       {nominations?.map((nomination, index) => {
         const { id, supporters, populatedNominees, nickname } = nomination
-        const nomineeNames = populatedNominees.map(n => n.name).join(' ')
+        const nomineeNames = populatedNominees.map(n => n.name).join(' & ')
+        const usernames = populatedNominees.map(n => n.username).join(', ')
         return (
           <Fragment key={id}>
-            <h4>{nickname ?? nomineeNames}</h4>
-            <SupportNomination nominationId={id} supporters={supporters} />
+            <h5>
+              {nickname ?? nomineeNames} ({usernames}){' '}
+              <SupportNomination nominationId={id} supporters={supporters} />
+            </h5>
           </Fragment>
         )
       })}

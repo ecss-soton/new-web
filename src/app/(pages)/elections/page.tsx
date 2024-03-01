@@ -8,6 +8,7 @@ import { fetchSettings } from '../../_api/fetchGlobals'
 import { Gutter } from '../../_components/Gutter'
 import { CMSLink } from '../../_components/Link'
 import { Positions } from '../../_components/Positions'
+import { getMeUser } from '../../_utilities/getMeUser'
 import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
 
 import classes from './index.module.scss'
@@ -21,6 +22,12 @@ function formatDate(dateString: string) {
 }
 
 export default async function Elections() {
+  const { user } = await getMeUser({
+    nullUserRedirect: `/login?error=${encodeURIComponent(
+      'You must be logged in to access your account.',
+    )}&redirect=${encodeURIComponent('/elections')}`,
+  })
+
   let elections: (Omit<Election, 'positions'> & { positions: Position[] })[] | null = null
 
   const searchQuery = qs.stringify(
@@ -52,14 +59,26 @@ export default async function Elections() {
       {elections.map((election, index) => {
         const { id, name, nominationStart, nominationEnd, votingStart, votingEnd, positions } =
           election
+        const now = new Date().getTime()
+        const canCreateNomination =
+          now >= Date.parse(nominationStart) && now <= Date.parse(nominationEnd)
         return (
           <Fragment key={id}>
             <h1>{name}</h1>
-            <p>Nomination start: {formatDate(nominationStart)}</p>
-            <p>Nomination end: {formatDate(nominationEnd)}</p>
-            <p>Voting start: {formatDate(votingStart)}</p>
-            <p>Voting end: {formatDate(votingEnd)}</p>
-            <Positions positions={positions} electionId={id} />
+            <p>
+              Nomination start: {formatDate(nominationStart)}
+              <br />
+              Nomination end: {formatDate(nominationEnd)}
+              <br />
+              Voting start: {formatDate(votingStart)}
+              <br />
+              Voting end: {formatDate(votingEnd)}
+            </p>
+            <Positions
+              positions={positions}
+              electionId={id}
+              canCreateNominations={canCreateNomination}
+            />
           </Fragment>
         )
       })}
