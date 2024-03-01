@@ -3,7 +3,7 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import qs from 'qs'
 
-import type { Post, Project } from '../../../payload/payload-types'
+import type {Post, Project, Sponsor} from '../../../payload/payload-types'
 import type { ArchiveBlockProps } from '../../_blocks/ArchiveBlock/types'
 import { Card } from '../Card'
 import { Gutter } from '../Gutter'
@@ -53,6 +53,7 @@ export const CollectionArchive: React.FC<Props> = props => {
   } = props
 
   const [results, setResults] = useState<Result>({
+    // @ts-ignore
     docs: (populateBy === 'collection'
       ? populatedDocs
       : populateBy === 'selection'
