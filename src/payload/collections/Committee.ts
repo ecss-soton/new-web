@@ -5,8 +5,8 @@ import type { Committee } from '../payload-types'
 import { testMatchesRegex } from '../validate/isAnInt'
 import { uniqueFields } from './Merch/validate/uniqueFields'
 
-const Committees: CollectionConfig = {
-  slug: 'committees',
+const Committee: CollectionConfig = {
+  slug: 'committee',
   access: {
     read: () => true,
     create: admins,
@@ -103,4 +103,4 @@ const Committees: CollectionConfig = {
   ],
 }
 
-export default Committees
+export default Committee
