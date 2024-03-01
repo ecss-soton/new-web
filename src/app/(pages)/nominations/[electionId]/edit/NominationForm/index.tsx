@@ -3,6 +3,7 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import RichTextField from '@payloadcms/richtext-slate/dist/field'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createEditor } from 'slate'
 import { Editable, Slate, withReact } from 'slate-react'
@@ -127,6 +128,17 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
     <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
       <Message error={error} success={success} className={classes.message} />
       <Fragment>
+        {nomination &&
+          nomination.populatedNominees.map(n => {
+            const email = `${n.username}@soton.ac.uk`
+            return (
+              <Link key={n.id} href={`mailto:${email}`}>
+                {n.name}
+              </Link>
+            )
+          })}
+        <p>URL to give to anyone who you want to join your nomination</p>
+        <span>{`${process.env.NEXT_PUBLIC_SERVER_URL}/nominations/${nomination?.id}/join/${nomination?.joinUUID}`}</span>
         <p>Edit your nomination below</p>
         <Input
           name="nickname"

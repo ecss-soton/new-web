@@ -54,7 +54,12 @@ export default async function Nomination({ params: { electionId: nominationId } 
         <h3>{nomination.nickname ?? names}</h3>
         {nomination.populatedNominees.map(n => {
           const email = `${n.username}@soton.ac.uk`
-          return <Link href={`mailto:${email}`}>{n.name}</Link>
+          return (
+            <Fragment key={n.id}>
+              {' '}
+              <Link href={`mailto:${email}`}>{n.name}</Link>{' '}
+            </Fragment>
+          )
         })}
         <h4>Running for {position.name}</h4>
         {isMyNomination && (
