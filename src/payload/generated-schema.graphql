@@ -73,7 +73,7 @@ type Query {
   docAccessSociety(id: String!): societiesDocAccess
   Committee(id: String!, draft: Boolean): Committee
   Committees(draft: Boolean, where: Committee_where, limit: Int, page: Int, sort: String): Committees
-  docAccessCommittee(id: String!): committeesDocAccess
+  docAccessCommittee(id: String!): committeeDocAccess
   Redirect(id: String!, draft: Boolean): Redirect
   Redirects(draft: Boolean, where: Redirect_where, limit: Int, page: Int, sort: String): Redirects
   docAccessRedirect(id: String!): redirectsDocAccess
@@ -17186,253 +17186,253 @@ input Committee_where_or {
   OR: [Committee_where_or]
 }
 
-type committeesDocAccess {
-  fields: CommitteesDocAccessFields
-  create: CommitteesCreateDocAccess
-  read: CommitteesReadDocAccess
-  update: CommitteesUpdateDocAccess
-  delete: CommitteesDeleteDocAccess
+type committeeDocAccess {
+  fields: CommitteeDocAccessFields
+  create: CommitteeCreateDocAccess
+  read: CommitteeReadDocAccess
+  update: CommitteeUpdateDocAccess
+  delete: CommitteeDeleteDocAccess
 }
 
-type CommitteesDocAccessFields {
-  id: CommitteesDocAccessFields_id
-  type: CommitteesDocAccessFields_type
-  members: CommitteesDocAccessFields_members
-  simplifiedMembers: CommitteesDocAccessFields_simplifiedMembers
-  updatedAt: CommitteesDocAccessFields_updatedAt
-  createdAt: CommitteesDocAccessFields_createdAt
+type CommitteeDocAccessFields {
+  id: CommitteeDocAccessFields_id
+  type: CommitteeDocAccessFields_type
+  members: CommitteeDocAccessFields_members
+  simplifiedMembers: CommitteeDocAccessFields_simplifiedMembers
+  updatedAt: CommitteeDocAccessFields_updatedAt
+  createdAt: CommitteeDocAccessFields_createdAt
 }
 
-type CommitteesDocAccessFields_id {
-  create: CommitteesDocAccessFields_id_Create
-  read: CommitteesDocAccessFields_id_Read
-  update: CommitteesDocAccessFields_id_Update
-  delete: CommitteesDocAccessFields_id_Delete
+type CommitteeDocAccessFields_id {
+  create: CommitteeDocAccessFields_id_Create
+  read: CommitteeDocAccessFields_id_Read
+  update: CommitteeDocAccessFields_id_Update
+  delete: CommitteeDocAccessFields_id_Delete
 }
 
-type CommitteesDocAccessFields_id_Create {
+type CommitteeDocAccessFields_id_Create {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_id_Read {
+type CommitteeDocAccessFields_id_Read {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_id_Update {
+type CommitteeDocAccessFields_id_Update {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_id_Delete {
+type CommitteeDocAccessFields_id_Delete {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_type {
-  create: CommitteesDocAccessFields_type_Create
-  read: CommitteesDocAccessFields_type_Read
-  update: CommitteesDocAccessFields_type_Update
-  delete: CommitteesDocAccessFields_type_Delete
+type CommitteeDocAccessFields_type {
+  create: CommitteeDocAccessFields_type_Create
+  read: CommitteeDocAccessFields_type_Read
+  update: CommitteeDocAccessFields_type_Update
+  delete: CommitteeDocAccessFields_type_Delete
 }
 
-type CommitteesDocAccessFields_type_Create {
+type CommitteeDocAccessFields_type_Create {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_type_Read {
+type CommitteeDocAccessFields_type_Read {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_type_Update {
+type CommitteeDocAccessFields_type_Update {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_type_Delete {
+type CommitteeDocAccessFields_type_Delete {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_members {
-  create: CommitteesDocAccessFields_members_Create
-  read: CommitteesDocAccessFields_members_Read
-  update: CommitteesDocAccessFields_members_Update
-  delete: CommitteesDocAccessFields_members_Delete
+type CommitteeDocAccessFields_members {
+  create: CommitteeDocAccessFields_members_Create
+  read: CommitteeDocAccessFields_members_Read
+  update: CommitteeDocAccessFields_members_Update
+  delete: CommitteeDocAccessFields_members_Delete
 }
 
-type CommitteesDocAccessFields_members_Create {
+type CommitteeDocAccessFields_members_Create {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_members_Read {
+type CommitteeDocAccessFields_members_Read {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_members_Update {
+type CommitteeDocAccessFields_members_Update {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_members_Delete {
+type CommitteeDocAccessFields_members_Delete {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers {
-  create: CommitteesDocAccessFields_simplifiedMembers_Create
-  read: CommitteesDocAccessFields_simplifiedMembers_Read
-  update: CommitteesDocAccessFields_simplifiedMembers_Update
-  delete: CommitteesDocAccessFields_simplifiedMembers_Delete
-  fields: CommitteesDocAccessFields_simplifiedMembers_Fields
+type CommitteeDocAccessFields_simplifiedMembers {
+  create: CommitteeDocAccessFields_simplifiedMembers_Create
+  read: CommitteeDocAccessFields_simplifiedMembers_Read
+  update: CommitteeDocAccessFields_simplifiedMembers_Update
+  delete: CommitteeDocAccessFields_simplifiedMembers_Delete
+  fields: CommitteeDocAccessFields_simplifiedMembers_Fields
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_Create {
+type CommitteeDocAccessFields_simplifiedMembers_Create {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_Read {
+type CommitteeDocAccessFields_simplifiedMembers_Read {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_Update {
+type CommitteeDocAccessFields_simplifiedMembers_Update {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_Delete {
+type CommitteeDocAccessFields_simplifiedMembers_Delete {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_Fields {
-  position: CommitteesDocAccessFields_simplifiedMembers_position
-  name: CommitteesDocAccessFields_simplifiedMembers_name
-  id: CommitteesDocAccessFields_simplifiedMembers_id
+type CommitteeDocAccessFields_simplifiedMembers_Fields {
+  position: CommitteeDocAccessFields_simplifiedMembers_position
+  name: CommitteeDocAccessFields_simplifiedMembers_name
+  id: CommitteeDocAccessFields_simplifiedMembers_id
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_position {
-  create: CommitteesDocAccessFields_simplifiedMembers_position_Create
-  read: CommitteesDocAccessFields_simplifiedMembers_position_Read
-  update: CommitteesDocAccessFields_simplifiedMembers_position_Update
-  delete: CommitteesDocAccessFields_simplifiedMembers_position_Delete
+type CommitteeDocAccessFields_simplifiedMembers_position {
+  create: CommitteeDocAccessFields_simplifiedMembers_position_Create
+  read: CommitteeDocAccessFields_simplifiedMembers_position_Read
+  update: CommitteeDocAccessFields_simplifiedMembers_position_Update
+  delete: CommitteeDocAccessFields_simplifiedMembers_position_Delete
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_position_Create {
+type CommitteeDocAccessFields_simplifiedMembers_position_Create {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_position_Read {
+type CommitteeDocAccessFields_simplifiedMembers_position_Read {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_position_Update {
+type CommitteeDocAccessFields_simplifiedMembers_position_Update {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_position_Delete {
+type CommitteeDocAccessFields_simplifiedMembers_position_Delete {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_name {
-  create: CommitteesDocAccessFields_simplifiedMembers_name_Create
-  read: CommitteesDocAccessFields_simplifiedMembers_name_Read
-  update: CommitteesDocAccessFields_simplifiedMembers_name_Update
-  delete: CommitteesDocAccessFields_simplifiedMembers_name_Delete
+type CommitteeDocAccessFields_simplifiedMembers_name {
+  create: CommitteeDocAccessFields_simplifiedMembers_name_Create
+  read: CommitteeDocAccessFields_simplifiedMembers_name_Read
+  update: CommitteeDocAccessFields_simplifiedMembers_name_Update
+  delete: CommitteeDocAccessFields_simplifiedMembers_name_Delete
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_name_Create {
+type CommitteeDocAccessFields_simplifiedMembers_name_Create {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_name_Read {
+type CommitteeDocAccessFields_simplifiedMembers_name_Read {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_name_Update {
+type CommitteeDocAccessFields_simplifiedMembers_name_Update {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_name_Delete {
+type CommitteeDocAccessFields_simplifiedMembers_name_Delete {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_id {
-  create: CommitteesDocAccessFields_simplifiedMembers_id_Create
-  read: CommitteesDocAccessFields_simplifiedMembers_id_Read
-  update: CommitteesDocAccessFields_simplifiedMembers_id_Update
-  delete: CommitteesDocAccessFields_simplifiedMembers_id_Delete
+type CommitteeDocAccessFields_simplifiedMembers_id {
+  create: CommitteeDocAccessFields_simplifiedMembers_id_Create
+  read: CommitteeDocAccessFields_simplifiedMembers_id_Read
+  update: CommitteeDocAccessFields_simplifiedMembers_id_Update
+  delete: CommitteeDocAccessFields_simplifiedMembers_id_Delete
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_id_Create {
+type CommitteeDocAccessFields_simplifiedMembers_id_Create {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_id_Read {
+type CommitteeDocAccessFields_simplifiedMembers_id_Read {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_id_Update {
+type CommitteeDocAccessFields_simplifiedMembers_id_Update {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_simplifiedMembers_id_Delete {
+type CommitteeDocAccessFields_simplifiedMembers_id_Delete {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_updatedAt {
-  create: CommitteesDocAccessFields_updatedAt_Create
-  read: CommitteesDocAccessFields_updatedAt_Read
-  update: CommitteesDocAccessFields_updatedAt_Update
-  delete: CommitteesDocAccessFields_updatedAt_Delete
+type CommitteeDocAccessFields_updatedAt {
+  create: CommitteeDocAccessFields_updatedAt_Create
+  read: CommitteeDocAccessFields_updatedAt_Read
+  update: CommitteeDocAccessFields_updatedAt_Update
+  delete: CommitteeDocAccessFields_updatedAt_Delete
 }
 
-type CommitteesDocAccessFields_updatedAt_Create {
+type CommitteeDocAccessFields_updatedAt_Create {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_updatedAt_Read {
+type CommitteeDocAccessFields_updatedAt_Read {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_updatedAt_Update {
+type CommitteeDocAccessFields_updatedAt_Update {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_updatedAt_Delete {
+type CommitteeDocAccessFields_updatedAt_Delete {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_createdAt {
-  create: CommitteesDocAccessFields_createdAt_Create
-  read: CommitteesDocAccessFields_createdAt_Read
-  update: CommitteesDocAccessFields_createdAt_Update
-  delete: CommitteesDocAccessFields_createdAt_Delete
+type CommitteeDocAccessFields_createdAt {
+  create: CommitteeDocAccessFields_createdAt_Create
+  read: CommitteeDocAccessFields_createdAt_Read
+  update: CommitteeDocAccessFields_createdAt_Update
+  delete: CommitteeDocAccessFields_createdAt_Delete
 }
 
-type CommitteesDocAccessFields_createdAt_Create {
+type CommitteeDocAccessFields_createdAt_Create {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_createdAt_Read {
+type CommitteeDocAccessFields_createdAt_Read {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_createdAt_Update {
+type CommitteeDocAccessFields_createdAt_Update {
   permission: Boolean!
 }
 
-type CommitteesDocAccessFields_createdAt_Delete {
+type CommitteeDocAccessFields_createdAt_Delete {
   permission: Boolean!
 }
 
-type CommitteesCreateDocAccess {
-  permission: Boolean!
-  where: JSONObject
-}
-
-type CommitteesReadDocAccess {
+type CommitteeCreateDocAccess {
   permission: Boolean!
   where: JSONObject
 }
 
-type CommitteesUpdateDocAccess {
+type CommitteeReadDocAccess {
   permission: Boolean!
   where: JSONObject
 }
 
-type CommitteesDeleteDocAccess {
+type CommitteeUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CommitteeDeleteDocAccess {
   permission: Boolean!
   where: JSONObject
 }
@@ -19867,7 +19867,7 @@ type Access {
   orders: ordersAccess
   sponsors: sponsorsAccess
   societies: societiesAccess
-  committees: committeesAccess
+  committee: committeeAccess
   redirects: redirectsAccess
   forms: formsAccess
   form_submissions: form_submissionsAccess
@@ -26993,253 +26993,253 @@ type SocietiesDeleteAccess {
   where: JSONObject
 }
 
-type committeesAccess {
-  fields: CommitteesFields
-  create: CommitteesCreateAccess
-  read: CommitteesReadAccess
-  update: CommitteesUpdateAccess
-  delete: CommitteesDeleteAccess
+type committeeAccess {
+  fields: CommitteeFields
+  create: CommitteeCreateAccess
+  read: CommitteeReadAccess
+  update: CommitteeUpdateAccess
+  delete: CommitteeDeleteAccess
 }
 
-type CommitteesFields {
-  id: CommitteesFields_id
-  type: CommitteesFields_type
-  members: CommitteesFields_members
-  simplifiedMembers: CommitteesFields_simplifiedMembers
-  updatedAt: CommitteesFields_updatedAt
-  createdAt: CommitteesFields_createdAt
+type CommitteeFields {
+  id: CommitteeFields_id
+  type: CommitteeFields_type
+  members: CommitteeFields_members
+  simplifiedMembers: CommitteeFields_simplifiedMembers
+  updatedAt: CommitteeFields_updatedAt
+  createdAt: CommitteeFields_createdAt
 }
 
-type CommitteesFields_id {
-  create: CommitteesFields_id_Create
-  read: CommitteesFields_id_Read
-  update: CommitteesFields_id_Update
-  delete: CommitteesFields_id_Delete
+type CommitteeFields_id {
+  create: CommitteeFields_id_Create
+  read: CommitteeFields_id_Read
+  update: CommitteeFields_id_Update
+  delete: CommitteeFields_id_Delete
 }
 
-type CommitteesFields_id_Create {
+type CommitteeFields_id_Create {
   permission: Boolean!
 }
 
-type CommitteesFields_id_Read {
+type CommitteeFields_id_Read {
   permission: Boolean!
 }
 
-type CommitteesFields_id_Update {
+type CommitteeFields_id_Update {
   permission: Boolean!
 }
 
-type CommitteesFields_id_Delete {
+type CommitteeFields_id_Delete {
   permission: Boolean!
 }
 
-type CommitteesFields_type {
-  create: CommitteesFields_type_Create
-  read: CommitteesFields_type_Read
-  update: CommitteesFields_type_Update
-  delete: CommitteesFields_type_Delete
+type CommitteeFields_type {
+  create: CommitteeFields_type_Create
+  read: CommitteeFields_type_Read
+  update: CommitteeFields_type_Update
+  delete: CommitteeFields_type_Delete
 }
 
-type CommitteesFields_type_Create {
+type CommitteeFields_type_Create {
   permission: Boolean!
 }
 
-type CommitteesFields_type_Read {
+type CommitteeFields_type_Read {
   permission: Boolean!
 }
 
-type CommitteesFields_type_Update {
+type CommitteeFields_type_Update {
   permission: Boolean!
 }
 
-type CommitteesFields_type_Delete {
+type CommitteeFields_type_Delete {
   permission: Boolean!
 }
 
-type CommitteesFields_members {
-  create: CommitteesFields_members_Create
-  read: CommitteesFields_members_Read
-  update: CommitteesFields_members_Update
-  delete: CommitteesFields_members_Delete
+type CommitteeFields_members {
+  create: CommitteeFields_members_Create
+  read: CommitteeFields_members_Read
+  update: CommitteeFields_members_Update
+  delete: CommitteeFields_members_Delete
 }
 
-type CommitteesFields_members_Create {
+type CommitteeFields_members_Create {
   permission: Boolean!
 }
 
-type CommitteesFields_members_Read {
+type CommitteeFields_members_Read {
   permission: Boolean!
 }
 
-type CommitteesFields_members_Update {
+type CommitteeFields_members_Update {
   permission: Boolean!
 }
 
-type CommitteesFields_members_Delete {
+type CommitteeFields_members_Delete {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers {
-  create: CommitteesFields_simplifiedMembers_Create
-  read: CommitteesFields_simplifiedMembers_Read
-  update: CommitteesFields_simplifiedMembers_Update
-  delete: CommitteesFields_simplifiedMembers_Delete
-  fields: CommitteesFields_simplifiedMembers_Fields
+type CommitteeFields_simplifiedMembers {
+  create: CommitteeFields_simplifiedMembers_Create
+  read: CommitteeFields_simplifiedMembers_Read
+  update: CommitteeFields_simplifiedMembers_Update
+  delete: CommitteeFields_simplifiedMembers_Delete
+  fields: CommitteeFields_simplifiedMembers_Fields
 }
 
-type CommitteesFields_simplifiedMembers_Create {
+type CommitteeFields_simplifiedMembers_Create {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_Read {
+type CommitteeFields_simplifiedMembers_Read {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_Update {
+type CommitteeFields_simplifiedMembers_Update {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_Delete {
+type CommitteeFields_simplifiedMembers_Delete {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_Fields {
-  position: CommitteesFields_simplifiedMembers_position
-  name: CommitteesFields_simplifiedMembers_name
-  id: CommitteesFields_simplifiedMembers_id
+type CommitteeFields_simplifiedMembers_Fields {
+  position: CommitteeFields_simplifiedMembers_position
+  name: CommitteeFields_simplifiedMembers_name
+  id: CommitteeFields_simplifiedMembers_id
 }
 
-type CommitteesFields_simplifiedMembers_position {
-  create: CommitteesFields_simplifiedMembers_position_Create
-  read: CommitteesFields_simplifiedMembers_position_Read
-  update: CommitteesFields_simplifiedMembers_position_Update
-  delete: CommitteesFields_simplifiedMembers_position_Delete
+type CommitteeFields_simplifiedMembers_position {
+  create: CommitteeFields_simplifiedMembers_position_Create
+  read: CommitteeFields_simplifiedMembers_position_Read
+  update: CommitteeFields_simplifiedMembers_position_Update
+  delete: CommitteeFields_simplifiedMembers_position_Delete
 }
 
-type CommitteesFields_simplifiedMembers_position_Create {
+type CommitteeFields_simplifiedMembers_position_Create {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_position_Read {
+type CommitteeFields_simplifiedMembers_position_Read {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_position_Update {
+type CommitteeFields_simplifiedMembers_position_Update {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_position_Delete {
+type CommitteeFields_simplifiedMembers_position_Delete {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_name {
-  create: CommitteesFields_simplifiedMembers_name_Create
-  read: CommitteesFields_simplifiedMembers_name_Read
-  update: CommitteesFields_simplifiedMembers_name_Update
-  delete: CommitteesFields_simplifiedMembers_name_Delete
+type CommitteeFields_simplifiedMembers_name {
+  create: CommitteeFields_simplifiedMembers_name_Create
+  read: CommitteeFields_simplifiedMembers_name_Read
+  update: CommitteeFields_simplifiedMembers_name_Update
+  delete: CommitteeFields_simplifiedMembers_name_Delete
 }
 
-type CommitteesFields_simplifiedMembers_name_Create {
+type CommitteeFields_simplifiedMembers_name_Create {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_name_Read {
+type CommitteeFields_simplifiedMembers_name_Read {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_name_Update {
+type CommitteeFields_simplifiedMembers_name_Update {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_name_Delete {
+type CommitteeFields_simplifiedMembers_name_Delete {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_id {
-  create: CommitteesFields_simplifiedMembers_id_Create
-  read: CommitteesFields_simplifiedMembers_id_Read
-  update: CommitteesFields_simplifiedMembers_id_Update
-  delete: CommitteesFields_simplifiedMembers_id_Delete
+type CommitteeFields_simplifiedMembers_id {
+  create: CommitteeFields_simplifiedMembers_id_Create
+  read: CommitteeFields_simplifiedMembers_id_Read
+  update: CommitteeFields_simplifiedMembers_id_Update
+  delete: CommitteeFields_simplifiedMembers_id_Delete
 }
 
-type CommitteesFields_simplifiedMembers_id_Create {
+type CommitteeFields_simplifiedMembers_id_Create {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_id_Read {
+type CommitteeFields_simplifiedMembers_id_Read {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_id_Update {
+type CommitteeFields_simplifiedMembers_id_Update {
   permission: Boolean!
 }
 
-type CommitteesFields_simplifiedMembers_id_Delete {
+type CommitteeFields_simplifiedMembers_id_Delete {
   permission: Boolean!
 }
 
-type CommitteesFields_updatedAt {
-  create: CommitteesFields_updatedAt_Create
-  read: CommitteesFields_updatedAt_Read
-  update: CommitteesFields_updatedAt_Update
-  delete: CommitteesFields_updatedAt_Delete
+type CommitteeFields_updatedAt {
+  create: CommitteeFields_updatedAt_Create
+  read: CommitteeFields_updatedAt_Read
+  update: CommitteeFields_updatedAt_Update
+  delete: CommitteeFields_updatedAt_Delete
 }
 
-type CommitteesFields_updatedAt_Create {
+type CommitteeFields_updatedAt_Create {
   permission: Boolean!
 }
 
-type CommitteesFields_updatedAt_Read {
+type CommitteeFields_updatedAt_Read {
   permission: Boolean!
 }
 
-type CommitteesFields_updatedAt_Update {
+type CommitteeFields_updatedAt_Update {
   permission: Boolean!
 }
 
-type CommitteesFields_updatedAt_Delete {
+type CommitteeFields_updatedAt_Delete {
   permission: Boolean!
 }
 
-type CommitteesFields_createdAt {
-  create: CommitteesFields_createdAt_Create
-  read: CommitteesFields_createdAt_Read
-  update: CommitteesFields_createdAt_Update
-  delete: CommitteesFields_createdAt_Delete
+type CommitteeFields_createdAt {
+  create: CommitteeFields_createdAt_Create
+  read: CommitteeFields_createdAt_Read
+  update: CommitteeFields_createdAt_Update
+  delete: CommitteeFields_createdAt_Delete
 }
 
-type CommitteesFields_createdAt_Create {
+type CommitteeFields_createdAt_Create {
   permission: Boolean!
 }
 
-type CommitteesFields_createdAt_Read {
+type CommitteeFields_createdAt_Read {
   permission: Boolean!
 }
 
-type CommitteesFields_createdAt_Update {
+type CommitteeFields_createdAt_Update {
   permission: Boolean!
 }
 
-type CommitteesFields_createdAt_Delete {
+type CommitteeFields_createdAt_Delete {
   permission: Boolean!
 }
 
-type CommitteesCreateAccess {
-  permission: Boolean!
-  where: JSONObject
-}
-
-type CommitteesReadAccess {
+type CommitteeCreateAccess {
   permission: Boolean!
   where: JSONObject
 }
 
-type CommitteesUpdateAccess {
+type CommitteeReadAccess {
   permission: Boolean!
   where: JSONObject
 }
 
-type CommitteesDeleteAccess {
+type CommitteeUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CommitteeDeleteAccess {
   permission: Boolean!
   where: JSONObject
 }

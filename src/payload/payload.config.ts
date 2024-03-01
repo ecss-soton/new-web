@@ -14,7 +14,7 @@ import { oAuthPlugin } from 'payload-plugin-oauth'
 
 import Categories from './collections/Categories'
 import Comments from './collections/Comments'
-import Committees from './collections/Committees'
+import Committee from './collections/Committee'
 import { ElectionResults } from './collections/ElectionResults'
 import Elections from './collections/Elections'
 import { Media } from './collections/Media'
@@ -113,7 +113,7 @@ export default buildConfig({
     Orders,
     Sponsors,
     Societies,
-    Committees,
+    Committee,
   ],
   globals: [Settings, Header, Footer],
   typescript: {
