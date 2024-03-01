@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../access/admins'
-import type { Committee } from '../payload-types'
+import type { Committee as CommitteeType } from '../payload-types'
 import { testMatchesRegex } from '../validate/isAnInt'
 import { uniqueFields } from './Merch/validate/uniqueFields'
 
@@ -54,8 +54,8 @@ const Committee: CollectionConfig = {
           return data?.type === 'old'
         },
       },
-      validate: uniqueFields<{ position: string }, Committee>(
-        (d: Committee) => d?.simplifiedMembers,
+      validate: uniqueFields<{ position: string }, CommitteeType>(
+        (d: CommitteeType) => d?.simplifiedMembers,
         s => s?.position,
         false,
       ),
