@@ -10,10 +10,10 @@ import { RelatedPosts } from '../../../_blocks/RelatedPosts'
 import { Blocks } from '../../../_components/Blocks'
 import { ProjectHero } from '../../../_heros/ProjectHero'
 import { generateMeta } from '../../../_utilities/generateMeta'
-import classes from "../../../_heros/ProjectHero/index.module.scss";
-import {Media} from "../../../_components/Media";
-import {SponsorPage} from "../../../_components/SponsorPage";
-import qs from "qs";
+import classes from '../../../_heros/ProjectHero/index.module.scss'
+import { Media } from '../../../_components/Media'
+import { SponsorPage } from '../../../_components/SponsorPage'
+import qs from 'qs'
 
 // Force this page to be dynamic so that Next.js does not cache it
 // See the note in '../../../[slug]/page.tsx' about this
@@ -24,35 +24,30 @@ export default async function Sponsor({ params: { slug } }) {
 
   let sponsor: Sponsor | null = null
 
-      const searchQuery = qs.stringify(
-        {
-          depth: 1,
-          sort: '-level',
-          where: {
-            slug: {
-              equals: slug,
-            },
-          },
+  const searchQuery = qs.stringify(
+    {
+      depth: 1,
+      sort: '-level',
+      where: {
+        slug: {
+          equals: slug,
         },
-        { encode: false },
-      )
+      },
+    },
+    { encode: false },
+  )
 
+  try {
+    const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/sponsors?${searchQuery}`)
 
-        try {
-          const req = await fetch(
-            `${process.env.NEXT_PUBLIC_SERVER_URL}/api/sponsors?${searchQuery}`,
-          )
+    const json = await req.json()
 
-          const json = await req.json()
+    const { docs } = json as { docs: Sponsor[] }
 
-          const { docs } = json as { docs: (Sponsor)[] }
-
-          sponsor = docs[0]
-        } catch (err) {
-          console.warn(err) // eslint-disable-line no-console
-
-        }
-
+    sponsor = docs[0]
+  } catch (err) {
+    console.warn(err) // eslint-disable-line no-console
+  }
 
   if (!sponsor) {
     notFound()
@@ -60,11 +55,7 @@ export default async function Sponsor({ params: { slug } }) {
 
   return (
     <React.Fragment>
-
-      <SponsorPage
-        sponsor={sponsor}
-      />
-
+      <SponsorPage sponsor={sponsor} />
     </React.Fragment>
   )
 }
@@ -72,7 +63,7 @@ export default async function Sponsor({ params: { slug } }) {
 export async function generateStaticParams() {
   try {
     const projects = await fetchDocs<Sponsor>('sponsors')
-    return projects?.map(({slug}) => slug)
+    return projects?.map(({ slug }) => slug)
   } catch (error) {
     return []
   }

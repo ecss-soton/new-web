@@ -5,16 +5,16 @@ import { Media, Sponsor } from '../../../payload/payload-types'
 import { Media as MediaComp } from '../Media'
 
 import classes from './index.module.scss'
-import {LinkList} from "../LinkList";
-import RichText from "../RichText";
-import {Gutter} from "../Gutter";
-import {CMSLinkType} from "../Link";
+import { LinkList } from '../LinkList'
+import RichText from '../RichText'
+import { Gutter } from '../Gutter'
+import { CMSLinkType } from '../Link'
 
 export const SponsorPage: React.FC<{
   sponsor?: Sponsor
 }> = props => {
   const {
-    sponsor: { logo, description, links, level, name, websiteUrl }
+    sponsor: { logo, description, links, level, name, websiteUrl },
   } = props
 
   // const { slug, title, categories, meta } = doc || {}
@@ -25,17 +25,9 @@ export const SponsorPage: React.FC<{
   // const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
   // const href = `/${relationTo}/${slug}`
 
-
   return (
     <Gutter>
-
-      <div>
-        {level && (
-          <h4 className={classes.title}>
-            {level}
-          </h4>
-        )}
-      </div>
+      <div>{level && <h4 className={classes.title}>{level}</h4>}</div>
 
       <Link href={websiteUrl} className={classes.mediaWrapper}>
         {!logo && <div className={classes.placeholder}>No image</div>}
@@ -44,34 +36,15 @@ export const SponsorPage: React.FC<{
         )}
       </Link>
 
-      <div className={classes.content}>
-        {name && (
-          <h2 className={classes.title}>
-            {name}
-          </h2>
-        )}
-      </div>
+      <div className={classes.content}>{name && <h2 className={classes.title}>{name}</h2>}</div>
 
-
-      <div>
-        {websiteUrl && (
-          <Link href={websiteUrl}/>
-        )}
-      </div>
-
-
+      <div>{websiteUrl && <Link href={websiteUrl} />}</div>
 
       <RichText content={description} />
 
       <div>
-        <LinkList
-          links={links.map((link) => link.link)}
-        />
+        <LinkList links={links.map(link => link.link)} />
       </div>
-
-
-
-
     </Gutter>
   )
 }

@@ -53,7 +53,7 @@ export const SponsorArchive: React.FC<Props> = props => {
   } = props
 
   const [results, setResults] = useState<Result>({
-    docs: ([])?.map(doc => doc.value),
+    docs: []?.map(doc => doc.value),
     // hasNextPage: false,
     // hasPrevPage: false,
     // nextPage: 1,
@@ -109,7 +109,7 @@ export const SponsorArchive: React.FC<Props> = props => {
           depth: 1,
           sort: '-level',
           where: {
-            level: { exists: true }
+            level: { exists: true },
           },
         },
         { encode: false },
@@ -124,7 +124,7 @@ export const SponsorArchive: React.FC<Props> = props => {
           const json = await req.json()
           clearTimeout(timer)
 
-          const { docs } = json as { docs: (Sponsor)[] }
+          const { docs } = json as { docs: Sponsor[] }
 
           if (docs && Array.isArray(docs)) {
             setResults(json)

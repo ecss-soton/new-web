@@ -17,7 +17,10 @@ export const populateArchiveBlock: AfterReadHook = async ({ doc, context, req: {
         }
 
         if (archiveBlock.populateBy === 'collection' && !context.isPopulatingArchiveBlock) {
-          const res: { totalDocs: number; docs: (Post | Project | Sponsor | Committee | Society)[]  } = await payload.find({
+          const res: {
+            totalDocs: number
+            docs: (Post | Project | Sponsor | Committee | Society)[]
+          } = await payload.find({
             collection: archiveBlock.relationTo,
             limit: archiveBlock.limit || 10,
             context: {

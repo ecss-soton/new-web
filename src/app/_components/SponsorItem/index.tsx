@@ -27,7 +27,7 @@ export const SponsorItem: React.FC<{
     // orientation = 'vertical',
     slug,
     name,
-    logo
+    logo,
   } = props
 
   // const { slug, title, categories, meta } = doc || {}
@@ -39,11 +39,7 @@ export const SponsorItem: React.FC<{
   // const href = `/${relationTo}/${slug}`
 
   return (
-    <div
-      className={[classes.card]
-        .filter(Boolean)
-        .join(' ')}
-    >
+    <div className={[classes.card].filter(Boolean).join(' ')}>
       <Link href={`/sponsors/${slug}`} className={classes.mediaWrapper}>
         {!logo && <div className={classes.placeholder}>No image</div>}
         {logo && typeof logo !== 'string' && (
@@ -51,11 +47,7 @@ export const SponsorItem: React.FC<{
         )}
       </Link>
       <div className={classes.content}>
-        {name && (
-          <h4 className={classes.title}>
-            {name}
-          </h4>
-        )}
+        {name && <h4 className={classes.title}>{name}</h4>}
         {/*{showCategories && hasCategories && (*/}
         {/*  <div className={classes.leader}>*/}
         {/*    {showCategories && hasCategories && (*/}

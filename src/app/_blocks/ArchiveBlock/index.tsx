@@ -6,10 +6,10 @@ import RichText from '../../_components/RichText'
 import { ArchiveBlockProps } from './types'
 
 import classes from './index.module.scss'
-import {SponsorArchive} from "../../_components/SponsorArchive";
-import {CommitteeArchive} from "../../_components/CommitteeArchive";
-import {SocietyArchive} from "../../_components/SocietyArchive";
-import {Post,Project} from "../../../payload/payload-types";
+import { SponsorArchive } from '../../_components/SponsorArchive'
+import { CommitteeArchive } from '../../_components/CommitteeArchive'
+import { SocietyArchive } from '../../_components/SocietyArchive'
+import { Post, Project } from '../../../payload/payload-types'
 
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {
@@ -28,7 +28,6 @@ export const ArchiveBlock: React.FC<
     categories,
   } = props
 
-
   // const isPosts = (doc: any): doc is (Post | string) => relationTo === 'posts'
   // const isProjects = (doc: any): doc is (Project | string) => relationTo === 'projects'
   //
@@ -45,37 +44,37 @@ export const ArchiveBlock: React.FC<
   //   return null
   // })
 
-  const allPopulatedDocs: ({relationTo: "posts", value: string | Post} | {relationTo: "projects", value: string | Project})[] = populatedDocs.filter(Boolean) as ({relationTo: "posts", value: string | Post} | {relationTo: "projects", value: string | Project})[]
+  const allPopulatedDocs: (
+    | { relationTo: 'posts'; value: string | Post }
+    | { relationTo: 'projects'; value: string | Project }
+  )[] = populatedDocs.filter(Boolean) as (
+    | { relationTo: 'posts'; value: string | Post }
+    | { relationTo: 'projects'; value: string | Project }
+  )[]
 
   return (
     <div id={`block-${id}`} className={classes.archiveBlock}>
       {introContent && (
         <Gutter className={classes.introContent}>
-          <RichText content={introContent}/>
+          <RichText content={introContent} />
         </Gutter>
       )}
-      {relationTo === 'societies' &&
-        <SocietyArchive/>
-      }
-      {relationTo === 'committee' &&
-        <CommitteeArchive/>
-      }
-      {relationTo === 'sponsors' &&
-        <SponsorArchive/>
-      }
-      {relationTo === 'posts' || relationTo === 'projects' &&
-        <CollectionArchive
-          populateBy={populateBy}
-          relationTo={relationTo}
-          populatedDocs={allPopulatedDocs}
-          populatedDocsTotal={populatedDocsTotal}
-          selectedDocs={selectedDocs}
-          categories={categories}
-          limit={limit}
-          sort="-publishedAt"
-        />
-      }
-
+      {relationTo === 'societies' && <SocietyArchive />}
+      {relationTo === 'committee' && <CommitteeArchive />}
+      {relationTo === 'sponsors' && <SponsorArchive />}
+      {relationTo === 'posts' ||
+        (relationTo === 'projects' && (
+          <CollectionArchive
+            populateBy={populateBy}
+            relationTo={relationTo}
+            populatedDocs={allPopulatedDocs}
+            populatedDocsTotal={populatedDocsTotal}
+            selectedDocs={selectedDocs}
+            categories={categories}
+            limit={limit}
+            sort="-publishedAt"
+          />
+        ))}
     </div>
   )
 }
