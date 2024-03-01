@@ -1,11 +1,17 @@
 import React, { Fragment } from 'react'
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import qs from 'qs'
 
+import nominations from '../../../../payload/collections/Nominations'
+import { Nomination, Position, User } from '../../../../payload/payload-types'
 import { fetchComments } from '../../../_api/fetchComments'
 import { Button } from '../../../_components/Button'
 import { Gutter } from '../../../_components/Gutter'
 import { HR } from '../../../_components/HR'
+import { Media } from '../../../_components/Media'
+import { Image } from '../../../_components/Media/Image'
 import { RenderParams } from '../../../_components/RenderParams'
 import { LowImpactHero } from '../../../_heros/LowImpact'
 import { formatDateTime } from '../../../_utilities/formatDateTime'
@@ -15,90 +21,51 @@ import AccountForm from '../../account/AccountForm'
 
 import classes from './index.module.scss'
 
-export default async function Account() {
+export default async function Nomination({ params: { electionId: nominationId } }) {
   const { user } = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to access your account.',
-    )}&redirect=${encodeURIComponent('/account')}`,
+    )}&redirect=${encodeURIComponent(`/nominations/${nominationId}`)}`,
   })
 
-  const comments = await fetchComments({
-    user: user?.id,
-  })
+  let nomination: Nomination | null = null
+
+  try {
+    const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/nominations/${nominationId}`)
+
+    const json = await req.json()
+
+    nomination = json as Nomination
+  } catch (err) {
+    console.warn(err) // eslint-disable-line no-console
+  }
+
+  if (!nomination) {
+    notFound()
+  }
+
+  const names = nomination.populatedNominees.map(n => n.name).join(' & ')
+  const position = nomination.position as Position
+  const isMyNomination = nomination.populatedNominees.some(p => p.id === user.id)
 
   return (
     <Fragment>
       <Gutter>
-        <RenderParams className={classes.params} />
-      </Gutter>
-      <LowImpactHero
-        type="lowImpact"
-        media={null}
-        richText={[
-          {
-            type: 'h1',
-            children: [
-              {
-                text: 'Account',
-              },
-            ],
-          },
-          {
-            type: 'paragraph',
-            children: [
-              {
-                text: 'This is your account dashboard. Here you can update your account information, view your comment history, and more. To manage all users, ',
-              },
-              {
-                type: 'link',
-                url: '/admin/collections/users',
-                children: [
-                  {
-                    text: 'login to the admin dashboard.',
-                  },
-                ],
-              },
-            ],
-          },
-        ]}
-      />
-      <Gutter className={classes.account}>
-        <AccountForm />
-        <HR />
-        <h2>Comments</h2>
-        <p>
-          These are the comments you have placed over time. Each comment is associated with a
-          specific post. All comments must be approved by an admin before they appear on the site.
-        </p>
-        <HR />
-        {comments?.length === 0 && <p>You have not made any comments yet.</p>}
-        {comments.length > 0 &&
-          comments?.map((com, index) => {
-            const { doc, comment, createdAt } = com
-
-            if (!comment) return null
-
-            return (
-              <Fragment key={index}>
-                <div className={classes.column}>
-                  <p className={classes.comment}>"{comment}"</p>
-                  <p className={classes.meta}>
-                    {'Posted '}
-                    {doc && typeof doc === 'object' && (
-                      <Fragment>
-                        {' to '}
-                        <Link href={`/posts/${doc?.slug}`}>{doc?.title || 'Untitled Post'}</Link>
-                      </Fragment>
-                    )}
-                    {createdAt && ` on ${formatDateTime(createdAt)}`}
-                  </p>
-                </div>
-                {index < comments.length - 1 && <HR />}
-              </Fragment>
-            )
-          })}
-        <HR />
-        <Button href="/logout" appearance="secondary" label="Log out" />
+        <h3>{nomination.nickname ?? names}</h3>
+        {nomination.populatedNominees.map(n => {
+          const email = `${n.username}@soton.ac.uk`
+          return <Link href={`mailto:${email}`}>{n.name}</Link>
+        })}
+        <h4>Running for {position.name}</h4>
+        {isMyNomination && (
+          <Button
+            href={`/nominations/${nominationId}/edit`}
+            appearance="primary"
+            label={'Edit Nomination'}
+          ></Button>
+        )}
+        <Media resource={nomination.image} imgClassName={classes.image} />
+        <p>{nomination.manifesto}</p>
       </Gutter>
     </Fragment>
   )
