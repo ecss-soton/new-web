@@ -28,7 +28,7 @@ export interface Config {
     orders: Order;
     sponsors: Sponsor;
     societies: Society;
-    committees: Committee;
+    committee: Committee;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -1120,7 +1120,7 @@ export interface Society {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "committees".
+ * via the `definition` "committee".
  */
 export interface Committee {
   id: string;
