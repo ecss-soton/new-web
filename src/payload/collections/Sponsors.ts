@@ -1,10 +1,10 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../access/admins'
+import linkGroup from '../fields/linkGroup'
+import { slugField } from '../fields/slug'
 import { isHTTPS } from '../validate/isHTTPS'
 import { checkRole } from './Users/checkRole'
-import { slugField } from '../fields/slug'
-import linkGroup from '../fields/linkGroup'
 
 const Sponsors: CollectionConfig = {
   slug: 'sponsors',
