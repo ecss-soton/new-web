@@ -1,17 +1,9 @@
 import React from 'react'
-import { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 
 import { Sponsor } from '../../../../payload/payload-types'
-import { fetchDoc } from '../../../_api/fetchDoc'
 import { fetchDocs } from '../../../_api/fetchDocs'
-import { RelatedPosts } from '../../../_blocks/RelatedPosts'
-import { Blocks } from '../../../_components/Blocks'
-import { ProjectHero } from '../../../_heros/ProjectHero'
-import { generateMeta } from '../../../_utilities/generateMeta'
-import classes from '../../../_heros/ProjectHero/index.module.scss'
-import { Media } from '../../../_components/Media'
 import { SponsorPage } from '../../../_components/SponsorPage'
 import qs from 'qs'
 
