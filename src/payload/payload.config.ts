@@ -177,6 +177,7 @@ export default buildConfig({
       },
       userCollection: Users,
       subField: { name: 'username' },
+      successRedirect: '/',
       sessionOptions: {
         resave: false,
         saveUninitialized: false,

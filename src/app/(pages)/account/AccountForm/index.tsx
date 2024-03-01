@@ -93,61 +93,18 @@ const AccountForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
       <Message error={error} success={success} className={classes.message} />
-      {!changePassword ? (
-        <Fragment>
-          <p>
-            {'Change your account details below, or '}
-            <button
-              type="button"
-              className={classes.changePassword}
-              onClick={() => setChangePassword(!changePassword)}
-            >
-              click here
-            </button>
-            {' to change your password.'}
-          </p>
-          <Input
-            name="email"
-            label="Email Address"
-            required
-            register={register}
-            error={errors.email}
-            type="email"
-          />
-          <Input name="name" label="Name" register={register} error={errors.name} />
-        </Fragment>
-      ) : (
-        <Fragment>
-          <p>
-            {'Change your password below, or '}
-            <button
-              type="button"
-              className={classes.changePassword}
-              onClick={() => setChangePassword(!changePassword)}
-            >
-              cancel
-            </button>
-            .
-          </p>
-          <Input
-            name="password"
-            type="password"
-            label="Password"
-            required
-            register={register}
-            error={errors.password}
-          />
-          <Input
-            name="passwordConfirm"
-            type="password"
-            label="Confirm Password"
-            required
-            register={register}
-            validate={value => value === password.current || 'The passwords do not match'}
-            error={errors.passwordConfirm}
-          />
-        </Fragment>
-      )}
+      <Fragment>
+        <p>Change your account details below</p>
+        <Input
+          name="email"
+          label="Email Address"
+          required
+          register={register}
+          error={errors.email}
+          type="email"
+        />
+        <Input name="name" label="Name" register={register} error={errors.name} />
+      </Fragment>
       <Button
         type="submit"
         label={isLoading ? 'Processing' : changePassword ? 'Change Password' : 'Update Account'}
