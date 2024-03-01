@@ -1,9 +1,9 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../access/admins'
+import linkGroup from '../fields/linkGroup'
 import { testMatchesRegex } from '../validate/isAnInt'
 import { isHTTPS } from '../validate/isHTTPS'
-import linkGroup from "../fields/linkGroup";
 
 const Societies: CollectionConfig = {
   slug: 'societies',

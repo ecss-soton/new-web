@@ -1,19 +1,12 @@
 import React from 'react'
-import Link from 'next/link'
-
-import { Page } from '../../../payload/payload-types'
-import { Button, Props as ButtonProps } from '../Button'
-import { CMSLink, CMSLinkType} from '../Link'
+import { CMSLink, CMSLinkType } from '../Link'
 
 type LinkListType = {
   links: CMSLinkType[]
 }
 
-export const LinkList: React.FC<LinkListType> = ({
-  links,
-}) => {
-
-return (
+export const LinkList: React.FC<LinkListType> = ({ links }) => {
+  return (
     <div>
       {links.map((link, index) => {
         return (
@@ -33,5 +26,4 @@ return (
       })}
     </div>
   )
-
 }

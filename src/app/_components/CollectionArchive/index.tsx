@@ -53,6 +53,7 @@ export const CollectionArchive: React.FC<Props> = props => {
   } = props
 
   const [results, setResults] = useState<Result>({
+    // @ts-ignore
     docs: (populateBy === 'collection'
       ? populatedDocs
       : populateBy === 'selection'
