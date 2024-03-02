@@ -22,6 +22,7 @@ type FormData = {
   nickname?: string
   manifesto?: string
   image?: string
+  droppedOut: boolean
 }
 
 const NominationForm: React.FC<{ nominationId?: string }> = props => {
@@ -47,9 +48,11 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
     },
   ])
   const [picture, setPicture] = useState(null)
-  const onChangePicture = e => {
-    setPicture(URL.createObjectURL(e.target.files[0]))
-  }
+  const pictureWatch: FileList = watch('image') as unknown as FileList
+  useEffect(() => {
+    if (!pictureWatch || !pictureWatch[0]) return
+    setPicture(URL.createObjectURL(pictureWatch[0]))
+  }, [pictureWatch])
 
   useEffect(() => {
     const findNomination = async () => {
@@ -74,6 +77,7 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
         reset({
           nickname: nomination.nickname,
           manifesto: nomination.manifesto,
+          droppedOut: nomination.droppedOut,
         })
       }
     })
@@ -81,7 +85,7 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
 
   const onSubmit = useCallback(
     async (data: FormData) => {
-      if (data?.image) {
+      if (data?.image && data?.image[0]) {
         const formData = new FormData()
         console.log(data.image)
         formData.append('file', data.image[0])
@@ -96,6 +100,8 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
         const mediaID = (await media.json()) as { doc: MediaType }
         console.log(mediaID)
         data.image = mediaID.doc.id
+      } else {
+        data.image = undefined
       }
 
       const response = await fetch(
@@ -115,10 +121,10 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
         const {
           doc: { id },
         } = (await response.json()) as { doc: Nomination }
-        setSuccess('Successfully created a nomination.')
+        setSuccess('Successfully edited the nomination.')
         router.push(`/nominations/${id}`)
       } else {
-        setError('There was a problem creating your nomination.')
+        setError('There was a problem editing your nomination.')
       }
     },
     [nominationId, router],
@@ -147,8 +153,13 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
           error={errors.nickname}
           type="text"
         />
-        <input type="file" {...register('image')} onChange={onChangePicture} />
-        {errors.image && <p>Please select an image</p>}
+        <Input
+          type="file"
+          name={'image'}
+          label={'Profile Picture'}
+          register={register}
+          error={errors.image}
+        />
         {picture && <img className="image" src={picture} alt="" />}
         {!picture && currentPicture && (
           <Media resource={currentPicture} imgClassName={classes.image} />
@@ -160,6 +171,10 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
           error={errors.manifesto}
           type="textarea"
         />
+        <span>
+          Dropped out
+          <input name="droppedOut" type="checkbox" {...register('droppedOut')} />
+        </span>
       </Fragment>
       <Button
         type="submit"

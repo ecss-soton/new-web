@@ -47,11 +47,15 @@ export default async function Nomination({ params: { electionId: nominationId } 
   const names = nomination.populatedNominees.map(n => n.name).join(' & ')
   const position = nomination.position as Position
   const isMyNomination = nomination.populatedNominees.some(p => p.id === user.id)
+  const droppedOut = nomination.droppedOut
 
   return (
     <Fragment>
       <Gutter>
-        <h3>{nomination.nickname ?? names}</h3>
+        <h3>
+          {droppedOut && <s>{nomination.nickname ?? names}</s>}
+          {!droppedOut && <span>{nomination.nickname ?? names}</span>}
+        </h3>
         {nomination.populatedNominees.map(n => {
           const email = `${n.username}@soton.ac.uk`
           return (
