@@ -11,9 +11,6 @@ export const joinNomination: PayloadHandler = async (req, res): Promise<void> =>
     return
   }
 
-  console.log(req.params)
-  console.log(user)
-
   const nominations: PaginatedDocs<Nomination> = await payload.find({
     collection: 'nominations',
     where: {

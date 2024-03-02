@@ -1,11 +1,11 @@
 import React from 'react'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
+import qs from 'qs'
 
 import { Sponsor } from '../../../../payload/payload-types'
 import { fetchDocs } from '../../../_api/fetchDocs'
 import { SponsorPage } from '../../../_components/SponsorPage'
-import qs from 'qs'
 
 // Force this page to be dynamic so that Next.js does not cache it
 // See the note in '../../../[slug]/page.tsx' about this

@@ -27,7 +27,6 @@ async function joinNomination(
       },
     )
     const json = await res.json()
-    console.log(json)
     if (json?.success) {
       router.push(`/nominations/${nominationId}`)
     }
@@ -35,11 +34,14 @@ async function joinNomination(
       setError(json.error)
     }
   } catch (err) {
-    console.log(err)
+    console.warn(err) // eslint-disable-line no-console
   }
 }
 
-export const JoinNominationForm: React.FC<{ nominationId?: string; joinKey?: string }> = params => {
+export const JoinNominationForm: React.FC<{
+  nominationId?: string
+  joinKey?: string
+}> = params => {
   const { nominationId, joinKey } = params
   const router = useRouter()
   const [error, setError] = useState<string>('')

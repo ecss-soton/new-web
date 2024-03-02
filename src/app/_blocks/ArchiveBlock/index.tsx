@@ -1,15 +1,15 @@
 import React from 'react'
 
+import { Post, Project } from '../../../payload/payload-types'
 import { CollectionArchive } from '../../_components/CollectionArchive'
+import { CommitteeArchive } from '../../_components/CommitteeArchive'
 import { Gutter } from '../../_components/Gutter'
 import RichText from '../../_components/RichText'
+import { SocietyArchive } from '../../_components/SocietyArchive'
+import { SponsorArchive } from '../../_components/SponsorArchive'
 import { ArchiveBlockProps } from './types'
 
 import classes from './index.module.scss'
-import { SponsorArchive } from '../../_components/SponsorArchive'
-import { CommitteeArchive } from '../../_components/CommitteeArchive'
-import { SocietyArchive } from '../../_components/SocietyArchive'
-import { Post, Project } from '../../../payload/payload-types'
 
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {

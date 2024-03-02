@@ -1,4 +1,3 @@
-import type { Access } from 'payload/config'
 import type { FieldAccess } from 'payload/types'
 
 import { checkRole } from '../../Users/checkRole'

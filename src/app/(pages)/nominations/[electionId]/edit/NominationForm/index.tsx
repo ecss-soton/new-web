@@ -87,7 +87,6 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
     async (data: FormData) => {
       if (data?.image && data?.image[0]) {
         const formData = new FormData()
-        console.log(data.image)
         formData.append('file', data.image[0])
         formData.append('alt', 'nominee picture')
         const media = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/media`, {
@@ -98,7 +97,6 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
         })
 
         const mediaID = (await media.json()) as { doc: MediaType }
-        console.log(mediaID)
         data.image = mediaID.doc.id
       } else {
         data.image = undefined

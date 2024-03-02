@@ -39,7 +39,7 @@ async function toggleSupport(
     const data = await req.json()
     userID = data?.user?.id
   } catch (err) {
-    console.log(err)
+    console.log(err) // eslint-disable-line no-console
   }
 
   const searchQuery = qs.stringify(
@@ -103,7 +103,6 @@ export const SupportNomination: React.FC<{
       className={classes.button}
       onClick={async () => {
         let su = await toggleSupport(nominationId, supporterIds, setSupporterIds)
-        console.log(su)
         setIsSupporting(su)
       }}
     >

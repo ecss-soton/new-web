@@ -2,12 +2,12 @@ import React from 'react'
 import Link from 'next/link'
 
 import { Sponsor } from '../../../payload/payload-types'
+import { Gutter } from '../Gutter'
+import { LinkList } from '../LinkList'
 import { Media as MediaComp } from '../Media'
+import RichText from '../RichText'
 
 import classes from './index.module.scss'
-import { LinkList } from '../LinkList'
-import RichText from '../RichText'
-import { Gutter } from '../Gutter'
 
 export const SponsorPage: React.FC<{
   sponsor?: Sponsor
