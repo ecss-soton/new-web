@@ -24,8 +24,9 @@ import classes from './index.module.scss'
 export const Nominations: React.FC<{
   positionId?: string
   electionId?: string
+  user?: User
 }> = props => {
-  const { positionId, electionId } = props
+  const { positionId, electionId, user } = props
 
   let [nominations, setNominations] = useState<Nomination[] | null>(null)
 
@@ -37,7 +38,14 @@ export const Nominations: React.FC<{
           where: {
             and: [
               {
-                droppedOut: { equals: false },
+                or: [
+                  {
+                    droppedOut: { equals: false },
+                  },
+                  {
+                    nominees: { contains: user.id },
+                  },
+                ],
               },
               { election: { equals: electionId } },
               { position: { equals: positionId } },
@@ -61,17 +69,28 @@ export const Nominations: React.FC<{
       }
     }
     getPositions().then(setNominations)
-  }, [positionId, electionId])
+  }, [user, positionId, electionId])
+  // underline nickname when the nomination has dropped out
   return (
     <div>
       {nominations?.map((nomination, index) => {
         const { id, supporters, populatedNominees, nickname } = nomination
         const nomineeNames = populatedNominees.map(n => n.name).join(' & ')
         const usernames = populatedNominees.map(n => n.username).join(', ')
+        const droppedOut = nomination.droppedOut
         return (
           <Fragment key={id}>
             <h5>
-              {nickname ?? nomineeNames} ({usernames}){' '}
+              {droppedOut && (
+                <s>
+                  {nickname ?? nomineeNames} ({usernames}){' '}
+                </s>
+              )}
+              {!droppedOut && (
+                <span>
+                  {nickname ?? nomineeNames} ({usernames}){' '}
+                </span>
+              )}
               <SupportNomination nominationId={id} supporters={supporters} />
             </h5>
           </Fragment>

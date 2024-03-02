@@ -78,6 +78,7 @@ export default async function Elections() {
               positions={positions}
               electionId={id}
               canCreateNominations={canCreateNomination}
+              user={user}
             />
           </Fragment>
         )

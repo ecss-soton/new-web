@@ -3,7 +3,14 @@ import React, { Fragment, useEffect, useState } from 'react'
 import Link from 'next/link'
 import qs from 'qs'
 
-import { Election, Media, Nomination, Position, Sponsor } from '../../../payload/payload-types'
+import {
+  Election,
+  Media,
+  Nomination,
+  Position,
+  Sponsor,
+  User,
+} from '../../../payload/payload-types'
 import { Button } from '../Button'
 import { Gutter } from '../Gutter'
 import { CMSLinkType } from '../Link'
@@ -18,8 +25,9 @@ export const Positions: React.FC<{
   positions?: Position[]
   electionId?: string
   canCreateNominations?: boolean
+  user?: User
 }> = props => {
-  const { positions, electionId, canCreateNominations } = props
+  const { user, positions, electionId, canCreateNominations } = props
 
   // const { slug, title, categories, meta } = doc || {}
   // const { description, image: metaImage } = meta || {}
@@ -45,7 +53,7 @@ export const Positions: React.FC<{
                 label={'Create Nomination'}
               ></Button>
             )}
-            <Nominations positionId={position.id} electionId={electionId} />
+            <Nominations positionId={position.id} electionId={electionId} user={user} />
           </Fragment>
         )
       })}
