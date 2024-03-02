@@ -9725,7 +9725,7 @@ type Nomination {
   nominees: [User!]!
   populatedNominees: [Nomination_PopulatedNominees!]
   nickname: String
-  manifesto(depth: Int): JSON
+  manifesto: String
   position: Position!
   election: Election!
   image(where: Nomination_Image_where): Media
@@ -9991,10 +9991,10 @@ input Nomination_nickname_operator {
 }
 
 input Nomination_manifesto_operator {
-  equals: JSON
-  not_equals: JSON
-  like: JSON
-  contains: JSON
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
   exists: Boolean
 }
 
@@ -29626,7 +29626,7 @@ input mutationNominationInput {
   nominees: [String]
   populatedNominees: [mutationNomination_PopulatedNomineesInput]
   nickname: String
-  manifesto: JSON
+  manifesto: String
   position: String
   election: String
   image: String
@@ -29647,7 +29647,7 @@ input mutationNominationUpdateInput {
   nominees: [String]
   populatedNominees: [mutationNominationUpdate_PopulatedNomineesInput]
   nickname: String
-  manifesto: JSON
+  manifesto: String
   position: String
   election: String
   image: String

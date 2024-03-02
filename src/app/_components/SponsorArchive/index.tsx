@@ -4,8 +4,8 @@ import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react
 import qs from 'qs'
 
 import type { Sponsor } from '../../../payload/payload-types'
-import { SponsorItem } from '../SponsorItem'
 import { Gutter } from '../Gutter'
+import { SponsorItem } from '../SponsorItem'
 
 import classes from './index.module.scss'
 

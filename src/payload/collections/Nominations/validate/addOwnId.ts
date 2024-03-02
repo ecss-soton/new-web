@@ -9,6 +9,8 @@ export const addOwnId: Validate = async (userList: string[], args) => {
     return true
   }
 
+  if (!args.user) return true
+
   const nominations = await args.payload.find({
     collection: 'nominations',
     depth: 0,

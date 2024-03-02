@@ -53,7 +53,7 @@ export const joinNomination: PayloadHandler = async (req, res): Promise<void> =>
       id: req.params.id,
       collection: 'nominations',
       data: {
-        nominees,
+        nominees: nominees,
       },
     })
 
