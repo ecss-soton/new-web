@@ -76,7 +76,7 @@ export default async function Elections() {
             </p>
             <Positions
               positions={positions}
-              electionId={id}
+              election={election}
               canCreateNominations={canCreateNomination}
               user={user}
             />

@@ -23,10 +23,10 @@ import classes from './index.module.scss'
 
 export const Nominations: React.FC<{
   positionId?: string
-  electionId?: string
+  election?: Election
   user?: User
 }> = props => {
-  const { positionId, electionId, user } = props
+  const { positionId, election, user } = props
 
   let [nominations, setNominations] = useState<Nomination[] | null>(null)
 
@@ -47,7 +47,7 @@ export const Nominations: React.FC<{
                   },
                 ],
               },
-              { election: { equals: electionId } },
+              { election: { equals: election.id } },
               { position: { equals: positionId } },
             ],
           },
@@ -69,8 +69,12 @@ export const Nominations: React.FC<{
       }
     }
     getPositions().then(setNominations)
-  }, [user, positionId, electionId])
-  // underline nickname when the nomination has dropped out
+  }, [user, positionId, election.id])
+
+  const isBeingVoted =
+    new Date().getTime() >= Date.parse(election.votingStart) &&
+    new Date().getTime() <= Date.parse(election.votingEnd)
+
   return (
     <div>
       {nominations?.map((nomination, index) => {
@@ -90,6 +94,13 @@ export const Nominations: React.FC<{
                 <span>
                   {nickname ?? nomineeNames} ({usernames}){' '}
                 </span>
+              )}
+              {(isBeingVoted || populatedNominees.map(n => n.id).includes(user.id)) && (
+                <Button
+                  appearance={'primary'}
+                  label={'View'}
+                  href={`/nominations/${nomination.id}`}
+                />
               )}
               <SupportNomination nominationId={id} supporters={supporters} />
             </h5>

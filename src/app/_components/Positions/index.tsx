@@ -23,11 +23,11 @@ import classes from './index.module.scss'
 
 export const Positions: React.FC<{
   positions?: Position[]
-  electionId?: string
+  election?: Election
   canCreateNominations?: boolean
   user?: User
 }> = props => {
-  const { user, positions, electionId, canCreateNominations } = props
+  const { user, positions, election, canCreateNominations } = props
 
   // const { slug, title, categories, meta } = doc || {}
   // const { description, image: metaImage } = meta || {}
@@ -48,12 +48,12 @@ export const Positions: React.FC<{
             <p>{description}</p>
             {canCreateNominations && (
               <Button
-                href={`/nominations/${electionId}/${position.id}`}
+                href={`/nominations/${election.id}/${position.id}`}
                 appearance="primary"
                 label={'Create Nomination'}
               ></Button>
             )}
-            <Nominations positionId={position.id} electionId={electionId} user={user} />
+            <Nominations positionId={position.id} election={election} user={user} />
           </Fragment>
         )
       })}
