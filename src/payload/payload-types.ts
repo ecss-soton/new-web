@@ -762,11 +762,7 @@ export interface Nomination {
       }[]
     | null;
   nickname?: string | null;
-  manifesto?:
-    | {
-        [k: string]: unknown;
-      }[]
-    | null;
+  manifesto?: string | null;
   position: string | Position;
   election: string | Election;
   image?: string | Media | null;

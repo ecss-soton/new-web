@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { CMSLink, CMSLinkType } from '../Link'
 
 type LinkListType = {
