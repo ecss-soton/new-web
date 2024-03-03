@@ -34,7 +34,7 @@ import Tickets from './collections/Tickets'
 import Users from './collections/Users'
 import Votes from './collections/Votes'
 import BeforeDashboard from './components/BeforeDashboard'
-import BeforeLogin from './components/BeforeLogin'
+import OAuthButton from './components/BeforeLogin'
 import { seed } from './endpoints/seed'
 import { Footer } from './globals/Footer'
 import { Header } from './globals/Header'
@@ -53,9 +53,6 @@ export default buildConfig({
     user: Users.slug,
     bundler: webpackBundler(), // bundler-config
     components: {
-      // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below and the import `BeforeLogin` statement on line 15.
-      beforeLogin: [BeforeLogin],
       // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
       beforeDashboard: [BeforeDashboard],
@@ -175,9 +172,12 @@ export default buildConfig({
           email: sotonData.mail,
         }
       },
+      components: {
+        Button: OAuthButton,
+      },
       userCollection: Users,
       subField: { name: 'username' },
-      successRedirect: '/',
+      successRedirect: '/login-redirect',
       sessionOptions: {
         resave: false,
         saveUninitialized: false,
