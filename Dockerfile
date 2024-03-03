@@ -26,10 +26,11 @@ ENV PAYLOAD_CONFIG_PATH=dist/payload/payload.config.js
 
 WORKDIR /home/node/app
 
+RUN mkdir -p ./.next
+COPY --from=builder /home/node/app/.next ./.next
 COPY --from=deps /home/node/app/node_modules ./node_modules
 COPY --from=builder /home/node/app/dist ./dist
 COPY --from=builder /home/node/app/build ./build
-COPY --from=builder "/home/node/app/.next" "./.next"
 
 EXPOSE 3000
 
