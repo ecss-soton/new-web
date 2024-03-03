@@ -2,7 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+      - 'feat-docker'
 
 jobs:
   push_to_registry:
@@ -23,6 +25,11 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ecss/web_main
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-version: latest
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
