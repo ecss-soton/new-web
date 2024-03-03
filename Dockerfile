@@ -22,7 +22,7 @@ FROM node:18-slim AS runtime
 COPY .env.example .env
 
 ENV NODE_ENV=production
-ENV PAYLOAD_CONFIG_PATH=dist/payload.config.js
+ENV PAYLOAD_CONFIG_PATH=dist/payload/payload.config.js
 
 WORKDIR /home/node/app
 
