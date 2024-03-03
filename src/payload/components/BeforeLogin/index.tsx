@@ -1,16 +1,14 @@
 import React from 'react'
+import { Button } from 'payload/components'
 
-const BeforeLogin: React.FC = () => {
+const OAuthButton: React.FC = () => {
   return (
-    <div>
-      <p>
-        <b>Welcome to your dashboard!</b>
-        {' This is where site admins will log in to manage your website. Users will need to '}
-        <a href={`${process.env.PAYLOAD_PUBLIC_SERVER_URL}/login`}>log in to the site instead</a>
-        {' to access their user account, comment history, and more.'}
-      </p>
+    <div style={{ marginBottom: 20 }} className="custom">
+      <Button el="anchor" url="/login?redirect=/admin">
+        Sign in with oAuth
+      </Button>
     </div>
   )
 }
 
-export default BeforeLogin
+export default OAuthButton
