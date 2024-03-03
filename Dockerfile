@@ -15,7 +15,7 @@ COPY --from=deps /home/node/app/node_modules ./node_modules
 COPY . .
 COPY .env.example .env
 
-RUN npm run build
+RUN --network=host npm run build
 
 FROM node:18-slim AS runtime
 
