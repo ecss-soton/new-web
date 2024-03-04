@@ -53,7 +53,12 @@ export const Positions: React.FC<{
                 label={'Create Nomination'}
               ></Button>
             )}
-            <Nominations positionId={position.id} election={election} user={user} />
+            <Nominations
+              positionId={position.id}
+              election={election}
+              user={user}
+              showSupport={canCreateNominations}
+            />
           </Fragment>
         )
       })}

@@ -72,7 +72,7 @@ export const NominationPage: React.FC<{
         <Suspense fallback={<Fragment>Loading...</Fragment>}>
           <Media resource={nomination.image} imgClassName={classes.image} />
         </Suspense>
-        <p>{nomination.manifesto}</p>
+        <span className={classes.manifesto}>{nomination.manifesto}</span>
       </Gutter>
     </Fragment>
   )

@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../../access/admins'
+import { publishedOrAdmin } from '../ElectionResults/access/publishedOrAdmin'
 import Groups from '../groups'
 import { checkNominations } from './hooks/checkNominations'
 import { countVotes } from './hooks/checkVotes'
@@ -13,7 +14,8 @@ import {
 const Elections: CollectionConfig = {
   slug: 'elections',
   access: {
-    read: (): boolean => true,
+    read: publishedOrAdmin,
+    readVersions: admins,
     create: admins,
     update: admins,
     delete: admins,
@@ -22,6 +24,9 @@ const Elections: CollectionConfig = {
     useAsTitle: 'name',
     group: Groups.Elections,
     defaultColumns: ['name', 'nominationStart', 'votingEnd', 'positions'],
+  },
+  versions: {
+    drafts: true,
   },
   fields: [
     {
