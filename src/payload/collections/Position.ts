@@ -27,7 +27,7 @@ const Positions: CollectionConfig = {
     {
       name: 'description',
       label: 'Description',
-      type: 'text',
+      type: 'textarea',
       required: true,
     },
     {

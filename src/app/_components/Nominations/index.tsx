@@ -25,8 +25,9 @@ export const Nominations: React.FC<{
   positionId?: string
   election?: Election
   user?: User
+  showSupport?: boolean
 }> = props => {
-  const { positionId, election, user } = props
+  const { showSupport, positionId, election, user } = props
 
   let [nominations, setNominations] = useState<Nomination[] | null>(null)
 
@@ -102,7 +103,7 @@ export const Nominations: React.FC<{
                   href={`/nominations/${nomination.id}`}
                 />
               )}
-              <SupportNomination nominationId={id} supporters={supporters} />
+              {showSupport && <SupportNomination nominationId={id} supporters={supporters} />}
             </h5>
           </Fragment>
         )
