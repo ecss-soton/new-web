@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { Suspense, useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 
@@ -16,12 +16,24 @@ type FormData = {
   token: string
 }
 
+// https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
+function Search(reset, register) {
+  const searchParams = useSearchParams()
+  const token = searchParams.get('token')
+
+  // when Next.js populates token within router,
+  // reset form with new token value
+  useEffect(() => {
+    reset({ token: token || undefined })
+  }, [reset, token])
+
+  return <input type="hidden" {...register('token')} />
+}
+
 export const ResetPasswordForm: React.FC = () => {
   const [error, setError] = useState('')
   const { login } = useAuth()
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const token = searchParams.get('token')
 
   const {
     register,
@@ -58,12 +70,6 @@ export const ResetPasswordForm: React.FC = () => {
     [router, login],
   )
 
-  // when Next.js populates token within router,
-  // reset form with new token value
-  useEffect(() => {
-    reset({ token: token || undefined })
-  }, [reset, token])
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
       <Message error={error} className={classes.message} />
@@ -75,7 +81,9 @@ export const ResetPasswordForm: React.FC = () => {
         register={register}
         error={errors.password}
       />
-      <input type="hidden" {...register('token')} />
+      <Suspense>
+        <Search reset={reset} register={register} />
+      </Suspense>
       <Button
         type="submit"
         appearance="primary"
