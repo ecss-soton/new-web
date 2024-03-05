@@ -33,6 +33,8 @@ type Query {
   Election(id: String!, draft: Boolean): Election
   Elections(draft: Boolean, where: Election_where, limit: Int, page: Int, sort: String): Elections
   docAccessElection(id: String!): electionsDocAccess
+  versionElection(id: String): ElectionVersion
+  versionsElections(where: versionsElection_where, limit: Int, page: Int, sort: String): versionsElections
   Nomination(id: String!, draft: Boolean): Nomination
   Nominations(draft: Boolean, where: Nomination_where, limit: Int, page: Int, sort: String): Nominations
   docAccessNomination(id: String!): nominationsDocAccess
@@ -9331,14 +9333,15 @@ input versionsComment_where_or {
 
 type Election {
   id: String
-  name: String!
-  nominationStart: DateTime!
-  nominationEnd: DateTime!
-  votingStart: DateTime!
-  votingEnd: DateTime!
-  positions: [Position!]!
+  name: String
+  nominationStart: DateTime
+  nominationEnd: DateTime
+  votingStart: DateTime
+  votingEnd: DateTime
+  positions: [Position!]
   updatedAt: DateTime
   createdAt: DateTime
+  _status: Election__status
 }
 
 type Position {
@@ -9348,6 +9351,11 @@ type Position {
   importance: Float!
   updatedAt: DateTime
   createdAt: DateTime
+}
+
+enum Election__status {
+  draft
+  published
 }
 
 type Elections {
@@ -9373,6 +9381,7 @@ input Election_where {
   positions: Election_positions_operator
   updatedAt: Election_updatedAt_operator
   createdAt: Election_createdAt_operator
+  _status: Election__status_operator
   id: Election_id_operator
   AND: [Election_where_and]
   OR: [Election_where_or]
@@ -9458,6 +9467,20 @@ input Election_createdAt_operator {
   exists: Boolean
 }
 
+input Election__status_operator {
+  equals: Election__status_Input
+  not_equals: Election__status_Input
+  in: [Election__status_Input]
+  not_in: [Election__status_Input]
+  all: [Election__status_Input]
+  exists: Boolean
+}
+
+enum Election__status_Input {
+  draft
+  published
+}
+
 input Election_id_operator {
   equals: String
   not_equals: String
@@ -9478,6 +9501,7 @@ input Election_where_and {
   positions: Election_positions_operator
   updatedAt: Election_updatedAt_operator
   createdAt: Election_createdAt_operator
+  _status: Election__status_operator
   id: Election_id_operator
   AND: [Election_where_and]
   OR: [Election_where_or]
@@ -9492,6 +9516,7 @@ input Election_where_or {
   positions: Election_positions_operator
   updatedAt: Election_updatedAt_operator
   createdAt: Election_createdAt_operator
+  _status: Election__status_operator
   id: Election_id_operator
   AND: [Election_where_and]
   OR: [Election_where_or]
@@ -9503,6 +9528,7 @@ type electionsDocAccess {
   read: ElectionsReadDocAccess
   update: ElectionsUpdateDocAccess
   delete: ElectionsDeleteDocAccess
+  readVersions: ElectionsReadVersionsDocAccess
 }
 
 type ElectionsDocAccessFields {
@@ -9514,6 +9540,7 @@ type ElectionsDocAccessFields {
   positions: ElectionsDocAccessFields_positions
   updatedAt: ElectionsDocAccessFields_updatedAt
   createdAt: ElectionsDocAccessFields_createdAt
+  _status: ElectionsDocAccessFields__status
 }
 
 type ElectionsDocAccessFields_name {
@@ -9700,6 +9727,29 @@ type ElectionsDocAccessFields_createdAt_Delete {
   permission: Boolean!
 }
 
+type ElectionsDocAccessFields__status {
+  create: ElectionsDocAccessFields__status_Create
+  read: ElectionsDocAccessFields__status_Read
+  update: ElectionsDocAccessFields__status_Update
+  delete: ElectionsDocAccessFields__status_Delete
+}
+
+type ElectionsDocAccessFields__status_Create {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields__status_Read {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields__status_Update {
+  permission: Boolean!
+}
+
+type ElectionsDocAccessFields__status_Delete {
+  permission: Boolean!
+}
+
 type ElectionsCreateDocAccess {
   permission: Boolean!
   where: JSONObject
@@ -9718,6 +9768,250 @@ type ElectionsUpdateDocAccess {
 type ElectionsDeleteDocAccess {
   permission: Boolean!
   where: JSONObject
+}
+
+type ElectionsReadVersionsDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionVersion {
+  parent: Election
+  version: ElectionVersion_Version
+  createdAt: DateTime
+  updatedAt: DateTime
+  latest: Boolean
+  id: String
+}
+
+type ElectionVersion_Version {
+  name: String
+  nominationStart: DateTime
+  nominationEnd: DateTime
+  votingStart: DateTime
+  votingEnd: DateTime
+  positions: [Position!]
+  updatedAt: DateTime
+  createdAt: DateTime
+  _status: ElectionVersion_Version__status
+}
+
+enum ElectionVersion_Version__status {
+  draft
+  published
+}
+
+type versionsElections {
+  docs: [ElectionVersion]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input versionsElection_where {
+  parent: versionsElection_parent_operator
+  version__name: versionsElection_version__name_operator
+  version__nominationStart: versionsElection_version__nominationStart_operator
+  version__nominationEnd: versionsElection_version__nominationEnd_operator
+  version__votingStart: versionsElection_version__votingStart_operator
+  version__votingEnd: versionsElection_version__votingEnd_operator
+  version__positions: versionsElection_version__positions_operator
+  version__updatedAt: versionsElection_version__updatedAt_operator
+  version__createdAt: versionsElection_version__createdAt_operator
+  version___status: versionsElection_version___status_operator
+  createdAt: versionsElection_createdAt_operator
+  updatedAt: versionsElection_updatedAt_operator
+  latest: versionsElection_latest_operator
+  id: versionsElection_id_operator
+  AND: [versionsElection_where_and]
+  OR: [versionsElection_where_or]
+}
+
+input versionsElection_parent_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input versionsElection_version__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsElection_version__nominationStart_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input versionsElection_version__nominationEnd_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input versionsElection_version__votingStart_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input versionsElection_version__votingEnd_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input versionsElection_version__positions_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+}
+
+input versionsElection_version__updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsElection_version__createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsElection_version___status_operator {
+  equals: versionsElection_version___status_Input
+  not_equals: versionsElection_version___status_Input
+  in: [versionsElection_version___status_Input]
+  not_in: [versionsElection_version___status_Input]
+  all: [versionsElection_version___status_Input]
+  exists: Boolean
+}
+
+enum versionsElection_version___status_Input {
+  draft
+  published
+}
+
+input versionsElection_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsElection_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsElection_latest_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsElection_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsElection_where_and {
+  parent: versionsElection_parent_operator
+  version__name: versionsElection_version__name_operator
+  version__nominationStart: versionsElection_version__nominationStart_operator
+  version__nominationEnd: versionsElection_version__nominationEnd_operator
+  version__votingStart: versionsElection_version__votingStart_operator
+  version__votingEnd: versionsElection_version__votingEnd_operator
+  version__positions: versionsElection_version__positions_operator
+  version__updatedAt: versionsElection_version__updatedAt_operator
+  version__createdAt: versionsElection_version__createdAt_operator
+  version___status: versionsElection_version___status_operator
+  createdAt: versionsElection_createdAt_operator
+  updatedAt: versionsElection_updatedAt_operator
+  latest: versionsElection_latest_operator
+  id: versionsElection_id_operator
+  AND: [versionsElection_where_and]
+  OR: [versionsElection_where_or]
+}
+
+input versionsElection_where_or {
+  parent: versionsElection_parent_operator
+  version__name: versionsElection_version__name_operator
+  version__nominationStart: versionsElection_version__nominationStart_operator
+  version__nominationEnd: versionsElection_version__nominationEnd_operator
+  version__votingStart: versionsElection_version__votingStart_operator
+  version__votingEnd: versionsElection_version__votingEnd_operator
+  version__positions: versionsElection_version__positions_operator
+  version__updatedAt: versionsElection_version__updatedAt_operator
+  version__createdAt: versionsElection_version__createdAt_operator
+  version___status: versionsElection_version___status_operator
+  createdAt: versionsElection_createdAt_operator
+  updatedAt: versionsElection_updatedAt_operator
+  latest: versionsElection_latest_operator
+  id: versionsElection_id_operator
+  AND: [versionsElection_where_and]
+  OR: [versionsElection_where_or]
 }
 
 type Nomination {
@@ -10551,9 +10845,6 @@ input Position_description_operator {
   not_equals: String
   like: String
   contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
 }
 
 input Position_importance_operator {
@@ -23046,6 +23337,7 @@ type electionsAccess {
   read: ElectionsReadAccess
   update: ElectionsUpdateAccess
   delete: ElectionsDeleteAccess
+  readVersions: ElectionsReadVersionsAccess
 }
 
 type ElectionsFields {
@@ -23057,6 +23349,7 @@ type ElectionsFields {
   positions: ElectionsFields_positions
   updatedAt: ElectionsFields_updatedAt
   createdAt: ElectionsFields_createdAt
+  _status: ElectionsFields__status
 }
 
 type ElectionsFields_name {
@@ -23243,6 +23536,29 @@ type ElectionsFields_createdAt_Delete {
   permission: Boolean!
 }
 
+type ElectionsFields__status {
+  create: ElectionsFields__status_Create
+  read: ElectionsFields__status_Read
+  update: ElectionsFields__status_Update
+  delete: ElectionsFields__status_Delete
+}
+
+type ElectionsFields__status_Create {
+  permission: Boolean!
+}
+
+type ElectionsFields__status_Read {
+  permission: Boolean!
+}
+
+type ElectionsFields__status_Update {
+  permission: Boolean!
+}
+
+type ElectionsFields__status_Delete {
+  permission: Boolean!
+}
+
 type ElectionsCreateAccess {
   permission: Boolean!
   where: JSONObject
@@ -23259,6 +23575,11 @@ type ElectionsUpdateAccess {
 }
 
 type ElectionsDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type ElectionsReadVersionsAccess {
   permission: Boolean!
   where: JSONObject
 }
@@ -28957,6 +29278,7 @@ type Mutation {
   createElection(data: mutationElectionInput!, draft: Boolean): Election
   updateElection(id: String!, autosave: Boolean, data: mutationElectionUpdateInput!, draft: Boolean): Election
   deleteElection(id: String!): Election
+  restoreVersionElection(id: String): Election
   createNomination(data: mutationNominationInput!, draft: Boolean): Nomination
   updateNomination(id: String!, autosave: Boolean, data: mutationNominationUpdateInput!, draft: Boolean): Nomination
   deleteNomination(id: String!): Nomination
@@ -29609,6 +29931,12 @@ input mutationElectionInput {
   positions: [String]
   updatedAt: String
   createdAt: String
+  _status: Election__status_MutationInput
+}
+
+enum Election__status_MutationInput {
+  draft
+  published
 }
 
 input mutationElectionUpdateInput {
@@ -29620,6 +29948,12 @@ input mutationElectionUpdateInput {
   positions: [String]
   updatedAt: String
   createdAt: String
+  _status: ElectionUpdate__status_MutationInput
+}
+
+enum ElectionUpdate__status_MutationInput {
+  draft
+  published
 }
 
 input mutationNominationInput {
