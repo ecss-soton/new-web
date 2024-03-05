@@ -41,3 +41,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           allow: network.host
 
+      - name: Push to portainer
+        run: |
+          curl -X POST ${{ secrets.PORTAINER_WEBHOOK  }}
+
