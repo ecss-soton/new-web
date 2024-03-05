@@ -187,4 +187,7 @@ export default buildConfig({
     }),
     formBuilder({}),
   ],
+  rateLimit: {
+    trustProxy: true,
+  },
 })
