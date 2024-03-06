@@ -13,7 +13,7 @@ WORKDIR /home/node/app
 COPY --from=deps /home/node/app/node_modules ./node_modules
 
 COPY . .
-COPY .env.example .env
+COPY .env.production .env
 
 RUN --network=host npm run build
 
