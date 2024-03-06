@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 
 const defaultOpenGraph: Metadata['openGraph'] = {
   type: 'website',
-  siteName: 'ECCS Website',
-  title: 'ECSS Website',
+  siteName: 'ECCS',
+  title: 'ECSS - University of Southampton Electronics and Computer Science Society',
   description: 'An open-source website built for ECSS.',
   images: [
     {
