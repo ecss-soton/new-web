@@ -34,7 +34,7 @@ const Users: CollectionConfig = {
       name: 'username',
       type: 'text',
       admin: { readOnly: true },
-      access: { update: () => false },
+      access: { update: admins },
     },
     {
       name: 'quickfileClientID',
