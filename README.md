@@ -62,3 +62,7 @@ Start the server
 npm run dev
 ```
 
+### Docker image
+
+Find our docker image on [Docker hub](https://hub.docker.com/r/ecss/web_main)
+
