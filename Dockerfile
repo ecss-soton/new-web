@@ -32,6 +32,9 @@ COPY --from=deps /home/node/app/node_modules ./node_modules
 COPY --from=builder /home/node/app/dist ./dist
 COPY --from=builder /home/node/app/build ./build
 COPY --from=builder /home/node/app/public ./public
+COPY --from=builder /home/node/app/next.config.js ./next.config.js
+COPY --from=builder /home/node/app/redirects.js ./redirects.js
+COPY --from=builder /home/node/app/csp.js ./csp.js
 
 EXPOSE 3000
 
