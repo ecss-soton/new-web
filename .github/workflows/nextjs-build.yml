@@ -1,0 +1,30 @@
+name: Builds Nextjs site
+
+on:
+  pull_request:
+    types:
+      - ready_for_review
+      - review_requested
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-version: latest
+
+      - run: npm ci
+
+      - run: npm run build
+
