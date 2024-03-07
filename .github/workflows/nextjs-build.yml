@@ -27,5 +27,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build
+      - name: Copy environment variables
+        run: cp .env.example .env
 
+      - run: npm run build
