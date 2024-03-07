@@ -89,12 +89,13 @@ async function toggleSupport(
 export const SupportNomination: React.FC<{
   nominationId?: string
   supporters?: (string | User)[]
+  user?: User
 }> = props => {
-  const { nominationId, supporters } = props
+  const { nominationId, supporters, user } = props
 
   let [supporterIds, setSupporterIds] = useState<string[]>(getArrayID(supporters))
   let [isSupporting, setIsSupporting] = useState<boolean>(
-    supporters.some(s => typeof s != 'string'),
+    getArrayID(supporters).some(id => id === user.id),
   )
 
   return (
