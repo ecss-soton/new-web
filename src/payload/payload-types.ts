@@ -768,7 +768,7 @@ export interface Nomination {
   election: string | Election;
   image?: string | Media | null;
   droppedOut: boolean;
-  supporters: (string | User)[];
+  supporters?: (string | User)[] | null;
   joinUUID: string;
   updatedAt: string;
   createdAt: string;
