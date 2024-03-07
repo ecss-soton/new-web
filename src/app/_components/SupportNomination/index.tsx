@@ -21,69 +21,28 @@ import RichText from '../RichText'
 
 import classes from './index.module.scss'
 
-async function toggleSupport(
-  nominationId: string,
-  supporters: string[],
-  setSupporters,
-): Promise<boolean> {
-  let userID: null | string = null
-
-  try {
-    const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`, {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    const data = await req.json()
-    userID = data?.user?.id
-  } catch (err) {
-    console.log(err) // eslint-disable-line no-console
-  }
-
-  const searchQuery = qs.stringify(
-    {
-      where: {
-        id: {
-          equals: nominationId,
-        },
-      },
-    },
-    { encode: false },
-  )
-  let supporterIds = [...supporters]
-  let isSupporting = false
-  if (supporterIds.includes(userID)) {
-    supporterIds = supporterIds.filter(id => id !== userID)
-  } else {
-    supporterIds.push(userID)
-    isSupporting = true
-  }
-
+async function toggleSupport(nominationId: string, setSupporters): Promise<boolean> {
   try {
     const req = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/nominations/${nominationId}?${searchQuery}`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/nominations/${nominationId}/toggleSupport`,
       {
-        method: 'PATCH',
+        method: 'POST',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          supporters: supporterIds,
-        }),
       },
     )
 
-    const { doc } = (await req.json()) as { doc: Nomination }
-    isSupporting = getArrayID(doc.supporters).includes(userID)
-    setSupporters(getArrayID(doc.supporters))
+    const result = (await req.json()) as {
+      success: boolean
+      supporting: boolean
+      supporters: string[]
+    }
+    setSupporters(result.supporters)
+    return result.supporting
   } catch (err) {
     console.warn(err) // eslint-disable-line no-console
   }
 
-  return isSupporting
+  return false
 }
 
 export const SupportNomination: React.FC<{
@@ -103,7 +62,7 @@ export const SupportNomination: React.FC<{
       type="button"
       className={classes.button}
       onClick={async () => {
-        let su = await toggleSupport(nominationId, supporterIds, setSupporterIds)
+        let su = await toggleSupport(nominationId, setSupporterIds)
         setIsSupporting(su)
       }}
     >
