@@ -133,13 +133,12 @@ const Nominations: CollectionConfig = {
       label: 'Supporters',
       type: 'relationship',
       relationTo: 'users',
-      required: true,
       hasMany: true,
       access: {
         update: beforeVoting,
       },
       validate: addOwnId,
-      defaultValue: () => [],
+      defaultValue: ({ user }) => [user.id],
     },
     {
       name: 'joinUUID',
