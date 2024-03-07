@@ -13,6 +13,13 @@
 .select {
   all: unset;
   padding-right: 14px;
+  background-color: var(--theme-elevation-1000);
+}
+
+:global([data-theme="dark"]) {
+  .select {
+    background-color: var(--theme-elevation-50);
+  }
 }
 
 .selectIcon {
