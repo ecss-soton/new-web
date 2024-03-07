@@ -103,7 +103,9 @@ export const Nominations: React.FC<{
                   href={`/nominations/${nomination.id}`}
                 />
               )}
-              {showSupport && <SupportNomination nominationId={id} supporters={supporters} />}
+              {showSupport && (
+                <SupportNomination nominationId={id} supporters={supporters} user={user} />
+              )}
             </h5>
           </Fragment>
         )
