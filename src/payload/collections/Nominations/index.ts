@@ -6,6 +6,7 @@ import Groups from '../groups'
 import { beforeVoting } from './access/beforeVoting'
 import { adminOrNominee } from './access/nominees'
 import { joinNomination } from './endpoints/joinNomination'
+import { toggleSupport } from './endpoints/toggleSupport'
 import { populateNominees } from './hooks/populateNominees'
 import { addOwnId } from './validate/addOwnId'
 import { nominationIsUnique } from './validate/nominationIsUnique'
@@ -158,6 +159,11 @@ const Nominations: CollectionConfig = {
       path: '/:id/join/:key',
       method: 'post',
       handler: joinNomination,
+    },
+    {
+      path: '/:id/toggleSupport',
+      method: 'post',
+      handler: toggleSupport,
     },
   ],
 }
