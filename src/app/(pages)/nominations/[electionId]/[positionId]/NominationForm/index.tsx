@@ -49,7 +49,7 @@ const NominationForm: React.FC<{ electionId?: string; positionId?: string }> = p
 
   const onSubmit = useCallback(
     async (data: FormData) => {
-      if (data?.image) {
+      if (data?.image && data.image?.length === 1) {
         const formData = new FormData()
         formData.append('file', data.image[0])
         formData.append('alt', 'nominee picture')
@@ -62,6 +62,8 @@ const NominationForm: React.FC<{ electionId?: string; positionId?: string }> = p
 
         const mediaID = (await media.json()) as { doc: Media }
         data.image = mediaID.doc.id
+      } else {
+        data.image = undefined
       }
 
       if (data.nickname === '') {
