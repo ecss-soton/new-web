@@ -2,6 +2,7 @@ import type { FieldAccess } from 'payload/types'
 
 import type { Nomination } from '../../../payload-types'
 import { checkRole } from '../../Users/checkRole'
+import {getID} from "../../../utilities/getID";
 
 export const beforeVoting: FieldAccess<Nomination> = async ({ req, doc }) => {
   if (req.user && checkRole(['admin'], req.user)) {
@@ -9,7 +10,7 @@ export const beforeVoting: FieldAccess<Nomination> = async ({ req, doc }) => {
   }
 
   // Don't think doc.election will ever not be a string, but just in case
-  const election = typeof doc.election === 'string' ? doc.election : doc.election.id
+  const election = getID(doc.election)
 
   const result = await req.payload.findByID({
     collection: 'elections',
