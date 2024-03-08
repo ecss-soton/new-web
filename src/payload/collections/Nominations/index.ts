@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { admins } from '../../access/admins'
 import Groups from '../groups'
 import { beforeVoting } from './access/beforeVoting'
-import { adminOrNominee } from './access/nominees'
+import { adminOrNominee, nominee } from './access/nominees'
 import { joinNomination } from './endpoints/joinNomination'
 import { toggleSupport } from './endpoints/toggleSupport'
 import { populateNominees } from './hooks/populateNominees'
@@ -41,6 +41,7 @@ const Nominations: CollectionConfig = {
         create: admins,
         // Don't allow nominees to remove themselves
         update: admins,
+        read: () => true,
       },
       validate: nominationIsUnique,
       defaultValue: ({ user }) => [user.id],
@@ -151,7 +152,7 @@ const Nominations: CollectionConfig = {
       defaultValue: () => uuidv4(),
       required: true,
       access: {
-        read: adminOrNominee,
+        read: nominee,
         create: () => false,
         update: () => false,
       },
