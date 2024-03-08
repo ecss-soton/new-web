@@ -7,22 +7,19 @@ import { useRouter } from 'next/navigation'
 import { Button } from '../../../_components/Button'
 import { Input } from '../../../_components/Input'
 import { Message } from '../../../_components/Message'
-import { useAuth } from '../../../_providers/Auth'
+import type { User } from '../../../../payload/payload-types'
 
 import classes from './index.module.scss'
 
 type FormData = {
   email: string
   name: string
-  password: string
-  passwordConfirm: string
 }
 
-const AccountForm: React.FC = () => {
+const AccountForm: React.FC<{ user: User }> = ({ user }) => {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const { user, setUser } = useAuth()
-  const [changePassword, setChangePassword] = useState(false)
+  // const { user, setUser } = useAuth()
 
   const {
     register,
@@ -32,43 +29,40 @@ const AccountForm: React.FC = () => {
     watch,
   } = useForm<FormData>()
 
-  const password = useRef({})
-  password.current = watch('password', '')
-
   const router = useRouter()
 
-  const onSubmit = useCallback(
-    async (data: FormData) => {
-      if (user) {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${user.id}`, {
-          // Make sure to include cookies with fetch
-          credentials: 'include',
-          method: 'PATCH',
-          body: JSON.stringify(data),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-
-        if (response.ok) {
-          const json = await response.json()
-          setUser(json.doc)
-          setSuccess('Successfully updated account.')
-          setError('')
-          setChangePassword(false)
-          reset({
-            email: json.doc.email,
-            name: json.doc.name,
-            password: '',
-            passwordConfirm: '',
-          })
-        } else {
-          setError('There was a problem updating your account.')
-        }
-      }
-    },
-    [user, setUser, reset],
-  )
+  // const onSubmit = useCallback(
+  //   async (data: FormData) => {
+  //     if (user) {
+  //       const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${user.id}`, {
+  //         // Make sure to include cookies with fetch
+  //         credentials: 'include',
+  //         method: 'PATCH',
+  //         body: JSON.stringify(data),
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //       })
+  //
+  //       if (response.ok) {
+  //         const json = await response.json()
+  //         setUser(json.doc)
+  //         setSuccess('Successfully updated account.')
+  //         setError('')
+  //         setChangePassword(false)
+  //         reset({
+  //           email: json.doc.email,
+  //           name: json.doc.name,
+  //           password: '',
+  //           passwordConfirm: '',
+  //         })
+  //       } else {
+  //         setError('There was a problem updating your account.')
+  //       }
+  //     }
+  //   },
+  //   [user, setUser, reset],
+  // )
 
   useEffect(() => {
     if (user === null) {
@@ -84,34 +78,33 @@ const AccountForm: React.FC = () => {
       reset({
         email: user.email,
         name: user.name,
-        password: '',
-        passwordConfirm: '',
       })
     }
-  }, [user, router, reset, changePassword])
+  }, [user, router, reset])
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+    // <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+    <form className={classes.form}>
       <Message error={error} success={success} className={classes.message} />
       <Fragment>
-        <p>Change your account details below</p>
         <Input
           name="email"
           label="Email Address"
-          required
+          // required
+          disabled={true}
           register={register}
           error={errors.email}
           type="email"
         />
-        <Input name="name" label="Name" register={register} error={errors.name} />
+        <Input name="name" label="Name" register={register} error={errors.name} disabled={true} />
       </Fragment>
-      <Button
-        type="submit"
-        label={isLoading ? 'Processing' : changePassword ? 'Change Password' : 'Update Account'}
-        disabled={isLoading}
-        appearance="primary"
-        className={classes.submit}
-      />
+      {/*<Button*/}
+      {/*  type="submit"*/}
+      {/*  label={isLoading ? 'Processing' : changePassword ? 'Change Password' : 'Update Account'}*/}
+      {/*  disabled={isLoading}*/}
+      {/*  appearance="primary"*/}
+      {/*  className={classes.submit}*/}
+      {/*/>*/}
     </form>
   )
 }
