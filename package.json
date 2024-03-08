@@ -17,7 +17,8 @@
     "generate:graphQLSchema": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload generate:graphQLSchema",
     "lint": "eslint src",
     "lint:fix": "eslint --fix --ext .ts,.tsx src",
-    "prettier": "prettier --write \"src/**/*.{ts,tsx,js,json,css,scss,html}\"",
+    "prettier": "prettier --check \"src/**/*.{ts,tsx,js,json,css,scss,html}\"",
+    "prettier:fix": "prettier --write \"src/**/*.{ts,tsx,js,json,css,scss,html}\"",
     "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload"
   },
   "dependencies": {
