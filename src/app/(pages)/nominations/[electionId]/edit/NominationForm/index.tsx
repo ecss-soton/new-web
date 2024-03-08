@@ -54,6 +54,10 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
     setPicture(URL.createObjectURL(pictureWatch[0]))
   }, [pictureWatch])
 
+  const onChangePicture = e => {
+    setPicture(URL.createObjectURL(e.target.files[0]))
+  }
+
   useEffect(() => {
     const findNomination = async () => {
       if (!nomination) {
@@ -152,11 +156,12 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
           type="text"
         />
         <Input
-          type="file"
           name={'image'}
           label={'Profile Picture'}
           register={register}
           error={errors.image}
+          type="file"
+          onChange={onChangePicture}
         />
         {picture && <img className="image" src={picture} alt="" />}
         {!picture && currentPicture && (
