@@ -6,6 +6,7 @@ export const Media: CollectionConfig = {
   slug: 'media',
   upload: {
     staticDir: path.resolve(__dirname, '../../../media'),
+    mimeTypes: ['image/*', 'application/pdf'],
   },
   access: {
     read: () => true,
