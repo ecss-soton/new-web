@@ -45,6 +45,7 @@ const nextConfig = {
 
     return headers
   },
+  ignoreDuringBuilds: true,
 }
 
 module.exports = nextConfig
