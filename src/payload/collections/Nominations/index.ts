@@ -120,7 +120,7 @@ const Nominations: CollectionConfig = {
       relationTo: 'media',
       filterOptions: {
         mimeType: { contains: 'image' },
-      }
+      },
     },
     {
       name: 'droppedOut',
