@@ -109,7 +109,14 @@ const NominationForm: React.FC<{ electionId?: string; positionId?: string }> = p
           error={errors.nickname}
           type="text"
         />
-        <input type="file" {...register('image')} onChange={onChangePicture} />
+        <Input
+          name={'image'}
+          label={'Profile Picture'}
+          register={register}
+          error={errors.image}
+          type="file"
+          onChange={onChangePicture}
+        />
         {errors.image && <p>Please select an image</p>}
         {picture && <img className="image" src={picture} alt="" />}
         <Input
