@@ -14,8 +14,8 @@ import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
 import AccountForm from './AccountForm'
 
 import classes from './index.module.scss'
-import {Input} from "../../_components/Input";
-import {useAuth} from "../../_providers/Auth";
+import { Input } from '../../_components/Input'
+import { useAuth } from '../../_providers/Auth'
 
 export default async function Account() {
   const { user } = await getMeUser({
@@ -23,7 +23,6 @@ export default async function Account() {
       'You must be logged in to access your account.',
     )}&redirect=${encodeURIComponent('/account')}`,
   })
-
 
   return (
     <Fragment>
@@ -47,7 +46,7 @@ export default async function Account() {
             children: [
               {
                 text: 'This is your account dashboard. Here you can view your account information, if there are any problems please email us at society@ecs.soton.ac.uk',
-              }
+              },
             ],
           },
         ]}
