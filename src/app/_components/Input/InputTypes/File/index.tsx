@@ -36,7 +36,7 @@ export const InputTypeFile: React.FC<Props> = ({
       disabled={disabled}
       // Maybe expand in the future, see https://www.iana.org/assignments/media-types/media-types.xhtml#image
       // Images are displayed using https://nextjs.org/docs/app/building-your-application/optimizing/images
-      accept={"image/png, image/jpeg"}
+      accept={'image/png, image/jpeg'}
       onChange={onChange}
     />
   )

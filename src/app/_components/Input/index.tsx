@@ -33,8 +33,7 @@ export const Input: React.FC<Props> = ({
   disabled,
   onChange,
 }) => {
-
-  let inputType: JSX.Element;
+  let inputType: JSX.Element
 
   switch (type) {
     case 'email':
@@ -49,7 +48,7 @@ export const Input: React.FC<Props> = ({
           disabled={disabled}
         />
       )
-      break;
+      break
     case 'textarea':
       inputType = (
         <InputTypeTextarea
@@ -62,7 +61,7 @@ export const Input: React.FC<Props> = ({
           disabled={disabled}
         />
       )
-      break;
+      break
     case 'file':
       inputType = (
         <InputTypeFile
@@ -76,7 +75,7 @@ export const Input: React.FC<Props> = ({
           onChange={onChange}
         />
       )
-      break;
+      break
     default:
       inputType = (
         <InputTypeDefault
@@ -90,7 +89,7 @@ export const Input: React.FC<Props> = ({
           disabled={disabled}
         />
       )
-      break;
+      break
   }
 
   return (
