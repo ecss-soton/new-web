@@ -4,10 +4,10 @@ import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 
+import type { User } from '../../../../payload/payload-types'
 import { Button } from '../../../_components/Button'
 import { Input } from '../../../_components/Input'
 import { Message } from '../../../_components/Message'
-import type { User } from '../../../../payload/payload-types'
 
 import classes from './index.module.scss'
 
