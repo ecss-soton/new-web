@@ -118,6 +118,9 @@ const Nominations: CollectionConfig = {
       label: 'Picture of the nominees',
       type: 'upload',
       relationTo: 'media',
+      filterOptions: {
+        mimeType: { contains: 'image' },
+      }
     },
     {
       name: 'droppedOut',
