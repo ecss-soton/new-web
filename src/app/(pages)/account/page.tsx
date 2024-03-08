@@ -6,16 +6,16 @@ import { fetchComments } from '../../_api/fetchComments'
 import { Button } from '../../_components/Button'
 import { Gutter } from '../../_components/Gutter'
 import { HR } from '../../_components/HR'
+import { Input } from '../../_components/Input'
 import { RenderParams } from '../../_components/RenderParams'
 import { LowImpactHero } from '../../_heros/LowImpact'
+import { useAuth } from '../../_providers/Auth'
 import { formatDateTime } from '../../_utilities/formatDateTime'
 import { getMeUser } from '../../_utilities/getMeUser'
 import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
 import AccountForm from './AccountForm'
 
 import classes from './index.module.scss'
-import { Input } from '../../_components/Input'
-import { useAuth } from '../../_providers/Auth'
 
 export default async function Account() {
   const { user } = await getMeUser({
