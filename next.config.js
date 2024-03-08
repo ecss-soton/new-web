@@ -6,9 +6,20 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['localhost', process.env.NEXT_PUBLIC_SERVER_URL, 'society.ecs.soton.ac.uk']
-      .filter(Boolean)
-      .map(url => url.replace(/https?:\/\//, '')),
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'society.ecs.soton.ac.uk',
+      },
+      {
+        protocol: 'https',
+        hostname: process.env.NEXT_PUBLIC_SERVER_URL,
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+    ],
   },
   redirects,
   async headers() {
