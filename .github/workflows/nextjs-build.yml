@@ -2,10 +2,6 @@ name: Builds Nextjs site
 
 on:
   pull_request:
-    types:
-      - opened
-      - ready_for_review
-      - review_requested
 
 jobs:
   build:
