@@ -1,6 +1,11 @@
 import React from 'react'
 import { FieldValues, UseFormRegister } from 'react-hook-form'
 
+import { InputTypeDefault } from './InputTypes/Default'
+import { InputTypeEmail } from './InputTypes/Email'
+import { InputTypeFile } from './InputTypes/File'
+import { InputTypeTextarea } from './InputTypes/Textarea'
+
 import classes from './index.module.scss'
 
 type Props = {
@@ -13,6 +18,7 @@ type Props = {
   validate?: (value: string) => boolean | string
   placeholder?: string
   disabled?: boolean
+  onChange?: (value: any) => void
 }
 
 export const Input: React.FC<Props> = ({
@@ -25,46 +31,75 @@ export const Input: React.FC<Props> = ({
   validate,
   placeholder,
   disabled,
+  onChange,
 }) => {
+
+  let inputType: JSX.Element;
+
+  switch (type) {
+    case 'email':
+      inputType = (
+        <InputTypeEmail
+          name={name}
+          required={required}
+          register={register}
+          error={error}
+          validate={validate}
+          placeholder={placeholder}
+          disabled={disabled}
+        />
+      )
+      break;
+    case 'textarea':
+      inputType = (
+        <InputTypeTextarea
+          name={name}
+          required={required}
+          register={register}
+          error={error}
+          validate={validate}
+          placeholder={placeholder}
+          disabled={disabled}
+        />
+      )
+      break;
+    case 'file':
+      inputType = (
+        <InputTypeFile
+          name={name}
+          required={required}
+          register={register}
+          error={error}
+          validate={validate}
+          placeholder={placeholder}
+          disabled={disabled}
+          onChange={onChange}
+        />
+      )
+      break;
+    default:
+      inputType = (
+        <InputTypeDefault
+          name={name}
+          required={required}
+          register={register}
+          error={error}
+          type={type}
+          validate={validate}
+          placeholder={placeholder}
+          disabled={disabled}
+        />
+      )
+      break;
+  }
+
   return (
     <div className={classes.inputWrap}>
       <label htmlFor="name" className={classes.label}>
         {label}
         {required ? <span className={classes.asterisk}>&nbsp;*</span> : ''}
       </label>
-      {type === 'textarea' ? (
-        <textarea
-          className={[classes.input, classes.textarea, error && classes.error]
-            .filter(Boolean)
-            .join(' ')}
-          rows={3}
-          placeholder={placeholder}
-          {...register(name, {
-            required,
-            validate,
-          })}
-          disabled={disabled}
-        />
-      ) : (
-        <input
-          className={[classes.input, error && classes.error].filter(Boolean).join(' ')}
-          type={type}
-          placeholder={placeholder}
-          {...register(name, {
-            required,
-            validate,
-            ...(type === 'email'
-              ? {
-                  pattern: {
-                    value: /\S+@\S+\.\S+/,
-                    message: 'Please enter a valid email',
-                  },
-                }
-              : {}),
-          })}
-          disabled={disabled}
-        />
-      )}
+      {inputType}
       {error && (
         <div className={classes.errorMessage}>
           {!error?.message && error?.type === 'required'
