@@ -16,12 +16,18 @@ jobs:
         with:
           node-version: '18.x'
 
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Prettier
+        run: npm run prettier
+
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.10.0
         with:
           mongodb-version: latest
-
-      - run: npm ci
 
       - name: Copy environment variables
         run: cp .env.example .env
