@@ -81,19 +81,18 @@ export const Nominations: React.FC<{
       {nominations?.map((nomination, index) => {
         const { id, supporters, populatedNominees, nickname } = nomination
         const nomineeNames = populatedNominees.map(n => n.name).join(' & ')
-        const usernames = populatedNominees.map(n => n.username).join(', ')
         const droppedOut = nomination.droppedOut
         return (
           <Fragment key={id}>
             <h5>
               {droppedOut && (
                 <s>
-                  {nickname ?? nomineeNames} ({usernames}){' '}
+                  {nickname ? `${nickname} -` : ''} {nomineeNames}
                 </s>
               )}
               {!droppedOut && (
                 <span>
-                  {nickname ?? nomineeNames} ({usernames}){' '}
+                  {nickname ? `${nickname} -` : ''} {nomineeNames}
                 </span>
               )}
               {(isBeingVoted || populatedNominees.map(n => n.id).includes(user.id)) && (
