@@ -1,6 +1,6 @@
 FROM rust:1.76-buster as build
 
-RUN cargo install stv-rs
+RUN --network=host cargo install stv-rs
 
 FROM node:18-slim as base
 
