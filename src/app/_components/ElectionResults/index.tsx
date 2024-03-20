@@ -106,7 +106,7 @@ export const ElectionResults: React.FC<{
           // const sorted_votes = [{ count: 4, nomination: 'A' }]
           return (
             <div key={index}>
-              <h6>
+              <h6 className={classes.chartTitle}>
                 Round {index + 1}:
                 <br />
                 {nomineeName} was {outcome}ed
