@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload/types'
 
 import { user } from '../../access/user'
 import Groups from '../groups'
+import { validateCorrectElectionTime } from './validate/validateCorrectElectionTime'
 import { validatePreferences } from './validate/validatePreferences'
 import { validateRONPosition } from './validate/validateRONPosition'
 import { voteIsUnique } from './validate/voteIsUnique'
@@ -41,24 +42,11 @@ const Votes: CollectionConfig = {
       required: true,
       relationTo: 'elections',
       hasMany: false,
+      validate: validateCorrectElectionTime,
       filterOptions: ({ data }) => ({
-        and: [
-          {
-            positions: {
-              contains: data.position,
-            },
-          },
-          {
-            votingStart: {
-              less_than_equal: new Date().toISOString(),
-            },
-          },
-          {
-            votingEnd: {
-              greater_than_equal: new Date().toISOString(),
-            },
-          },
-        ],
+        positions: {
+          contains: data.position,
+        },
       }),
     },
     {
