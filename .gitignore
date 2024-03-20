@@ -1,6 +1,11 @@
 # Payload media
 media
 
+# Backup files
+backups/
+backup-db-*.tar.gz
+backup-env-*.tar.gz
+
 # IDE configs
 .idea
 .vscode
