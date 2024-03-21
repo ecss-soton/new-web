@@ -99,44 +99,46 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
 
   return (
     <div className={classes.container}>
-      <div>
-        <h4>Your ranking</h4>
-        <p>Drag and drop the candidates to rank them in order of preference.</p>
-        {ranking.ranked.map((candidate, index) => {
-          return (
-            <div key={candidate.id} className={classes.rankPosContainer}>
-              <div>
-                <p>{index + 1}</p>
+      <div className={classes.containerRow}>
+        <div className={classes.containerList}>
+          <h4>Your ranking</h4>
+          <p>Your preferences ranked from favourite (1) to least favourite ({candidates.length})</p>
+          {ranking.ranked.map((candidate, index) => {
+            return (
+              <div key={candidate.id} className={classes.rankPosContainer}>
+                <div>
+                  <h3>{index + 1}</h3>
+                </div>
+                <VoteCandidate
+                  ranking={ranking}
+                  candidate={candidate}
+                  onAdd={e => onAdd(e)}
+                  onRemove={e => onRemove(e)}
+                  onMoveUp={e => onMoveUp(e)}
+                  onMoveDown={e => onMoveDown(e)}
+                />
               </div>
-              <VoteCandidate
-                ranking={ranking}
-                candidate={candidate}
-                onAdd={e => onAdd(e)}
-                onRemove={e => onRemove(e)}
-                onMoveUp={e => onMoveUp(e)}
-                onMoveDown={e => onMoveDown(e)}
-              />
-            </div>
-          )
-        })}
-      </div>
-      <div>
-        <h4>Candidates</h4>
-        <p>Drag and drop the candidates to rank them in order of preference.</p>
-        {ranking.unranked.map(candidate => {
-          return (
-            <div key={candidate.id}>
-              <VoteCandidate
-                ranking={ranking}
-                candidate={candidate}
-                onAdd={e => onAdd(e)}
-                onRemove={e => onRemove(e)}
-                onMoveUp={e => onMoveUp(e)}
-                onMoveDown={e => onMoveDown(e)}
-              />
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
+        <div className={classes.containerList}>
+          <h4>Available Candidates</h4>
+          <p>Choose the candidates that you want to vote for from below</p>
+          {ranking.unranked.map(candidate => {
+            return (
+              <div key={candidate.id}>
+                <VoteCandidate
+                  ranking={ranking}
+                  candidate={candidate}
+                  onAdd={e => onAdd(e)}
+                  onRemove={e => onRemove(e)}
+                  onMoveUp={e => onMoveUp(e)}
+                  onMoveDown={e => onMoveDown(e)}
+                />
+              </div>
+            )
+          })}
+        </div>
       </div>
       {error && <p>{error}</p>}
       {loading && <p>Loading...</p>}

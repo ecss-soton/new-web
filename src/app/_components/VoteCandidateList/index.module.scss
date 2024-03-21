@@ -14,6 +14,16 @@
   padding-bottom: calc(var(--block-padding) / 2);
 }
 
+
+.containerList {
+  width: 100%;
+}
+
+.containerRow {
+  display: flex;
+  flex-direction: column;
+}
+
 .rankPosContainer {
   display: flex;
   flex-direction: row;
