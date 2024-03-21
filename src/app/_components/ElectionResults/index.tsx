@@ -7,6 +7,7 @@ ChartJS.defaults.color = 'rgb(235, 235, 235)'
 ChartJS.defaults.font.size = 14
 
 import { Election, ElectionResult, Nomination, User } from '../../../payload/payload-types'
+import { Button } from '../Button'
 import { options } from './options'
 
 import classes from './index.module.scss'
@@ -95,7 +96,16 @@ export const ElectionResults: React.FC<{
 
   return (
     <Fragment>
-      <h4>{electedNomineeName} was elected</h4>
+      <div className={classes.titleHolder}>
+        <h4 className={classes.electedNominee}>{electedNomineeName} was Elected</h4>
+        <Button
+          newTab={true}
+          className={classes.downloadTranscript}
+          href={`${process.env.NEXT_PUBLIC_SERVER_URL}/api/electionResults/${id}/transcript`}
+          appearance="secondary"
+          label="Download Transcript"
+        />
+      </div>
       <div className={classes.grid}>
         {rounds.map((round, index) => {
           const { votes, outcome, nomination } = round

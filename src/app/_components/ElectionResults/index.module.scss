@@ -34,3 +34,19 @@
   width: 500px;
   margin-bottom: 0;
 }
+
+
+.titleHolder {
+  flex: auto;
+  flex-direction: row;
+  display: flex;
+}
+
+.downloadTranscript {
+  display: inline-flex;
+}
+
+.electedNominee {
+  display: inline-flex;
+  width: 100%;
+}
