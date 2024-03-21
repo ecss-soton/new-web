@@ -81,28 +81,34 @@ export const Nominations: React.FC<{
         const droppedOut = nomination.droppedOut
         return (
           <Fragment key={id}>
-            <h5>
-              {droppedOut && (
-                <s>
-                  {nickname ? `${nickname} -` : ''} {nomineeNames}
-                </s>
-              )}
-              {!droppedOut && (
-                <span>
-                  {nickname ? `${nickname} -` : ''} {nomineeNames}
-                </span>
-              )}
-              {(isBeingVoted || populatedNominees.map(n => n.id).includes(user.id)) && (
-                <Button
-                  appearance={'secondary'}
-                  label={'View'}
-                  href={`/nominations/${nomination.id}`}
-                />
-              )}
-              {showSupport && (
-                <SupportNomination nominationId={id} supporters={supporters} user={user} />
-              )}
-            </h5>
+            <div className={classes.container}>
+              <h5 className={classes.title}>
+                {droppedOut && (
+                  <s>
+                    {nickname ? `${nickname} -` : ''} {nomineeNames}
+                  </s>
+                )}
+                {!droppedOut && (
+                  <span>
+                    {nickname ? `${nickname} -` : ''} {nomineeNames}
+                  </span>
+                )}
+              </h5>
+              <div className={classes.buttonContainer}>
+                <div>
+                  {(isBeingVoted || populatedNominees.map(n => n.id).includes(user.id)) && (
+                    <Button
+                      appearance={'secondary'}
+                      label={'View'}
+                      href={`/nominations/${nomination.id}`}
+                    />
+                  )}
+                  {showSupport && (
+                    <SupportNomination nominationId={id} supporters={supporters} user={user} />
+                  )}
+                </div>
+              </div>
+            </div>
           </Fragment>
         )
       })}

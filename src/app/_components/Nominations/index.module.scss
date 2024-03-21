@@ -44,6 +44,7 @@
 }
 
 .title {
+  padding: 10px;
   margin: 0;
 }
 
@@ -103,4 +104,14 @@
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: var(--base);
+}
+
+.buttonContainer {
+  display: flex;
 }
