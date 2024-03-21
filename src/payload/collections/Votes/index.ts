@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload/types'
 
 import { user } from '../../access/user'
 import Groups from '../groups'
+import { hasVoted } from './endpoints/hasVoted'
 import { validateCorrectElectionTime } from './validate/validateCorrectElectionTime'
 import { validatePreferences } from './validate/validatePreferences'
 import { validateRONPosition } from './validate/validateRONPosition'
@@ -18,6 +19,13 @@ const Votes: CollectionConfig = {
   admin: {
     group: Groups.Elections,
   },
+  endpoints: [
+    {
+      method: 'get',
+      handler: hasVoted,
+      path: '/:electionId/:positionId/hasVoted',
+    },
+  ],
   fields: [
     {
       name: 'username',
@@ -52,7 +60,6 @@ const Votes: CollectionConfig = {
     {
       name: 'RONPosition',
       type: 'number',
-      required: true,
       validate: validateRONPosition,
       min: 0,
     },
@@ -62,8 +69,12 @@ const Votes: CollectionConfig = {
       required: true,
       relationTo: 'nominations',
       hasMany: true,
-      minRows: 1,
+      defaultValue: () => [],
       validate: validatePreferences,
+      filterOptions: ({ data }) => ({
+        election: { equals: getID(data.election) },
+        position: { equals: getID(data.position) },
+      }),
     },
   ],
 }
