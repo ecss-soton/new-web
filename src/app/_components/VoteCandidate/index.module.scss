@@ -15,8 +15,10 @@
 }
 
 .container {
-  background-color: #648585;
-  margin: 10px;
+  border-radius: 1em;
+  background-color: var(--theme-elevation-150);
+  padding: 1em;
+  margin: 1em;
   width: 100%;
 }
 
