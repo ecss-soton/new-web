@@ -17,6 +17,7 @@ export default function SortableItem(props: Props) {
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      Test!
       {props.content}
     </div>
   )
