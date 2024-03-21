@@ -12,14 +12,8 @@ import {
   User,
 } from '../../../payload/payload-types'
 import { Button } from '../Button'
-import { Gutter } from '../Gutter'
-import { CMSLinkType } from '../Link'
-import { LinkList } from '../LinkList'
-import { Media as MediaComp } from '../Media'
+import { ElectionResults } from '../ElectionResults'
 import { Nominations } from '../Nominations'
-import RichText from '../RichText'
-
-import classes from './index.module.scss'
 
 export const Positions: React.FC<{
   positions?: Position[]
@@ -37,6 +31,7 @@ export const Positions: React.FC<{
   // const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
   // const href = `/${relationTo}/${slug}`
   positions?.sort((p1, p2) => p1.importance - p2.importance)
+  const hasPassedVoting = new Date().getTime() > Date.parse(election.votingEnd)
 
   return (
     <div>
@@ -53,12 +48,17 @@ export const Positions: React.FC<{
                 label={'Create Nomination'}
               ></Button>
             )}
-            <Nominations
-              positionId={position.id}
-              election={election}
-              user={user}
-              showSupport={canCreateNominations}
-            />
+            {!hasPassedVoting && (
+              <Nominations
+                positionId={position.id}
+                election={election}
+                user={user}
+                showSupport={canCreateNominations}
+              />
+            )}
+            {hasPassedVoting && (
+              <ElectionResults election={election} positionId={position.id} user={user} />
+            )}
           </Fragment>
         )
       })}

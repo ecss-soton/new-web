@@ -56,6 +56,7 @@ function parseVoteResult(
   return {
     election: electionID,
     position: positionID,
+    electedNominee: rounds[rounds.length - 1].nomination,
     roundTranscript: resultFile,
     rounds,
   }
@@ -131,6 +132,8 @@ async function updateElectionResult(
 }
 
 export async function countVotesForPosition(electionID: string, positionID: string): Promise<void> {
+  payload.logger.info(`Counting votes for position ${positionID} in election ${electionID}.`)
+
   const votes = await payload.find({
     collection: 'votes',
     pagination: false,
@@ -171,6 +174,11 @@ export async function countVotesForPosition(electionID: string, positionID: stri
     },
   })
 
+  if (nominees.docs.length === 0) {
+    payload.logger.warn(`No nominees found for position ${positionID} in election ${electionID}.`)
+    return
+  }
+
   // Keep same tie order in case this function is re-run
   const shuffle: Nomination[] = nominees.docs
     .map(value => ({
@@ -184,6 +192,10 @@ export async function countVotesForPosition(electionID: string, positionID: stri
     }))
     .sort((a, b) => a.sort.localeCompare(b.sort))
     .map(({ value }) => value)
+
+  payload.logger.info(
+    `Generating ballot file for position ${positionID} in election ${electionID}.`,
+  )
 
   const ballotFile = generateBallotFile(votes.docs, shuffle)
 
@@ -204,11 +216,14 @@ export async function countVotesForPosition(electionID: string, positionID: stri
         )
         reject()
       } else {
+        payload.logger.info(`Parsing result for position ${positionID} in election ${electionID}.`)
         const result = parseVoteResult(electionID, positionID, resultFile)
         result.ballot = ballotFile
+        payload.logger.info(`Updating result for position ${positionID} in election ${electionID}.`)
         updateElectionResult(
           result as Omit<ElectionResult, 'id' | 'updatedAt' | 'createdAt' | 'sizes'>,
         )
+        payload.logger.info(`Updated result for position ${positionID} in election ${electionID}.`)
         resolve('OK')
       }
     })
@@ -222,7 +237,7 @@ export function scheduleVotesCount(
 ): void {
   const date = new Date(Date.parse(votingEnd))
   const prefix = 'nominations-votingEnd-'
-  const previousJob = scheduledJobs[prefix + electionID]
+  const previousJob = scheduledJobs[`nominations-votingEnd-${electionID}-${positionID}`]
   if (previousJob) {
     previousJob.cancel(false)
   }
