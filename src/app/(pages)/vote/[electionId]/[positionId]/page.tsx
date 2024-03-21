@@ -59,7 +59,12 @@ export default async function Nomination({ params: { electionId, positionId } })
           <h3>Voting for {position.name}</h3>
           <p>{position.description}</p>
         </div>
-        <VoteCandidateList candidates={candidates} position={position} user={user} />
+        <VoteCandidateList
+          candidates={candidates}
+          position={position}
+          electionId={electionId}
+          user={user}
+        />
       </Gutter>
     </Fragment>
   )
