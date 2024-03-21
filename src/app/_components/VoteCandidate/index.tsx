@@ -44,12 +44,14 @@ export const VoteCandidate: React.FC<Props> = ({
           {isRanked && (
             <div className={classes.buttonContainer}>
               <Button
+                className={classes.moveButton}
                 label="Move up"
                 appearance="secondary"
                 onClick={() => onMoveUp(candidate.id)}
                 disabled={rankPos === 0}
               />
               <Button
+                className={classes.moveButton}
                 label="Move down"
                 appearance="secondary"
                 onClick={() => onMoveDown(candidate.id)}
@@ -58,7 +60,12 @@ export const VoteCandidate: React.FC<Props> = ({
             </div>
           )}
           {rankPos !== -1 && (
-            <Button label="Remove" appearance="secondary" onClick={() => onRemove(candidate.id)} />
+            <Button
+              className={classes.moveButton}
+              label="Remove"
+              appearance="secondary"
+              onClick={() => onRemove(candidate.id)}
+            />
           )}
           {rankPos === -1 && (
             <Button
@@ -76,7 +83,10 @@ export const VoteCandidate: React.FC<Props> = ({
           )}
         </div>
         <div className={classes.content}>
-          <h3 className={classes.name}>{candidate.nickname}</h3>
+          <h3 className={classes.name}>
+            {candidate.nickname ||
+              candidate.populatedNominees.map(n => n.name.split(' ')[0]).join(' & ')}
+          </h3>
           {candidate.id !== 'RON' ? (
             <p className={classes.name}>
               {candidate.populatedNominees.map(n => n.name).join(' & ')}

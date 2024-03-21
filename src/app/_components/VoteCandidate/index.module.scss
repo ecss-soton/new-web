@@ -35,6 +35,7 @@
 .name {
   padding: 0;
   margin: 0;
+  margin-left: 5px;
 }
 
 .image {
@@ -51,4 +52,9 @@
   flex-direction: column;
   justify-content: left;
   align-items: center;
+}
+
+.moveButton {
+  min-width: 10em;
+  width: 100%;
 }
