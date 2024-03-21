@@ -1,6 +1,7 @@
 @use '../../_css/queries.scss' as *;
 
 .footer {
+  margin-top: 5em;
   padding: calc(var(--base) * 4) 0;
   background-color: var(--theme-elevation-1000);
   color: var(--theme-elevation-0);
