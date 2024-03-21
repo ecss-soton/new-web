@@ -1,7 +1,5 @@
 'use client'
-import React, { Fragment, useEffect, useState } from 'react'
-import Link from 'next/link'
-import qs from 'qs'
+import React, { Fragment } from 'react'
 
 import {
   Election,
@@ -14,6 +12,7 @@ import {
 import { Button } from '../Button'
 import { ElectionResults } from '../ElectionResults'
 import { Nominations } from '../Nominations'
+import { VotingButton } from '../VotingButton'
 
 export const Positions: React.FC<{
   positions?: Position[]
@@ -32,11 +31,15 @@ export const Positions: React.FC<{
   // const href = `/${relationTo}/${slug}`
   positions?.sort((p1, p2) => p1.importance - p2.importance)
   const hasPassedVoting = new Date().getTime() > Date.parse(election.votingEnd)
+  const isBeingVoted =
+    new Date().getTime() >= Date.parse(election.votingStart) &&
+    new Date().getTime() <= Date.parse(election.votingEnd)
 
   return (
     <div>
       {positions?.map((position, index) => {
         const { name, description } = position
+
         return (
           <Fragment key={name}>
             <h3>{name}</h3>
@@ -48,12 +51,14 @@ export const Positions: React.FC<{
                 label={'Create Nomination'}
               ></Button>
             )}
+            {isBeingVoted && <VotingButton position={position} election={election} />}
             {!hasPassedVoting && (
               <Nominations
                 positionId={position.id}
                 election={election}
                 user={user}
                 showSupport={canCreateNominations}
+                isBeingVoted={isBeingVoted}
               />
             )}
             {hasPassedVoting && (

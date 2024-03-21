@@ -26,8 +26,9 @@ export const Nominations: React.FC<{
   election?: Election
   user?: User
   showSupport?: boolean
+  isBeingVoted?: boolean
 }> = props => {
-  const { showSupport, positionId, election, user } = props
+  const { showSupport, positionId, election, user, isBeingVoted } = props
 
   let [nominations, setNominations] = useState<Nomination[] | null>(null)
 
@@ -71,10 +72,6 @@ export const Nominations: React.FC<{
     }
     getPositions().then(setNominations)
   }, [user, positionId, election.id])
-
-  const isBeingVoted =
-    new Date().getTime() >= Date.parse(election.votingStart) &&
-    new Date().getTime() <= Date.parse(election.votingEnd)
 
   return (
     <div>
