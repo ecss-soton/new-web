@@ -26,8 +26,9 @@ export const Nominations: React.FC<{
   election?: Election
   user?: User
   showSupport?: boolean
+  isBeingVoted?: boolean
 }> = props => {
-  const { showSupport, positionId, election, user } = props
+  const { showSupport, positionId, election, user, isBeingVoted } = props
 
   let [nominations, setNominations] = useState<Nomination[] | null>(null)
 
@@ -72,10 +73,6 @@ export const Nominations: React.FC<{
     getPositions().then(setNominations)
   }, [user, positionId, election.id])
 
-  const isBeingVoted =
-    new Date().getTime() >= Date.parse(election.votingStart) &&
-    new Date().getTime() <= Date.parse(election.votingEnd)
-
   return (
     <div>
       {nominations?.map((nomination, index) => {
@@ -84,28 +81,34 @@ export const Nominations: React.FC<{
         const droppedOut = nomination.droppedOut
         return (
           <Fragment key={id}>
-            <h5>
-              {droppedOut && (
-                <s>
-                  {nickname ? `${nickname} -` : ''} {nomineeNames}
-                </s>
-              )}
-              {!droppedOut && (
-                <span>
-                  {nickname ? `${nickname} -` : ''} {nomineeNames}
-                </span>
-              )}
-              {(isBeingVoted || populatedNominees.map(n => n.id).includes(user.id)) && (
-                <Button
-                  appearance={'primary'}
-                  label={'View'}
-                  href={`/nominations/${nomination.id}`}
-                />
-              )}
-              {showSupport && (
-                <SupportNomination nominationId={id} supporters={supporters} user={user} />
-              )}
-            </h5>
+            <div className={classes.container}>
+              <h5 className={classes.title}>
+                {droppedOut && (
+                  <s>
+                    {nickname ? `${nickname} -` : ''} {nomineeNames}
+                  </s>
+                )}
+                {!droppedOut && (
+                  <span>
+                    {nickname ? `${nickname} -` : ''} {nomineeNames}
+                  </span>
+                )}
+              </h5>
+              <div className={classes.buttonContainer}>
+                <div>
+                  {(isBeingVoted || populatedNominees.map(n => n.id).includes(user.id)) && (
+                    <Button
+                      appearance={'secondary'}
+                      label={'View'}
+                      href={`/nominations/${nomination.id}`}
+                    />
+                  )}
+                  {showSupport && (
+                    <SupportNomination nominationId={id} supporters={supporters} user={user} />
+                  )}
+                </div>
+              </div>
+            </div>
           </Fragment>
         )
       })}

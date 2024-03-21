@@ -48,6 +48,7 @@ export const NominationPage: React.FC<{
   return (
     <Fragment>
       <Gutter>
+        <Button href={`/elections`} appearance="primary" label={'Back'} />
         <h3>
           {droppedOut && <s>{nomination.nickname ?? names}</s>}
           {!droppedOut && <span>{nomination.nickname ?? names}</span>}
@@ -67,7 +68,7 @@ export const NominationPage: React.FC<{
             href={`/nominations/${nominationId}/edit`}
             appearance="primary"
             label={'Edit Nomination'}
-          ></Button>
+          />
         )}
         <Suspense fallback={<Fragment>Loading...</Fragment>}>
           <Media resource={nomination.image} imgClassName={classes.image} />
