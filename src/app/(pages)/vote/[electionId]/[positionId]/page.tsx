@@ -56,6 +56,7 @@ export default async function Nomination({ params: { electionId, positionId } })
     <Fragment>
       <Gutter>
         <div>
+          <Button href={`/elections`} appearance="primary" label={'Back'} />
           <h2>Voting for {position.name}</h2>
           <em>{position.description}</em>
           <h4>How to vote</h4>
