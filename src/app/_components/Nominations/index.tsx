@@ -94,7 +94,7 @@ export const Nominations: React.FC<{
               )}
               {(isBeingVoted || populatedNominees.map(n => n.id).includes(user.id)) && (
                 <Button
-                  appearance={'primary'}
+                  appearance={'secondary'}
                   label={'View'}
                   href={`/nominations/${nomination.id}`}
                 />
