@@ -1,4 +1,6 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 
 import classes from './index.module.scss'
 import { Nomination, User } from '../../../payload/payload-types'
@@ -29,6 +31,8 @@ export const VoteCandidate: React.FC<Props> = ({
   const rankPos = ranking.ranked.indexOf(candidate)
   const isRanked = rankPos !== -1
 
+  const [manifestoOpen, setManifestoOpen] = useState(false)
+
   return (
     <div className={classes.container}>
       <div>
@@ -48,9 +52,10 @@ export const VoteCandidate: React.FC<Props> = ({
             disabled={rankPos === ranking.ranked.length - 1}
           />
         )}
-        {rankPos !== -1 ? (
+        {rankPos !== -1 && (
           <Button label="Remove" appearance="secondary" onClick={() => onRemove(candidate.id)} />
-        ) : (
+        )}
+        {rankPos === -1 && (
           <Button
             label={`Rank #${ranking.ranked.length + 1}`}
             appearance="secondary"
@@ -67,7 +72,8 @@ export const VoteCandidate: React.FC<Props> = ({
       </div>
       <div className={classes.content}>
         <h3>{candidate.nickname}</h3>
-        {/*<p>{manifesto}</p>*/}
+        <Button label={'Read manifesto'} onClick={() => setManifestoOpen(!manifestoOpen)} />
+        {manifestoOpen && <p>{candidate.manifesto}</p>}
       </div>
     </div>
   )

@@ -15,9 +15,14 @@ type Props = {
 }
 
 export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, position }) => {
+  const RON = {
+    id: 'RON',
+    nickname: 'Re-Open Nominations',
+    description: 'This is an option to re-open nominations',
+  }
   const [ranking, setRanking] = useState({
     ranked: [],
-    unranked: candidates,
+    unranked: [...candidates, RON],
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
