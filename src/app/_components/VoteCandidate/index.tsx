@@ -1,7 +1,8 @@
 import React from 'react'
 
 import classes from './index.module.scss'
-import { Media, Nomination, User } from '../../../payload/payload-types'
+import { Nomination, User } from '../../../payload/payload-types'
+import { Media } from '../Media'
 import NextImage from 'next/image'
 import { Button } from '../Button'
 
@@ -25,10 +26,6 @@ export const VoteCandidate: React.FC<Props> = ({
   onMoveDown,
   onMoveUp,
 }) => {
-  if (typeof candidate.image === 'string') {
-    return null
-  }
-
   const rankPos = ranking.ranked.indexOf(candidate)
   const isRanked = rankPos !== -1
 
@@ -62,7 +59,12 @@ export const VoteCandidate: React.FC<Props> = ({
         )}
       </div>
 
-      <div className={classes.image}>{/*<NextImage src={image.url} alt={nickname} />*/}</div>
+      <div>
+        {!candidate.image && <div className={classes.placeholder}>No image</div>}
+        {candidate.image && typeof candidate.image !== 'string' && (
+          <Media imgClassName={classes.image} resource={candidate.image} />
+        )}
+      </div>
       <div className={classes.content}>
         <h3>{candidate.nickname}</h3>
         {/*<p>{manifesto}</p>*/}
