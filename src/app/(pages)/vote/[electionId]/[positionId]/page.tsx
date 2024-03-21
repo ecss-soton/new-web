@@ -56,8 +56,17 @@ export default async function Nomination({ params: { electionId, positionId } })
     <Fragment>
       <Gutter>
         <div>
-          <h3>Voting for {position.name}</h3>
-          <p>{position.description}</p>
+          <h2>Voting for {position.name}</h2>
+          <em>{position.description}</em>
+          <h4>How to vote</h4>
+          <p>
+            Select the candidates you wish to vote for from the{' '}
+            <strong>Available Candidates</strong> list. Use the buttons to move the candidates up
+            and down to set your preferences, remember you don't have to vote for everyone. When you
+            are happy with your selection press the submit button and your ranking, seen in the{' '}
+            <strong>Your ranking</strong> section will be submitted. You will no longer be able to
+            vote again or view your vote.
+          </p>
         </div>
         <VoteCandidateList
           candidates={candidates}
