@@ -32,6 +32,7 @@ const getCandidates = async (electionId: string, positionId: string) => {
         equals: false,
       },
     },
+    depth: 2,
   })
 }
 
