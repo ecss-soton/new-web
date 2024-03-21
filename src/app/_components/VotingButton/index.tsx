@@ -5,6 +5,7 @@ import { Election, Position } from '../../../payload/payload-types'
 import { Button } from '../Button'
 
 export const VotingButton: React.FC<{
+  className?: string
   position?: Position
   election?: Election
   electionId?: string
@@ -43,6 +44,7 @@ export const VotingButton: React.FC<{
       {hasVoted && <h6>Already Voted</h6>}
       {!hasVoted && (
         <Button
+          className={props.className}
           href={`/vote/${electionId || election?.id}/${position.id}`}
           appearance={appearance}
           onClick={onClick}

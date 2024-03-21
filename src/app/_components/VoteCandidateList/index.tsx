@@ -127,7 +127,7 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
           {ranking.ranked.map((candidate, index) => {
             return (
               <div key={candidate.id} className={classes.rankPosContainer}>
-                <div>
+                <div className={classes.pad}>
                   <h3>{index + 1}</h3>
                 </div>
                 <VoteCandidate
@@ -164,6 +164,7 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
       {error && <p>{error}</p>}
       {loading && <p>Loading...</p>}
       <VotingButton
+        className={classes.submitButton}
         position={position}
         electionId={electionId}
         onClick={submitVotes}
