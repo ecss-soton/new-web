@@ -13,6 +13,7 @@ import payload from 'payload'
 import { VoteCandidate } from '../../../../_components/VoteCandidate'
 import { getID } from '../../../../../payload/utilities/getID'
 import DraggableList from '../../../../_components/DraggableList'
+import { VoteCandidateList } from '../../../../_components/VoteCandidateList'
 
 // Pres = http://localhost:3000/vote/65ea0784b436290ac4943c39/65e62035b733f7583ee3b795
 
@@ -26,6 +27,9 @@ const getCandidates = async (electionId: string, positionId: string) => {
       },
       position: {
         equals: positionId,
+      },
+      droppedOut: {
+        equals: false,
       },
     },
   })
@@ -45,7 +49,7 @@ export default async function Nomination({ params: { electionId, positionId } })
     )}&redirect=${encodeURIComponent(`/vote/${electionId}/${positionId}`)}`,
   })
 
-  const candidates = await getCandidates(electionId, positionId)
+  const candidates = (await getCandidates(electionId, positionId)).docs
   const position = await getPosition(positionId)
 
   return (
@@ -55,30 +59,7 @@ export default async function Nomination({ params: { electionId, positionId } })
           <h3>Voting for {position.name}</h3>
           <p>{position.description}</p>
         </div>
-        <div>
-          <h4>Your ranking</h4>
-          <p>Drag and drop the candidates to rank them in order of preference.</p>
-        </div>
-        <div>
-          <h4>Candidates</h4>
-          <p>Drag and drop the candidates to rank them in order of preference.</p>
-          <DraggableList
-            elements={candidates.docs.map(candidate => {
-              return (
-                <div key={candidate.id}>
-                  <VoteCandidate
-                    key={candidate.id}
-                    nominees={candidate.nominees}
-                    nickname={candidate.nickname}
-                    manifesto={candidate.manifesto}
-                    image={candidate.image}
-                    droppedOut={candidate.droppedOut}
-                  />
-                </div>
-              )
-            })}
-          />
-        </div>
+        <VoteCandidateList candidates={candidates} position={position} user={user} />
       </Gutter>
     </Fragment>
   )
