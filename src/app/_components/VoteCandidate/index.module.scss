@@ -22,13 +22,15 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .container {
   border-radius: 1em;
   background-color: var(--theme-elevation-150);
   padding: 1em;
-  margin: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
   width: 100%;
 }
 

@@ -76,12 +76,10 @@ export const VoteCandidate: React.FC<Props> = ({
           )}
         </div>
 
-        <div>
-          {!candidate.image && <div className={classes.placeholder}>No image</div>}
-          {candidate.image && typeof candidate.image !== 'string' && (
-            <Media imgClassName={classes.image} resource={candidate.image} />
-          )}
-        </div>
+        {candidate.image && typeof candidate.image !== 'string' && (
+          <Media imgClassName={classes.image} resource={candidate.image} />
+        )}
+
         <div className={classes.content}>
           <h3 className={classes.name}>
             {candidate.nickname ||
@@ -97,7 +95,11 @@ export const VoteCandidate: React.FC<Props> = ({
         </div>
         <div>
           {candidate.manifesto && (
-            <Button label={'Read manifesto'} onClick={() => setManifestoOpen(!manifestoOpen)} />
+            <Button
+              appearance={'primary'}
+              label={'Read manifesto'}
+              onClick={() => setManifestoOpen(!manifestoOpen)}
+            />
           )}
         </div>
       </div>
