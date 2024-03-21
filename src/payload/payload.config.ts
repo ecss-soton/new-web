@@ -64,6 +64,7 @@ export default buildConfig({
         alias: {
           ...config.resolve.alias,
           dotenv: path.resolve(__dirname, './dotenv.js'),
+          archiver: path.resolve(__dirname, './emptyModuleMock.js'),
           [path.resolve(__dirname, './endpoints/seed')]: path.resolve(
             __dirname,
             './emptyModuleMock.js',
