@@ -14,9 +14,6 @@
   padding-bottom: calc(var(--block-padding) / 2);
 }
 
-.buttonContainer {}
-
-
 .flexContainer {
   display: flex;
   flex-direction: row;
@@ -34,6 +31,14 @@
   width: 100%;
 }
 
+.smallMargin {
+  margin: 0.5em;
+}
+
+.content {
+  margin: 0.5em;
+}
+
 .name {
   padding: 0;
   margin: 0;
@@ -41,6 +46,7 @@
 }
 
 .image {
+  margin: 0.5em;
   width: auto;
   height: 200px;
 }
@@ -54,6 +60,7 @@
   flex-direction: column;
   justify-content: left;
   align-items: center;
+  margin: 0.5em;
 }
 
 .moveButton {

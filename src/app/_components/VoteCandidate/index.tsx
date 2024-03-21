@@ -57,17 +57,15 @@ export const VoteCandidate: React.FC<Props> = ({
                 onClick={() => onMoveDown(candidate.id)}
                 disabled={rankPos === ranking.ranked.length - 1}
               />
+              <Button
+                className={classes.moveButton}
+                label="Remove"
+                appearance="secondary"
+                onClick={() => onRemove(candidate.id)}
+              />
             </div>
           )}
-          {rankPos !== -1 && (
-            <Button
-              className={classes.moveButton}
-              label="Remove"
-              appearance="secondary"
-              onClick={() => onRemove(candidate.id)}
-            />
-          )}
-          {rankPos === -1 && (
+          {!isRanked && (
             <Button
               label={`Rank #${ranking.ranked.length + 1}`}
               appearance="secondary"
@@ -80,7 +78,7 @@ export const VoteCandidate: React.FC<Props> = ({
           <Media imgClassName={classes.image} resource={candidate.image} />
         )}
 
-        <div className={classes.content}>
+        <div className={classes.smallMargin}>
           <h3 className={classes.name}>
             {candidate.nickname ||
               candidate.populatedNominees.map(n => n.name.split(' ')[0]).join(' & ')}
@@ -96,6 +94,7 @@ export const VoteCandidate: React.FC<Props> = ({
         <div>
           {candidate.manifesto && (
             <Button
+              className={classes.smallMargin}
               appearance={'primary'}
               label={'Read manifesto'}
               onClick={() => setManifestoOpen(!manifestoOpen)}
