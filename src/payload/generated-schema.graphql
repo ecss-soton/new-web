@@ -10016,7 +10016,7 @@ input versionsElection_where_or {
 
 type Nomination {
   id: String
-  nominees: [User!]!
+  nominees: [User!]
   populatedNominees: [Nomination_PopulatedNominees!]
   nickname: String
   manifesto: String
@@ -11068,7 +11068,7 @@ type Vote {
   username: String!
   position: Position!
   election: Election!
-  RONPosition: Float!
+  RONPosition: Float
   preference: [Nomination!]!
   updatedAt: DateTime
   createdAt: DateTime
@@ -11134,6 +11134,7 @@ input Vote_RONPosition_operator {
   greater_than: Float
   less_than_equal: Float
   less_than: Float
+  exists: Boolean
 }
 
 input Vote_preference_operator {
@@ -30019,7 +30020,7 @@ input mutationVoteInput {
   username: String!
   position: String
   election: String
-  RONPosition: Float!
+  RONPosition: Float
   preference: [String]
   updatedAt: String
   createdAt: String

@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { user } from '../../access/user'
+import { getID } from '../../utilities/getID'
 import Groups from '../groups'
 import { hasVoted } from './endpoints/hasVoted'
 import { validateCorrectElectionTime } from './validate/validateCorrectElectionTime'
