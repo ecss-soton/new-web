@@ -72,7 +72,9 @@ export const VoteCandidate: React.FC<Props> = ({
       </div>
       <div className={classes.content}>
         <h3>{candidate.nickname}</h3>
-        <Button label={'Read manifesto'} onClick={() => setManifestoOpen(!manifestoOpen)} />
+        {candidate.manifesto && (
+          <Button label={'Read manifesto'} onClick={() => setManifestoOpen(!manifestoOpen)} />
+        )}
         {manifestoOpen && <p>{candidate.manifesto}</p>}
       </div>
     </div>

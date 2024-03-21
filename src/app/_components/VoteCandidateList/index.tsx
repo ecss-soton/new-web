@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 
 import classes from './index.module.scss'
-import { Nomination, Position, User } from '../../../payload/payload-types'
+import { Election, Media, Nomination, Position, User } from '../../../payload/payload-types'
 import { VoteCandidate } from '../VoteCandidate'
 import { Button } from '../Button'
 
@@ -15,10 +15,19 @@ type Props = {
 }
 
 export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, position }) => {
-  const RON = {
+  const RON: Nomination = {
     id: 'RON',
     nickname: 'Re-Open Nominations',
-    description: 'This is an option to re-open nominations',
+    manifesto: null,
+    image: null,
+    droppedOut: false,
+    supporters: null,
+    joinUUID: 'string',
+    updatedAt: 'string',
+    createdAt: 'string',
+    nominees: [],
+    position: position,
+    election: electionId,
   }
   const [ranking, setRanking] = useState({
     ranked: [],
@@ -29,6 +38,7 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
 
   const submitVotes = async () => {
     setLoading(true)
+    const ronPos = ranking.ranked.findIndex(candidate => candidate.id === 'RON')
     const res = await fetch('/api/votes', {
       method: 'POST',
       headers: {
@@ -37,7 +47,8 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
       body: JSON.stringify({
         election: electionId,
         position: position.id,
-        preference: ranking.ranked.map(candidate => candidate.id),
+        RONPosition: ronPos === -1 ? null : ronPos,
+        preference: ranking.ranked.map(candidate => candidate.id).filter(id => id !== 'RON'),
       }),
     })
     setLoading(false)
