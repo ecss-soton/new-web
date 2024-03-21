@@ -14,5 +14,7 @@
   padding-bottom: calc(var(--block-padding) / 2);
 }
 
-.container {
+.rankPosContainer {
+  display: flex;
+  flex-direction: row;
 }

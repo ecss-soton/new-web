@@ -9,27 +9,42 @@ import { Button } from '../Button'
 
 type Props = {
   candidates: Nomination[]
+  electionId: string
   position: Position
   user: User
 }
 
-export const VoteCandidateList: React.FC<Props> = ({ candidates, position }) => {
+export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, position }) => {
   const [ranking, setRanking] = useState({
     ranked: [],
     unranked: candidates,
   })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const submitVotes = async () => {
-    const res = await fetch('/api/vote', {
+    setLoading(true)
+    const res = await fetch('/api/votes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        election: electionId,
         position: position.id,
-        preferences: ranking.ranked.map(candidate => candidate.id),
+        preference: ranking.ranked.map(candidate => candidate.id),
       }),
     })
+    setLoading(false)
+
+    const data = await res.json()
+
+    if (data.errors) {
+      setError(data.errors[0].message)
+      return
+    }
+
+    setError('')
   }
 
   const swapElements = (array, index1, index2) => {
@@ -87,9 +102,12 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, position }) => 
       <div>
         <h4>Your ranking</h4>
         <p>Drag and drop the candidates to rank them in order of preference.</p>
-        {ranking.ranked.map(candidate => {
+        {ranking.ranked.map((candidate, index) => {
           return (
-            <div key={candidate.id}>
+            <div key={candidate.id} className={classes.rankPosContainer}>
+              <div>
+                <p>{index + 1}</p>
+              </div>
               <VoteCandidate
                 ranking={ranking}
                 candidate={candidate}
@@ -120,6 +138,8 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, position }) => 
           )
         })}
       </div>
+      {error && <p>{error}</p>}
+      {loading && <p>Loading...</p>}
       <Button label="Submit" appearance="primary" onClick={submitVotes} />
     </div>
   )
