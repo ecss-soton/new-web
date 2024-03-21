@@ -783,7 +783,7 @@ export interface Vote {
   position: string | Position;
   election: string | Election;
   RONPosition?: number | null;
-  preference: (string | Nomination)[];
+  preference?: (string | Nomination)[] | null;
   updatedAt: string;
   createdAt: string;
 }

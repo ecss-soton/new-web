@@ -11069,7 +11069,7 @@ type Vote {
   position: Position!
   election: Election!
   RONPosition: Float
-  preference: [Nomination!]!
+  preference: [Nomination!]
   updatedAt: DateTime
   createdAt: DateTime
 }
@@ -11143,6 +11143,7 @@ input Vote_preference_operator {
   in: [JSON]
   not_in: [JSON]
   all: [JSON]
+  exists: Boolean
 }
 
 input Vote_updatedAt_operator {

@@ -5,7 +5,7 @@ import { getArrayID } from '../../../utilities/getID'
 
 export const validatePreferences: Validate = async (preferences, args) => {
   if (!preferences || preferences?.length === 0) {
-    if (!args.data.RONPosition) {
+    if (args.data?.RONPosition === undefined) {
       return 'Vote must include at least one preference'
     }
     return relationship(preferences, args)

@@ -67,7 +67,6 @@ const Votes: CollectionConfig = {
     {
       name: 'preference',
       type: 'relationship',
-      required: true,
       relationTo: 'nominations',
       hasMany: true,
       defaultValue: () => [],
