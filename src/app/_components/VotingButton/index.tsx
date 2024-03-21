@@ -7,17 +7,23 @@ import { Button } from '../Button'
 export const VotingButton: React.FC<{
   position?: Position
   election?: Election
+  electionId?: string
+  label: string
+  onClick?: () => void
+  appearance?: 'primary' | 'secondary'
 }> = props => {
-  const { position, election } = props
+  let { position, election, electionId, onClick, label, appearance } = props
+
+  if (appearance !== 'primary' && appearance !== 'secondary') {
+    appearance = 'primary'
+  }
 
   const [hasVoted, setHasVoted] = useState(false)
 
   useEffect(() => {
     const asyncEffect = async () => {
       try {
-        const req = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/votes/${election.id}/${position.id}/hasVoted`,
-        )
+        const req = await fetch(`/api/votes/${electionId || election?.id}/${position.id}/hasVoted`)
 
         const json = (await req.json()) as { hasVoted: boolean }
 
@@ -30,16 +36,17 @@ export const VotingButton: React.FC<{
     asyncEffect().then(v => {
       setHasVoted(v)
     })
-  }, [election.id, position.id])
+  }, [electionId, election?.id, position.id])
 
   return (
     <Fragment>
       {hasVoted && <h6>Already Voted</h6>}
       {!hasVoted && (
         <Button
-          href={`/vote/${election.id}/${position.id}`}
-          appearance="primary"
-          label={`Vote`}
+          href={`/vote/${electionId || election?.id}/${position.id}`}
+          appearance={appearance}
+          onClick={onClick}
+          label={label}
         ></Button>
       )}
     </Fragment>

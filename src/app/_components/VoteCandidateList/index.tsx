@@ -6,6 +6,8 @@ import classes from './index.module.scss'
 import { Election, Media, Nomination, Position, User } from '../../../payload/payload-types'
 import { VoteCandidate } from '../VoteCandidate'
 import { Button } from '../Button'
+import { VotingButton } from '../VotingButton'
+import { useRouter } from 'next/navigation'
 
 type Props = {
   candidates: Nomination[]
@@ -35,6 +37,7 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const router = useRouter()
 
   const submitVotes = async () => {
     setLoading(true)
@@ -59,6 +62,8 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
       setError(data.errors[0].message)
       return
     }
+
+    router.push('/elections')
 
     setError('')
   }
@@ -158,7 +163,13 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
       </div>
       {error && <p>{error}</p>}
       {loading && <p>Loading...</p>}
-      <Button label="Submit" appearance="primary" onClick={submitVotes} />
+      <VotingButton
+        position={position}
+        electionId={electionId}
+        onClick={submitVotes}
+        label="Submit"
+        appearance="primary"
+      />
     </div>
   )
 }

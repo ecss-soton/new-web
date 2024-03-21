@@ -51,7 +51,9 @@ export const Positions: React.FC<{
                 label={'Create Nomination'}
               ></Button>
             )}
-            {isBeingVoted && <VotingButton position={position} election={election} />}
+            {isBeingVoted && (
+              <VotingButton label={'Vote'} position={position} election={election} />
+            )}
             {!hasPassedVoting && (
               <Nominations
                 positionId={position.id}
