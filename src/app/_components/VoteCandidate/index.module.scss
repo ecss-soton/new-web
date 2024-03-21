@@ -14,6 +14,16 @@
   padding-bottom: calc(var(--block-padding) / 2);
 }
 
+.buttonContainer {}
+
+
+.flexContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .container {
   border-radius: 1em;
   background-color: var(--theme-elevation-150);
@@ -22,7 +32,23 @@
   width: 100%;
 }
 
+.name {
+  padding: 0;
+  margin: 0;
+}
+
 .image {
-  width: 50px;
-  height: 50px;
+  width: auto;
+  height: 200px;
+}
+
+.manifesto {
+  white-space: pre-wrap;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  align-items: center;
 }

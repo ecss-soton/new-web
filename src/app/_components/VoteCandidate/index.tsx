@@ -33,50 +33,65 @@ export const VoteCandidate: React.FC<Props> = ({
 
   const [manifestoOpen, setManifestoOpen] = useState(false)
 
+  if (typeof candidate.nominees === 'string') {
+    return null
+  }
+
   return (
     <div className={classes.container}>
-      <div>
-        {isRanked && (
-          <Button
-            label="Move up"
-            appearance="secondary"
-            onClick={() => onMoveUp(candidate.id)}
-            disabled={rankPos === 0}
-          />
-        )}
-        {isRanked && (
-          <Button
-            label="Move down"
-            appearance="secondary"
-            onClick={() => onMoveDown(candidate.id)}
-            disabled={rankPos === ranking.ranked.length - 1}
-          />
-        )}
-        {rankPos !== -1 && (
-          <Button label="Remove" appearance="secondary" onClick={() => onRemove(candidate.id)} />
-        )}
-        {rankPos === -1 && (
-          <Button
-            label={`Rank #${ranking.ranked.length + 1}`}
-            appearance="secondary"
-            onClick={() => onAdd(candidate.id)}
-          />
-        )}
-      </div>
+      <div className={classes.flexContainer}>
+        <div>
+          {isRanked && (
+            <div className={classes.buttonContainer}>
+              <Button
+                label="Move up"
+                appearance="secondary"
+                onClick={() => onMoveUp(candidate.id)}
+                disabled={rankPos === 0}
+              />
+              <Button
+                label="Move down"
+                appearance="secondary"
+                onClick={() => onMoveDown(candidate.id)}
+                disabled={rankPos === ranking.ranked.length - 1}
+              />
+            </div>
+          )}
+          {rankPos !== -1 && (
+            <Button label="Remove" appearance="secondary" onClick={() => onRemove(candidate.id)} />
+          )}
+          {rankPos === -1 && (
+            <Button
+              label={`Rank #${ranking.ranked.length + 1}`}
+              appearance="secondary"
+              onClick={() => onAdd(candidate.id)}
+            />
+          )}
+        </div>
 
-      <div>
-        {!candidate.image && <div className={classes.placeholder}>No image</div>}
-        {candidate.image && typeof candidate.image !== 'string' && (
-          <Media imgClassName={classes.image} resource={candidate.image} />
-        )}
+        <div>
+          {!candidate.image && <div className={classes.placeholder}>No image</div>}
+          {candidate.image && typeof candidate.image !== 'string' && (
+            <Media imgClassName={classes.image} resource={candidate.image} />
+          )}
+        </div>
+        <div className={classes.content}>
+          <h3 className={classes.name}>{candidate.nickname}</h3>
+          {candidate.id !== 'RON' ? (
+            <p className={classes.name}>
+              {candidate.populatedNominees.map(n => n.name).join(' & ')}
+            </p>
+          ) : (
+            ''
+          )}
+        </div>
+        <div>
+          {candidate.manifesto && (
+            <Button label={'Read manifesto'} onClick={() => setManifestoOpen(!manifestoOpen)} />
+          )}
+        </div>
       </div>
-      <div className={classes.content}>
-        <h3>{candidate.nickname}</h3>
-        {candidate.manifesto && (
-          <Button label={'Read manifesto'} onClick={() => setManifestoOpen(!manifestoOpen)} />
-        )}
-        {manifestoOpen && <p>{candidate.manifesto}</p>}
-      </div>
+      {manifestoOpen && <p className={classes.manifesto}>{candidate.manifesto}</p>}
     </div>
   )
 }
