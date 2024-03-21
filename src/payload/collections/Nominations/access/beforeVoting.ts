@@ -9,6 +9,10 @@ export const beforeVoting: FieldAccess<Nomination> = async ({ req, doc }) => {
     return true
   }
 
+  if (!doc) {
+    return false
+  }
+
   // Don't think doc.election will ever not be a string, but just in case
   const election = getID(doc.election)
 

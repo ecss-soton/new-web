@@ -4,6 +4,7 @@ import { admins } from '../../access/admins'
 import { isAnInt } from '../../validate/isAnInt'
 import Groups from '../groups'
 import { publishedOrAdmin } from './access/publishedOrAdmin'
+import { electionTranscript } from './endpoints/electionTranscript'
 import { recountVotes } from './endpoints/recountVotes'
 import { RecountVotesLink } from './react/recountVotesLink'
 
@@ -29,6 +30,11 @@ export const ElectionResults: CollectionConfig = {
       path: '/:id/recount',
       method: 'post',
       handler: recountVotes,
+    },
+    {
+      path: '/:id/transcript',
+      method: 'get',
+      handler: electionTranscript,
     },
   ],
   fields: [

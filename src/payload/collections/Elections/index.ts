@@ -68,7 +68,7 @@ const Elections: CollectionConfig = {
         },
       },
       hooks: {
-        afterChange: [checkNominations, countVotes],
+        afterChange: [checkNominations],
       },
       validate: isAfterNomination,
       required: true,
@@ -81,6 +81,9 @@ const Elections: CollectionConfig = {
         date: {
           pickerAppearance: 'dayAndTime',
         },
+      },
+      hooks: {
+        afterChange: [countVotes],
       },
       validate: isVotingConstitutional,
       required: true,
