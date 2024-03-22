@@ -1,13 +1,14 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
+
+import { Election, Media, Nomination, Position, User } from '../../../payload/payload-types'
+import { Button } from '../Button'
+import { VoteCandidate } from '../VoteCandidate'
+import { VotingButton } from '../VotingButton'
 
 import classes from './index.module.scss'
-import { Election, Media, Nomination, Position, User } from '../../../payload/payload-types'
-import { VoteCandidate } from '../VoteCandidate'
-import { Button } from '../Button'
-import { VotingButton } from '../VotingButton'
-import { useRouter } from 'next/navigation'
 
 type Props = {
   candidates: Nomination[]
@@ -123,7 +124,9 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
       <div className={classes.containerRow}>
         <div className={classes.containerList}>
           <h4>Your ranking</h4>
-          <p>Your preferences ranked from favourite (1) to least favourite ({candidates.length})</p>
+          <p>
+            Your preferences ranked from favourite (1) to least favourite ({candidates.length + 1})
+          </p>
           {ranking.ranked.map((candidate, index) => {
             return (
               <div key={candidate.id} className={classes.rankPosContainer}>
