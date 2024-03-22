@@ -43,7 +43,10 @@ export const Positions: React.FC<{
         return (
           <Fragment key={name}>
             <h3>{name}</h3>
-            <p>{description}</p>
+            <em>
+              {description}
+              <br />
+            </em>
             {canCreateNominations && (
               <Button
                 href={`/nominations/${election.id}/${position.id}`}
