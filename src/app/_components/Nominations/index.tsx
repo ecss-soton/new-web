@@ -75,6 +75,7 @@ export const Nominations: React.FC<{
 
   return (
     <div>
+      {nominations?.length == 0 && isBeingVoted && <h5>No nominations, no need to vote!</h5>}
       {nominations?.map((nomination, index) => {
         const { id, supporters, populatedNominees, nickname } = nomination
         const nomineeNames = populatedNominees.map(n => n.name).join(' & ')
