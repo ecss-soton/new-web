@@ -1,3 +1,4 @@
+import { readableToString } from '@rauschma/stringio'
 import { spawn } from 'child_process'
 import jsSHA from 'jssha'
 import { scheduledJobs, scheduleJob } from 'node-schedule'
@@ -12,6 +13,7 @@ function parseVoteResult(
   electionID: string,
   positionID: string,
   resultFile: string,
+  withdrawnNominees: string[],
 ): Partial<ElectionResult> {
   const roundsRegExp = /Round \d+:/gm
   const actionRegExp = /Action: (Defeat|Elect)[^:]*: (\w+)/gm
@@ -28,7 +30,7 @@ function parseVoteResult(
 
     for (const matches of actions[3].matchAll(resultRegExp)) {
       const nominationOutcome = matches[1]
-      const nominations = matches[2].split(', ')
+      const nominations = matches[2].split(', ').filter(n => !withdrawnNominees.includes(n))
 
       const vote = matches[3].split('/')
       let voteCount = 0
@@ -51,6 +53,10 @@ function parseVoteResult(
       nomination: nomination === ron ? undefined : nomination,
       votes,
     })
+  }
+
+  if (rounds.length === 0) {
+    payload.logger.error(`No rounds found for election ${electionID} and position ${positionID}`)
   }
 
   return {
@@ -201,35 +207,26 @@ export async function countVotesForPosition(electionID: string, positionID: stri
 
   const ballotFile = generateBallotFile(votes.docs, shuffle)
 
-  const stv = spawn('stv-rs', ['--arithmetic', 'exact', 'meek'])
-  let resultFile = ''
-
-  stv.stdout.on('data', data => {
-    resultFile += data
+  const stv = spawn('stv-rs', ['--arithmetic', 'exact', 'meek'], {
+    stdio: ['pipe', 'pipe', 'pipe'],
   })
-
   stv.stdin.write(ballotFile)
+  stv.stdin.end()
+  const resultFile = await readableToString(stv.stdout)
 
-  await new Promise((resolve, reject) => {
-    stv.on('exit', code => {
-      if (code !== 0) {
-        payload.logger.error(
-          'Found an error with stv-rs, have you installed it using cargo install stv-rs?',
-        )
-        reject()
-      } else {
-        payload.logger.info(`Parsing result for position ${positionID} in election ${electionID}.`)
-        const result = parseVoteResult(electionID, positionID, resultFile)
-        result.ballot = ballotFile
-        payload.logger.info(`Updating result for position ${positionID} in election ${electionID}.`)
-        updateElectionResult(
-          result as Omit<ElectionResult, 'id' | 'updatedAt' | 'createdAt' | 'sizes'>,
-        )
-        payload.logger.info(`Updated result for position ${positionID} in election ${electionID}.`)
-        resolve('OK')
-      }
-    })
-  })
+  payload.logger.info(`Parsing result for position ${positionID} in election ${electionID}.`)
+  const result = parseVoteResult(
+    electionID,
+    positionID,
+    resultFile,
+    shuffle.filter(n => n.droppedOut).map(n => n.id),
+  )
+  result.ballot = ballotFile
+  payload.logger.info(`Updating result for position ${positionID} in election ${electionID}.`)
+  await updateElectionResult(
+    result as Omit<ElectionResult, 'id' | 'updatedAt' | 'createdAt' | 'sizes'>,
+  )
+  payload.logger.info(`Updated result for position ${positionID} in election ${electionID}.`)
 }
 
 export function scheduleVotesCount(
