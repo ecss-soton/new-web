@@ -3,7 +3,7 @@ import { Bar } from 'react-chartjs-2'
 import { BarElement, CategoryScale, Chart as ChartJS, LinearScale, Tooltip } from 'chart.js'
 import qs from 'qs'
 ChartJS.register(CategoryScale, LinearScale, Tooltip, BarElement)
-ChartJS.defaults.color = 'rgb(235, 235, 235)'
+// ChartJS.defaults.color = 'rgb(235, 235, 235)'
 ChartJS.defaults.font.size = 14
 
 import { Election, ElectionResult, Nomination, User } from '../../../payload/payload-types'
