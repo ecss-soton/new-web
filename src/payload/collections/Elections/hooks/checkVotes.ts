@@ -67,7 +67,7 @@ function generateBallotFile(votes: Vote[], nominees: Nomination[]): string {
 
   for (const vote of votes) {
     const preferences = (vote.preference ?? []).map(p => `u${p}`)
-    if (vote.RONPosition !== undefined) {
+    if (vote.RONPosition !== null && vote.RONPosition !== undefined) {
       preferences.splice(vote.RONPosition, 0, ron)
     }
     const prefString = preferences.join(' ')
