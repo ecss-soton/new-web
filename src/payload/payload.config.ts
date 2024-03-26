@@ -65,6 +65,10 @@ export default buildConfig({
           ...config.resolve.alias,
           dotenv: path.resolve(__dirname, './dotenv.js'),
           archiver: path.resolve(__dirname, './emptyModuleMock.js'),
+          'node-schedule': path.resolve(__dirname, './emptyModuleMock.js'),
+          jssha: path.resolve(__dirname, './emptyModuleMock.js'),
+          child_process: path.resolve(__dirname, './emptyModuleMock.js'),
+          '@rauschma/stringio': path.resolve(__dirname, './emptyModuleMock.js'),
           [path.resolve(__dirname, './endpoints/seed')]: path.resolve(
             __dirname,
             './emptyModuleMock.js',
