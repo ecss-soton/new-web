@@ -139,6 +139,16 @@ async function updateElectionResult(
   }
 }
 
+function renameNominees(file: string, nominations: Nomination[]): string {
+  for (const nomination of nominations) {
+    const names = nomination.populatedNominees.map(n => n.name).join(' & ')
+    const regex = new RegExp(`\\b${nomination.id}\\b`, 'g')
+    file = file.replaceAll(regex, names)
+  }
+
+  return file
+}
+
 export async function countVotesForPosition(electionID: string, positionID: string): Promise<void> {
   payload.logger.info(`Counting votes for position ${positionID} in election ${electionID}.`)
 
@@ -221,7 +231,8 @@ export async function countVotesForPosition(electionID: string, positionID: stri
     resultFile,
     shuffle.filter(n => n.droppedOut).map(n => n.id),
   )
-  result.ballot = ballotFile
+  result.roundTranscript = renameNominees(result.roundTranscript, shuffle)
+  result.ballot = renameNominees(ballotFile, shuffle)
   payload.logger.info(`Updating result for position ${positionID} in election ${electionID}.`)
   await updateElectionResult(
     result as Omit<ElectionResult, 'id' | 'updatedAt' | 'createdAt' | 'sizes'>,
