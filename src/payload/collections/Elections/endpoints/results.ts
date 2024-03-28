@@ -1,6 +1,5 @@
 import type { PayloadHandler } from 'payload/config'
 
-import { getID } from '../../../utilities/getID'
 import { checkRole } from '../../Users/checkRole'
 
 export const electionResults: PayloadHandler = async (req, res): Promise<void> => {
