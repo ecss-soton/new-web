@@ -19,6 +19,7 @@ export const electionResults: PayloadHandler = async (req, res): Promise<void> =
       },
     },
     pagination: false,
+    user,
   })
 
   if (!electionResult || electionResult.totalDocs === 0) {
@@ -27,6 +28,11 @@ export const electionResults: PayloadHandler = async (req, res): Promise<void> =
       .json({ error: 'Unknown election', electionFinished: electionResult.totalDocs !== 0 })
     return
   }
+
+  electionResult.docs.sort((a, b) => {
+    if (typeof a.position === 'string' || typeof b.position === 'string') return -1
+    return a.position.importance - b.position.importance
+  })
 
   const votes = await payload.find({
     collection: 'votes',
@@ -37,6 +43,7 @@ export const electionResults: PayloadHandler = async (req, res): Promise<void> =
       },
     },
     pagination: false,
+    user,
   })
 
   const totalVoters = [...new Set(votes.docs.map(vote => vote.username))].length
