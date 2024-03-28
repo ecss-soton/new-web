@@ -29,6 +29,11 @@ export const electionResults: PayloadHandler = async (req, res): Promise<void> =
     return
   }
 
+  electionResult.docs.sort((a, b) => {
+    if (typeof a.position === 'string' || typeof b.position === 'string') return -1
+    return a.position.importance - b.position.importance
+  })
+
   const votes = await payload.find({
     collection: 'votes',
     depth: 0,
