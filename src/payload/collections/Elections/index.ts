@@ -10,6 +10,8 @@ import {
   isNominationConstitutional,
   isVotingConstitutional,
 } from './validate/dateValidate'
+import { PrettyPrintLink } from './react/prettyPrintLink'
+import { electionResults } from './endpoints/results'
 
 const Elections: CollectionConfig = {
   slug: 'elections',
@@ -28,7 +30,23 @@ const Elections: CollectionConfig = {
   versions: {
     drafts: true,
   },
+  endpoints: [
+    {
+      path: '/:id/results',
+      method: 'get',
+      handler: electionResults,
+    },
+  ],
   fields: [
+    {
+      name: 'prettyPrint',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: PrettyPrintLink,
+        },
+      },
+    },
     {
       name: 'name',
       label: 'Name',
