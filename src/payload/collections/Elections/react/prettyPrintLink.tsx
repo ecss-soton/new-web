@@ -27,13 +27,13 @@ export const PrettyPrintLink: () => JSX.Element = () => {
         totalVoters: resultData.totalVoters,
         electionResult: resultData.electionResult.map(i => {
           if (!i.electedNominee) {
-            return `${i.position.name}: RON`
+            return `**${i.position.name}**: RON`
           }
           const nomineesName = i.electedNominee.nominees.map(n => n.name).join(', ')
           const name = i.electedNominee.nickname
             ? `${i.electedNominee.nickname} - ${nomineesName}`
             : nomineesName
-          return `${i.position.name}: ${name}`
+          return `**${i.position.name}**: ${name}`
         }),
       })
     }
@@ -52,11 +52,11 @@ export const PrettyPrintLink: () => JSX.Element = () => {
         The turnout was {data.totalVotes} votes from {data.totalVoters} voters in total. The results
         are:
       </p>
-      <ol>
+      <ul>
         {data.electionResult.map(i => (
           <li key={i}>{i}</li>
         ))}
-      </ol>
+      </ul>
     </Fragment>
   )
 }
