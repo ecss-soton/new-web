@@ -18,6 +18,7 @@ function formatDate(dateString: string) {
   return new Intl.DateTimeFormat('en-GB', {
     dateStyle: 'long',
     timeStyle: 'short',
+    timeZone: 'Europe/London',
   }).format(date)
 }
 
