@@ -39,6 +39,7 @@ import { seed } from './endpoints/seed'
 import { Footer } from './globals/Footer'
 import { Header } from './globals/Header'
 import { Settings } from './globals/Settings'
+import { handleRawExpress, handleWebhook } from './payments'
 
 const generateTitle: GenerateTitle = () => {
   return 'ECSS'
@@ -133,6 +134,12 @@ export default buildConfig({
       path: '/seed',
       method: 'get',
       handler: seed,
+    },
+    {
+      path: '/stripe/webhooks',
+      method: 'post',
+      root: true,
+      handler: [handleRawExpress, handleWebhook],
     },
   ],
   plugins: [
