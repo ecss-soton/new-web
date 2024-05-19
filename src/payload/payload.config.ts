@@ -33,7 +33,6 @@ import Sponsors from './collections/Sponsors'
 import Tickets from './collections/Tickets'
 import Users from './collections/Users'
 import Votes from './collections/Votes'
-import BeforeDashboard from './components/BeforeDashboard'
 import OAuthButton from './components/BeforeLogin'
 import { seed } from './endpoints/seed'
 import { Footer } from './globals/Footer'
@@ -53,11 +52,7 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     bundler: webpackBundler(), // bundler-config
-    components: {
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
-      beforeDashboard: [BeforeDashboard],
-    },
+    components: {},
     webpack: config => ({
       ...config,
       resolve: {
