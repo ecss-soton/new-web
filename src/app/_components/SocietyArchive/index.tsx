@@ -3,14 +3,14 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import qs from 'qs'
 
-import type { Sponsor } from '../../../payload/payload-types'
+import type { Society } from '../../../payload/payload-types'
 import { Gutter } from '../Gutter'
 import { SponsorItem } from '../SponsorItem'
 
 import classes from './index.module.scss'
 
 type Result = {
-  docs: (Sponsor | string)[]
+  docs: (Society | string)[]
   // hasNextPage: boolean
   // hasPrevPage: boolean
   // nextPage: number
@@ -104,9 +104,9 @@ export const SocietyArchive: React.FC<Props> = props => {
       const searchQuery = qs.stringify(
         {
           depth: 1,
-          sort: '-level',
+          sort: '-name',
           where: {
-            level: { exists: true },
+            name: { exists: true },
           },
         },
         { encode: false },
@@ -115,13 +115,13 @@ export const SocietyArchive: React.FC<Props> = props => {
       const makeRequest = async () => {
         try {
           const req = await fetch(
-            `${process.env.NEXT_PUBLIC_SERVER_URL}/api/sponsors?${searchQuery}`,
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/api/societies?${searchQuery}`,
           )
 
           const json = await req.json()
           clearTimeout(timer)
 
-          const { docs } = json as { docs: Sponsor[] }
+          const { docs } = json as { docs: Society[] }
 
           if (docs && Array.isArray(docs)) {
             setResults(json)
@@ -133,7 +133,7 @@ export const SocietyArchive: React.FC<Props> = props => {
         } catch (err) {
           console.warn(err) // eslint-disable-line no-console
           setIsLoading(false)
-          setError(`Unable to load "sponsor archive" data at this time.`)
+          setError(`Unable to load "society archive" data at this time.`)
         }
 
         isRequesting.current = false
