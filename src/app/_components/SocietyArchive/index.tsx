@@ -5,7 +5,7 @@ import qs from 'qs'
 
 import type { Society } from '../../../payload/payload-types'
 import { Gutter } from '../Gutter'
-import { SponsorItem } from '../SponsorItem'
+import { SocietyItem } from '../SocietyItem'
 
 import classes from './index.module.scss'
 
@@ -171,7 +171,7 @@ export const SocietyArchive: React.FC<Props> = props => {
               if (typeof result === 'object' && result !== null) {
                 return (
                   <div className={classes.column} key={index}>
-                    <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
+                    <SocietyItem slug={result.slug} name={result.name} logo={result.logo} />
                   </div>
                 )
               }

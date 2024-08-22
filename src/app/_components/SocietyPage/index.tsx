@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 
-import { Sponsor } from '../../../payload/payload-types'
+import { Society } from '../../../payload/payload-types'
 import { Gutter } from '../Gutter'
 import { LinkList } from '../LinkList'
 import { Media as MediaComp } from '../Media'
@@ -9,11 +9,11 @@ import RichText from '../RichText'
 
 import classes from './index.module.scss'
 
-export const SponsorPage: React.FC<{
-  sponsor?: Sponsor
+export const SocietyPage: React.FC<{
+  society?: Society
 }> = props => {
   const {
-    sponsor: { logo, description, links, level, name, websiteUrl },
+    society: { logo, description, links, email, name, website, susu, github, instagram, discord },
   } = props
 
   // const { slug, title, categories, meta } = doc || {}
@@ -26,9 +26,7 @@ export const SponsorPage: React.FC<{
 
   return (
     <Gutter>
-      <div>{level && <h4 className={classes.title}>{level}</h4>}</div>
-
-      <Link href={websiteUrl} className={classes.mediaWrapper}>
+      <Link href={website} className={classes.mediaWrapper}>
         {!logo && <div className={classes.placeholder}>No image</div>}
         {logo && typeof logo !== 'string' && (
           <MediaComp imgClassName={classes.image} resource={logo} fill />
@@ -37,9 +35,19 @@ export const SponsorPage: React.FC<{
 
       <div className={classes.content}>{name && <h2 className={classes.title}>{name}</h2>}</div>
 
-      <div>{websiteUrl && <Link href={websiteUrl} />}</div>
+      <div>{website && <Link href={website} />}</div>
 
       <RichText content={description} />
+
+      <div>{email && <Link href={'mailto: ' + email} />}</div>
+
+      <div>{susu && <Link href={susu} />}</div>
+
+      <div>{github && <Link href={'https://github.com/' + github} />}</div>
+
+      <div>{instagram && <Link href={'https://instagram.com/' + instagram} />}</div>
+
+      <div>{discord && <Link href={discord} />}</div>
 
       <div>
         <LinkList links={links.map(link => link.link)} />
