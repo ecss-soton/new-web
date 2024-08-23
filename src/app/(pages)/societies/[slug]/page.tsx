@@ -12,8 +12,6 @@ import { SocietyPage } from '../../../_components/SocietyPage'
 export const dynamic = 'force-dynamic'
 
 export default async function Society({ params: { slug } }) {
-
-
   const { isEnabled: isDraftMode } = draftMode()
 
   let society: Society | null = null
@@ -31,7 +29,6 @@ export default async function Society({ params: { slug } }) {
   )
 
   try {
-    
     const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/societies?${searchQuery}`)
 
     const json = await req.json()
