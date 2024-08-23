@@ -26,28 +26,32 @@ export const SocietyPage: React.FC<{
 
   return (
     <Gutter>
-      <Link href={website} className={classes.mediaWrapper}>
-        {!logo && <div className={classes.placeholder}>No image</div>}
-        {logo && typeof logo !== 'string' && (
-          <MediaComp imgClassName={classes.image} resource={logo} fill />
+      <div>
+        {website && (
+          <Link href={website} className={classes.mediaWrapper}>
+            {!logo && <div className={classes.placeholder}>No image</div>}
+            {logo && typeof logo !== 'string' && (
+              <MediaComp imgClassName={classes.image} resource={logo} fill />
+            )}
+          </Link>
         )}
-      </Link>
+      </div>
 
       <div className={classes.content}>{name && <h2 className={classes.title}>{name}</h2>}</div>
 
-      <div>{website && <Link href={website} />}</div>
+      <div>{website && <Link href={website}>Website</Link>}</div>
 
       <RichText content={description} />
 
-      <div>{email && <Link href={'mailto: ' + email} />}</div>
+      <div>{email && <Link href={'mailto: ' + email}>Email</Link>}</div>
 
-      <div>{susu && <Link href={susu} />}</div>
+      <div>{susu && <Link href={susu}>Susu Page</Link>}</div>
 
-      <div>{github && <Link href={'https://github.com/' + github} />}</div>
+      <div>{github && <Link href={'https://github.com/' + github}>Github</Link>}</div>
 
-      <div>{instagram && <Link href={'https://instagram.com/' + instagram} />}</div>
+      <div>{instagram && <Link href={'https://instagram.com/' + instagram}>Instagram</Link>}</div>
 
-      <div>{discord && <Link href={discord} />}</div>
+      <div>{discord && <Link href={discord}>Discord</Link>}</div>
 
       <div>
         <LinkList links={links.map(link => link.link)} />
