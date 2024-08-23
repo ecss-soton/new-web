@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../access/admins'
 import linkGroup from '../fields/linkGroup'
+import { slugField } from '../fields/slug'
 import { testMatchesRegex } from '../validate/isAnInt'
 import { isHTTPS } from '../validate/isHTTPS'
 
@@ -18,6 +19,7 @@ const Societies: CollectionConfig = {
     defaultColumns: ['id', 'name'],
   },
   fields: [
+    slugField(),
     {
       name: 'id',
       label: 'Society acronym (e.g. ECSS)',
