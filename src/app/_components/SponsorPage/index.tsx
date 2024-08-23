@@ -19,7 +19,7 @@ export const SponsorPage: React.FC<{
   // const { slug, title, categories, meta } = doc || {}
   // const { description, image: metaImage } = meta || {}
 
-  // const hasCategories = categories && Array.isArray(categories) && categories.length > 0
+  // const hasCa  tegories = categories && Array.isArray(categories) && categories.length > 0
   // const titleToUse = titleFromProps || title
   // const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
   // const href = `/${relationTo}/${slug}`

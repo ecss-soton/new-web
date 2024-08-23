@@ -155,6 +155,10 @@ export interface Page {
                   relationTo: 'sponsors';
                   value: string | Sponsor;
                 }
+              | {
+                  relationTo: 'societies';
+                  value: string | Society;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -170,6 +174,10 @@ export interface Page {
               | {
                   relationTo: 'sponsors';
                   value: string | Sponsor;
+                }
+              | {
+                  relationTo: 'societies';
+                  value: string | Society;
                 }
             )[]
           | null;
@@ -351,6 +359,10 @@ export interface Post {
                   relationTo: 'sponsors';
                   value: string | Sponsor;
                 }
+              | {
+                  relationTo: 'societies';
+                  value: string | Society;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -366,6 +378,10 @@ export interface Post {
               | {
                   relationTo: 'sponsors';
                   value: string | Sponsor;
+                }
+              | {
+                relationTo: 'societies';
+                value: string | Society;
                 }
             )[]
           | null;
@@ -460,6 +476,10 @@ export interface Post {
                       relationTo: 'sponsors';
                       value: string | Sponsor;
                     }
+                  | {
+                    relationTo: 'societies';
+                    value: string | Society;
+                    }
                 )[]
               | null;
             populatedDocs?:
@@ -475,6 +495,10 @@ export interface Post {
                   | {
                       relationTo: 'sponsors';
                       value: string | Sponsor;
+                    }
+                  | {
+                    relationTo: 'societies';
+                    value: string | Society;
                     }
                 )[]
               | null;
@@ -633,6 +657,10 @@ export interface Project {
                   relationTo: 'sponsors';
                   value: string | Sponsor;
                 }
+              | {
+                relationTo: 'societies';
+                value: string | Society;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -648,6 +676,10 @@ export interface Project {
               | {
                   relationTo: 'sponsors';
                   value: string | Sponsor;
+                }
+              | {
+                relationTo: 'societies';
+                value: string | Society;
                 }
             )[]
           | null;
@@ -1083,6 +1115,7 @@ export interface Order {
  */
 export interface Society {
   id: string;
+  slug?: string | null;
   name?: string | null;
   description?:
     | {
