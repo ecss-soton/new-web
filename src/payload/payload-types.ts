@@ -476,6 +476,10 @@ export interface Post {
                       relationTo: 'sponsors';
                       value: string | Sponsor;
                     }
+                  | {
+                    relationTo: 'societies';
+                    value: string | Society;
+                    }
                 )[]
               | null;
             populatedDocs?:
@@ -491,6 +495,10 @@ export interface Post {
                   | {
                       relationTo: 'sponsors';
                       value: string | Sponsor;
+                    }
+                  | {
+                    relationTo: 'societies';
+                    value: string | Society;
                     }
                 )[]
               | null;
