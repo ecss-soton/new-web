@@ -41,7 +41,7 @@ export const CollectionArchive: React.FC<Props> = props => {
   const {
     categories: catsFromProps,
     className,
-    limit = 10,
+    limit,
     onResultChange,
     populateBy,
     populatedDocs,

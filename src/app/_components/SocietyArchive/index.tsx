@@ -23,7 +23,7 @@ type Result = {
 export type Props = {
   // categories?: ArchiveBlockProps['categories']
   // className?: string
-  // limit?: number
+  limit?: number
   // onResultChange?: (result: Result) => void // eslint-disable-line no-unused-vars
   // populateBy?: 'collection' | 'selection'
   // populatedDocs?: ArchiveBlockProps['populatedDocs']
@@ -38,7 +38,7 @@ export const SocietyArchive: React.FC<Props> = props => {
   const {
     // categories: catsFromProps,
     // className,
-    // limit = 10,
+    limit,
     // onResultChange,
     // populateBy,
     // populatedDocs,
@@ -104,7 +104,8 @@ export const SocietyArchive: React.FC<Props> = props => {
       const searchQuery = qs.stringify(
         {
           depth: 1,
-          sort: '-name',
+          limit,
+          sort: 'level',
           where: {
             name: { exists: true },
           },
@@ -146,7 +147,7 @@ export const SocietyArchive: React.FC<Props> = props => {
     return () => {
       if (timer) clearTimeout(timer)
     }
-  }, [])
+  }, [limit])
 
   return (
     <div className={[classes.collectionArchive].filter(Boolean).join(' ')}>
