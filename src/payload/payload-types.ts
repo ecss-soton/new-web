@@ -1117,6 +1117,7 @@ export interface Society {
   id: string;
   slug?: string | null;
   name?: string | null;
+  level?: ('not-shit' | 'shit') | null;
   description?:
     | {
         [k: string]: unknown;
