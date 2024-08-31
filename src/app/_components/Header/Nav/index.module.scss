@@ -8,7 +8,9 @@
   opacity: 1;
   transition: opacity 100ms linear;
   visibility: visible;
-
+  a {
+      color: white;
+  }
   > * {
     text-decoration: none;
   }
