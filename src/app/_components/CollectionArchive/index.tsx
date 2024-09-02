@@ -3,17 +3,19 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import qs from 'qs'
 
-import type { Post, Project } from '../../../payload/payload-types'
+import type { Committee, Post, Project, Society, Sponsor } from '../../../payload/payload-types'
 import type { ArchiveBlockProps } from '../../_blocks/ArchiveBlock/types'
 import { Card } from '../Card'
 import { Gutter } from '../Gutter'
 import { PageRange } from '../PageRange'
 import { Pagination } from '../Pagination'
+import { SocietyItem } from '../SocietyItem'
+import { SponsorItem } from '../SponsorItem'
 
 import classes from './index.module.scss'
 
 type Result = {
-  docs: (Post | Project | string)[]
+  docs: (Post | Project | Sponsor | Society | Committee | string)[]
   hasNextPage: boolean
   hasPrevPage: boolean
   nextPage: number
@@ -31,7 +33,7 @@ export type Props = {
   populateBy?: 'collection' | 'selection'
   populatedDocs?: ArchiveBlockProps['populatedDocs']
   populatedDocsTotal?: ArchiveBlockProps['populatedDocsTotal']
-  relationTo?: 'posts' | 'projects'
+  relationTo?: 'posts' | 'projects' | 'committee' | 'sponsors' | 'societies'
   selectedDocs?: ArchiveBlockProps['selectedDocs']
   showPageRange?: boolean
   sort?: string
@@ -188,7 +190,16 @@ export const CollectionArchive: React.FC<Props> = props => {
               if (typeof result === 'object' && result !== null) {
                 return (
                   <div className={classes.column} key={index}>
-                    <Card doc={result} relationTo={relationTo} showCategories />
+                    {/* {relationTo == ('projects' || 'posts' || 'committee') && (
+                      <Card doc={result} relationTo={relationTo} showCategories />
+                    )} */}
+                    {relationTo === 'societies' && 'slug' in result && 'name' in result && (
+                      <SocietyItem slug={result.slug} name={result.name} logo={result.logo} />
+                      // TODO: Fix scuffed typing fix here.
+                    )}
+                    {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
+                      <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
+                    )}
                   </div>
                 )
               }
