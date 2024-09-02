@@ -195,6 +195,7 @@ export const CollectionArchive: React.FC<Props> = props => {
                     )} */}
                     {relationTo === 'societies' && 'slug' in result && 'name' in result && (
                       <SocietyItem slug={result.slug} name={result.name} logo={result.logo} />
+                      // TODO: Fix scuffed typing fix here.
                     )}
                     {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
                       <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
