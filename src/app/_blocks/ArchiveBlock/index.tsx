@@ -63,22 +63,21 @@ export const ArchiveBlock: React.FC<
           <RichText content={introContent} />
         </Gutter>
       )}
-      {relationTo === 'societies' && <SocietyArchive limit={limit} />}
+      {/* {relationTo === 'societies' && <SocietyArchive limit={limit} />}
       {relationTo === 'committee' && <CommitteeArchive />}
-      {relationTo === 'sponsors' && <SponsorArchive />}
-      {relationTo === 'posts' ||
-        (relationTo === 'projects' && (
-          <CollectionArchive
-            populateBy={populateBy}
-            relationTo={relationTo}
-            populatedDocs={allPopulatedDocs}
-            populatedDocsTotal={populatedDocsTotal}
-            selectedDocs={selectedDocs}
-            categories={categories}
-            limit={limit}
-            sort="-publishedAt"
-          />
-        ))}
+      {relationTo === 'sponsors' && <SponsorArchive />} */}
+      {
+        <CollectionArchive
+          populateBy={populateBy}
+          relationTo={relationTo}
+          populatedDocs={allPopulatedDocs}
+          populatedDocsTotal={populatedDocsTotal}
+          selectedDocs={selectedDocs}
+          categories={categories}
+          limit={limit}
+          sort="-publishedAt"
+        />
+      }
     </div>
   )
 }
