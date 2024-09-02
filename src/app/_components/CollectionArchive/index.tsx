@@ -190,13 +190,13 @@ export const CollectionArchive: React.FC<Props> = props => {
               if (typeof result === 'object' && result !== null) {
                 return (
                   <div className={classes.column} key={index}>
-                    {relationTo == ('projects' || 'posts' || 'committee') && (
+                    {/* {relationTo == ('projects' || 'posts' || 'committee') && (
                       <Card doc={result} relationTo={relationTo} showCategories />
-                    )}
-                    {relationTo === 'societies' && (
+                    )} */}
+                    {relationTo === 'societies' && 'slug' in result && 'name' in result && (
                       <SocietyItem slug={result.slug} name={result.name} logo={result.logo} />
                     )}
-                    {relationTo === 'sponsors' && (
+                    {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
                       <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
                     )}
                   </div>
