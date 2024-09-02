@@ -117,7 +117,7 @@ export const CollectionArchive: React.FC<Props> = props => {
           depth: 1,
           limit,
           page,
-          sort,
+          sort: 'level',
           where: {
             ...(categories
               ? {
