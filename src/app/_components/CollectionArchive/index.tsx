@@ -6,6 +6,7 @@ import qs from 'qs'
 import type { Committee, Post, Project, Society, Sponsor } from '../../../payload/payload-types'
 import type { ArchiveBlockProps } from '../../_blocks/ArchiveBlock/types'
 import { Card } from '../Card'
+import { CommitteeItem } from '../CommitteeItem'
 import { Gutter } from '../Gutter'
 import { PageRange } from '../PageRange'
 import { Pagination } from '../Pagination'
@@ -172,7 +173,7 @@ export const CollectionArchive: React.FC<Props> = props => {
       <div className={classes.scrollRef} ref={scrollRef} />
       {!isLoading && error && <Gutter>{error}</Gutter>}
       <Fragment>
-        {showPageRange !== false && populateBy !== 'selection' && (
+        {/* {showPageRange !== false && populateBy !== 'selection' && (
           <Gutter>
             <div className={classes.pageRange}>
               <PageRange
@@ -183,9 +184,9 @@ export const CollectionArchive: React.FC<Props> = props => {
               />
             </div>
           </Gutter>
-        )}
+        )} */}
         <Gutter>
-          <div className={classes.grid}>
+          <div className={relationTo === 'committee' ? classes.committeegrid : classes.grid}>
             {results.docs?.map((result, index) => {
               if (typeof result === 'object' && result !== null) {
                 return (
@@ -199,6 +200,9 @@ export const CollectionArchive: React.FC<Props> = props => {
                     )}
                     {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
                       <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
+                    )}
+                    {relationTo === 'committee' && 'bio' in result && (
+                      <CommitteeItem committee={result} />
                     )}
                   </div>
                 )
