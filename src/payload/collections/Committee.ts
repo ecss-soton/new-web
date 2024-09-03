@@ -63,7 +63,6 @@ const Committee: CollectionConfig = {
         'Webmaster',
         'Web Officer',
         'Welfare Officer',
-        "Women's Representative",
       ],
     },
     {
