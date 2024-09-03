@@ -132,6 +132,34 @@ export const CollectionArchive: React.FC<Props> = props => {
         { encode: false },
       )
 
+      const societyPositionOrder = [
+        'President',
+        'Vice President',
+        'Vice President Engagement',
+        'Vice President Operations',
+        'Secretary',
+        'Treasurer',
+        'Events Officer',
+        'Welfare Officer',
+        'Web Officer',
+        'Social Secretary',
+        'Sports Officer',
+        'Marketing Officer',
+        'Hackathon Officer',
+        'Industry Officer',
+        'Academic Secretary',
+        'Gamesmaster',
+        'Games Officer',
+        'International Representative',
+        'Masters Rep',
+        'Postgraduate Representative',
+        'Publicity Officer',
+        'Sports Representative',
+        'Staff Representative',
+        'Unknown Role',
+        'Webmaster',
+      ]
+
       const makeRequest = async () => {
         try {
           const req = await fetch(
@@ -141,9 +169,17 @@ export const CollectionArchive: React.FC<Props> = props => {
           const json = await req.json()
           clearTimeout(timer)
 
-          const { docs } = json as { docs: (Post | Project)[] }
+          let { docs } = json as { docs: (Post | Project | Committee | Sponsor | Society)[] }
 
           if (docs && Array.isArray(docs)) {
+            if (relationTo === 'committee') {
+              docs = docs.sort((a, b) => {
+                const posA = 'position' in a ? a.position : ''
+                const posB = 'position' in b ? b.position : ''
+                return societyPositionOrder.indexOf(posA) - societyPositionOrder.indexOf(posB)
+              })
+            }
+
             setResults(json)
             setIsLoading(false)
             if (typeof onResultChange === 'function') {

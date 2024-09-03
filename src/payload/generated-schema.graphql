@@ -674,9 +674,11 @@ enum Archive_SelectedDocs_RelationTo {
   posts
   projects
   sponsors
+  societies
+  committee
 }
 
-union Archive_SelectedDocs = Post | Project | Sponsor
+union Archive_SelectedDocs = Post | Project | Sponsor | Society | Committee
 
 type Post {
   id: String
@@ -1742,6 +1744,428 @@ enum Sponsor_Links_Link_appearance {
   secondary
 }
 
+type Society {
+  slug: String
+  id: String!
+  name: String
+  level: Society_level!
+  description(depth: Int): JSON
+  logo(where: Society_Logo_where): Media!
+  email: EmailAddress
+  website: String
+  susu: String
+  github: String
+  instagram: String
+  discord: String
+  links: [Society_Links!]
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+enum Society_level {
+  not_shit
+  shit
+}
+
+input Society_Logo_where {
+  alt: Society_Logo_alt_operator
+  caption: Society_Logo_caption_operator
+  updatedAt: Society_Logo_updatedAt_operator
+  createdAt: Society_Logo_createdAt_operator
+  url: Society_Logo_url_operator
+  filename: Society_Logo_filename_operator
+  mimeType: Society_Logo_mimeType_operator
+  filesize: Society_Logo_filesize_operator
+  width: Society_Logo_width_operator
+  height: Society_Logo_height_operator
+  id: Society_Logo_id_operator
+  AND: [Society_Logo_where_and]
+  OR: [Society_Logo_where_or]
+}
+
+input Society_Logo_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Society_Logo_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Society_Logo_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Society_Logo_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Society_Logo_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_Logo_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_Logo_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_Logo_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Society_Logo_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Society_Logo_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Society_Logo_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Society_Logo_where_and {
+  alt: Society_Logo_alt_operator
+  caption: Society_Logo_caption_operator
+  updatedAt: Society_Logo_updatedAt_operator
+  createdAt: Society_Logo_createdAt_operator
+  url: Society_Logo_url_operator
+  filename: Society_Logo_filename_operator
+  mimeType: Society_Logo_mimeType_operator
+  filesize: Society_Logo_filesize_operator
+  width: Society_Logo_width_operator
+  height: Society_Logo_height_operator
+  id: Society_Logo_id_operator
+  AND: [Society_Logo_where_and]
+  OR: [Society_Logo_where_or]
+}
+
+input Society_Logo_where_or {
+  alt: Society_Logo_alt_operator
+  caption: Society_Logo_caption_operator
+  updatedAt: Society_Logo_updatedAt_operator
+  createdAt: Society_Logo_createdAt_operator
+  url: Society_Logo_url_operator
+  filename: Society_Logo_filename_operator
+  mimeType: Society_Logo_mimeType_operator
+  filesize: Society_Logo_filesize_operator
+  width: Society_Logo_width_operator
+  height: Society_Logo_height_operator
+  id: Society_Logo_id_operator
+  AND: [Society_Logo_where_and]
+  OR: [Society_Logo_where_or]
+}
+
+type Society_Links {
+  link: Society_Links_Link
+  id: String
+}
+
+type Society_Links_Link {
+  type: Society_Links_Link_type
+  newTab: Boolean
+  reference: Society_Links_Link_Reference_Relationship
+  url: String
+  label: String
+  appearance: Society_Links_Link_appearance
+}
+
+enum Society_Links_Link_type {
+  reference
+  custom
+}
+
+type Society_Links_Link_Reference_Relationship {
+  relationTo: Society_Links_Link_Reference_RelationTo
+  value: Society_Links_Link_Reference
+}
+
+enum Society_Links_Link_Reference_RelationTo {
+  pages
+}
+
+union Society_Links_Link_Reference = Page
+
+enum Society_Links_Link_appearance {
+  default
+  primary
+  secondary
+}
+
+type Committee {
+  id: String!
+  firstName: String!
+  lastName: String!
+  position: Committee_position
+  bio(depth: Int): JSON
+  logo(where: Committee_Logo_where): Media
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+enum Committee_position {
+  President
+  VicePresident
+  VicePresidentEngagement
+  VicePresidentOperations
+  Secretary
+  Treasurer
+  EventsOfficer
+  WelfareOfficer
+  WebOfficer
+  SocialSecretary
+  SportsOfficer
+  MarketingOfficer
+  HackathonOfficer
+  IndustryOfficer
+  AcademicSecretary
+  Gamesmaster
+  GamesOfficer
+  InternationalRepresentative
+  MastersRep
+  PostgraduateRepresentative
+  PublicityOfficer
+  SportsRepresentative
+  StaffRepresentative
+  UnknownRole
+  Webmaster
+}
+
+input Committee_Logo_where {
+  alt: Committee_Logo_alt_operator
+  caption: Committee_Logo_caption_operator
+  updatedAt: Committee_Logo_updatedAt_operator
+  createdAt: Committee_Logo_createdAt_operator
+  url: Committee_Logo_url_operator
+  filename: Committee_Logo_filename_operator
+  mimeType: Committee_Logo_mimeType_operator
+  filesize: Committee_Logo_filesize_operator
+  width: Committee_Logo_width_operator
+  height: Committee_Logo_height_operator
+  id: Committee_Logo_id_operator
+  AND: [Committee_Logo_where_and]
+  OR: [Committee_Logo_where_or]
+}
+
+input Committee_Logo_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Committee_Logo_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Committee_Logo_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Committee_Logo_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Committee_Logo_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Committee_Logo_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Committee_Logo_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Committee_Logo_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Committee_Logo_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Committee_Logo_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Committee_Logo_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Committee_Logo_where_and {
+  alt: Committee_Logo_alt_operator
+  caption: Committee_Logo_caption_operator
+  updatedAt: Committee_Logo_updatedAt_operator
+  createdAt: Committee_Logo_createdAt_operator
+  url: Committee_Logo_url_operator
+  filename: Committee_Logo_filename_operator
+  mimeType: Committee_Logo_mimeType_operator
+  filesize: Committee_Logo_filesize_operator
+  width: Committee_Logo_width_operator
+  height: Committee_Logo_height_operator
+  id: Committee_Logo_id_operator
+  AND: [Committee_Logo_where_and]
+  OR: [Committee_Logo_where_or]
+}
+
+input Committee_Logo_where_or {
+  alt: Committee_Logo_alt_operator
+  caption: Committee_Logo_caption_operator
+  updatedAt: Committee_Logo_updatedAt_operator
+  createdAt: Committee_Logo_createdAt_operator
+  url: Committee_Logo_url_operator
+  filename: Committee_Logo_filename_operator
+  mimeType: Committee_Logo_mimeType_operator
+  filesize: Committee_Logo_filesize_operator
+  width: Committee_Logo_width_operator
+  height: Committee_Logo_height_operator
+  id: Committee_Logo_id_operator
+  AND: [Committee_Logo_where_and]
+  OR: [Committee_Logo_where_or]
+}
+
 type Archive_PopulatedDocs_Relationship {
   relationTo: Archive_PopulatedDocs_RelationTo
   value: Archive_PopulatedDocs
@@ -1751,9 +2175,11 @@ enum Archive_PopulatedDocs_RelationTo {
   posts
   projects
   sponsors
+  societies
+  committee
 }
 
-union Archive_PopulatedDocs = Post | Project | Sponsor
+union Archive_PopulatedDocs = Post | Project | Sponsor | Society | Committee
 
 type Page_Meta {
   title: String
@@ -16214,220 +16640,6 @@ type SponsorsDeleteDocAccess {
   where: JSONObject
 }
 
-type Society {
-  id: String!
-  name: String
-  description(depth: Int): JSON
-  logo(where: Society_Logo_where): Media!
-  email: EmailAddress
-  website: String
-  susu: String
-  github: String
-  instagram: String
-  discord: String
-  links: [Society_Links!]
-  updatedAt: DateTime
-  createdAt: DateTime
-}
-
-input Society_Logo_where {
-  alt: Society_Logo_alt_operator
-  caption: Society_Logo_caption_operator
-  updatedAt: Society_Logo_updatedAt_operator
-  createdAt: Society_Logo_createdAt_operator
-  url: Society_Logo_url_operator
-  filename: Society_Logo_filename_operator
-  mimeType: Society_Logo_mimeType_operator
-  filesize: Society_Logo_filesize_operator
-  width: Society_Logo_width_operator
-  height: Society_Logo_height_operator
-  id: Society_Logo_id_operator
-  AND: [Society_Logo_where_and]
-  OR: [Society_Logo_where_or]
-}
-
-input Society_Logo_alt_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-}
-
-input Society_Logo_caption_operator {
-  equals: JSON
-  not_equals: JSON
-  like: JSON
-  contains: JSON
-  exists: Boolean
-}
-
-input Society_Logo_updatedAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input Society_Logo_createdAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input Society_Logo_url_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input Society_Logo_filename_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input Society_Logo_mimeType_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input Society_Logo_filesize_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input Society_Logo_width_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input Society_Logo_height_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input Society_Logo_id_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input Society_Logo_where_and {
-  alt: Society_Logo_alt_operator
-  caption: Society_Logo_caption_operator
-  updatedAt: Society_Logo_updatedAt_operator
-  createdAt: Society_Logo_createdAt_operator
-  url: Society_Logo_url_operator
-  filename: Society_Logo_filename_operator
-  mimeType: Society_Logo_mimeType_operator
-  filesize: Society_Logo_filesize_operator
-  width: Society_Logo_width_operator
-  height: Society_Logo_height_operator
-  id: Society_Logo_id_operator
-  AND: [Society_Logo_where_and]
-  OR: [Society_Logo_where_or]
-}
-
-input Society_Logo_where_or {
-  alt: Society_Logo_alt_operator
-  caption: Society_Logo_caption_operator
-  updatedAt: Society_Logo_updatedAt_operator
-  createdAt: Society_Logo_createdAt_operator
-  url: Society_Logo_url_operator
-  filename: Society_Logo_filename_operator
-  mimeType: Society_Logo_mimeType_operator
-  filesize: Society_Logo_filesize_operator
-  width: Society_Logo_width_operator
-  height: Society_Logo_height_operator
-  id: Society_Logo_id_operator
-  AND: [Society_Logo_where_and]
-  OR: [Society_Logo_where_or]
-}
-
-type Society_Links {
-  link: Society_Links_Link
-  id: String
-}
-
-type Society_Links_Link {
-  type: Society_Links_Link_type
-  newTab: Boolean
-  reference: Society_Links_Link_Reference_Relationship
-  url: String
-  label: String
-  appearance: Society_Links_Link_appearance
-}
-
-enum Society_Links_Link_type {
-  reference
-  custom
-}
-
-type Society_Links_Link_Reference_Relationship {
-  relationTo: Society_Links_Link_Reference_RelationTo
-  value: Society_Links_Link_Reference
-}
-
-enum Society_Links_Link_Reference_RelationTo {
-  pages
-}
-
-union Society_Links_Link_Reference = Page
-
-enum Society_Links_Link_appearance {
-  default
-  primary
-  secondary
-}
-
 type Societies {
   docs: [Society]
   hasNextPage: Boolean
@@ -16443,8 +16655,10 @@ type Societies {
 }
 
 input Society_where {
+  slug: Society_slug_operator
   id: Society_id_operator
   name: Society_name_operator
+  level: Society_level_operator
   description: Society_description_operator
   logo: Society_logo_operator
   email: Society_email_operator
@@ -16466,6 +16680,17 @@ input Society_where {
   OR: [Society_where_or]
 }
 
+input Society_slug_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
 input Society_id_operator {
   equals: String
   not_equals: String
@@ -16485,6 +16710,19 @@ input Society_name_operator {
   not_in: [String]
   all: [String]
   exists: Boolean
+}
+
+input Society_level_operator {
+  equals: Society_level_Input
+  not_equals: Society_level_Input
+  in: [Society_level_Input]
+  not_in: [Society_level_Input]
+  all: [Society_level_Input]
+}
+
+enum Society_level_Input {
+  not_shit
+  shit
 }
 
 input Society_description_operator {
@@ -16663,8 +16901,10 @@ input Society_createdAt_operator {
 }
 
 input Society_where_and {
+  slug: Society_slug_operator
   id: Society_id_operator
   name: Society_name_operator
+  level: Society_level_operator
   description: Society_description_operator
   logo: Society_logo_operator
   email: Society_email_operator
@@ -16687,8 +16927,10 @@ input Society_where_and {
 }
 
 input Society_where_or {
+  slug: Society_slug_operator
   id: Society_id_operator
   name: Society_name_operator
+  level: Society_level_operator
   description: Society_description_operator
   logo: Society_logo_operator
   email: Society_email_operator
@@ -16719,8 +16961,10 @@ type societiesDocAccess {
 }
 
 type SocietiesDocAccessFields {
+  slug: SocietiesDocAccessFields_slug
   id: SocietiesDocAccessFields_id
   name: SocietiesDocAccessFields_name
+  level: SocietiesDocAccessFields_level
   description: SocietiesDocAccessFields_description
   logo: SocietiesDocAccessFields_logo
   email: SocietiesDocAccessFields_email
@@ -16732,6 +16976,29 @@ type SocietiesDocAccessFields {
   links: SocietiesDocAccessFields_links
   updatedAt: SocietiesDocAccessFields_updatedAt
   createdAt: SocietiesDocAccessFields_createdAt
+}
+
+type SocietiesDocAccessFields_slug {
+  create: SocietiesDocAccessFields_slug_Create
+  read: SocietiesDocAccessFields_slug_Read
+  update: SocietiesDocAccessFields_slug_Update
+  delete: SocietiesDocAccessFields_slug_Delete
+}
+
+type SocietiesDocAccessFields_slug_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_slug_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_slug_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_slug_Delete {
+  permission: Boolean!
 }
 
 type SocietiesDocAccessFields_id {
@@ -16777,6 +17044,29 @@ type SocietiesDocAccessFields_name_Update {
 }
 
 type SocietiesDocAccessFields_name_Delete {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_level {
+  create: SocietiesDocAccessFields_level_Create
+  read: SocietiesDocAccessFields_level_Read
+  update: SocietiesDocAccessFields_level_Update
+  delete: SocietiesDocAccessFields_level_Delete
+}
+
+type SocietiesDocAccessFields_level_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_level_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_level_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields_level_Delete {
   permission: Boolean!
 }
 
@@ -17253,67 +17543,6 @@ type SocietiesDeleteDocAccess {
   where: JSONObject
 }
 
-type Committee {
-  id: String!
-  type: Committee_type!
-  members: [Committee_Members_Relationship!]
-  simplifiedMembers: [Committee_SimplifiedMembers!]
-  updatedAt: DateTime
-  createdAt: DateTime
-}
-
-enum Committee_type {
-  old
-  current
-}
-
-type Committee_Members_Relationship {
-  relationTo: Committee_Members_RelationTo
-  value: Committee_Members
-}
-
-enum Committee_Members_RelationTo {
-  nominations
-  positions
-}
-
-union Committee_Members = Nomination | Position
-
-type Committee_SimplifiedMembers {
-  position: Committee_SimplifiedMembers_position
-  name: String
-  id: String
-}
-
-enum Committee_SimplifiedMembers_position {
-  AcademicSecretary
-  EventsOfficer
-  Gamesmaster
-  GamesOfficer
-  HackathonOfficer
-  IndustryOfficer
-  InternationalRepresentative
-  MarketingOfficer
-  MastersRep
-  PostgraduateRepresentative
-  President
-  PublicityOfficer
-  Secretary
-  SocialSecretary
-  SportsOfficer
-  SportsRepresentative
-  StaffRepresentative
-  Treasurer
-  UnknownRole
-  VicePresident
-  VicePresidentEngagement
-  VicePresidentOperations
-  Webmaster
-  WebOfficer
-  WelfareOfficer
-  Women_sRepresentative
-}
-
 type Committees {
   docs: [Committee]
   hasNextPage: Boolean
@@ -17330,11 +17559,11 @@ type Committees {
 
 input Committee_where {
   id: Committee_id_operator
-  type: Committee_type_operator
-  members: Committee_members_Relation
-  simplifiedMembers__position: Committee_simplifiedMembers__position_operator
-  simplifiedMembers__name: Committee_simplifiedMembers__name_operator
-  simplifiedMembers__id: Committee_simplifiedMembers__id_operator
+  firstName: Committee_firstName_operator
+  lastName: Committee_lastName_operator
+  position: Committee_position_operator
+  bio: Committee_bio_operator
+  logo: Committee_logo_operator
   updatedAt: Committee_updatedAt_operator
   createdAt: Committee_createdAt_operator
   AND: [Committee_where_and]
@@ -17351,84 +17580,74 @@ input Committee_id_operator {
   all: [String]
 }
 
-input Committee_type_operator {
-  equals: Committee_type_Input
-  not_equals: Committee_type_Input
-  in: [Committee_type_Input]
-  not_in: [Committee_type_Input]
-  all: [Committee_type_Input]
+input Committee_firstName_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
 }
 
-enum Committee_type_Input {
-  old
-  current
+input Committee_lastName_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
 }
 
-input Committee_members_Relation {
-  relationTo: Committee_members_Relation_RelationTo
-  value: JSON
+input Committee_position_operator {
+  equals: Committee_position_Input
+  not_equals: Committee_position_Input
+  in: [Committee_position_Input]
+  not_in: [Committee_position_Input]
+  all: [Committee_position_Input]
+  exists: Boolean
 }
 
-enum Committee_members_Relation_RelationTo {
-  nominations
-  positions
-}
-
-input Committee_simplifiedMembers__position_operator {
-  equals: Committee_simplifiedMembers__position_Input
-  not_equals: Committee_simplifiedMembers__position_Input
-  in: [Committee_simplifiedMembers__position_Input]
-  not_in: [Committee_simplifiedMembers__position_Input]
-  all: [Committee_simplifiedMembers__position_Input]
-}
-
-enum Committee_simplifiedMembers__position_Input {
-  AcademicSecretary
-  EventsOfficer
-  Gamesmaster
-  GamesOfficer
-  HackathonOfficer
-  IndustryOfficer
-  InternationalRepresentative
-  MarketingOfficer
-  MastersRep
-  PostgraduateRepresentative
+enum Committee_position_Input {
   President
-  PublicityOfficer
-  Secretary
-  SocialSecretary
-  SportsOfficer
-  SportsRepresentative
-  StaffRepresentative
-  Treasurer
-  UnknownRole
   VicePresident
   VicePresidentEngagement
   VicePresidentOperations
-  Webmaster
-  WebOfficer
+  Secretary
+  Treasurer
+  EventsOfficer
   WelfareOfficer
-  Women_sRepresentative
+  WebOfficer
+  SocialSecretary
+  SportsOfficer
+  MarketingOfficer
+  HackathonOfficer
+  IndustryOfficer
+  AcademicSecretary
+  Gamesmaster
+  GamesOfficer
+  InternationalRepresentative
+  MastersRep
+  PostgraduateRepresentative
+  PublicityOfficer
+  SportsRepresentative
+  StaffRepresentative
+  UnknownRole
+  Webmaster
 }
 
-input Committee_simplifiedMembers__name_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
+input Committee_bio_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
 }
 
-input Committee_simplifiedMembers__id_operator {
+input Committee_logo_operator {
   equals: String
   not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
   exists: Boolean
 }
 
@@ -17456,11 +17675,11 @@ input Committee_createdAt_operator {
 
 input Committee_where_and {
   id: Committee_id_operator
-  type: Committee_type_operator
-  members: Committee_members_Relation
-  simplifiedMembers__position: Committee_simplifiedMembers__position_operator
-  simplifiedMembers__name: Committee_simplifiedMembers__name_operator
-  simplifiedMembers__id: Committee_simplifiedMembers__id_operator
+  firstName: Committee_firstName_operator
+  lastName: Committee_lastName_operator
+  position: Committee_position_operator
+  bio: Committee_bio_operator
+  logo: Committee_logo_operator
   updatedAt: Committee_updatedAt_operator
   createdAt: Committee_createdAt_operator
   AND: [Committee_where_and]
@@ -17469,11 +17688,11 @@ input Committee_where_and {
 
 input Committee_where_or {
   id: Committee_id_operator
-  type: Committee_type_operator
-  members: Committee_members_Relation
-  simplifiedMembers__position: Committee_simplifiedMembers__position_operator
-  simplifiedMembers__name: Committee_simplifiedMembers__name_operator
-  simplifiedMembers__id: Committee_simplifiedMembers__id_operator
+  firstName: Committee_firstName_operator
+  lastName: Committee_lastName_operator
+  position: Committee_position_operator
+  bio: Committee_bio_operator
+  logo: Committee_logo_operator
   updatedAt: Committee_updatedAt_operator
   createdAt: Committee_createdAt_operator
   AND: [Committee_where_and]
@@ -17490,9 +17709,11 @@ type committeeDocAccess {
 
 type CommitteeDocAccessFields {
   id: CommitteeDocAccessFields_id
-  type: CommitteeDocAccessFields_type
-  members: CommitteeDocAccessFields_members
-  simplifiedMembers: CommitteeDocAccessFields_simplifiedMembers
+  firstName: CommitteeDocAccessFields_firstName
+  lastName: CommitteeDocAccessFields_lastName
+  position: CommitteeDocAccessFields_position
+  bio: CommitteeDocAccessFields_bio
+  logo: CommitteeDocAccessFields_logo
   updatedAt: CommitteeDocAccessFields_updatedAt
   createdAt: CommitteeDocAccessFields_createdAt
 }
@@ -17520,148 +17741,118 @@ type CommitteeDocAccessFields_id_Delete {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_type {
-  create: CommitteeDocAccessFields_type_Create
-  read: CommitteeDocAccessFields_type_Read
-  update: CommitteeDocAccessFields_type_Update
-  delete: CommitteeDocAccessFields_type_Delete
+type CommitteeDocAccessFields_firstName {
+  create: CommitteeDocAccessFields_firstName_Create
+  read: CommitteeDocAccessFields_firstName_Read
+  update: CommitteeDocAccessFields_firstName_Update
+  delete: CommitteeDocAccessFields_firstName_Delete
 }
 
-type CommitteeDocAccessFields_type_Create {
+type CommitteeDocAccessFields_firstName_Create {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_type_Read {
+type CommitteeDocAccessFields_firstName_Read {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_type_Update {
+type CommitteeDocAccessFields_firstName_Update {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_type_Delete {
+type CommitteeDocAccessFields_firstName_Delete {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_members {
-  create: CommitteeDocAccessFields_members_Create
-  read: CommitteeDocAccessFields_members_Read
-  update: CommitteeDocAccessFields_members_Update
-  delete: CommitteeDocAccessFields_members_Delete
+type CommitteeDocAccessFields_lastName {
+  create: CommitteeDocAccessFields_lastName_Create
+  read: CommitteeDocAccessFields_lastName_Read
+  update: CommitteeDocAccessFields_lastName_Update
+  delete: CommitteeDocAccessFields_lastName_Delete
 }
 
-type CommitteeDocAccessFields_members_Create {
+type CommitteeDocAccessFields_lastName_Create {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_members_Read {
+type CommitteeDocAccessFields_lastName_Read {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_members_Update {
+type CommitteeDocAccessFields_lastName_Update {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_members_Delete {
+type CommitteeDocAccessFields_lastName_Delete {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_simplifiedMembers {
-  create: CommitteeDocAccessFields_simplifiedMembers_Create
-  read: CommitteeDocAccessFields_simplifiedMembers_Read
-  update: CommitteeDocAccessFields_simplifiedMembers_Update
-  delete: CommitteeDocAccessFields_simplifiedMembers_Delete
-  fields: CommitteeDocAccessFields_simplifiedMembers_Fields
+type CommitteeDocAccessFields_position {
+  create: CommitteeDocAccessFields_position_Create
+  read: CommitteeDocAccessFields_position_Read
+  update: CommitteeDocAccessFields_position_Update
+  delete: CommitteeDocAccessFields_position_Delete
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_Create {
+type CommitteeDocAccessFields_position_Create {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_Read {
+type CommitteeDocAccessFields_position_Read {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_Update {
+type CommitteeDocAccessFields_position_Update {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_Delete {
+type CommitteeDocAccessFields_position_Delete {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_Fields {
-  position: CommitteeDocAccessFields_simplifiedMembers_position
-  name: CommitteeDocAccessFields_simplifiedMembers_name
-  id: CommitteeDocAccessFields_simplifiedMembers_id
+type CommitteeDocAccessFields_bio {
+  create: CommitteeDocAccessFields_bio_Create
+  read: CommitteeDocAccessFields_bio_Read
+  update: CommitteeDocAccessFields_bio_Update
+  delete: CommitteeDocAccessFields_bio_Delete
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_position {
-  create: CommitteeDocAccessFields_simplifiedMembers_position_Create
-  read: CommitteeDocAccessFields_simplifiedMembers_position_Read
-  update: CommitteeDocAccessFields_simplifiedMembers_position_Update
-  delete: CommitteeDocAccessFields_simplifiedMembers_position_Delete
-}
-
-type CommitteeDocAccessFields_simplifiedMembers_position_Create {
+type CommitteeDocAccessFields_bio_Create {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_position_Read {
+type CommitteeDocAccessFields_bio_Read {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_position_Update {
+type CommitteeDocAccessFields_bio_Update {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_position_Delete {
+type CommitteeDocAccessFields_bio_Delete {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_name {
-  create: CommitteeDocAccessFields_simplifiedMembers_name_Create
-  read: CommitteeDocAccessFields_simplifiedMembers_name_Read
-  update: CommitteeDocAccessFields_simplifiedMembers_name_Update
-  delete: CommitteeDocAccessFields_simplifiedMembers_name_Delete
+type CommitteeDocAccessFields_logo {
+  create: CommitteeDocAccessFields_logo_Create
+  read: CommitteeDocAccessFields_logo_Read
+  update: CommitteeDocAccessFields_logo_Update
+  delete: CommitteeDocAccessFields_logo_Delete
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_name_Create {
+type CommitteeDocAccessFields_logo_Create {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_name_Read {
+type CommitteeDocAccessFields_logo_Read {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_name_Update {
+type CommitteeDocAccessFields_logo_Update {
   permission: Boolean!
 }
 
-type CommitteeDocAccessFields_simplifiedMembers_name_Delete {
-  permission: Boolean!
-}
-
-type CommitteeDocAccessFields_simplifiedMembers_id {
-  create: CommitteeDocAccessFields_simplifiedMembers_id_Create
-  read: CommitteeDocAccessFields_simplifiedMembers_id_Read
-  update: CommitteeDocAccessFields_simplifiedMembers_id_Update
-  delete: CommitteeDocAccessFields_simplifiedMembers_id_Delete
-}
-
-type CommitteeDocAccessFields_simplifiedMembers_id_Create {
-  permission: Boolean!
-}
-
-type CommitteeDocAccessFields_simplifiedMembers_id_Read {
-  permission: Boolean!
-}
-
-type CommitteeDocAccessFields_simplifiedMembers_id_Update {
-  permission: Boolean!
-}
-
-type CommitteeDocAccessFields_simplifiedMembers_id_Delete {
+type CommitteeDocAccessFields_logo_Delete {
   permission: Boolean!
 }
 
@@ -26783,8 +26974,10 @@ type societiesAccess {
 }
 
 type SocietiesFields {
+  slug: SocietiesFields_slug
   id: SocietiesFields_id
   name: SocietiesFields_name
+  level: SocietiesFields_level
   description: SocietiesFields_description
   logo: SocietiesFields_logo
   email: SocietiesFields_email
@@ -26796,6 +26989,29 @@ type SocietiesFields {
   links: SocietiesFields_links
   updatedAt: SocietiesFields_updatedAt
   createdAt: SocietiesFields_createdAt
+}
+
+type SocietiesFields_slug {
+  create: SocietiesFields_slug_Create
+  read: SocietiesFields_slug_Read
+  update: SocietiesFields_slug_Update
+  delete: SocietiesFields_slug_Delete
+}
+
+type SocietiesFields_slug_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_slug_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_slug_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_slug_Delete {
+  permission: Boolean!
 }
 
 type SocietiesFields_id {
@@ -26841,6 +27057,29 @@ type SocietiesFields_name_Update {
 }
 
 type SocietiesFields_name_Delete {
+  permission: Boolean!
+}
+
+type SocietiesFields_level {
+  create: SocietiesFields_level_Create
+  read: SocietiesFields_level_Read
+  update: SocietiesFields_level_Update
+  delete: SocietiesFields_level_Delete
+}
+
+type SocietiesFields_level_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields_level_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields_level_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields_level_Delete {
   permission: Boolean!
 }
 
@@ -27327,9 +27566,11 @@ type committeeAccess {
 
 type CommitteeFields {
   id: CommitteeFields_id
-  type: CommitteeFields_type
-  members: CommitteeFields_members
-  simplifiedMembers: CommitteeFields_simplifiedMembers
+  firstName: CommitteeFields_firstName
+  lastName: CommitteeFields_lastName
+  position: CommitteeFields_position
+  bio: CommitteeFields_bio
+  logo: CommitteeFields_logo
   updatedAt: CommitteeFields_updatedAt
   createdAt: CommitteeFields_createdAt
 }
@@ -27357,148 +27598,118 @@ type CommitteeFields_id_Delete {
   permission: Boolean!
 }
 
-type CommitteeFields_type {
-  create: CommitteeFields_type_Create
-  read: CommitteeFields_type_Read
-  update: CommitteeFields_type_Update
-  delete: CommitteeFields_type_Delete
+type CommitteeFields_firstName {
+  create: CommitteeFields_firstName_Create
+  read: CommitteeFields_firstName_Read
+  update: CommitteeFields_firstName_Update
+  delete: CommitteeFields_firstName_Delete
 }
 
-type CommitteeFields_type_Create {
+type CommitteeFields_firstName_Create {
   permission: Boolean!
 }
 
-type CommitteeFields_type_Read {
+type CommitteeFields_firstName_Read {
   permission: Boolean!
 }
 
-type CommitteeFields_type_Update {
+type CommitteeFields_firstName_Update {
   permission: Boolean!
 }
 
-type CommitteeFields_type_Delete {
+type CommitteeFields_firstName_Delete {
   permission: Boolean!
 }
 
-type CommitteeFields_members {
-  create: CommitteeFields_members_Create
-  read: CommitteeFields_members_Read
-  update: CommitteeFields_members_Update
-  delete: CommitteeFields_members_Delete
+type CommitteeFields_lastName {
+  create: CommitteeFields_lastName_Create
+  read: CommitteeFields_lastName_Read
+  update: CommitteeFields_lastName_Update
+  delete: CommitteeFields_lastName_Delete
 }
 
-type CommitteeFields_members_Create {
+type CommitteeFields_lastName_Create {
   permission: Boolean!
 }
 
-type CommitteeFields_members_Read {
+type CommitteeFields_lastName_Read {
   permission: Boolean!
 }
 
-type CommitteeFields_members_Update {
+type CommitteeFields_lastName_Update {
   permission: Boolean!
 }
 
-type CommitteeFields_members_Delete {
+type CommitteeFields_lastName_Delete {
   permission: Boolean!
 }
 
-type CommitteeFields_simplifiedMembers {
-  create: CommitteeFields_simplifiedMembers_Create
-  read: CommitteeFields_simplifiedMembers_Read
-  update: CommitteeFields_simplifiedMembers_Update
-  delete: CommitteeFields_simplifiedMembers_Delete
-  fields: CommitteeFields_simplifiedMembers_Fields
+type CommitteeFields_position {
+  create: CommitteeFields_position_Create
+  read: CommitteeFields_position_Read
+  update: CommitteeFields_position_Update
+  delete: CommitteeFields_position_Delete
 }
 
-type CommitteeFields_simplifiedMembers_Create {
+type CommitteeFields_position_Create {
   permission: Boolean!
 }
 
-type CommitteeFields_simplifiedMembers_Read {
+type CommitteeFields_position_Read {
   permission: Boolean!
 }
 
-type CommitteeFields_simplifiedMembers_Update {
+type CommitteeFields_position_Update {
   permission: Boolean!
 }
 
-type CommitteeFields_simplifiedMembers_Delete {
+type CommitteeFields_position_Delete {
   permission: Boolean!
 }
 
-type CommitteeFields_simplifiedMembers_Fields {
-  position: CommitteeFields_simplifiedMembers_position
-  name: CommitteeFields_simplifiedMembers_name
-  id: CommitteeFields_simplifiedMembers_id
+type CommitteeFields_bio {
+  create: CommitteeFields_bio_Create
+  read: CommitteeFields_bio_Read
+  update: CommitteeFields_bio_Update
+  delete: CommitteeFields_bio_Delete
 }
 
-type CommitteeFields_simplifiedMembers_position {
-  create: CommitteeFields_simplifiedMembers_position_Create
-  read: CommitteeFields_simplifiedMembers_position_Read
-  update: CommitteeFields_simplifiedMembers_position_Update
-  delete: CommitteeFields_simplifiedMembers_position_Delete
-}
-
-type CommitteeFields_simplifiedMembers_position_Create {
+type CommitteeFields_bio_Create {
   permission: Boolean!
 }
 
-type CommitteeFields_simplifiedMembers_position_Read {
+type CommitteeFields_bio_Read {
   permission: Boolean!
 }
 
-type CommitteeFields_simplifiedMembers_position_Update {
+type CommitteeFields_bio_Update {
   permission: Boolean!
 }
 
-type CommitteeFields_simplifiedMembers_position_Delete {
+type CommitteeFields_bio_Delete {
   permission: Boolean!
 }
 
-type CommitteeFields_simplifiedMembers_name {
-  create: CommitteeFields_simplifiedMembers_name_Create
-  read: CommitteeFields_simplifiedMembers_name_Read
-  update: CommitteeFields_simplifiedMembers_name_Update
-  delete: CommitteeFields_simplifiedMembers_name_Delete
+type CommitteeFields_logo {
+  create: CommitteeFields_logo_Create
+  read: CommitteeFields_logo_Read
+  update: CommitteeFields_logo_Update
+  delete: CommitteeFields_logo_Delete
 }
 
-type CommitteeFields_simplifiedMembers_name_Create {
+type CommitteeFields_logo_Create {
   permission: Boolean!
 }
 
-type CommitteeFields_simplifiedMembers_name_Read {
+type CommitteeFields_logo_Read {
   permission: Boolean!
 }
 
-type CommitteeFields_simplifiedMembers_name_Update {
+type CommitteeFields_logo_Update {
   permission: Boolean!
 }
 
-type CommitteeFields_simplifiedMembers_name_Delete {
-  permission: Boolean!
-}
-
-type CommitteeFields_simplifiedMembers_id {
-  create: CommitteeFields_simplifiedMembers_id_Create
-  read: CommitteeFields_simplifiedMembers_id_Read
-  update: CommitteeFields_simplifiedMembers_id_Update
-  delete: CommitteeFields_simplifiedMembers_id_Delete
-}
-
-type CommitteeFields_simplifiedMembers_id_Create {
-  permission: Boolean!
-}
-
-type CommitteeFields_simplifiedMembers_id_Read {
-  permission: Boolean!
-}
-
-type CommitteeFields_simplifiedMembers_id_Update {
-  permission: Boolean!
-}
-
-type CommitteeFields_simplifiedMembers_id_Delete {
+type CommitteeFields_logo_Delete {
   permission: Boolean!
 }
 
@@ -30402,8 +30613,10 @@ enum SponsorUpdate_Links_Link_appearance_MutationInput {
 }
 
 input mutationSocietyInput {
+  slug: String
   id: String!
   name: String
+  level: Society_level_MutationInput!
   description: JSON
   logo: String!
   email: String
@@ -30415,6 +30628,11 @@ input mutationSocietyInput {
   links: [mutationSociety_LinksInput]
   updatedAt: String
   createdAt: String
+}
+
+enum Society_level_MutationInput {
+  not_shit
+  shit
 }
 
 input mutationSociety_LinksInput {
@@ -30447,7 +30665,9 @@ enum Society_Links_Link_appearance_MutationInput {
 }
 
 input mutationSocietyUpdateInput {
+  slug: String
   name: String
+  level: SocietyUpdate_level_MutationInput
   description: JSON
   logo: String
   email: String
@@ -30459,6 +30679,11 @@ input mutationSocietyUpdateInput {
   links: [mutationSocietyUpdate_LinksInput]
   updatedAt: String
   createdAt: String
+}
+
+enum SocietyUpdate_level_MutationInput {
+  not_shit
+  shit
 }
 
 input mutationSocietyUpdate_LinksInput {
@@ -30492,119 +30717,79 @@ enum SocietyUpdate_Links_Link_appearance_MutationInput {
 
 input mutationCommitteeInput {
   id: String!
-  type: Committee_type_MutationInput!
-  members: [Committee_MembersRelationshipInput]
-  simplifiedMembers: [mutationCommittee_SimplifiedMembersInput]
+  firstName: String!
+  lastName: String!
+  position: Committee_position_MutationInput
+  bio: JSON
+  logo: String
   updatedAt: String
   createdAt: String
 }
 
-enum Committee_type_MutationInput {
-  old
-  current
-}
-
-input Committee_MembersRelationshipInput {
-  relationTo: Committee_MembersRelationshipInputRelationTo
-  value: JSON
-}
-
-enum Committee_MembersRelationshipInputRelationTo {
-  nominations
-  positions
-}
-
-input mutationCommittee_SimplifiedMembersInput {
-  position: Committee_SimplifiedMembers_position_MutationInput!
-  name: String!
-  id: String
-}
-
-enum Committee_SimplifiedMembers_position_MutationInput {
-  AcademicSecretary
-  EventsOfficer
-  Gamesmaster
-  GamesOfficer
-  HackathonOfficer
-  IndustryOfficer
-  InternationalRepresentative
-  MarketingOfficer
-  MastersRep
-  PostgraduateRepresentative
+enum Committee_position_MutationInput {
   President
-  PublicityOfficer
-  Secretary
-  SocialSecretary
-  SportsOfficer
-  SportsRepresentative
-  StaffRepresentative
-  Treasurer
-  UnknownRole
   VicePresident
   VicePresidentEngagement
   VicePresidentOperations
-  Webmaster
-  WebOfficer
+  Secretary
+  Treasurer
+  EventsOfficer
   WelfareOfficer
-  Women_sRepresentative
+  WebOfficer
+  SocialSecretary
+  SportsOfficer
+  MarketingOfficer
+  HackathonOfficer
+  IndustryOfficer
+  AcademicSecretary
+  Gamesmaster
+  GamesOfficer
+  InternationalRepresentative
+  MastersRep
+  PostgraduateRepresentative
+  PublicityOfficer
+  SportsRepresentative
+  StaffRepresentative
+  UnknownRole
+  Webmaster
 }
 
 input mutationCommitteeUpdateInput {
-  type: CommitteeUpdate_type_MutationInput
-  members: [CommitteeUpdate_MembersRelationshipInput]
-  simplifiedMembers: [mutationCommitteeUpdate_SimplifiedMembersInput]
+  firstName: String
+  lastName: String
+  position: CommitteeUpdate_position_MutationInput
+  bio: JSON
+  logo: String
   updatedAt: String
   createdAt: String
 }
 
-enum CommitteeUpdate_type_MutationInput {
-  old
-  current
-}
-
-input CommitteeUpdate_MembersRelationshipInput {
-  relationTo: CommitteeUpdate_MembersRelationshipInputRelationTo
-  value: JSON
-}
-
-enum CommitteeUpdate_MembersRelationshipInputRelationTo {
-  nominations
-  positions
-}
-
-input mutationCommitteeUpdate_SimplifiedMembersInput {
-  position: CommitteeUpdate_SimplifiedMembers_position_MutationInput!
-  name: String!
-  id: String
-}
-
-enum CommitteeUpdate_SimplifiedMembers_position_MutationInput {
-  AcademicSecretary
-  EventsOfficer
-  Gamesmaster
-  GamesOfficer
-  HackathonOfficer
-  IndustryOfficer
-  InternationalRepresentative
-  MarketingOfficer
-  MastersRep
-  PostgraduateRepresentative
+enum CommitteeUpdate_position_MutationInput {
   President
-  PublicityOfficer
-  Secretary
-  SocialSecretary
-  SportsOfficer
-  SportsRepresentative
-  StaffRepresentative
-  Treasurer
-  UnknownRole
   VicePresident
   VicePresidentEngagement
   VicePresidentOperations
-  Webmaster
-  WebOfficer
+  Secretary
+  Treasurer
+  EventsOfficer
   WelfareOfficer
-  Women_sRepresentative
+  WebOfficer
+  SocialSecretary
+  SportsOfficer
+  MarketingOfficer
+  HackathonOfficer
+  IndustryOfficer
+  AcademicSecretary
+  Gamesmaster
+  GamesOfficer
+  InternationalRepresentative
+  MastersRep
+  PostgraduateRepresentative
+  PublicityOfficer
+  SportsRepresentative
+  StaffRepresentative
+  UnknownRole
+  Webmaster
 }
 
 input mutationRedirectInput {
