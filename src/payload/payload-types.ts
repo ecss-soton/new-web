@@ -186,7 +186,7 @@ export interface Page {
               | {
                   relationTo: 'committee';
                   value: string | Committee;
-              }
+                }
             )[]
           | null;
         populatedDocsTotal?: number | null;
@@ -392,8 +392,8 @@ export interface Post {
                   value: string | Sponsor;
                 }
               | {
-                relationTo: 'societies';
-                value: string | Society;
+                  relationTo: 'societies';
+                  value: string | Society;
                 }
               | {
                   relationTo: 'committee';
@@ -493,12 +493,12 @@ export interface Post {
                       value: string | Sponsor;
                     }
                   | {
-                    relationTo: 'societies';
-                    value: string | Society;
+                      relationTo: 'societies';
+                      value: string | Society;
                     }
                   | {
-                    relationTo: 'committee';
-                    value: string | Committee;
+                      relationTo: 'committee';
+                      value: string | Committee;
                     }
                 )[]
               | null;
@@ -517,8 +517,8 @@ export interface Post {
                       value: string | Sponsor;
                     }
                   | {
-                    relationTo: 'societies';
-                    value: string | Society;
+                      relationTo: 'societies';
+                      value: string | Society;
                     }
                   | {
                       relationTo: 'committee';
@@ -682,13 +682,13 @@ export interface Project {
                   value: string | Sponsor;
                 }
               | {
-                relationTo: 'societies';
-                value: string | Society;
+                  relationTo: 'societies';
+                  value: string | Society;
                 }
               | {
-                relationTo: 'committee';
-                value: string | Committee;
-              }
+                  relationTo: 'committee';
+                  value: string | Committee;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -706,13 +706,13 @@ export interface Project {
                   value: string | Sponsor;
                 }
               | {
-                relationTo: 'societies';
-                value: string | Society;
+                  relationTo: 'societies';
+                  value: string | Society;
                 }
               | {
-                relationTo: 'committee';
-                value: string | Committee;
-              }
+                  relationTo: 'committee';
+                  value: string | Committee;
+                }
             )[]
           | null;
         populatedDocsTotal?: number | null;
@@ -764,6 +764,92 @@ export interface Sponsor {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "societies".
+ */
+export interface Society {
+  slug?: string | null;
+  id: string;
+  name?: string | null;
+  level: 'not-shit' | 'shit';
+  description?:
+    | {
+        [k: string]: unknown;
+      }[]
+    | null;
+  logo: string | Media;
+  email?: string | null;
+  website?: string | null;
+  susu?: string | null;
+  github?: string | null;
+  instagram?: string | null;
+  discord?: string | null;
+  links?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?: {
+            relationTo: 'pages';
+            value: string | Page;
+          } | null;
+          url?: string | null;
+          label: string;
+          appearance?: ('default' | 'primary' | 'secondary') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "committee".
+ */
+export interface Committee {
+  id: string;
+  firstName: string;
+  lastName: string;
+  position?:
+    | (
+        | 'President'
+        | 'Vice President'
+        | 'Vice President Engagement'
+        | 'Vice President Operations'
+        | 'Secretary'
+        | 'Treasurer'
+        | 'Events Officer'
+        | 'Welfare Officer'
+        | 'Web Officer'
+        | 'Social Secretary'
+        | 'Sports Officer'
+        | 'Marketing Officer'
+        | 'Hackathon Officer'
+        | 'Industry Officer'
+        | 'Academic Secretary'
+        | 'Gamesmaster'
+        | 'Games Officer'
+        | 'International Representative'
+        | 'Masters Rep'
+        | 'Postgraduate Representative'
+        | 'Publicity Officer'
+        | 'Sports Representative'
+        | 'Staff Representative'
+        | 'Unknown Role'
+        | 'Webmaster'
+      )
+    | null;
+  bio?:
+    | {
+        [k: string]: unknown;
+      }[]
+    | null;
+  logo?: string | Media | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1138,90 +1224,6 @@ export interface Order {
   stripeID?: string | null;
   status: 'basket' | 'pending' | 'failed' | 'completed';
   forceUpdate: boolean;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "societies".
- */
-export interface Society {
-  id: string;
-  slug?: string | null;
-  name?: string | null;
-  level?: ('not-shit' | 'shit') | null;
-  description?:
-    | {
-        [k: string]: unknown;
-      }[]
-    | null;
-  logo: string | Media;
-  email?: string | null;
-  website?: string | null;
-  susu?: string | null;
-  github?: string | null;
-  instagram?: string | null;
-  discord?: string | null;
-  links?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?: {
-            relationTo: 'pages';
-            value: string | Page;
-          } | null;
-          url?: string | null;
-          label: string;
-          appearance?: ('default' | 'primary' | 'secondary') | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "committee".
- */
-export interface Committee {
-  id: string;
-  firstName: string | null;
-  lastName: string | null;
-  position?: (
-    'President'|
-    'Vice President Engagement'|
-    'Vice President Operations'|
-    'Secretary'|
-    'Treasurer'|
-    'Events Officer'|
-    'Welfare Officer'|
-    'Social Secretary'|
-    'Web Officer'|
-    'Sports Officer'|
-    'Marketing Officer'|
-    'Hackathon Officer'|
-    'Industry Officer'|
-    'International Representative'|
-    'Gamesmaster'|
-    'Games Officer'|
-    'Masters Rep'|
-    'Postgraduate Representative'|
-    'Publicity Officer'|
-    'Sports Representative'|
-    'Staff Representative'|
-    'Academic Secretary'|
-    'Vice President'|
-    'Webmaster'|
-    'Unknown Role'
-    ) | null;
-  bio?:
-    | {
-        [k: string]: unknown;
-      }[]
-    | null;
-  logo?: string | Media | null;
   updatedAt: string;
   createdAt: string;
 }
