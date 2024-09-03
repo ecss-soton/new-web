@@ -1189,7 +1189,33 @@ export interface Committee {
   id: string;
   firstName: string | null;
   lastName: string | null;
-  position?: string | null;
+  position?: (
+    'President'|
+    'Vice President Engagement'|
+    'Vice President Operations'|
+    'Secretary'|
+    'Treasurer'|
+    'Events Officer'|
+    'Welfare Officer'|
+    'Social Secretary'|
+    'Web Officer'|
+    'Sports Officer'|
+    'Marketing Officer'|
+    'Hackathon Officer'|
+    'Industry Officer'|
+    'International Representative'|
+    'Gamesmaster'|
+    'Games Officer'|
+    'Masters Rep'|
+    'Postgraduate Representative'|
+    'Publicity Officer'|
+    'Sports Representative'|
+    'Staff Representative'|
+    'Academic Secretary'|
+    'Vice President'|
+    'Webmaster'|
+    'Unknown Role'
+    ) | null;
   bio?:
     | {
         [k: string]: unknown;
