@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@dnd-kit/sortable": "^8.0.0",
+    "@next/font": "^14.2.7",
     "@payloadcms/bundler-webpack": "^1.0.7",
     "@payloadcms/db-mongodb": "^1.0.0",
     "@payloadcms/db-postgres": "^0.1.9",
