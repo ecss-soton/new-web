@@ -159,6 +159,10 @@ export interface Page {
                   relationTo: 'societies';
                   value: string | Society;
                 }
+              | {
+                  relationTo: 'committee';
+                  value: string | Committee;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -179,6 +183,10 @@ export interface Page {
                   relationTo: 'societies';
                   value: string | Society;
                 }
+              | {
+                  relationTo: 'committee';
+                  value: string | Committee;
+              }
             )[]
           | null;
         populatedDocsTotal?: number | null;
@@ -363,6 +371,10 @@ export interface Post {
                   relationTo: 'societies';
                   value: string | Society;
                 }
+              | {
+                  relationTo: 'committee';
+                  value: string | Committee;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -382,6 +394,10 @@ export interface Post {
               | {
                 relationTo: 'societies';
                 value: string | Society;
+                }
+              | {
+                  relationTo: 'committee';
+                  value: string | Committee;
                 }
             )[]
           | null;
@@ -480,6 +496,10 @@ export interface Post {
                     relationTo: 'societies';
                     value: string | Society;
                     }
+                  | {
+                    relationTo: 'committee';
+                    value: string | Committee;
+                    }
                 )[]
               | null;
             populatedDocs?:
@@ -499,6 +519,10 @@ export interface Post {
                   | {
                     relationTo: 'societies';
                     value: string | Society;
+                    }
+                  | {
+                      relationTo: 'committee';
+                      value: string | Committee;
                     }
                 )[]
               | null;
@@ -661,6 +685,10 @@ export interface Project {
                 relationTo: 'societies';
                 value: string | Society;
                 }
+              | {
+                relationTo: 'committee';
+                value: string | Committee;
+              }
             )[]
           | null;
         populatedDocs?:
@@ -681,6 +709,10 @@ export interface Project {
                 relationTo: 'societies';
                 value: string | Society;
                 }
+              | {
+                relationTo: 'committee';
+                value: string | Committee;
+              }
             )[]
           | null;
         populatedDocsTotal?: number | null;
@@ -1155,52 +1187,41 @@ export interface Society {
  */
 export interface Committee {
   id: string;
-  type: 'old' | 'current';
-  members?:
-    | (
-        | {
-            relationTo: 'nominations';
-            value: string | Nomination;
-          }
-        | {
-            relationTo: 'positions';
-            value: string | Position;
-          }
-      )[]
-    | null;
-  simplifiedMembers?:
+  firstName: string | null;
+  lastName: string | null;
+  position?: (
+    'President'|
+    'Vice President Engagement'|
+    'Vice President Operations'|
+    'Secretary'|
+    'Treasurer'|
+    'Events Officer'|
+    'Welfare Officer'|
+    'Social Secretary'|
+    'Web Officer'|
+    'Sports Officer'|
+    'Marketing Officer'|
+    'Hackathon Officer'|
+    'Industry Officer'|
+    'International Representative'|
+    'Gamesmaster'|
+    'Games Officer'|
+    'Masters Rep'|
+    'Postgraduate Representative'|
+    'Publicity Officer'|
+    'Sports Representative'|
+    'Staff Representative'|
+    'Academic Secretary'|
+    'Vice President'|
+    'Webmaster'|
+    'Unknown Role'
+    ) | null;
+  bio?:
     | {
-        position:
-          | 'Academic Secretary'
-          | 'Events Officer'
-          | 'Gamesmaster'
-          | 'Games Officer'
-          | 'Hackathon Officer'
-          | 'Industry Officer'
-          | 'International Representative'
-          | 'Marketing Officer'
-          | 'Masters Rep'
-          | 'Postgraduate Representative'
-          | 'President'
-          | 'Publicity Officer'
-          | 'Secretary'
-          | 'Social Secretary'
-          | 'Sports Officer'
-          | 'Sports Representative'
-          | 'Staff Representative'
-          | 'Treasurer'
-          | 'Unknown Role'
-          | 'Vice President'
-          | 'Vice President Engagement'
-          | 'Vice President Operations'
-          | 'Webmaster'
-          | 'Web Officer'
-          | 'Welfare Officer'
-          | "Women's Representative";
-        name: string;
-        id?: string | null;
+        [k: string]: unknown;
       }[]
     | null;
+  logo?: string | Media | null;
   updatedAt: string;
   createdAt: string;
 }
