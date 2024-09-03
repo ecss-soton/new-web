@@ -1,0 +1,201 @@
+@import '../../_css/common';
+
+.card  {
+  border: 1px var(--theme-elevation-200) solid;
+  border-radius: 4px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.person {
+    height: 100%;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+
+    @include small-break {
+        max-width: 500px;
+        max-height: 270px;
+    }
+}
+
+.rectangle {
+    position: relative;
+    background-color: #f2f2f2;
+    border-radius: 37px;
+    height: 100%;
+    width: 80%;
+    position: absolute; 
+    left: 23%;
+    z-index: -1;
+    padding-left: 12%;
+    padding-top: 12%;
+    padding-right: 1%;
+}
+
+.vertical {
+  flex-direction: column;
+}
+
+.horizontal {
+  flex-direction: row;
+
+  &:local() {
+    .mediaWrapper {
+      width: 150px;
+
+      @include mid-break {
+        width: 100%;
+      }
+    }
+  }
+
+  @include mid-break {
+    flex-direction: column;
+  }
+}
+
+.content {
+  padding: var(--base);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--base) / 2);
+
+  @include small-break {
+    padding: calc(var(--base) / 2);
+    gap: calc(var(--base) / 4);
+  }
+}
+
+.title {
+    width: 100%;
+    height: 100%;
+    color: #000;
+    text-align: center;
+    line-height: 104%;
+    margin: 0px;
+}
+
+.firstName {
+    font-weight: 700;
+    font-style: normal;
+    font-size: max(2.3vw, 25px);
+    line-height: 104%;
+
+    @include mid-break {
+        font-size: 4.4vw;
+    }
+
+    @include small-break {
+      font-size: min(44px,8vw);
+    }
+}
+
+.lastName {
+    color: #000000;
+    font-weight: 400;
+    letter-spacing: 0;
+    font-size: max(2.3vw, 25px);
+    line-height: 104%;
+
+    @include mid-break {
+      font-size: 4.4vw;
+    }
+
+    @include small-break {
+      font-size: min(44px,8vw);
+    }
+}
+
+.role {
+  color: #727272;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 104%; /* 20.8px */
+  font-size: max(1.1vw, 12px);
+  text-align: center;
+  position: relative;
+  top: 15px;
+
+  @include mid-break {
+    font-size: 2.2vw;
+  }
+
+  @include small-break {
+    font-size: min(22px,4vw);
+  }
+}
+
+.titleLink {
+  text-decoration: none;
+}
+
+.centerAlign {
+  align-items: center;
+}
+
+.body {
+  flex-grow: 1;
+}
+
+.leader {
+  @extend %label;
+  display: flex;
+  gap: var(--base);
+}
+
+.description {
+  margin: 0;
+}
+
+.hideImageOnMobile {
+  @include mid-break {
+    display: none;
+  }
+}
+
+.mediaWrapper {
+  text-decoration: none;
+  display: block;
+  position: relative;
+  aspect-ratio: 16 / 9;
+}
+
+.container {
+  padding-top: 7%;
+  position: relative;
+  padding-bottom: 7%;
+  display: flex;
+  flex-shrink: 1;
+  height: 100%;
+  padding-right: 60%;
+}
+
+.profileImage {
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  box-shadow: 0px 0px 17px 1px rgba(0, 0, 0, 0.25);
+  background-color: #ffffff;
+}
+
+.placeholder {
+  background-color: var(--theme-elevation-50);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+
+  @include mid-break {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

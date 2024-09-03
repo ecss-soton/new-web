@@ -6,6 +6,7 @@ import qs from 'qs'
 import type { Committee, Post, Project, Society, Sponsor } from '../../../payload/payload-types'
 import type { ArchiveBlockProps } from '../../_blocks/ArchiveBlock/types'
 import { Card } from '../Card'
+import { CommitteeItem } from '../CommitteeItem'
 import { Gutter } from '../Gutter'
 import { PageRange } from '../PageRange'
 import { Pagination } from '../Pagination'
@@ -117,7 +118,7 @@ export const CollectionArchive: React.FC<Props> = props => {
           depth: 1,
           limit,
           page,
-          sort: 'level',
+          sort: relationTo === 'committee' ? 'position' : 'level',
           where: {
             ...(categories
               ? {
@@ -172,7 +173,7 @@ export const CollectionArchive: React.FC<Props> = props => {
       <div className={classes.scrollRef} ref={scrollRef} />
       {!isLoading && error && <Gutter>{error}</Gutter>}
       <Fragment>
-        {showPageRange !== false && populateBy !== 'selection' && (
+        {/* {showPageRange !== false && populateBy !== 'selection' && (
           <Gutter>
             <div className={classes.pageRange}>
               <PageRange
@@ -183,13 +184,18 @@ export const CollectionArchive: React.FC<Props> = props => {
               />
             </div>
           </Gutter>
-        )}
+        )} */}
         <Gutter>
-          <div className={classes.grid}>
+          <div className={relationTo === 'committee' ? classes.committeegrid : classes.grid}>
             {results.docs?.map((result, index) => {
               if (typeof result === 'object' && result !== null) {
                 return (
-                  <div className={classes.column} key={index}>
+                  <div
+                    className={
+                      relationTo === 'committee' ? classes.columnCommittee : classes.column
+                    }
+                    key={index}
+                  >
                     {/* {relationTo == ('projects' || 'posts' || 'committee') && (
                       <Card doc={result} relationTo={relationTo} showCategories />
                     )} */}
@@ -199,6 +205,9 @@ export const CollectionArchive: React.FC<Props> = props => {
                     )}
                     {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
                       <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
+                    )}
+                    {relationTo === 'committee' && 'bio' in result && (
+                      <CommitteeItem committee={result} />
                     )}
                   </div>
                 )
