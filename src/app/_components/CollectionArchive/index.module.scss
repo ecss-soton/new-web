@@ -56,24 +56,16 @@
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   width: 100%;
-  gap: var(--base) 115px;
-
-  @include large-break {
-    gap: var(--base) 80px;
-  }
+  gap: var(--base) calc(var(--base) * 2);
 
   @include mid-break {
-    grid-template-columns: repeat(6, 1fr);
-    gap: calc(var(--base) / 2) var(--base);
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--base) calc(var(--base) * 2);
   }
 }
 
 .column {
   grid-column-end: span 4;
-
-  @include large-break {
-    grid-column-end: span 6;
-  }
 
   @include mid-break {
     grid-column-end: span 6;
@@ -81,6 +73,22 @@
 
   @include small-break {
     grid-column-end: span 6;
+  }
+}
+
+.columnCommittee {
+  grid-column-end: span 4;
+
+  @include large-break {
+    grid-column-end: span 4;
+  }
+
+  @include mid-break {
+    grid-column-end: span 6;
+  }
+
+  @include small-break {
+    grid-column-end: span 12;
   }
 }
 
