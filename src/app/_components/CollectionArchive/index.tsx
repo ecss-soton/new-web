@@ -190,7 +190,12 @@ export const CollectionArchive: React.FC<Props> = props => {
             {results.docs?.map((result, index) => {
               if (typeof result === 'object' && result !== null) {
                 return (
-                  <div className={classes.column} key={index}>
+                  <div
+                    className={
+                      relationTo === 'committee' ? classes.columnCommittee : classes.column
+                    }
+                    key={index}
+                  >
                     {/* {relationTo == ('projects' || 'posts' || 'committee') && (
                       <Card doc={result} relationTo={relationTo} showCategories />
                     )} */}
