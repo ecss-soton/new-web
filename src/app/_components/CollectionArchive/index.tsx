@@ -206,7 +206,7 @@ export const CollectionArchive: React.FC<Props> = props => {
                     {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
                       <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
                     )}
-                    {relationTo === 'committee' && 'bio' in result && (
+                    {relationTo === 'committee' && 'position' in result && (
                       <CommitteeItem committee={result} />
                     )}
                   </div>
