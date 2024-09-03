@@ -68,7 +68,7 @@
   grid-column-end: span 4;
 
   @include mid-break {
-    grid-column-end: span 6;
+    grid-column-end: span 3;
   }
 
   @include small-break {
