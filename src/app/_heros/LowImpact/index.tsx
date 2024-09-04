@@ -1,4 +1,5 @@
 import React from 'react'
+import { Inter } from '@next/font/google'
 
 import { Page } from '../../../payload/payload-types'
 import { Gutter } from '../../_components/Gutter'
@@ -7,12 +8,21 @@ import { VerticalPadding } from '../../_components/VerticalPadding'
 
 import classes from './index.module.scss'
 
-export const LowImpactHero: React.FC<Page['hero']> = ({ richText }) => {
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  style: ['normal'],
+})
+
+export const LowImpactHero: React.FC<Page['hero']> = ({ title }) => {
   return (
     <Gutter className={classes.lowImpactHero}>
       <div className={classes.content}>
         <VerticalPadding>
-          <RichText className={classes.richText} content={richText} />
+          <h1 className={[classes.title, inter.className].join(' ')}>
+            {' '}
+            <span className={classes.bracket}> &gt;</span> {title}
+          </h1>
         </VerticalPadding>
       </div>
     </Gutter>

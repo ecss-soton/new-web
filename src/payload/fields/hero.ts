@@ -36,11 +36,21 @@ export const hero: Field = {
       ],
     },
     richText({
+      required: false,
       admin: {
         elements: ['h1', largeBody, label, 'link'],
         leaves: [],
+        condition: (_, { type } = {}) => ['highImpact', 'mediumImpact'].includes(type),
       },
     }),
+    {
+      name: 'title',
+      label: 'Title',
+      type: 'text',
+      admin: {
+        condition: (_, { type } = {}) => ['lowImpact'].includes(type),
+      },
+    },
     linkGroup({
       overrides: {
         maxRows: 2,

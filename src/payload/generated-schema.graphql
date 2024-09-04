@@ -118,6 +118,7 @@ scalar DateTime
 type Page_Hero {
   type: Page_Hero_type
   richText(depth: Int): JSON
+  title: String
   links: [Page_Hero_Links!]
   media(where: Page_Hero_Media_where): Media
 }
@@ -736,6 +737,7 @@ type Post_PopulatedAuthors {
 type Post_Hero {
   type: Post_Hero_type
   richText(depth: Int): JSON
+  title: String
   links: [Post_Hero_Links!]
   media(where: Post_Hero_Media_where): Media
 }
@@ -1140,6 +1142,7 @@ type Project {
 type Project_Hero {
   type: Project_Hero_type
   richText(depth: Int): JSON
+  title: String
   links: [Project_Hero_Links!]
   media(where: Project_Hero_Media_where): Media
 }
@@ -2373,6 +2376,7 @@ input Page_where {
   publishedAt: Page_publishedAt_operator
   hero__type: Page_hero__type_operator
   hero__richText: Page_hero__richText_operator
+  hero__title: Page_hero__title_operator
   hero__links__link__type: Page_hero__links__link__type_operator
   hero__links__link__newTab: Page_hero__links__link__newTab_operator
   hero__links__link__reference: Page_hero__links__link__reference_Relation
@@ -2434,6 +2438,18 @@ input Page_hero__richText_operator {
   not_equals: JSON
   like: JSON
   contains: JSON
+  exists: Boolean
+}
+
+input Page_hero__title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
 }
 
 input Page_hero__links__link__type_operator {
@@ -2603,6 +2619,7 @@ input Page_where_and {
   publishedAt: Page_publishedAt_operator
   hero__type: Page_hero__type_operator
   hero__richText: Page_hero__richText_operator
+  hero__title: Page_hero__title_operator
   hero__links__link__type: Page_hero__links__link__type_operator
   hero__links__link__newTab: Page_hero__links__link__newTab_operator
   hero__links__link__reference: Page_hero__links__link__reference_Relation
@@ -2628,6 +2645,7 @@ input Page_where_or {
   publishedAt: Page_publishedAt_operator
   hero__type: Page_hero__type_operator
   hero__richText: Page_hero__richText_operator
+  hero__title: Page_hero__title_operator
   hero__links__link__type: Page_hero__links__link__type_operator
   hero__links__link__newTab: Page_hero__links__link__newTab_operator
   hero__links__link__reference: Page_hero__links__link__reference_Relation
@@ -2742,6 +2760,7 @@ type PagesDocAccessFields_hero_Delete {
 type PagesDocAccessFields_hero_Fields {
   type: PagesDocAccessFields_hero_type
   richText: PagesDocAccessFields_hero_richText
+  title: PagesDocAccessFields_hero_title
   links: PagesDocAccessFields_hero_links
   media: PagesDocAccessFields_hero_media
 }
@@ -2789,6 +2808,29 @@ type PagesDocAccessFields_hero_richText_Update {
 }
 
 type PagesDocAccessFields_hero_richText_Delete {
+  permission: Boolean!
+}
+
+type PagesDocAccessFields_hero_title {
+  create: PagesDocAccessFields_hero_title_Create
+  read: PagesDocAccessFields_hero_title_Read
+  update: PagesDocAccessFields_hero_title_Update
+  delete: PagesDocAccessFields_hero_title_Delete
+}
+
+type PagesDocAccessFields_hero_title_Create {
+  permission: Boolean!
+}
+
+type PagesDocAccessFields_hero_title_Read {
+  permission: Boolean!
+}
+
+type PagesDocAccessFields_hero_title_Update {
+  permission: Boolean!
+}
+
+type PagesDocAccessFields_hero_title_Delete {
   permission: Boolean!
 }
 
@@ -3306,6 +3348,7 @@ type PageVersion_Version {
 type PageVersion_Version_Hero {
   type: PageVersion_Version_Hero_type
   richText(depth: Int): JSON
+  title: String
   links: [PageVersion_Version_Hero_Links!]
   media(where: PageVersion_Version_Hero_Media_where): Media
 }
@@ -3710,6 +3753,7 @@ input versionsPage_where {
   version__publishedAt: versionsPage_version__publishedAt_operator
   version__hero__type: versionsPage_version__hero__type_operator
   version__hero__richText: versionsPage_version__hero__richText_operator
+  version__hero__title: versionsPage_version__hero__title_operator
   version__hero__links__link__type: versionsPage_version__hero__links__link__type_operator
   version__hero__links__link__newTab: versionsPage_version__hero__links__link__newTab_operator
   version__hero__links__link__reference: versionsPage_version__hero__links__link__reference_Relation
@@ -3783,6 +3827,18 @@ input versionsPage_version__hero__richText_operator {
   not_equals: JSON
   like: JSON
   contains: JSON
+  exists: Boolean
+}
+
+input versionsPage_version__hero__title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
 }
 
 input versionsPage_version__hero__links__link__type_operator {
@@ -3981,6 +4037,7 @@ input versionsPage_where_and {
   version__publishedAt: versionsPage_version__publishedAt_operator
   version__hero__type: versionsPage_version__hero__type_operator
   version__hero__richText: versionsPage_version__hero__richText_operator
+  version__hero__title: versionsPage_version__hero__title_operator
   version__hero__links__link__type: versionsPage_version__hero__links__link__type_operator
   version__hero__links__link__newTab: versionsPage_version__hero__links__link__newTab_operator
   version__hero__links__link__reference: versionsPage_version__hero__links__link__reference_Relation
@@ -4010,6 +4067,7 @@ input versionsPage_where_or {
   version__publishedAt: versionsPage_version__publishedAt_operator
   version__hero__type: versionsPage_version__hero__type_operator
   version__hero__richText: versionsPage_version__hero__richText_operator
+  version__hero__title: versionsPage_version__hero__title_operator
   version__hero__links__link__type: versionsPage_version__hero__links__link__type_operator
   version__hero__links__link__newTab: versionsPage_version__hero__links__link__newTab_operator
   version__hero__links__link__reference: versionsPage_version__hero__links__link__reference_Relation
@@ -4056,6 +4114,7 @@ input Post_where {
   populatedAuthors__name: Post_populatedAuthors__name_operator
   hero__type: Post_hero__type_operator
   hero__richText: Post_hero__richText_operator
+  hero__title: Post_hero__title_operator
   hero__links__link__type: Post_hero__links__link__type_operator
   hero__links__link__newTab: Post_hero__links__link__newTab_operator
   hero__links__link__reference: Post_hero__links__link__reference_Relation
@@ -4159,6 +4218,18 @@ input Post_hero__richText_operator {
   not_equals: JSON
   like: JSON
   contains: JSON
+  exists: Boolean
+}
+
+input Post_hero__title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
 }
 
 input Post_hero__links__link__type_operator {
@@ -4347,6 +4418,7 @@ input Post_where_and {
   populatedAuthors__name: Post_populatedAuthors__name_operator
   hero__type: Post_hero__type_operator
   hero__richText: Post_hero__richText_operator
+  hero__title: Post_hero__title_operator
   hero__links__link__type: Post_hero__links__link__type_operator
   hero__links__link__newTab: Post_hero__links__link__newTab_operator
   hero__links__link__reference: Post_hero__links__link__reference_Relation
@@ -4378,6 +4450,7 @@ input Post_where_or {
   populatedAuthors__name: Post_populatedAuthors__name_operator
   hero__type: Post_hero__type_operator
   hero__richText: Post_hero__richText_operator
+  hero__title: Post_hero__title_operator
   hero__links__link__type: Post_hero__links__link__type_operator
   hero__links__link__newTab: Post_hero__links__link__newTab_operator
   hero__links__link__reference: Post_hero__links__link__reference_Relation
@@ -4621,6 +4694,7 @@ type PostsDocAccessFields_hero_Delete {
 type PostsDocAccessFields_hero_Fields {
   type: PostsDocAccessFields_hero_type
   richText: PostsDocAccessFields_hero_richText
+  title: PostsDocAccessFields_hero_title
   links: PostsDocAccessFields_hero_links
   media: PostsDocAccessFields_hero_media
 }
@@ -4668,6 +4742,29 @@ type PostsDocAccessFields_hero_richText_Update {
 }
 
 type PostsDocAccessFields_hero_richText_Delete {
+  permission: Boolean!
+}
+
+type PostsDocAccessFields_hero_title {
+  create: PostsDocAccessFields_hero_title_Create
+  read: PostsDocAccessFields_hero_title_Read
+  update: PostsDocAccessFields_hero_title_Update
+  delete: PostsDocAccessFields_hero_title_Delete
+}
+
+type PostsDocAccessFields_hero_title_Create {
+  permission: Boolean!
+}
+
+type PostsDocAccessFields_hero_title_Read {
+  permission: Boolean!
+}
+
+type PostsDocAccessFields_hero_title_Update {
+  permission: Boolean!
+}
+
+type PostsDocAccessFields_hero_title_Delete {
   permission: Boolean!
 }
 
@@ -5260,6 +5357,7 @@ type PostVersion_Version_PopulatedAuthors {
 type PostVersion_Version_Hero {
   type: PostVersion_Version_Hero_type
   richText(depth: Int): JSON
+  title: String
   links: [PostVersion_Version_Hero_Links!]
   media(where: PostVersion_Version_Hero_Media_where): Media
 }
@@ -5670,6 +5768,7 @@ input versionsPost_where {
   version__populatedAuthors__name: versionsPost_version__populatedAuthors__name_operator
   version__hero__type: versionsPost_version__hero__type_operator
   version__hero__richText: versionsPost_version__hero__richText_operator
+  version__hero__title: versionsPost_version__hero__title_operator
   version__hero__links__link__type: versionsPost_version__hero__links__link__type_operator
   version__hero__links__link__newTab: versionsPost_version__hero__links__link__newTab_operator
   version__hero__links__link__reference: versionsPost_version__hero__links__link__reference_Relation
@@ -5785,6 +5884,18 @@ input versionsPost_version__hero__richText_operator {
   not_equals: JSON
   like: JSON
   contains: JSON
+  exists: Boolean
+}
+
+input versionsPost_version__hero__title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
 }
 
 input versionsPost_version__hero__links__link__type_operator {
@@ -6002,6 +6113,7 @@ input versionsPost_where_and {
   version__populatedAuthors__name: versionsPost_version__populatedAuthors__name_operator
   version__hero__type: versionsPost_version__hero__type_operator
   version__hero__richText: versionsPost_version__hero__richText_operator
+  version__hero__title: versionsPost_version__hero__title_operator
   version__hero__links__link__type: versionsPost_version__hero__links__link__type_operator
   version__hero__links__link__newTab: versionsPost_version__hero__links__link__newTab_operator
   version__hero__links__link__reference: versionsPost_version__hero__links__link__reference_Relation
@@ -6037,6 +6149,7 @@ input versionsPost_where_or {
   version__populatedAuthors__name: versionsPost_version__populatedAuthors__name_operator
   version__hero__type: versionsPost_version__hero__type_operator
   version__hero__richText: versionsPost_version__hero__richText_operator
+  version__hero__title: versionsPost_version__hero__title_operator
   version__hero__links__link__type: versionsPost_version__hero__links__link__type_operator
   version__hero__links__link__newTab: versionsPost_version__hero__links__link__newTab_operator
   version__hero__links__link__reference: versionsPost_version__hero__links__link__reference_Relation
@@ -6082,6 +6195,7 @@ input Project_where {
   publishedAt: Project_publishedAt_operator
   hero__type: Project_hero__type_operator
   hero__richText: Project_hero__richText_operator
+  hero__title: Project_hero__title_operator
   hero__links__link__type: Project_hero__links__link__type_operator
   hero__links__link__newTab: Project_hero__links__link__newTab_operator
   hero__links__link__reference: Project_hero__links__link__reference_Relation
@@ -6153,6 +6267,18 @@ input Project_hero__richText_operator {
   not_equals: JSON
   like: JSON
   contains: JSON
+  exists: Boolean
+}
+
+input Project_hero__title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
 }
 
 input Project_hero__links__link__type_operator {
@@ -6332,6 +6458,7 @@ input Project_where_and {
   publishedAt: Project_publishedAt_operator
   hero__type: Project_hero__type_operator
   hero__richText: Project_hero__richText_operator
+  hero__title: Project_hero__title_operator
   hero__links__link__type: Project_hero__links__link__type_operator
   hero__links__link__newTab: Project_hero__links__link__newTab_operator
   hero__links__link__reference: Project_hero__links__link__reference_Relation
@@ -6359,6 +6486,7 @@ input Project_where_or {
   publishedAt: Project_publishedAt_operator
   hero__type: Project_hero__type_operator
   hero__richText: Project_hero__richText_operator
+  hero__title: Project_hero__title_operator
   hero__links__link__type: Project_hero__links__link__type_operator
   hero__links__link__newTab: Project_hero__links__link__newTab_operator
   hero__links__link__reference: Project_hero__links__link__reference_Relation
@@ -6499,6 +6627,7 @@ type ProjectsDocAccessFields_hero_Delete {
 type ProjectsDocAccessFields_hero_Fields {
   type: ProjectsDocAccessFields_hero_type
   richText: ProjectsDocAccessFields_hero_richText
+  title: ProjectsDocAccessFields_hero_title
   links: ProjectsDocAccessFields_hero_links
   media: ProjectsDocAccessFields_hero_media
 }
@@ -6546,6 +6675,29 @@ type ProjectsDocAccessFields_hero_richText_Update {
 }
 
 type ProjectsDocAccessFields_hero_richText_Delete {
+  permission: Boolean!
+}
+
+type ProjectsDocAccessFields_hero_title {
+  create: ProjectsDocAccessFields_hero_title_Create
+  read: ProjectsDocAccessFields_hero_title_Read
+  update: ProjectsDocAccessFields_hero_title_Update
+  delete: ProjectsDocAccessFields_hero_title_Delete
+}
+
+type ProjectsDocAccessFields_hero_title_Create {
+  permission: Boolean!
+}
+
+type ProjectsDocAccessFields_hero_title_Read {
+  permission: Boolean!
+}
+
+type ProjectsDocAccessFields_hero_title_Update {
+  permission: Boolean!
+}
+
+type ProjectsDocAccessFields_hero_title_Delete {
   permission: Boolean!
 }
 
@@ -7083,6 +7235,7 @@ type ProjectVersion_Version {
 type ProjectVersion_Version_Hero {
   type: ProjectVersion_Version_Hero_type
   richText(depth: Int): JSON
+  title: String
   links: [ProjectVersion_Version_Hero_Links!]
   media(where: ProjectVersion_Version_Hero_Media_where): Media
 }
@@ -7488,6 +7641,7 @@ input versionsProject_where {
   version__publishedAt: versionsProject_version__publishedAt_operator
   version__hero__type: versionsProject_version__hero__type_operator
   version__hero__richText: versionsProject_version__hero__richText_operator
+  version__hero__title: versionsProject_version__hero__title_operator
   version__hero__links__link__type: versionsProject_version__hero__links__link__type_operator
   version__hero__links__link__newTab: versionsProject_version__hero__links__link__newTab_operator
   version__hero__links__link__reference: versionsProject_version__hero__links__link__reference_Relation
@@ -7571,6 +7725,18 @@ input versionsProject_version__hero__richText_operator {
   not_equals: JSON
   like: JSON
   contains: JSON
+  exists: Boolean
+}
+
+input versionsProject_version__hero__title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
 }
 
 input versionsProject_version__hero__links__link__type_operator {
@@ -7779,6 +7945,7 @@ input versionsProject_where_and {
   version__publishedAt: versionsProject_version__publishedAt_operator
   version__hero__type: versionsProject_version__hero__type_operator
   version__hero__richText: versionsProject_version__hero__richText_operator
+  version__hero__title: versionsProject_version__hero__title_operator
   version__hero__links__link__type: versionsProject_version__hero__links__link__type_operator
   version__hero__links__link__newTab: versionsProject_version__hero__links__link__newTab_operator
   version__hero__links__link__reference: versionsProject_version__hero__links__link__reference_Relation
@@ -7810,6 +7977,7 @@ input versionsProject_where_or {
   version__publishedAt: versionsProject_version__publishedAt_operator
   version__hero__type: versionsProject_version__hero__type_operator
   version__hero__richText: versionsProject_version__hero__richText_operator
+  version__hero__title: versionsProject_version__hero__title_operator
   version__hero__links__link__type: versionsProject_version__hero__links__link__type_operator
   version__hero__links__link__newTab: versionsProject_version__hero__links__link__newTab_operator
   version__hero__links__link__reference: versionsProject_version__hero__links__link__reference_Relation
@@ -20456,6 +20624,7 @@ type PagesFields_hero_Delete {
 type PagesFields_hero_Fields {
   type: PagesFields_hero_type
   richText: PagesFields_hero_richText
+  title: PagesFields_hero_title
   links: PagesFields_hero_links
   media: PagesFields_hero_media
 }
@@ -20503,6 +20672,29 @@ type PagesFields_hero_richText_Update {
 }
 
 type PagesFields_hero_richText_Delete {
+  permission: Boolean!
+}
+
+type PagesFields_hero_title {
+  create: PagesFields_hero_title_Create
+  read: PagesFields_hero_title_Read
+  update: PagesFields_hero_title_Update
+  delete: PagesFields_hero_title_Delete
+}
+
+type PagesFields_hero_title_Create {
+  permission: Boolean!
+}
+
+type PagesFields_hero_title_Read {
+  permission: Boolean!
+}
+
+type PagesFields_hero_title_Update {
+  permission: Boolean!
+}
+
+type PagesFields_hero_title_Delete {
   permission: Boolean!
 }
 
@@ -21212,6 +21404,7 @@ type PostsFields_hero_Delete {
 type PostsFields_hero_Fields {
   type: PostsFields_hero_type
   richText: PostsFields_hero_richText
+  title: PostsFields_hero_title
   links: PostsFields_hero_links
   media: PostsFields_hero_media
 }
@@ -21259,6 +21452,29 @@ type PostsFields_hero_richText_Update {
 }
 
 type PostsFields_hero_richText_Delete {
+  permission: Boolean!
+}
+
+type PostsFields_hero_title {
+  create: PostsFields_hero_title_Create
+  read: PostsFields_hero_title_Read
+  update: PostsFields_hero_title_Update
+  delete: PostsFields_hero_title_Delete
+}
+
+type PostsFields_hero_title_Create {
+  permission: Boolean!
+}
+
+type PostsFields_hero_title_Read {
+  permission: Boolean!
+}
+
+type PostsFields_hero_title_Update {
+  permission: Boolean!
+}
+
+type PostsFields_hero_title_Delete {
   permission: Boolean!
 }
 
@@ -21935,6 +22151,7 @@ type ProjectsFields_hero_Delete {
 type ProjectsFields_hero_Fields {
   type: ProjectsFields_hero_type
   richText: ProjectsFields_hero_richText
+  title: ProjectsFields_hero_title
   links: ProjectsFields_hero_links
   media: ProjectsFields_hero_media
 }
@@ -21982,6 +22199,29 @@ type ProjectsFields_hero_richText_Update {
 }
 
 type ProjectsFields_hero_richText_Delete {
+  permission: Boolean!
+}
+
+type ProjectsFields_hero_title {
+  create: ProjectsFields_hero_title_Create
+  read: ProjectsFields_hero_title_Read
+  update: ProjectsFields_hero_title_Update
+  delete: ProjectsFields_hero_title_Delete
+}
+
+type ProjectsFields_hero_title_Create {
+  permission: Boolean!
+}
+
+type ProjectsFields_hero_title_Read {
+  permission: Boolean!
+}
+
+type ProjectsFields_hero_title_Update {
+  permission: Boolean!
+}
+
+type ProjectsFields_hero_title_Delete {
   permission: Boolean!
 }
 
@@ -29564,7 +29804,8 @@ input mutationPageInput {
 
 input mutationPage_HeroInput {
   type: Page_Hero_type_MutationInput!
-  richText: JSON!
+  richText: JSON
+  title: String
   links: [mutationPage_Hero_LinksInput]
   media: String
 }
@@ -29630,7 +29871,8 @@ input mutationPageUpdateInput {
 
 input mutationPageUpdate_HeroInput {
   type: PageUpdate_Hero_type_MutationInput!
-  richText: JSON!
+  richText: JSON
+  title: String
   links: [mutationPageUpdate_Hero_LinksInput]
   media: String
 }
@@ -29707,7 +29949,8 @@ input mutationPost_PopulatedAuthorsInput {
 
 input mutationPost_HeroInput {
   type: Post_Hero_type_MutationInput!
-  richText: JSON!
+  richText: JSON
+  title: String
   links: [mutationPost_Hero_LinksInput]
   media: String
 }
@@ -29784,7 +30027,8 @@ input mutationPostUpdate_PopulatedAuthorsInput {
 
 input mutationPostUpdate_HeroInput {
   type: PostUpdate_Hero_type_MutationInput!
-  richText: JSON!
+  richText: JSON
+  title: String
   links: [mutationPostUpdate_Hero_LinksInput]
   media: String
 }
@@ -29852,7 +30096,8 @@ input mutationProjectInput {
 
 input mutationProject_HeroInput {
   type: Project_Hero_type_MutationInput!
-  richText: JSON!
+  richText: JSON
+  title: String
   links: [mutationProject_Hero_LinksInput]
   media: String
 }
@@ -29920,7 +30165,8 @@ input mutationProjectUpdateInput {
 
 input mutationProjectUpdate_HeroInput {
   type: ProjectUpdate_Hero_type_MutationInput!
-  richText: JSON!
+  richText: JSON
+  title: String
   links: [mutationProjectUpdate_Hero_LinksInput]
   media: String
 }
