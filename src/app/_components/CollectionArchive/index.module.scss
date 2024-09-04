@@ -80,7 +80,7 @@
   grid-column-end: span 4;
 
   @include large-break {
-    grid-column-end: span 4;
+    grid-column-end: span 6;
   }
 
   @include mid-break {
