@@ -14,7 +14,7 @@ const inter = Inter({
   style: ['normal'],
 })
 
-export const LowImpactHero: React.FC<Page['hero']> = ({ title }) => {
+export const LowImpactHero: React.FC<Page['hero']> = ({ title, richText }) => {
   return (
     <Gutter className={classes.lowImpactHero}>
       <div className={classes.content}>
@@ -23,6 +23,7 @@ export const LowImpactHero: React.FC<Page['hero']> = ({ title }) => {
             {' '}
             <span className={classes.bracket}> &gt;</span> {title}
           </h1>
+          <RichText className={classes.richText} content={richText} />
         </VerticalPadding>
       </div>
     </Gutter>

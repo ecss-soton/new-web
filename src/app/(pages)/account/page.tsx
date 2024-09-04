@@ -31,16 +31,9 @@ export default async function Account() {
       </Gutter>
       <LowImpactHero
         type="lowImpact"
+        title="Account"
         media={null}
         richText={[
-          {
-            type: 'h1',
-            children: [
-              {
-                text: 'Account',
-              },
-            ],
-          },
           {
             type: 'paragraph',
             children: [
