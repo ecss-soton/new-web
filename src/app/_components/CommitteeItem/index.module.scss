@@ -14,10 +14,9 @@
     position: relative;
     flex-direction: column;
 
-    @include small-break {
-        max-width: 500px;
-        max-height: 270px;
-    }
+    // @include small-break {
+    //   padding-right: 30%;
+    // }  
 }
 
 .rectangle {
@@ -29,9 +28,19 @@
     position: absolute; 
     left: 23%;
     z-index: -1;
-    padding-left: 12%;
+    padding-left: 15%;
     padding-top: 12%;
     padding-right: 1%;
+
+    @include small-break {
+      left: 13%;
+      padding-left: 9%;
+      padding-top: 5%;
+      padding-right: 1%;
+      height: 100%;
+      width: 50%;
+    }
+    
 }
 
 .vertical {
@@ -76,6 +85,11 @@
     text-align: center;
     line-height: 104%;
     margin: 0px;
+
+    @include small-break {
+      height: 50%;
+      width: 100%;
+    }
 }
 
 .firstName {
@@ -84,12 +98,16 @@
     font-size: max(2.3vw, 25px);
     line-height: 104%;
 
+    @include large-break {
+      font-size: 3.5vw;
+    }
+
     @include mid-break {
         font-size: 4.4vw;
     }
 
     @include small-break {
-      font-size: min(44px,8vw);
+      font-size: max(35px,6vw);
     }
 }
 
@@ -100,12 +118,16 @@
     font-size: max(2.3vw, 25px);
     line-height: 104%;
 
+    @include large-break {
+      font-size: 3.5vw;
+    }
+
     @include mid-break {
       font-size: 4.4vw;
     }
 
     @include small-break {
-      font-size: min(44px,8vw);
+      font-size: max(35px,6vw);
     }
 }
 
@@ -119,12 +141,16 @@
   position: relative;
   top: 15px;
 
+  @include large-break {
+    font-size: 1.7vw;
+  }
+
   @include mid-break {
     font-size: 2.2vw;
   }
 
   @include small-break {
-    font-size: min(22px,4vw);
+    font-size: max(17px,3vw);
   }
 }
 
@@ -171,6 +197,10 @@
   flex-shrink: 1;
   height: 100%;
   padding-right: 60%;
+
+  @include small-break {
+    padding-right: 80%;
+  }
 }
 
 .profileImage {
