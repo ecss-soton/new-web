@@ -1,4 +1,13 @@
 @use '../../_css/type.scss' as *;
 
-.lowImpactHero {
+.title{
+    color: var(--theme-elevation-1000);
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.bracket {
+    color: #E31515;
 }
