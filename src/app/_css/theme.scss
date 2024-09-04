@@ -115,6 +115,8 @@
       }
     }
   }
+
+  --theme-shadow: var(--color-shadow);
 }
 
 [data-theme=dark] {
@@ -234,4 +236,6 @@
       }
     }
   }
+
+  --theme-shadow: var(--color-spotlight);
 }
