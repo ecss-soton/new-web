@@ -40,7 +40,6 @@ export const hero: Field = {
       admin: {
         elements: ['h1', largeBody, label, 'link'],
         leaves: [],
-        condition: (_, { type } = {}) => ['highImpact', 'mediumImpact'].includes(type),
       },
     }),
     {
