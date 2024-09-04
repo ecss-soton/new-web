@@ -22,6 +22,7 @@ export const PAGE = `
         hero {
           type
           richText
+          title
           links {
             link ${LINK_FIELDS()}
           }

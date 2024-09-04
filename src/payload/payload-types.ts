@@ -51,9 +51,12 @@ export interface Page {
   publishedAt?: string | null;
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
-    richText: {
-      [k: string]: unknown;
-    }[];
+    richText?:
+      | {
+          [k: string]: unknown;
+        }[]
+      | null;
+    title?: string | null;
     links?:
       | {
           link: {
@@ -134,9 +137,11 @@ export interface Page {
         blockType: 'mediaBlock';
       }
     | {
-        introContent: {
-          [k: string]: unknown;
-        }[];
+        introContent?:
+          | {
+              [k: string]: unknown;
+            }[]
+          | null;
         populateBy?: ('collection' | 'selection') | null;
         relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies') | null;
         categories?: (string | Category)[] | null;
@@ -263,9 +268,12 @@ export interface Post {
     | null;
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
-    richText: {
-      [k: string]: unknown;
-    }[];
+    richText?:
+      | {
+          [k: string]: unknown;
+        }[]
+      | null;
+    title?: string | null;
     links?:
       | {
           link: {
@@ -346,9 +354,11 @@ export interface Post {
         blockType: 'mediaBlock';
       }
     | {
-        introContent: {
-          [k: string]: unknown;
-        }[];
+        introContent?:
+          | {
+              [k: string]: unknown;
+            }[]
+          | null;
         populateBy?: ('collection' | 'selection') | null;
         relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies') | null;
         categories?: (string | Category)[] | null;
@@ -471,9 +481,11 @@ export interface Post {
             blockType: 'mediaBlock';
           }
         | {
-            introContent: {
-              [k: string]: unknown;
-            }[];
+            introContent?:
+              | {
+                  [k: string]: unknown;
+                }[]
+              | null;
             populateBy?: ('collection' | 'selection') | null;
             relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies') | null;
             categories?: (string | Category)[] | null;
@@ -577,9 +589,12 @@ export interface Project {
   publishedAt?: string | null;
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
-    richText: {
-      [k: string]: unknown;
-    }[];
+    richText?:
+      | {
+          [k: string]: unknown;
+        }[]
+      | null;
+    title?: string | null;
     links?:
       | {
           link: {
@@ -660,9 +675,11 @@ export interface Project {
         blockType: 'mediaBlock';
       }
     | {
-        introContent: {
-          [k: string]: unknown;
-        }[];
+        introContent?:
+          | {
+              [k: string]: unknown;
+            }[]
+          | null;
         populateBy?: ('collection' | 'selection') | null;
         relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies') | null;
         categories?: (string | Category)[] | null;
