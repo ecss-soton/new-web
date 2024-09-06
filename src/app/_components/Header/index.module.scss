@@ -1,8 +1,8 @@
-@use '../../_css/queries.scss' as *;
+@import '../../_css/common';
 
 .header {
   padding: var(--base) 0;
-  background-color: maroon;
+  background-color: var(--theme-elevation-0);
 }
 
 .wrap {
@@ -12,9 +12,41 @@
   gap: calc(var(--base) / 2) var(--base);
 }
 
-.logo {
-  width: 75px;
-  height: 75px;
+.home {
+  display: flex;
+  // flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  text-decoration: none;
+  a {
+    color: var(--theme-elevation-1000);
+  }
+  > * {
+    text-decoration: none;
+  }
 }
+
+
+
+.logo {
+  width: 100px;
+  height: 100px;
+}
+
+.title {
+  color: var(--theme-elevation-1000);
+  font-family: Inter;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding-left: 7%;
+  
+}
+
+.title:visited {
+  text-decoration: none;
+}
+
 
 

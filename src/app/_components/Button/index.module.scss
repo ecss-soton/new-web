@@ -70,3 +70,21 @@
     }
   }
 }
+
+.appearance--header {
+  padding: 0;
+  color: var(--theme-text);
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+  &:local() {
+    .label {
+      text-transform: none;
+      line-height: inherit;
+      font-size: inherit;
+    }
+  }
+}
