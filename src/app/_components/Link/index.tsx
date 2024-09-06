@@ -12,7 +12,7 @@ export type CMSLinkType = {
     value: string | Page
     relationTo: 'pages'
   }
-  label?: string
+  label?: string | JSX.Element
   appearance?: ButtonProps['appearance']
   children?: React.ReactNode
   className?: string

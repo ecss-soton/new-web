@@ -1,4 +1,4 @@
-@use '../../../_css/queries.scss' as *;
+@import '../../../_css/common';
 
 .nav {
   display: flex;
@@ -9,11 +9,15 @@
   transition: opacity 100ms linear;
   visibility: visible;
   a {
-      color: white;
+      color: var(--theme-elevation-1000);
   }
   > * {
     text-decoration: none;
   }
+}
+
+.redBrackets {
+  color: red;
 }
 
 .hide {

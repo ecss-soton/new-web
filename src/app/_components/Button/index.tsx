@@ -1,13 +1,20 @@
 'use client'
 
 import React, { ElementType } from 'react'
+import { Inter } from '@next/font/google'
 import Link from 'next/link'
 
 import classes from './index.module.scss'
 
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  style: ['normal'],
+})
+
 export type Props = {
-  label?: string
-  appearance?: 'default' | 'primary' | 'secondary' | 'none'
+  label?: string | JSX.Element
+  appearance?: 'default' | 'primary' | 'secondary' | 'none' | 'header'
   el?: 'button' | 'link' | 'a'
   onClick?: () => void
   href?: string
@@ -53,7 +60,12 @@ export const Button: React.FC<Props> = ({
 
   if (el === 'link') {
     return (
-      <Link href={href || ''} className={className} {...newTabProps} onClick={onClick}>
+      <Link
+        href={href || ''}
+        className={appearance === 'header' ? [className, inter.className].join(' ') : className}
+        {...newTabProps}
+        onClick={onClick}
+      >
         {content}
       </Link>
     )
