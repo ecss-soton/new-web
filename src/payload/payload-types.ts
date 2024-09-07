@@ -29,6 +29,7 @@ export interface Config {
     sponsors: Sponsor;
     societies: Society;
     committee: Committee;
+    events: Event;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -143,7 +144,7 @@ export interface Page {
             }[]
           | null;
         populateBy?: ('collection' | 'selection') | null;
-        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies') | null;
+        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events') | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
         selectedDocs?:
@@ -168,6 +169,10 @@ export interface Page {
                   relationTo: 'committee';
                   value: string | Committee;
                 }
+              | {
+                  relationTo: 'events';
+                  value: string | Event;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -191,6 +196,10 @@ export interface Page {
               | {
                   relationTo: 'committee';
                   value: string | Committee;
+                }
+              | {
+                  relationTo: 'events';
+                  value: string | Event;
                 }
             )[]
           | null;
@@ -360,7 +369,7 @@ export interface Post {
             }[]
           | null;
         populateBy?: ('collection' | 'selection') | null;
-        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies') | null;
+        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events') | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
         selectedDocs?:
@@ -385,6 +394,10 @@ export interface Post {
                   relationTo: 'committee';
                   value: string | Committee;
                 }
+              | {
+                  relationTo: 'events';
+                  value: string | Event;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -408,6 +421,10 @@ export interface Post {
               | {
                   relationTo: 'committee';
                   value: string | Committee;
+                }
+              | {
+                  relationTo: 'events';
+                  value: string | Event;
                 }
             )[]
           | null;
@@ -487,7 +504,7 @@ export interface Post {
                 }[]
               | null;
             populateBy?: ('collection' | 'selection') | null;
-            relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies') | null;
+            relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events') | null;
             categories?: (string | Category)[] | null;
             limit?: number | null;
             selectedDocs?:
@@ -512,6 +529,10 @@ export interface Post {
                       relationTo: 'committee';
                       value: string | Committee;
                     }
+                  | {
+                      relationTo: 'events';
+                      value: string | Event;
+                    }
                 )[]
               | null;
             populatedDocs?:
@@ -535,6 +556,10 @@ export interface Post {
                   | {
                       relationTo: 'committee';
                       value: string | Committee;
+                    }
+                  | {
+                      relationTo: 'events';
+                      value: string | Event;
                     }
                 )[]
               | null;
@@ -681,7 +706,7 @@ export interface Project {
             }[]
           | null;
         populateBy?: ('collection' | 'selection') | null;
-        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies') | null;
+        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events') | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
         selectedDocs?:
@@ -706,6 +731,10 @@ export interface Project {
                   relationTo: 'committee';
                   value: string | Committee;
                 }
+              | {
+                  relationTo: 'events';
+                  value: string | Event;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -729,6 +758,10 @@ export interface Project {
               | {
                   relationTo: 'committee';
                   value: string | Committee;
+                }
+              | {
+                  relationTo: 'events';
+                  value: string | Event;
                 }
             )[]
           | null;
@@ -867,6 +900,19 @@ export interface Committee {
       }[]
     | null;
   logo?: string | Media | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: string;
+  name: string;
+  date: string;
+  location?: string | null;
+  description?: string | null;
   updatedAt: string;
   createdAt: string;
 }

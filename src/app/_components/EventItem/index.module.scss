@@ -1,0 +1,64 @@
+.rectangle {
+    background-color: var(--theme-elevation-50);
+    border-radius: 42px;
+    box-shadow: -8px 8px 33px -16px var(--theme-shadow);
+    height: 100%;
+    position: relative;
+    width: 100%;
+  }
+
+  .overlap {
+    height: 140px;
+    left: 37px;
+    position: relative;
+    top: 58px;
+    width: 783px;
+  }
+
+  .date {
+    color: var(--theme-elevation-1000);
+    font-size: 48px;
+    font-weight: 700;
+    left: 0;
+    letter-spacing: 0;
+    line-height: normal;
+    position: relative;
+    top: 0;
+    width: 98px;
+  }
+
+  .month {
+    color: var(--theme-elevation-400);
+    font-size: 24px;
+    font-weight: 400;
+    left: 3px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: relative;
+    top: 58px;
+    width: 176px;
+  }
+
+  .desc {
+    color: var(--theme-elevation-800);
+    font-size: 24px;
+    font-weight: 400;
+    left: 164px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: relative;
+    top: 52px;
+    width: 619px;
+  }
+
+  .name {
+    color: var(--theme-elevation-1000);
+    font-size: 64px;
+    font-weight: 700;
+    left: 201px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 23px;
+    width: 372px;
+  }

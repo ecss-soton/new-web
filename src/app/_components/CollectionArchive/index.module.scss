@@ -92,6 +92,10 @@
   }
 }
 
+.columnEvents {
+  grid-column-end: span 12;
+}
+
 .pagination {
   margin-top: calc(var(--base) * 2);
 
