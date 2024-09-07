@@ -3,10 +3,18 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import qs from 'qs'
 
-import type { Committee, Post, Project, Society, Sponsor } from '../../../payload/payload-types'
+import type {
+  Committee,
+  Event,
+  Post,
+  Project,
+  Society,
+  Sponsor,
+} from '../../../payload/payload-types'
 import type { ArchiveBlockProps } from '../../_blocks/ArchiveBlock/types'
 import { Card } from '../Card'
 import { CommitteeItem } from '../CommitteeItem'
+import { EventItem } from '../EventItem'
 import { Gutter } from '../Gutter'
 import { PageRange } from '../PageRange'
 import { Pagination } from '../Pagination'
@@ -16,7 +24,7 @@ import { SponsorItem } from '../SponsorItem'
 import classes from './index.module.scss'
 
 type Result = {
-  docs: (Post | Project | Sponsor | Society | Committee | string)[]
+  docs: (Post | Project | Sponsor | Society | Committee | Event | string)[]
   hasNextPage: boolean
   hasPrevPage: boolean
   nextPage: number
@@ -34,7 +42,7 @@ export type Props = {
   populateBy?: 'collection' | 'selection'
   populatedDocs?: ArchiveBlockProps['populatedDocs']
   populatedDocsTotal?: ArchiveBlockProps['populatedDocsTotal']
-  relationTo?: 'posts' | 'projects' | 'committee' | 'sponsors' | 'societies'
+  relationTo?: 'posts' | 'projects' | 'committee' | 'sponsors' | 'societies' | 'events'
   selectedDocs?: ArchiveBlockProps['selectedDocs']
   showPageRange?: boolean
   sort?: string
@@ -118,7 +126,8 @@ export const CollectionArchive: React.FC<Props> = props => {
           depth: 1,
           limit,
           page,
-          sort: relationTo === 'committee' ? 'position' : 'level',
+          sort:
+            relationTo === 'committee' ? 'position' : relationTo === 'events' ? 'date' : 'level',
           where: {
             ...(categories
               ? {
@@ -169,7 +178,9 @@ export const CollectionArchive: React.FC<Props> = props => {
           const json = await req.json()
           clearTimeout(timer)
 
-          let { docs } = json as { docs: (Post | Project | Committee | Sponsor | Society)[] }
+          let { docs } = json as {
+            docs: (Post | Project | Committee | Sponsor | Society | Event)[]
+          }
 
           if (docs && Array.isArray(docs)) {
             if (relationTo === 'committee') {
@@ -228,7 +239,11 @@ export const CollectionArchive: React.FC<Props> = props => {
                 return (
                   <div
                     className={
-                      relationTo === 'committee' ? classes.columnCommittee : classes.column
+                      relationTo === 'committee'
+                        ? classes.columnCommittee
+                        : relationTo === 'events'
+                        ? classes.columnEvents
+                        : classes.column
                     }
                     key={index}
                   >
@@ -244,6 +259,9 @@ export const CollectionArchive: React.FC<Props> = props => {
                     )}
                     {relationTo === 'committee' && 'position' in result && (
                       <CommitteeItem committee={result} />
+                    )}
+                    {relationTo === 'events' && 'name' in result && 'date' in result && (
+                      <EventItem event={result} />
                     )}
                   </div>
                 )

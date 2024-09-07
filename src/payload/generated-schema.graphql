@@ -76,6 +76,9 @@ type Query {
   Committee(id: String!, draft: Boolean): Committee
   Committees(draft: Boolean, where: Committee_where, limit: Int, page: Int, sort: String): Committees
   docAccessCommittee(id: String!): committeeDocAccess
+  Event(id: String!, draft: Boolean): Event
+  Events(draft: Boolean, where: Event_where, limit: Int, page: Int, sort: String): Events
+  docAccessEvent(id: String!): eventsDocAccess
   Redirect(id: String!, draft: Boolean): Redirect
   Redirects(draft: Boolean, where: Redirect_where, limit: Int, page: Int, sort: String): Redirects
   docAccessRedirect(id: String!): redirectsDocAccess
@@ -648,6 +651,7 @@ enum Archive_relationTo {
   sponsors
   committee
   societies
+  events
 }
 
 type Category {
@@ -677,9 +681,10 @@ enum Archive_SelectedDocs_RelationTo {
   sponsors
   societies
   committee
+  events
 }
 
-union Archive_SelectedDocs = Post | Project | Sponsor | Society | Committee
+union Archive_SelectedDocs = Post | Project | Sponsor | Society | Committee | Event
 
 type Post {
   id: String
@@ -2169,6 +2174,16 @@ input Committee_Logo_where_or {
   OR: [Committee_Logo_where_or]
 }
 
+type Event {
+  id: String!
+  name: String!
+  date: DateTime!
+  location: String
+  description: String
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
 type Archive_PopulatedDocs_Relationship {
   relationTo: Archive_PopulatedDocs_RelationTo
   value: Archive_PopulatedDocs
@@ -2180,9 +2195,10 @@ enum Archive_PopulatedDocs_RelationTo {
   sponsors
   societies
   committee
+  events
 }
 
-union Archive_PopulatedDocs = Post | Project | Sponsor | Society | Committee
+union Archive_PopulatedDocs = Post | Project | Sponsor | Society | Committee | Event
 
 type Page_Meta {
   title: String
@@ -18090,6 +18106,329 @@ type CommitteeDeleteDocAccess {
   where: JSONObject
 }
 
+type Events {
+  docs: [Event]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input Event_where {
+  id: Event_id_operator
+  name: Event_name_operator
+  date: Event_date_operator
+  location: Event_location_operator
+  description: Event_description_operator
+  updatedAt: Event_updatedAt_operator
+  createdAt: Event_createdAt_operator
+  AND: [Event_where_and]
+  OR: [Event_where_or]
+}
+
+input Event_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Event_name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Event_date_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input Event_location_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_description_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Event_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Event_where_and {
+  id: Event_id_operator
+  name: Event_name_operator
+  date: Event_date_operator
+  location: Event_location_operator
+  description: Event_description_operator
+  updatedAt: Event_updatedAt_operator
+  createdAt: Event_createdAt_operator
+  AND: [Event_where_and]
+  OR: [Event_where_or]
+}
+
+input Event_where_or {
+  id: Event_id_operator
+  name: Event_name_operator
+  date: Event_date_operator
+  location: Event_location_operator
+  description: Event_description_operator
+  updatedAt: Event_updatedAt_operator
+  createdAt: Event_createdAt_operator
+  AND: [Event_where_and]
+  OR: [Event_where_or]
+}
+
+type eventsDocAccess {
+  fields: EventsDocAccessFields
+  create: EventsCreateDocAccess
+  read: EventsReadDocAccess
+  update: EventsUpdateDocAccess
+  delete: EventsDeleteDocAccess
+}
+
+type EventsDocAccessFields {
+  id: EventsDocAccessFields_id
+  name: EventsDocAccessFields_name
+  date: EventsDocAccessFields_date
+  location: EventsDocAccessFields_location
+  description: EventsDocAccessFields_description
+  updatedAt: EventsDocAccessFields_updatedAt
+  createdAt: EventsDocAccessFields_createdAt
+}
+
+type EventsDocAccessFields_id {
+  create: EventsDocAccessFields_id_Create
+  read: EventsDocAccessFields_id_Read
+  update: EventsDocAccessFields_id_Update
+  delete: EventsDocAccessFields_id_Delete
+}
+
+type EventsDocAccessFields_id_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_id_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_id_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_id_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_name {
+  create: EventsDocAccessFields_name_Create
+  read: EventsDocAccessFields_name_Read
+  update: EventsDocAccessFields_name_Update
+  delete: EventsDocAccessFields_name_Delete
+}
+
+type EventsDocAccessFields_name_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_name_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_name_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_name_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_date {
+  create: EventsDocAccessFields_date_Create
+  read: EventsDocAccessFields_date_Read
+  update: EventsDocAccessFields_date_Update
+  delete: EventsDocAccessFields_date_Delete
+}
+
+type EventsDocAccessFields_date_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_date_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_date_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_date_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_location {
+  create: EventsDocAccessFields_location_Create
+  read: EventsDocAccessFields_location_Read
+  update: EventsDocAccessFields_location_Update
+  delete: EventsDocAccessFields_location_Delete
+}
+
+type EventsDocAccessFields_location_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_location_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_location_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_location_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_description {
+  create: EventsDocAccessFields_description_Create
+  read: EventsDocAccessFields_description_Read
+  update: EventsDocAccessFields_description_Update
+  delete: EventsDocAccessFields_description_Delete
+}
+
+type EventsDocAccessFields_description_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_description_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_description_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_description_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_updatedAt {
+  create: EventsDocAccessFields_updatedAt_Create
+  read: EventsDocAccessFields_updatedAt_Read
+  update: EventsDocAccessFields_updatedAt_Update
+  delete: EventsDocAccessFields_updatedAt_Delete
+}
+
+type EventsDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_createdAt {
+  create: EventsDocAccessFields_createdAt_Create
+  read: EventsDocAccessFields_createdAt_Read
+  update: EventsDocAccessFields_createdAt_Update
+  delete: EventsDocAccessFields_createdAt_Delete
+}
+
+type EventsDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type EventsCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type Redirect {
   id: String
   from: String!
@@ -20521,6 +20860,7 @@ type Access {
   sponsors: sponsorsAccess
   societies: societiesAccess
   committee: committeeAccess
+  events: eventsAccess
   redirects: redirectsAccess
   forms: formsAccess
   form_submissions: form_submissionsAccess
@@ -28019,6 +28359,205 @@ type CommitteeDeleteAccess {
   where: JSONObject
 }
 
+type eventsAccess {
+  fields: EventsFields
+  create: EventsCreateAccess
+  read: EventsReadAccess
+  update: EventsUpdateAccess
+  delete: EventsDeleteAccess
+}
+
+type EventsFields {
+  id: EventsFields_id
+  name: EventsFields_name
+  date: EventsFields_date
+  location: EventsFields_location
+  description: EventsFields_description
+  updatedAt: EventsFields_updatedAt
+  createdAt: EventsFields_createdAt
+}
+
+type EventsFields_id {
+  create: EventsFields_id_Create
+  read: EventsFields_id_Read
+  update: EventsFields_id_Update
+  delete: EventsFields_id_Delete
+}
+
+type EventsFields_id_Create {
+  permission: Boolean!
+}
+
+type EventsFields_id_Read {
+  permission: Boolean!
+}
+
+type EventsFields_id_Update {
+  permission: Boolean!
+}
+
+type EventsFields_id_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_name {
+  create: EventsFields_name_Create
+  read: EventsFields_name_Read
+  update: EventsFields_name_Update
+  delete: EventsFields_name_Delete
+}
+
+type EventsFields_name_Create {
+  permission: Boolean!
+}
+
+type EventsFields_name_Read {
+  permission: Boolean!
+}
+
+type EventsFields_name_Update {
+  permission: Boolean!
+}
+
+type EventsFields_name_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_date {
+  create: EventsFields_date_Create
+  read: EventsFields_date_Read
+  update: EventsFields_date_Update
+  delete: EventsFields_date_Delete
+}
+
+type EventsFields_date_Create {
+  permission: Boolean!
+}
+
+type EventsFields_date_Read {
+  permission: Boolean!
+}
+
+type EventsFields_date_Update {
+  permission: Boolean!
+}
+
+type EventsFields_date_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_location {
+  create: EventsFields_location_Create
+  read: EventsFields_location_Read
+  update: EventsFields_location_Update
+  delete: EventsFields_location_Delete
+}
+
+type EventsFields_location_Create {
+  permission: Boolean!
+}
+
+type EventsFields_location_Read {
+  permission: Boolean!
+}
+
+type EventsFields_location_Update {
+  permission: Boolean!
+}
+
+type EventsFields_location_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_description {
+  create: EventsFields_description_Create
+  read: EventsFields_description_Read
+  update: EventsFields_description_Update
+  delete: EventsFields_description_Delete
+}
+
+type EventsFields_description_Create {
+  permission: Boolean!
+}
+
+type EventsFields_description_Read {
+  permission: Boolean!
+}
+
+type EventsFields_description_Update {
+  permission: Boolean!
+}
+
+type EventsFields_description_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_updatedAt {
+  create: EventsFields_updatedAt_Create
+  read: EventsFields_updatedAt_Read
+  update: EventsFields_updatedAt_Update
+  delete: EventsFields_updatedAt_Delete
+}
+
+type EventsFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type EventsFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type EventsFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type EventsFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_createdAt {
+  create: EventsFields_createdAt_Create
+  read: EventsFields_createdAt_Read
+  update: EventsFields_createdAt_Update
+  delete: EventsFields_createdAt_Delete
+}
+
+type EventsFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type EventsFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type EventsFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type EventsFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type EventsCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type EventsDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type redirectsAccess {
   fields: RedirectsFields
   create: RedirectsCreateAccess
@@ -29773,6 +30312,9 @@ type Mutation {
   createCommittee(data: mutationCommitteeInput!, draft: Boolean): Committee
   updateCommittee(id: String!, autosave: Boolean, data: mutationCommitteeUpdateInput!, draft: Boolean): Committee
   deleteCommittee(id: String!): Committee
+  createEvent(data: mutationEventInput!, draft: Boolean): Event
+  updateEvent(id: String!, autosave: Boolean, data: mutationEventUpdateInput!, draft: Boolean): Event
+  deleteEvent(id: String!): Event
   createRedirect(data: mutationRedirectInput!, draft: Boolean): Redirect
   updateRedirect(id: String!, autosave: Boolean, data: mutationRedirectUpdateInput!, draft: Boolean): Redirect
   deleteRedirect(id: String!): Redirect
@@ -31036,6 +31578,25 @@ enum CommitteeUpdate_position_MutationInput {
   StaffRepresentative
   UnknownRole
   Webmaster
+}
+
+input mutationEventInput {
+  id: String!
+  name: String!
+  date: String!
+  location: String
+  description: String
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationEventUpdateInput {
+  name: String
+  date: String
+  location: String
+  description: String
+  updatedAt: String
+  createdAt: String
 }
 
 input mutationRedirectInput {
