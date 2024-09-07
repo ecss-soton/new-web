@@ -52,12 +52,14 @@ export const EventItem: React.FC<{
 
   return (
     <div className={[classes.rectangle, inter.className].join(' ')}>
-      <div className={classes.overlap}>
+      <div className={classes.when}>
         <div className={classes.date}>{day}</div>
         <div className={classes.month}>{monthName}</div>
       </div>
-      <div className={classes.name}>{name}</div>
-      <p className={classes.desc}>{desc}</p>
+      <div className={classes.what}>
+        <div className={classes.name}>{name}</div>
+        <p className={classes.desc}>{desc}</p>
+      </div>
     </div>
   )
 }
