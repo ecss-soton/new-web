@@ -17,6 +17,7 @@ import Comments from './collections/Comments'
 import Committee from './collections/Committee'
 import { ElectionResults } from './collections/ElectionResults'
 import Elections from './collections/Elections'
+import Events from './collections/Events'
 import { Media } from './collections/Media'
 import Merch from './collections/Merch'
 import Nominations from './collections/Nominations'
@@ -112,6 +113,7 @@ export default buildConfig({
     Sponsors,
     Societies,
     Committee,
+    Events,
   ],
   globals: [Settings, Header, Footer],
   typescript: {
