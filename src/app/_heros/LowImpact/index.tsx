@@ -18,7 +18,7 @@ export const LowImpactHero: React.FC<Page['hero']> = ({ title, richText }) => {
   return (
     <Gutter className={classes.lowImpactHero}>
       <div className={classes.content}>
-        <VerticalPadding>
+        <VerticalPadding top="none" bottom="small">
           <h1 className={[classes.title, inter.className].join(' ')}>
             {' '}
             <span className={classes.bracket}> &gt;</span> {title}

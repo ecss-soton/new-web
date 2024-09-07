@@ -6,10 +6,26 @@
   padding-top: calc(var(--block-padding) / 2);
 }
 
+.top-small {
+  padding-top: calc(var(--block-padding) / 4);
+}
+
+.top-none {
+  padding-top: 0;
+}
+
 .bottom-large {
   padding-bottom: var(--block-padding);
 }
 
 .bottom-medium {
   padding-bottom: calc(var(--block-padding) / 2);
+}
+
+.bottom-small {
+  padding-bottom: calc(var(--block-padding) / 4);
+}
+
+.bottom-none {
+  padding-bottom: 0;
 }
