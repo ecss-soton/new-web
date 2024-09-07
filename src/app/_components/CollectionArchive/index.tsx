@@ -233,7 +233,13 @@ export const CollectionArchive: React.FC<Props> = props => {
           </Gutter>
         )} */}
         <Gutter>
-          <div className={relationTo === 'committee' ? classes.committeegrid : classes.grid}>
+          <div
+            className={
+              relationTo === 'committee' || relationTo === 'events'
+                ? classes.committeegrid
+                : classes.grid
+            }
+          >
             {results.docs?.map((result, index) => {
               if (typeof result === 'object' && result !== null) {
                 return (
