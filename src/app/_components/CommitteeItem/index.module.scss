@@ -94,7 +94,7 @@
 .firstName {
     font-weight: 700;
     font-style: normal;
-    font-size: max(2.3vw, 25px);
+    font-size: min(2.3vw, 46px);
     line-height: 104%;
 
     @include large-break {
@@ -113,7 +113,7 @@
 .lastName {
     font-weight: 400;
     letter-spacing: 0;
-    font-size: max(2.3vw, 25px);
+    font-size: min(2.3vw, 46px);
     line-height: 104%;
 
     @include large-break {
@@ -134,7 +134,7 @@
   font-style: normal;
   font-weight: 400;
   line-height: 104%; /* 20.8px */
-  font-size: max(1.1vw, 12px);
+  font-size: min(1.1vw, 23px);
   text-align: center;
   position: relative;
   top: 15px;
