@@ -26,6 +26,15 @@ export default async function Page({ params: { slug = 'home' } }) {
 
   try {
     page = await fetchDoc<Page>({
+      collection: 'pages'
+    })
+    console.log(page)
+  } catch (error) {
+    console.error(error)
+  }
+
+  try {
+    page = await fetchDoc<Page>({
       collection: 'pages',
       slug,
       draft: isDraftMode,
@@ -56,6 +65,9 @@ export default async function Page({ params: { slug = 'home' } }) {
       <Blocks
         blocks={layout}
         disableTopPadding={!hero || hero?.type === 'none' || hero?.type === 'lowImpact'}
+        disableBottomPadding={!hero || hero?.type === 'none'}
+        //This is very scuffed code for disabling the bottom padding on the homepage.
+        // I'm sorry if this screws someone over later
       />
     </React.Fragment>
   )

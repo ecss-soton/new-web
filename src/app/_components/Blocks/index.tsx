@@ -5,7 +5,9 @@ import { ArchiveBlock } from '../../_blocks/ArchiveBlock'
 import { CallToActionBlock } from '../../_blocks/CallToAction'
 import { CommentsBlock, type CommentsBlockProps } from '../../_blocks/Comments/index'
 import { ContentBlock } from '../../_blocks/Content'
-import { MediaBlock } from '../../_blocks/MediaBlock'
+import { HomeTopBlock } from '../../_blocks/HomeTop/'
+import { IntroBlock } from '../../_blocks/Intro/'
+import { MediaBlock } from '../../_blocks/MediaBlock/'
 import { RelatedPosts, type RelatedPostsProps } from '../../_blocks/RelatedPosts'
 import { toKebabCase } from '../../_utilities/toKebabCase'
 import { BackgroundColor } from '../BackgroundColor'
@@ -16,6 +18,8 @@ const blockComponents = {
   content: ContentBlock,
   mediaBlock: MediaBlock,
   archive: ArchiveBlock,
+  homeTop: HomeTopBlock,
+  intro: IntroBlock,
   relatedPosts: RelatedPosts,
   comments: CommentsBlock,
 }
@@ -23,8 +27,9 @@ const blockComponents = {
 export const Blocks: React.FC<{
   blocks: (Page['layout'][0] | RelatedPostsProps | CommentsBlockProps)[]
   disableTopPadding?: boolean
+  disableBottomPadding?: boolean
 }> = props => {
-  const { disableTopPadding, blocks } = props
+  const { disableTopPadding, disableBottomPadding, blocks } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 
@@ -60,6 +65,10 @@ export const Blocks: React.FC<{
 
             if (disableTopPadding && index === 0) {
               paddingTop = 'none'
+            }
+
+            if (disableBottomPadding && blockType === 'homeTop') {
+              paddingBottom = 'none'
             }
 
             if (Block) {

@@ -1,0 +1,37 @@
+@import '../../_css/common';
+
+.container {
+    width: 100%;
+    height: 690px;
+    position: relative;
+    padding-left: 8%;
+    padding-right: 5%;
+}
+
+.grey {
+    height: 608px;
+    width: 40%; 
+    padding: 2%;
+    background: var(--theme-elevation-150);
+    position: absolute;
+}
+
+.red {
+    height: 560px;
+    width: 55%;
+    left: 35%;
+    top: 18%;
+    background: #A01B1B;
+    z-index: -2;
+    position: absolute;
+}
+
+.image {
+    height: 545px;
+    width: 55%;
+    left: 33%;
+    top: 15%;
+    object-fit: cover;
+    z-index: -1;
+    position: absolute;
+}
