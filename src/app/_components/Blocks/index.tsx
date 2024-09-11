@@ -8,6 +8,7 @@ import { ContentBlock } from '../../_blocks/Content'
 import { HomeTopBlock } from '../../_blocks/HomeTop/'
 import { IntroBlock } from '../../_blocks/Intro/'
 import { MediaBlock } from '../../_blocks/MediaBlock/'
+import { NextEventBlock } from '../../_blocks/NextEvent'
 import { RelatedPosts, type RelatedPostsProps } from '../../_blocks/RelatedPosts'
 import { toKebabCase } from '../../_utilities/toKebabCase'
 import { BackgroundColor } from '../BackgroundColor'
@@ -22,6 +23,7 @@ const blockComponents = {
   intro: IntroBlock,
   relatedPosts: RelatedPosts,
   comments: CommentsBlock,
+  nextEvent: NextEventBlock,
 }
 
 export const Blocks: React.FC<{

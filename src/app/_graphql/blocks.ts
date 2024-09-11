@@ -59,6 +59,13 @@ export const INTRO = `
 }
 `
 
+export const NEXT_EVENT = `
+...on NextEvent {
+  blockType
+  ${MEDIA}
+}
+`
+
 export const ARCHIVE_BLOCK = `
 ...on Archive {
   blockType

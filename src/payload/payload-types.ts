@@ -226,6 +226,12 @@ export interface Page {
         blockName?: string | null;
         blockType: 'intro';
       }
+    | {
+        media: string | Media;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'nextEvent';
+      }
   )[];
   slug?: string | null;
   meta?: {
