@@ -350,7 +350,7 @@ input Page_Hero_Media_where_or {
   OR: [Page_Hero_Media_where_or]
 }
 
-union Page_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro
+union Page_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent
 
 type Cta {
   invertBackground: Boolean
@@ -2866,6 +2866,175 @@ input Intro_Media_where_or {
   OR: [Intro_Media_where_or]
 }
 
+type NextEvent {
+  media(where: NextEvent_Media_where): Media
+  id: String
+  blockName: String
+  blockType: String
+}
+
+input NextEvent_Media_where {
+  alt: NextEvent_Media_alt_operator
+  caption: NextEvent_Media_caption_operator
+  updatedAt: NextEvent_Media_updatedAt_operator
+  createdAt: NextEvent_Media_createdAt_operator
+  url: NextEvent_Media_url_operator
+  filename: NextEvent_Media_filename_operator
+  mimeType: NextEvent_Media_mimeType_operator
+  filesize: NextEvent_Media_filesize_operator
+  width: NextEvent_Media_width_operator
+  height: NextEvent_Media_height_operator
+  id: NextEvent_Media_id_operator
+  AND: [NextEvent_Media_where_and]
+  OR: [NextEvent_Media_where_or]
+}
+
+input NextEvent_Media_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input NextEvent_Media_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input NextEvent_Media_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input NextEvent_Media_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input NextEvent_Media_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NextEvent_Media_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NextEvent_Media_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NextEvent_Media_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NextEvent_Media_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NextEvent_Media_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NextEvent_Media_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NextEvent_Media_where_and {
+  alt: NextEvent_Media_alt_operator
+  caption: NextEvent_Media_caption_operator
+  updatedAt: NextEvent_Media_updatedAt_operator
+  createdAt: NextEvent_Media_createdAt_operator
+  url: NextEvent_Media_url_operator
+  filename: NextEvent_Media_filename_operator
+  mimeType: NextEvent_Media_mimeType_operator
+  filesize: NextEvent_Media_filesize_operator
+  width: NextEvent_Media_width_operator
+  height: NextEvent_Media_height_operator
+  id: NextEvent_Media_id_operator
+  AND: [NextEvent_Media_where_and]
+  OR: [NextEvent_Media_where_or]
+}
+
+input NextEvent_Media_where_or {
+  alt: NextEvent_Media_alt_operator
+  caption: NextEvent_Media_caption_operator
+  updatedAt: NextEvent_Media_updatedAt_operator
+  createdAt: NextEvent_Media_createdAt_operator
+  url: NextEvent_Media_url_operator
+  filename: NextEvent_Media_filename_operator
+  mimeType: NextEvent_Media_mimeType_operator
+  filesize: NextEvent_Media_filesize_operator
+  width: NextEvent_Media_width_operator
+  height: NextEvent_Media_height_operator
+  id: NextEvent_Media_id_operator
+  AND: [NextEvent_Media_where_and]
+  OR: [NextEvent_Media_where_or]
+}
+
 type Page_Meta {
   title: String
   description: String
@@ -4240,7 +4409,7 @@ input PageVersion_Version_Hero_Media_where_or {
   OR: [PageVersion_Version_Hero_Media_where_or]
 }
 
-union PageVersion_Version_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro
+union PageVersion_Version_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent
 
 type PageVersion_Version_Meta {
   title: String

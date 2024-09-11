@@ -8,6 +8,7 @@ import { Content } from '../../blocks/Content'
 import { HomeTop } from '../../blocks/HomeTop'
 import { Intro } from '../../blocks/Intro'
 import { MediaBlock } from '../../blocks/MediaBlock'
+import { NextEvent } from '../../blocks/NextEvent'
 import { hero } from '../../fields/hero'
 import { slugField } from '../../fields/slug'
 import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
@@ -66,7 +67,7 @@ export const Pages: CollectionConfig = {
               name: 'layout',
               type: 'blocks',
               required: true,
-              blocks: [CallToAction, Content, MediaBlock, Archive, HomeTop, Intro],
+              blocks: [CallToAction, Content, MediaBlock, Archive, HomeTop, Intro, NextEvent],
             },
           ],
         },

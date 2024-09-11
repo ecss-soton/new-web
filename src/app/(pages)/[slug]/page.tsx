@@ -26,7 +26,7 @@ export default async function Page({ params: { slug = 'home' } }) {
 
   try {
     page = await fetchDoc<Page>({
-      collection: 'pages'
+      collection: 'pages',
     })
     console.log(page)
   } catch (error) {
