@@ -1,4 +1,4 @@
-@use '../../_css/type.scss' as *;
+@import '../../_css/common';
 
 .title{
     color: var(--theme-elevation-1000);
@@ -6,6 +6,10 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+
+    @include small-break {
+        font-size: max(9vw, 50px);
+    }
 }
 
 .bracket {

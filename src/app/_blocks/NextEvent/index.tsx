@@ -48,10 +48,8 @@ export const NextEventBlock: React.FC<
 
   const backgroundStyle: React.CSSProperties = {
     width: '100%',
-    height: '670px',
     zIndex: '-1',
     backgroundImage: `url(${src})`,
-    paddingTop: '274px',
     objectFit: 'cover',
   }
 

@@ -6,14 +6,23 @@
     position: relative;
     padding-left: 8%;
     padding-right: 5%;
+
+    @include mid-break {
+        height: 70vw;
+    }
 }
 
 .grey {
     height: 608px;
-    width: 40%; 
+    width: 617px;
     padding: 2%;
     background: var(--theme-elevation-150);
     position: absolute;
+
+    @include mid-break {
+        width: 70%;
+        height: 50vw;
+    }
 }
 
 .red {
@@ -24,6 +33,29 @@
     background: #A01B1B;
     z-index: -2;
     position: absolute;
+
+    @include mid-break {
+        height: 50vw;
+    }
+}
+
+.text {
+    color: var(--theme-elevation-1000);
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    @include mid-break {
+        font-size: 2vw;
+        p {
+            margin: 2vw;
+        }
+        h3 {
+            font-size: 4vw;
+            margin: 3vw;
+        }
+    }
 }
 
 .image {
@@ -34,4 +66,8 @@
     object-fit: cover;
     z-index: -1;
     position: absolute;
+
+    @include mid-break {
+        height: 50vw;
+    }
 }
