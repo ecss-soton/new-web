@@ -20,6 +20,19 @@
   color: red;
 }
 
+.fadeIn {
+  span {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 300ms ease, transform 300ms ease;
+  }
+
+  &:hover span {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .hide {
   opacity: 0;
   visibility: hidden;
