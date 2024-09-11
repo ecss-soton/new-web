@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { CssVariable } from '@next/font'
 import { Inter } from '@next/font/google'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -36,18 +37,24 @@ export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
       {navItems.map(({ link }, i) => {
         const slug = (link.reference?.value as Page)?.slug
         const isActive = link.url === currentPath || `/${slug}` === currentPath
-        const label = isActive ? (
-          <>
-            <span className={classes.redBrackets}>[&nbsp;</span>
+        const style: React.CSSProperties = isActive
+          ? {
+              color: 'red',
+              opacity: 1,
+            }
+          : {
+              color: 'red',
+            }
+        const label = (
+          <div className={classes.fadeIn}>
+            <span style={style} className={classes.redBrackets}>
+              [&nbsp;
+            </span>
             {link.label}
-            <span className={classes.redBrackets}>&nbsp;]</span>
-          </>
-        ) : (
-          <>
-            <span className={classes.redBrackets}>&nbsp;&nbsp;</span>
-            {link.label}
-            <span className={classes.redBrackets}>&nbsp;&nbsp;</span>
-          </>
+            <span style={style} className={classes.redBrackets}>
+              &nbsp;]
+            </span>
+          </div>
         )
         return <CMSLink key={i} {...link} label={label} appearance="header" />
       })}
