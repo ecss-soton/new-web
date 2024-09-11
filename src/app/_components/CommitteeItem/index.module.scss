@@ -22,6 +22,10 @@
       }
     }
 
+    @include extra-small-break {
+      width: 250px;
+    }
+
     // @include small-break {
     //   padding-right: 30%;
     // }  
@@ -97,6 +101,12 @@
       height: 50%;
       width: 100%;
     }
+
+
+    @include extra-small-break {
+      position: relative;
+      left: 10%;
+    }
 }
 
 .firstName {
@@ -157,6 +167,8 @@
 
   @include small-break {
     font-size: 17px;
+    width: 100px;
+    display: inline-flex;
   }
 }
 
@@ -207,6 +219,7 @@
   @include small-break {
     padding-right: 0; 
     padding-bottom: 0;
+    padding-top: 10%;
     width: 120px;
     height: 120px;
     // padding-top: 1%;
