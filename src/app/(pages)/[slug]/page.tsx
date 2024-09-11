@@ -24,14 +24,14 @@ export default async function Page({ params: { slug = 'home' } }) {
 
   let page: Page | null = null
 
-  try {
-    page = await fetchDoc<Page>({
-      collection: 'pages',
-    })
-    console.log(page)
-  } catch (error) {
-    console.error(error)
-  }
+  // try {
+  //   page = await fetchDoc<Page>({
+  //     collection: 'pages',
+  //   })
+  //   console.log(page)
+  // } catch (error) {
+  //   console.error(error)
+  // }
 
   try {
     page = await fetchDoc<Page>({
