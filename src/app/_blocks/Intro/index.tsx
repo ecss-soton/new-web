@@ -18,7 +18,7 @@ export const IntroBlock: React.FC<
   return (
     <div className={classes.container}>
       <div className={classes.grey}>
-        <RichText content={content} />
+        <RichText content={content} className={classes.text} />
       </div>
       <Image resource={media} alt="Image 4" imgClassName={classes.image} />
       <div className={classes.red} />

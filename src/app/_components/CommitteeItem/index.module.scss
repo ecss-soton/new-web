@@ -14,6 +14,14 @@
     position: relative;
     flex-direction: column;
 
+    @include small-break {
+      width: 315px;
+      height: 160px;
+      > * {
+        box-sizing: content-box; 
+      }
+    }
+
     // @include small-break {
     //   padding-right: 30%;
     // }  
@@ -38,7 +46,7 @@
       padding-top: 5%;
       padding-right: 1%;
       height: 100%;
-      width: 50%;
+      width: 100%;
     }
     
 }
@@ -106,7 +114,7 @@
     }
 
     @include small-break {
-      font-size: max(35px,6vw);
+      font-size: 35px;
     }
 }
 
@@ -125,7 +133,7 @@
     }
 
     @include small-break {
-      font-size: max(35px,6vw);
+      font-size: 35px;
     }
 }
 
@@ -148,7 +156,7 @@
   }
 
   @include small-break {
-    font-size: max(17px,3vw);
+    font-size: 17px;
   }
 }
 
@@ -197,7 +205,12 @@
   padding-right: 60%;
 
   @include small-break {
-    padding-right: 80%;
+    padding-right: 0; 
+    padding-bottom: 0;
+    width: 120px;
+    height: 120px;
+    // padding-top: 1%;
+    flex-shrink: 0;
   }
 }
 

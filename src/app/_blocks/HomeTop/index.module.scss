@@ -6,6 +6,10 @@
     display: flex;
     flex-direction: row;
     padding-left: var(--gutter-h);
+
+    @include mid-break {
+        flex-direction: column;
+    }
 }
 
 .intro{
@@ -17,6 +21,10 @@
     height: 100%;
     padding-top: 3%;
     padding-right: 50px;
+
+    @include mid-break {
+        width: 100%;
+    }
 }
 
 .heading {
@@ -32,6 +40,10 @@
     width: 60%;
     height: 100%;
     display: flex;
+
+    @include mid-break {
+        width: 100%;
+    }
 }
 
 .image1{
@@ -69,6 +81,11 @@
     padding-top: 30%;
     display: flex;
     flex-direction: row;
+
+    @include mid-break {
+        width: 100%;
+        padding-top: 5%;
+    }
 }
 
 .stat {
@@ -76,6 +93,11 @@
     height: 123px;
     display: flex;
     flex-direction: column;
+
+    @include mid-break {
+        align-text: center;
+        align-items: center;
+    }
 }
 
 .number {
@@ -84,6 +106,10 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+
+    @include mid-break {
+        font-size: min(48px,10vw);
+    }
 }
 
 .label {
@@ -92,4 +118,8 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+
+    @include mid-break {
+        font-size: min(32px,7vw);
+    }
 }

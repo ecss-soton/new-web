@@ -3,9 +3,16 @@
 .background {
     padding-right: var(--gutter-h);
     background-size: cover;
+    height: 670px;
+    padding-top: 274px;
 
     @include large-break {
         padding-right: 0;
+    }
+
+    @include mid-break {
+        height: 70vw;
+        padding-top: 30vw;
     }
 }
 
@@ -24,6 +31,10 @@
     flex-direction: column;
     padding-left: var(--gutter-h);
     padding-top: 3%;
+
+    @include mid-break {
+        flex: 50%;
+    }
 }
 
 .nextEvent {
@@ -41,6 +52,10 @@
     font-style: normal;
     font-weight: 700;
     line-height: normal;
+
+    @include mid-break {
+        font-size: 8vw;
+    }
 }
 
 .info {
@@ -48,6 +63,10 @@
     flex: 33%;
     display: flex;
     flex-direction: column;
+
+    @include mid-break {
+        flex: 50%;
+    }
 }
 
 .when {
@@ -72,6 +91,10 @@
     font-style: normal;
     font-weight: 700;
     line-height: normal;
+
+    @include mid-break {
+        font-size: 20vw;
+    }
 }
 
 .month {
@@ -80,6 +103,10 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+
+    @include mid-break {
+        font-size: 5vw;
+    }
 }
 
 .time {
@@ -104,6 +131,10 @@
     font-weight: 400;
     line-height: normal;
     text-align: end;
+
+    @include mid-break {
+        font-size: 2vw;
+    }
 }
 
 .startTime {
@@ -112,6 +143,10 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+
+    @include mid-break {
+        font-size: 3vw;
+    }
 }
 
 .moreInfo {
@@ -121,11 +156,10 @@
     justify-content: center;
     align-items: center;
     display: flex;
-    a {
-    }
     > * {
       text-decoration: none;
     }
+    
 }
 
 .link {
@@ -134,4 +168,8 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+
+    @include mid-break {
+        font-size: 5vw;
+    }
 }
