@@ -28,7 +28,7 @@ export async function Footer() {
       <Gutter className={classes.wrap}>
         <Link href="/">
           <picture>
-            <img className={classes.logo} alt="ECSS Logo" src="/ECSS_cog.svg" />
+            <img className={classes.logo} alt="ECSS Logo" src="/ecss-light.svg" />
           </picture>
         </Link>
         <nav className={classes.nav}>

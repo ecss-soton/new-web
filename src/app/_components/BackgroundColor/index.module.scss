@@ -1,11 +1,13 @@
+@import '../../_css/common';
+
 .invert {
-  background-color: var(--theme-text);
-  color: var(--theme-bg);
+  background-color: var(--theme-elevation-150);
+  color: var(--theme-elevation-1000);
 }
 
-:global([data-theme="dark"]) {
-  .invert {
-    background-color: var(--theme-elevation-100);
-    color: var(--theme-text);
-  }
-}
+// :global([data-theme="dark"]) {
+//   .invert {
+//     background-color: var(--theme-elevation-100);
+//     color: var(--theme-text);
+//   }
+// }

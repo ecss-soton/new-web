@@ -1,0 +1,175 @@
+@import '../../_css/common';
+
+.background {
+    padding-right: var(--gutter-h);
+    background-size: cover;
+    height: 670px;
+    padding-top: 274px;
+
+    @include large-break {
+        padding-right: 0;
+    }
+
+    @include mid-break {
+        height: 70vw;
+        padding-top: 30vw;
+    }
+}
+
+.container {
+   height: 100%;
+   width: 100%;
+   display: flex;
+   flex-direction: row;
+   background: var(--theme-elevation-0); 
+}
+
+.text {
+    height: 100%;
+    flex: 66%;
+    display: flex;
+    flex-direction: column;
+    padding-left: var(--gutter-h);
+    padding-top: 3%;
+
+    @include mid-break {
+        flex: 50%;
+    }
+}
+
+.nextEvent {
+    color: var(--theme-elevation-600);
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin: 0;
+}
+
+.title {
+    color: #000;
+    font-size: 96px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+
+    @include mid-break {
+        font-size: 8vw;
+    }
+}
+
+.info {
+    height: 100%;
+    flex: 33%;
+    display: flex;
+    flex-direction: column;
+
+    @include mid-break {
+        flex: 50%;
+    }
+}
+
+.when {
+    flex: 75%;
+    display: flex;
+    flex-direction: row;
+}
+
+.date {
+    height: 100%;
+    flex: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #D22222;
+}
+
+.day {
+    color: var(--theme-elevation-0);
+    font-size: 128px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+
+    @include mid-break {
+        font-size: 20vw;
+    }
+}
+
+.month {
+    color: var(--theme-elevation-0);
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    @include mid-break {
+        font-size: 5vw;
+    }
+}
+
+.time {
+    height: 100%;
+    flex: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #F12929;
+}
+
+.start {
+    display: flex;
+    flex-direction: column;
+}
+
+.startText {
+    color: var(--theme-elevation-200);
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-align: end;
+
+    @include mid-break {
+        font-size: 2vw;
+    }
+}
+
+.startTime {
+    color: var(--theme-elevation-0);
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    @include mid-break {
+        font-size: 3vw;
+    }
+}
+
+.moreInfo {
+    width: 100%;
+    flex: 25%;
+    background: #9B2828;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    > * {
+      text-decoration: none;
+    }
+    
+}
+
+.link {
+    color: var(--theme-elevation-0);
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    @include mid-break {
+        font-size: 5vw;
+    }
+}

@@ -5,7 +5,10 @@ import { adminsOrPublished } from '../../access/adminsOrPublished'
 import { Archive } from '../../blocks/ArchiveBlock'
 import { CallToAction } from '../../blocks/CallToAction'
 import { Content } from '../../blocks/Content'
+import { HomeTop } from '../../blocks/HomeTop'
+import { Intro } from '../../blocks/Intro'
 import { MediaBlock } from '../../blocks/MediaBlock'
+import { NextEvent } from '../../blocks/NextEvent'
 import { hero } from '../../fields/hero'
 import { slugField } from '../../fields/slug'
 import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
@@ -64,7 +67,7 @@ export const Pages: CollectionConfig = {
               name: 'layout',
               type: 'blocks',
               required: true,
-              blocks: [CallToAction, Content, MediaBlock, Archive],
+              blocks: [CallToAction, Content, MediaBlock, Archive, HomeTop, Intro, NextEvent],
             },
           ],
         },
