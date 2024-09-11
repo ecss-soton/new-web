@@ -1,6 +1,6 @@
 import { CATEGORIES } from './categories'
 import { LINK_FIELDS } from './link'
-import { MEDIA } from './media'
+import { MEDIA, MEDIA_FIELDS } from './media'
 import { META } from './meta'
 
 export const CALL_TO_ACTION = `
@@ -32,6 +32,36 @@ export const MEDIA_BLOCK = `
   blockType
   invertBackground
   position
+  ${MEDIA}
+}
+`
+
+export const HOME_TOP = `
+...on HomeTop {
+  blockType
+  heading
+  image1 {
+    ${MEDIA_FIELDS}
+  }
+  image2 {
+    ${MEDIA_FIELDS}
+  }
+  image3 {
+    ${MEDIA_FIELDS}
+  }
+}
+`
+export const INTRO = `
+...on Intro {
+  blockType
+  content
+  ${MEDIA}
+}
+`
+
+export const NEXT_EVENT = `
+...on NextEvent {
+  blockType
   ${MEDIA}
 }
 `

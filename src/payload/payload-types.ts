@@ -208,6 +208,30 @@ export interface Page {
         blockName?: string | null;
         blockType: 'archive';
       }
+    | {
+        heading: string;
+        image1: string | Media;
+        image2: string | Media;
+        image3: string | Media;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'homeTop';
+      }
+    | {
+        content: {
+          [k: string]: unknown;
+        }[];
+        media: string | Media;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'intro';
+      }
+    | {
+        media: string | Media;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'nextEvent';
+      }
   )[];
   slug?: string | null;
   meta?: {
