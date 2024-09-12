@@ -1,15 +1,20 @@
+'use client'
+
 {
   /* eslint-disable @next/next/no-img-element */
 }
 
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Inter } from '@next/font/google'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
-import { Header } from '../../../payload/payload-types'
+import { Header as HeaderType, Page } from '../../../payload/payload-types'
 import { fetchHeader } from '../../_api/fetchGlobals'
+import { useAuth } from '../../_providers/Auth'
 import { useTheme } from '../../_providers/Theme'
 import { Gutter } from '../Gutter'
+import { CMSLink } from '../Link'
 import { ThemeImage } from '../ThemeImage'
 import { HeaderNav } from './Nav'
 
@@ -21,16 +26,61 @@ const inter = Inter({
   style: ['normal'],
 })
 
-export async function Header() {
-  let header: Header | null = null
+const useMediaQuery = width => {
+  const [targetReached, setTargetReached] = useState(false)
 
+  const updateTarget = useCallback(e => {
+    if (e.matches) {
+      setTargetReached(true)
+    } else {
+      setTargetReached(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    const media = window.matchMedia(`(max-width: ${width}px)`)
+    media.addEventListener('change', updateTarget)
+
+    // Check on mount (callback is not called until a change occurs)
+    if (media.matches) {
+      setTargetReached(true)
+    }
+
+    return () => media.removeEventListener('change', updateTarget)
+  }, [])
+
+  return targetReached
+}
+
+const fetchHeaderData = async () => {
   try {
-    header = await fetchHeader()
+    const header = await fetchHeader()
+    return header
   } catch (error) {
-    // When deploying this template on Payload Cloud, this page needs to build before the APIs are live
-    // So swallow the error here and simply render the header without nav items if one occurs
-    // in production you may want to redirect to a 404  page or at least log the error somewhere
-    // console.error(error)
+    // Handle the error appropriately
+    // console.error(error);
+    return null
+  }
+}
+
+const Header: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [header, setHeader] = useState<HeaderType | null>(null)
+  const { user } = useAuth()
+  const currentPath = usePathname()
+  const isBreakpoint = useMediaQuery(768)
+
+  useEffect(() => {
+    const getHeaderData = async () => {
+      const headerData = await fetchHeaderData()
+      setHeader(headerData)
+    }
+
+    getHeaderData()
+  }, [])
+
+  const toggleMenu = (newIsOpen: boolean) => {
+    setIsOpen(newIsOpen)
   }
 
   return (
@@ -51,9 +101,39 @@ export async function Header() {
             />
             {/* <span className={[classes.title, inter.className].join(' ')}>ECSS</span> */}
           </Link>
-          <HeaderNav header={header} />
+          <HeaderNav onToggleMenu={toggleMenu} header={header} onIsBreakpoint={isBreakpoint} />
         </Gutter>
+        {isBreakpoint && (
+          <div className={`${classes.menu} ${isOpen ? classes.open : ''}`}>
+            {header?.navItems.map(({ link }, i) => {
+              const slug = (link.reference?.value as Page)?.slug
+              const isActive = link.url === currentPath || `/${slug}` === currentPath
+              const style: React.CSSProperties = isActive
+                ? {
+                    color: 'red',
+                    opacity: 1,
+                  }
+                : {
+                    color: 'red',
+                  }
+              const label = (
+                <div className={classes.fadeIn}>
+                  <span style={style} className={classes.redBrackets}>
+                    [&nbsp;
+                  </span>
+                  {link.label}
+                  <span style={style} className={classes.redBrackets}>
+                    &nbsp;]
+                  </span>
+                </div>
+              )
+              return <CMSLink key={i} {...link} label={label} appearance="header" />
+            })}
+          </div>
+        )}
       </header>
     </>
   )
 }
+
+export default Header
