@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 
 import { AdminBar } from './_components/AdminBar'
 import { Footer } from './_components/Footer'
-import { Header } from './_components/Header'
+import Header from './_components/Header'
 import { Providers } from './_providers'
 import { InitTheme } from './_providers/Theme/InitTheme'
 import { mergeOpenGraph } from './_utilities/mergeOpenGraph'
@@ -24,7 +24,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <Providers>
           <AdminBar />
-          {/* @ts-expect-error */}
           <Header />
           {children}
           {/* @ts-expect-error */}
