@@ -100,11 +100,14 @@ export const HeaderNav: React.FC<HeaderNavComponentProps> = ({
             return <CMSLink key={i} {...link} label={label} appearance="header" />
           })}
           {user && (
-            <Link href="/account" className={[inter.className, classes.account].join(' ')}>
+            <Link
+              href="/account"
+              className={[inter.className, classes.account, classes.fadeIn].join(' ')}
+            >
               <>
-                <span className={classes.redBrackets}>&nbsp;&nbsp;</span>
+                <span className={classes.redBrackets}>&#91;&nbsp;</span>
                 Account
-                <span className={classes.redBrackets}>&nbsp;&nbsp;</span>
+                <span className={classes.redBrackets}>&nbsp;&#93;</span>
               </>
             </Link>
           )}
