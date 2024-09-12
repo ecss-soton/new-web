@@ -20,6 +20,17 @@
   color: red;
 }
 
+.menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.menuContainer {
+  display: flex;
+  flex-direction: column;
+}
+
 .fadeIn {
   span {
     opacity: 0;
@@ -41,4 +52,27 @@
 .account {
   font-size: 20px;
   font-weight: 400;
+  text-decoration: none;
+  > * {
+    text-decoration: none;
+  }
 }
+
+.hamburger{
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: space-around;
+  flex-flow: column nowrap;
+  z-index: 10;
+}
+
+.burger{
+  width: 2rem;
+  height: 0.15rem;
+  // border-radius: 10px;
+  background-color: var(--theme-elevation-1000);
+  transform-origin: 1px;
+  transition: all 0.3s ease-in-out;
+}
+
