@@ -12,6 +12,39 @@
     }
 }
 
+@keyframes fadeInLeft {
+    0% {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes fadeInRight {
+    0% {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes fadeInBottom {
+    0% {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
 .intro{
     display: flex;
     flex-direction: column;
@@ -34,6 +67,8 @@
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    opacity: 0;
+    animation: fadeInLeft 1s ease-in-out forwards;
 
     @include extra-small-break {
         font-size: 23px;
@@ -44,9 +79,13 @@
     width: 60%;
     height: 100%;
     display: flex;
+    opacity: 0;
+    animation: fadeInRight 1s ease-in-out forwards;
+    animation-delay: 1s;
 
     @include mid-break {
         width: 100%;
+        animation-delay: 2s;
     }
 }
 
@@ -61,6 +100,8 @@
     width: 184px;
     position: relative;
     left: 2%;
+    opacity: 0;
+    animation: fadeInLeft 1s ease-in-out forwards;
 }
 
 .image2 {
@@ -85,10 +126,14 @@
     padding-top: 30%;
     display: flex;
     flex-direction: row;
+    opacity: 0;
+    animation: fadeInBottom 1s ease-in-out forwards;
+    animation-delay: 2s;
 
     @include mid-break {
         width: 100%;
         padding-top: 5%;
+        animation-delay: 1s;
     }
 }
 
