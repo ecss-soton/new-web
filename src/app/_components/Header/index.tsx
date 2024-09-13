@@ -68,7 +68,7 @@ const Header: React.FC = () => {
   const [header, setHeader] = useState<HeaderType | null>(null)
   const { user } = useAuth()
   const currentPath = usePathname()
-  const isBreakpoint = useMediaQuery(768)
+  const isBreakpoint = useMediaQuery(900)
 
   useEffect(() => {
     const getHeaderData = async () => {
@@ -119,11 +119,11 @@ const Header: React.FC = () => {
               const label = (
                 <div className={classes.fadeIn}>
                   <span style={style} className={classes.redBrackets}>
-                    [&nbsp;
+                    &nbsp;[&nbsp;
                   </span>
                   {link.label}
                   <span style={style} className={classes.redBrackets}>
-                    &nbsp;]
+                    &nbsp;]&nbsp;
                   </span>
                 </div>
               )
