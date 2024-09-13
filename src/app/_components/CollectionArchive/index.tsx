@@ -244,13 +244,14 @@ export const CollectionArchive: React.FC<Props> = props => {
               if (typeof result === 'object' && result !== null) {
                 return (
                   <div
-                    className={
+                    className={[
                       relationTo === 'committee'
                         ? classes.columnCommittee
                         : relationTo === 'events'
                         ? classes.columnEvents
-                        : classes.column
-                    }
+                        : classes.column,
+                      classes.fadeIn,
+                    ].join(' ')}
                     key={index}
                   >
                     {/* {relationTo == ('projects' || 'posts' || 'committee') && (

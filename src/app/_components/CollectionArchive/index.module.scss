@@ -10,6 +10,17 @@
   }
 }
 
+@keyframes fadeInBottom {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .introContent {
   position: relative;
   margin-bottom: calc(var(--base) * 2);
@@ -17,6 +28,15 @@
   @include mid-break {
     margin-bottom: var(--base);
   }
+}
+
+.fadeIn {
+  opacity: 0;
+  animation: fadeInBottom 0.7s ease-in-out forwards;
+
+  // @include small-break {
+  //   justify-self: center;
+  // }
 }
 
 .resultCountWrapper {

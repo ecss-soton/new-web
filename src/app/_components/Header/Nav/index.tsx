@@ -89,11 +89,11 @@ export const HeaderNav: React.FC<HeaderNavComponentProps> = ({
             const label = (
               <div className={classes.fadeIn}>
                 <span style={style} className={classes.redBrackets}>
-                  [&nbsp;
+                  &nbsp;[&nbsp;
                 </span>
                 {link.label}
                 <span style={style} className={classes.redBrackets}>
-                  &nbsp;]
+                  &nbsp;]&nbsp;
                 </span>
               </div>
             )
@@ -105,9 +105,9 @@ export const HeaderNav: React.FC<HeaderNavComponentProps> = ({
               className={[inter.className, classes.account, classes.fadeIn].join(' ')}
             >
               <>
-                <span className={classes.redBrackets}>&#91;&nbsp;</span>
+                <span className={classes.redBrackets}>&nbsp;&#91;&nbsp;</span>
                 Account
-                <span className={classes.redBrackets}>&nbsp;&#93;</span>
+                <span className={classes.redBrackets}>&nbsp;&#93;&nbsp;</span>
               </>
             </Link>
           )}
