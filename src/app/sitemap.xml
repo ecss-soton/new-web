@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://society.ecs.soton.ac.uk</loc>
+    <lastmod>2022-09-13</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://society.ecs.soton.ac.uk/committee</loc>
+    <lastmod>2022-09-13</lastmod>
+  </url>
+  
+    <url>
+        <loc>https://society.ecs.soton.ac.uk/events</loc>
+        <lastmod>2022-09-13</lastmod>
+    </url>
+    
+    <url>
+        <loc>https://society.ecs.soton.ac.uk/societies</loc>
+        <lastmod>2022-09-02</lastmod>
+    </url>
+    
+    <url>
+        <loc>https://society.ecs.soton.ac.uk/sponsors/ai</loc>
+        <lastmod>2022-09-01</lastmod>
+    </url>
+</urlset>
