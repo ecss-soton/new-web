@@ -20,6 +20,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="icon" type="image/x-icon" sizes="16x16" href="/favicon.ico" />
         <link rel="manifest" href="/site.webmanifest" />
+        <meta
+          name="google-site-verification"
+          content="a3Ybkp65n44E9ZasfcriiF6K_E7kvtS_ZlPHwGQnzC0"
+        />
       </head>
       <body>
         <Providers>
