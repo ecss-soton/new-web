@@ -7,7 +7,7 @@
     position: absolute;
     top: 6%;
     right: 1%;
-    padding-top: 50px;
+    // padding-top: 50px;
 }
 
 .close:hover {
@@ -19,7 +19,7 @@
     content: ' ';
     height: 33px;
     width: 2px;
-    background-color: #333;
+    background-color: var(--theme-elevation-1000);
 }
 
 .close:before {
