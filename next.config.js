@@ -22,6 +22,9 @@ const nextConfig = {
     ],
   },
   redirects,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   async headers() {
     const headers = []
 
@@ -56,7 +59,6 @@ const nextConfig = {
 
     return headers
   },
-  ignoreDuringBuilds: true,
 }
 
 module.exports = nextConfig
