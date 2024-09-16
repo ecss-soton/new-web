@@ -1,9 +1,12 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import { Poppins } from '@next/font/google'
 import Image from 'next/image'
 import Link from 'next/link'
 
 import { Committee, Media } from '../../../payload/payload-types'
+import { CommitteePopUp } from '../CommitteePopUp'
 import { Media as MediaComp } from '../Media'
 
 import classes from './index.module.scss'
@@ -16,11 +19,19 @@ const poppins = Poppins({
 
 export const CommitteeItem: React.FC<{
   committee?: Committee
-}> = props => {
-  const {
-    committee: { firstName, lastName, position, bio, logo },
-  } = props
+  onCommitteeClick: (committee: Committee | null) => void
+}> = ({ committee, onCommitteeClick }) => {
+  const { firstName, lastName, position, bio, logo } = committee || {}
+  // const [isPopUpVisible, setIsPopUpVisible] = useState(null)
+  const fullName = firstName + ' ' + lastName
 
+  const handleClick = () => {
+    onCommitteeClick(committee)
+  }
+
+  const handleClose = () => {
+    onCommitteeClick(null)
+  }
   // const { slug, title, categories, meta } = doc || {}
   // const { description, image: metaImage } = meta || {}
 
@@ -30,7 +41,7 @@ export const CommitteeItem: React.FC<{
   // const href = `/${relationTo}/${slug}`
 
   return (
-    <div className={classes.person}>
+    <div className={classes.person} onClick={handleClick}>
       {logo && (
         <MediaComp
           className={classes.container}

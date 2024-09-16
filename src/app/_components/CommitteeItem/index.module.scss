@@ -13,6 +13,8 @@
     display: flex;
     position: relative;
     flex-direction: column;
+    transition: transform 0.3s ease;
+    cursor: pointer;
 
     @include small-break {
       width: 315px;
@@ -24,6 +26,10 @@
 
     @include extra-small-break {
       width: 250px;
+    }
+
+    &:hover {
+      transform: scale(1.1); // Scale the logo to 120% on hover
     }
 
     // @include small-break {
