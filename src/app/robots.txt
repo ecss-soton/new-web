@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /admin
+
+Sitemap: https://society.ecs.soton.ac.uk/sitemap.xml
