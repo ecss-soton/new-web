@@ -14,6 +14,7 @@ import type {
 import type { ArchiveBlockProps } from '../../_blocks/ArchiveBlock/types'
 import { Card } from '../Card'
 import { CommitteeItem } from '../CommitteeItem'
+import { CommitteePopUp } from '../CommitteePopUp'
 import { EventItem } from '../EventItem'
 import { Gutter } from '../Gutter'
 import { PageRange } from '../PageRange'
@@ -86,6 +87,11 @@ export const CollectionArchive: React.FC<Props> = props => {
   const hasHydrated = useRef(false)
   const isRequesting = useRef(false)
   const [page, setPage] = useState(1)
+  const [isPopUpVisible, setIsPopUpVisible] = useState(null)
+
+  const CommitteeClick = (newCommittee: Committee) => {
+    setIsPopUpVisible(newCommittee)
+  }
 
   const categories = (catsFromProps || [])
     .map(cat => (typeof cat === 'object' ? cat.id : cat))
@@ -265,7 +271,7 @@ export const CollectionArchive: React.FC<Props> = props => {
                       <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
                     )}
                     {relationTo === 'committee' && 'position' in result && (
-                      <CommitteeItem committee={result} />
+                      <CommitteeItem committee={result} onCommitteeClick={CommitteeClick} />
                     )}
                     {relationTo === 'events' && 'name' in result && 'date' in result && (
                       <EventItem event={result} />
@@ -287,6 +293,16 @@ export const CollectionArchive: React.FC<Props> = props => {
           )}
         </Gutter>
       </Fragment>
+      {isPopUpVisible && (
+        <CommitteePopUp
+          name={isPopUpVisible.firstName + ' ' + isPopUpVisible.lastName}
+          role={isPopUpVisible.position}
+          bio={isPopUpVisible.bio}
+          logo={isPopUpVisible.logo}
+          // onClose={handleClose}
+          onCommitteeClick={CommitteeClick}
+        />
+      )}
     </div>
   )
 }
