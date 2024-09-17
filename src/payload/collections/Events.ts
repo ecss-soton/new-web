@@ -48,7 +48,6 @@ const Events: CollectionConfig = {
       name: 'description',
       label: 'Description',
       type: 'text',
-      maxLength: 150,
     },
   ],
 }

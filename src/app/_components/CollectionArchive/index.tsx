@@ -16,6 +16,7 @@ import { Card } from '../Card'
 import { CommitteeItem } from '../CommitteeItem'
 import { CommitteePopUp } from '../CommitteePopUp'
 import { EventItem } from '../EventItem'
+import { EventPopUp } from '../EventPopUp'
 import { Gutter } from '../Gutter'
 import { PageRange } from '../PageRange'
 import { Pagination } from '../Pagination'
@@ -91,6 +92,10 @@ export const CollectionArchive: React.FC<Props> = props => {
 
   const CommitteeClick = (newCommittee: Committee) => {
     setIsPopUpVisible(newCommittee)
+  }
+
+  const EventClick = (newEvent: Event) => {
+    setIsPopUpVisible(newEvent)
   }
 
   const categories = (catsFromProps || [])
@@ -274,7 +279,7 @@ export const CollectionArchive: React.FC<Props> = props => {
                       <CommitteeItem committee={result} onCommitteeClick={CommitteeClick} />
                     )}
                     {relationTo === 'events' && 'name' in result && 'date' in result && (
-                      <EventItem event={result} />
+                      <EventItem event={result} onEventClick={EventClick} />
                     )}
                   </div>
                 )
@@ -293,7 +298,7 @@ export const CollectionArchive: React.FC<Props> = props => {
           )}
         </Gutter>
       </Fragment>
-      {isPopUpVisible && (
+      {isPopUpVisible && 'position' in isPopUpVisible && (
         <CommitteePopUp
           name={isPopUpVisible.firstName + ' ' + isPopUpVisible.lastName}
           role={isPopUpVisible.position}
@@ -301,6 +306,15 @@ export const CollectionArchive: React.FC<Props> = props => {
           logo={isPopUpVisible.logo}
           // onClose={handleClose}
           onCommitteeClick={CommitteeClick}
+        />
+      )}
+      {isPopUpVisible && 'date' in isPopUpVisible && (
+        <EventPopUp
+          name={isPopUpVisible.name}
+          date={isPopUpVisible.date}
+          description={isPopUpVisible.description}
+          location={isPopUpVisible.location}
+          onEventClick={EventClick}
         />
       )}
     </div>
