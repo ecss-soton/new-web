@@ -13,10 +13,17 @@ const inter = Inter({
 
 export const EventItem: React.FC<{
   event?: Event
-}> = props => {
-  const {
-    event: { name, date, description: desc },
-  } = props
+  onEventClick: (event: Event | null) => void
+}> = ({ event, onEventClick }) => {
+  const { name, date, description } = event || {}
+
+  const handleClick = () => {
+    onEventClick(event)
+  }
+
+  const handleClose = () => {
+    onEventClick(null)
+  }
 
   const getMonthName = (monthNumber: number): string => {
     const monthNames = [
@@ -36,11 +43,20 @@ export const EventItem: React.FC<{
     return monthNames[monthNumber - 1]
   }
 
+  const truncateDescription = (description: string, maxLength: number) => {
+    if (description.length > maxLength) {
+      return description.substring(0, maxLength) + '...'
+    }
+    return description
+  }
+
   const dateParts = date.split('-')
   const year = dateParts[0]
   const month = parseInt(dateParts[1], 10)
   const day = dateParts[2].split('T')[0]
   const monthName = getMonthName(month)
+
+  const truncatedDesc = truncateDescription(description, 150)
 
   // const { slug, title, categories, meta } = doc || {}
   // const { description, image: metaImage } = meta || {}
@@ -51,14 +67,14 @@ export const EventItem: React.FC<{
   // const href = `/${relationTo}/${slug}`
 
   return (
-    <div className={[classes.rectangle, inter.className].join(' ')}>
+    <div className={[classes.rectangle, inter.className].join(' ')} onClick={handleClick}>
       <div className={classes.when}>
         <div className={classes.date}>{day}</div>
         <div className={classes.month}>{monthName}</div>
       </div>
       <div className={classes.what}>
         <div className={classes.name}>{name}</div>
-        <p className={classes.desc}>{desc}</p>
+        <p className={classes.desc}>{truncatedDesc}</p>
       </div>
     </div>
   )
