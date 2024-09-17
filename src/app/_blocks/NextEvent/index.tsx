@@ -191,6 +191,7 @@ export const NextEventBlock: React.FC<
     const year = dateParts[0]
     const month = parseInt(dateParts[1], 10)
     const day = dateParts[2].split('T')[0]
+    const time = dateParts[2].split('T')[1].split(':').slice(0, 2).join(':')
     const monthName = getMonthName(month)
 
     return (
@@ -210,7 +211,7 @@ export const NextEventBlock: React.FC<
               <div className={classes.time}>
                 <div className={classes.start}>
                   <span className={classes.startText}>starts</span>
-                  <span className={classes.startTime}>19:00</span>
+                  <span className={classes.startTime}>{time}</span>
                 </div>
               </div>
             </div>
