@@ -40,6 +40,16 @@ const Events: CollectionConfig = {
       },
     },
     {
+      name: 'endTime',
+      label: 'End Time',
+      type: 'date',
+      admin: {
+        date: {
+          pickerAppearance: 'timeOnly',
+        },
+      },
+    },
+    {
       name: 'location',
       label: 'Location',
       type: 'text',

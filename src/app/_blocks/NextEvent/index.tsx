@@ -144,7 +144,7 @@ export const NextEventBlock: React.FC<
         {
           depth: 1,
           limit: 1,
-          sort: 'date',
+          sort: '-date',
         },
         { encode: false },
       )

@@ -314,6 +314,7 @@ export const CollectionArchive: React.FC<Props> = props => {
           date={isPopUpVisible.date}
           description={isPopUpVisible.description}
           location={isPopUpVisible.location}
+          endTime={isPopUpVisible.endTime}
           onEventClick={EventClick}
         />
       )}
