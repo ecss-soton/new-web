@@ -20,6 +20,7 @@ interface PopUpProps {
   date: string
   location: string | null
   description: string | null
+  endTime: string | null
   onEventClick: (event: Event | null) => void
 }
 
@@ -28,6 +29,7 @@ export const EventPopUp: React.FC<PopUpProps> = ({
   date,
   location,
   description,
+  endTime,
   onEventClick,
 }) => {
   const closeClick = () => {
@@ -57,7 +59,12 @@ export const EventPopUp: React.FC<PopUpProps> = ({
   const month = parseInt(dateParts[1], 10)
   const day = dateParts[2].split('T')[0]
   const monthName = getMonthName(month)
-
+  const time = dateParts[2].split('T')[1].split(':').slice(0, 2).join(':')
+  let concEndTime: string | null = null
+  if (endTime) {
+    const endTimeParts = endTime.split('-')
+    concEndTime = endTimeParts[2].split('T')[1].split(':').slice(0, 2).join(':')
+  }
   return (
     <>
       <div className={[classes.background, inter.className].join(' ')} onClick={closeClick} />
@@ -67,6 +74,11 @@ export const EventPopUp: React.FC<PopUpProps> = ({
           <div className={classes.when}>
             <div className={classes.date}>{day}</div>
             <div className={classes.month}>{monthName}</div>
+            {endTime ? (
+              <span className={classes.time}>{time + ' - ' + concEndTime}</span>
+            ) : (
+              <span className={classes.time}>{time}</span>
+            )}
           </div>
           <div className={classes.bits}>
             <span className={classes.name}>{name}</span>
