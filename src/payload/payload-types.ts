@@ -935,6 +935,7 @@ export interface Event {
   id: string;
   name: string;
   date: string;
+  endTime?: string | null;
   location?: string | null;
   description?: string | null;
   updatedAt: string;

@@ -78,6 +78,7 @@
     display: flex;
     flex-direction: column;
     padding-left: 20px;
+    flex: 70%;
 }
 
 .name {
@@ -107,8 +108,7 @@
 }
 
 .bio {
-    flex: 70%;
-    padding-top: 30px;
+    // flex: 70%;
     padding-left: 5%;
     padding-right: 5%;
     font-size: 20px;
@@ -120,13 +120,10 @@
     text-align: center;
     padding-left: 10%;
     padding-right: 10%;
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
     justify-content: center;
 
-    @include extra-small-break {
-        width: 100%;
-      }
   }
 
   .date {
@@ -136,9 +133,9 @@
     letter-spacing: 0;
     line-height: normal;
 
-    // @include extra-small-break {
-    //     font-size: 18vw;
-    //   }
+    @include extra-small-break {
+        font-size: 10vw;
+      }
   }
 
   .month {
@@ -149,9 +146,27 @@
     line-height: normal;
     width: 100%;
 
-    // @include extra-small-break {
-    //     font-size: 7vw;
-    //   }
+    @include extra-small-break {
+        font-size: 6vw;
+      }
+  }
+
+  .time {
+    color: var(--theme-elevation-400);
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: normal;
+    width: 100%;
+    white-space: nowrap;
+
+    @include small-break {
+        white-space: wrap;
+    }
+
+    @include extra-small-break {
+        font-size: 4vw;
+    }
   }
 
 
