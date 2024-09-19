@@ -46,6 +46,7 @@ const Events: CollectionConfig = {
       admin: {
         date: {
           pickerAppearance: 'timeOnly',
+          displayFormat: 'hh:mm',
         },
       },
     },
