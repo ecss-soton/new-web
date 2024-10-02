@@ -197,6 +197,8 @@ export default buildConfig({
     formBuilder({}),
   ],
   rateLimit: {
+    window: 60000,
+    max: 600,
     trustProxy: true,
   },
 })

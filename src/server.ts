@@ -8,11 +8,22 @@ dotenv.config({
 })
 
 import express from 'express'
+// import { rateLimit } from 'express-rate-limit'
 import payload from 'payload'
 
 import { seed } from './payload/seed'
 
 const app = express()
+
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 200, // Limit each IP to 100 requests per windowMs
+//   message: 'Too many requests from this IP, please try again later.',
+//   headers: true, // Include rate limit headers in the response
+// })
+
+// app.use(limiter)
+
 const PORT = process.env.PORT || 3000
 
 const start = async (): Promise<void> => {
