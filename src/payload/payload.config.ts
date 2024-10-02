@@ -198,7 +198,7 @@ export default buildConfig({
   ],
   rateLimit: {
     window: 60000,
-    max: 600,
+    max: 1500,
     trustProxy: true,
   },
 })
