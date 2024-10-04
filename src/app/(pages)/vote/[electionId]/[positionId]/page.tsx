@@ -9,38 +9,61 @@ import Link from 'next/link'
 import { Button } from '../../../../_components/Button'
 import { Media } from '../../../../_components/Media'
 import classes from '../../../nominations/[electionId]/NominationPage/index.module.scss'
+// eslint-disable-next-line import/no-duplicates
 import payload from 'payload'
+import payloadConfig from '../../../../../payload/payload.config'
 import { VoteCandidate } from '../../../../_components/VoteCandidate'
 import { getID } from '../../../../../payload/utilities/getID'
 import DraggableList from '../../../../_components/DraggableList'
 import { VoteCandidateList } from '../../../../_components/VoteCandidateList'
+import qs from 'qs'
 
 // Pres = http://localhost:3000/vote/65ea0784b436290ac4943c39/65e62035b733f7583ee3b795
 
+// const initializePayload = async () => {
+//   const config = await payloadConfig
+//   const initOptions = {
+//     ...config,
+//     secret: process.env.PAYLOAD_SECRET, // Ensure this environment variable is set
+//   }
+//   return getPayload(initOptions)
+// }
+
 const getCandidates = async (electionId: string, positionId: string) => {
-  return await payload.find({
-    collection: 'nominations',
-    pagination: false,
-    where: {
-      election: {
-        equals: electionId,
-      },
-      position: {
-        equals: positionId,
-      },
-      droppedOut: {
-        equals: false,
-      },
+  const query = {
+    election: {
+      equals: electionId,
     },
-    depth: 2,
-  })
+    position: {
+      equals: positionId,
+    },
+    droppedOut: {
+      equals: false,
+    },
+  }
+
+  const stringifiedQuery = qs.stringify(
+    {
+      where: query,
+      pagination: false,
+      depth: 2,
+    },
+    { addQueryPrefix: true },
+  )
+
+  const response = await fetch(`http://localhost:3000/api/nominations${stringifiedQuery}`)
+  if (!response.ok) {
+    throw new Error('Failed to fetch candidates')
+  }
+  return await response.json()
 }
 
 const getPosition = async (positionId: string) => {
-  return await payload.findByID({
-    collection: 'positions',
-    id: positionId,
-  })
+  const response = await fetch(`http://localhost:3000/api/positions/${positionId}`)
+  if (!response.ok) {
+    throw new Error('Failed to fetch position')
+  }
+  return await response.json()
 }
 
 export default async function Nomination({ params: { electionId, positionId } }) {
