@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../access/admins'
+import { isHTTPS } from '../validate/isHTTPS'
 
 const Events: CollectionConfig = {
   slug: 'events',
@@ -59,6 +60,12 @@ const Events: CollectionConfig = {
       name: 'description',
       label: 'Description',
       type: 'text',
+    },
+    {
+      name: 'link',
+      label: 'Any associated links',
+      type: 'text',
+      validate: isHTTPS,
     },
   ],
 }
