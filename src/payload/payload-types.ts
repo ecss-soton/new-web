@@ -938,6 +938,7 @@ export interface Event {
   endTime?: string | null;
   location?: string | null;
   description?: string | null;
+  link?: string | null;
   updatedAt: string;
   createdAt: string;
 }
