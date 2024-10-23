@@ -6,6 +6,7 @@ import moment from 'moment'
 import Link from 'next/link'
 
 import { Event } from '../../../payload/payload-types'
+import { Button } from '../Button'
 import RichText from '../RichText'
 
 import classes from './index.module.scss'
@@ -22,6 +23,7 @@ interface PopUpProps {
   location: string | null
   description: string | null
   endTime: string | null
+  link: string | null
   onEventClick: (event: Event | null) => void
 }
 
@@ -31,6 +33,7 @@ export const EventPopUp: React.FC<PopUpProps> = ({
   location,
   description,
   endTime,
+  link,
   onEventClick,
 }) => {
   const closeClick = () => {
@@ -90,6 +93,14 @@ export const EventPopUp: React.FC<PopUpProps> = ({
           </div>
         </div>
         {description && <p className={classes.bio}>{description}</p>}
+        {link && (
+          <Button
+            label="Get Tickets Here"
+            appearance="primary"
+            className={classes.button}
+            href={link}
+          />
+        )}
       </div>
     </>
   )

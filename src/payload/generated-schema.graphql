@@ -2178,8 +2178,10 @@ type Event {
   id: String!
   name: String!
   date: DateTime!
+  endTime: DateTime
   location: String
   description: String
+  link: String
   updatedAt: DateTime
   createdAt: DateTime
 }
@@ -18959,8 +18961,10 @@ input Event_where {
   id: Event_id_operator
   name: Event_name_operator
   date: Event_date_operator
+  endTime: Event_endTime_operator
   location: Event_location_operator
   description: Event_description_operator
+  link: Event_link_operator
   updatedAt: Event_updatedAt_operator
   createdAt: Event_createdAt_operator
   AND: [Event_where_and]
@@ -18997,6 +19001,17 @@ input Event_date_operator {
   like: DateTime
 }
 
+input Event_endTime_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
 input Event_location_operator {
   equals: String
   not_equals: String
@@ -19009,6 +19024,17 @@ input Event_location_operator {
 }
 
 input Event_description_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_link_operator {
   equals: String
   not_equals: String
   like: String
@@ -19045,8 +19071,10 @@ input Event_where_and {
   id: Event_id_operator
   name: Event_name_operator
   date: Event_date_operator
+  endTime: Event_endTime_operator
   location: Event_location_operator
   description: Event_description_operator
+  link: Event_link_operator
   updatedAt: Event_updatedAt_operator
   createdAt: Event_createdAt_operator
   AND: [Event_where_and]
@@ -19057,8 +19085,10 @@ input Event_where_or {
   id: Event_id_operator
   name: Event_name_operator
   date: Event_date_operator
+  endTime: Event_endTime_operator
   location: Event_location_operator
   description: Event_description_operator
+  link: Event_link_operator
   updatedAt: Event_updatedAt_operator
   createdAt: Event_createdAt_operator
   AND: [Event_where_and]
@@ -19077,8 +19107,10 @@ type EventsDocAccessFields {
   id: EventsDocAccessFields_id
   name: EventsDocAccessFields_name
   date: EventsDocAccessFields_date
+  endTime: EventsDocAccessFields_endTime
   location: EventsDocAccessFields_location
   description: EventsDocAccessFields_description
+  link: EventsDocAccessFields_link
   updatedAt: EventsDocAccessFields_updatedAt
   createdAt: EventsDocAccessFields_createdAt
 }
@@ -19152,6 +19184,29 @@ type EventsDocAccessFields_date_Delete {
   permission: Boolean!
 }
 
+type EventsDocAccessFields_endTime {
+  create: EventsDocAccessFields_endTime_Create
+  read: EventsDocAccessFields_endTime_Read
+  update: EventsDocAccessFields_endTime_Update
+  delete: EventsDocAccessFields_endTime_Delete
+}
+
+type EventsDocAccessFields_endTime_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_endTime_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_endTime_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_endTime_Delete {
+  permission: Boolean!
+}
+
 type EventsDocAccessFields_location {
   create: EventsDocAccessFields_location_Create
   read: EventsDocAccessFields_location_Read
@@ -19195,6 +19250,29 @@ type EventsDocAccessFields_description_Update {
 }
 
 type EventsDocAccessFields_description_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_link {
+  create: EventsDocAccessFields_link_Create
+  read: EventsDocAccessFields_link_Read
+  update: EventsDocAccessFields_link_Update
+  delete: EventsDocAccessFields_link_Delete
+}
+
+type EventsDocAccessFields_link_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_link_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_link_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_link_Delete {
   permission: Boolean!
 }
 
@@ -29206,8 +29284,10 @@ type EventsFields {
   id: EventsFields_id
   name: EventsFields_name
   date: EventsFields_date
+  endTime: EventsFields_endTime
   location: EventsFields_location
   description: EventsFields_description
+  link: EventsFields_link
   updatedAt: EventsFields_updatedAt
   createdAt: EventsFields_createdAt
 }
@@ -29281,6 +29361,29 @@ type EventsFields_date_Delete {
   permission: Boolean!
 }
 
+type EventsFields_endTime {
+  create: EventsFields_endTime_Create
+  read: EventsFields_endTime_Read
+  update: EventsFields_endTime_Update
+  delete: EventsFields_endTime_Delete
+}
+
+type EventsFields_endTime_Create {
+  permission: Boolean!
+}
+
+type EventsFields_endTime_Read {
+  permission: Boolean!
+}
+
+type EventsFields_endTime_Update {
+  permission: Boolean!
+}
+
+type EventsFields_endTime_Delete {
+  permission: Boolean!
+}
+
 type EventsFields_location {
   create: EventsFields_location_Create
   read: EventsFields_location_Read
@@ -29324,6 +29427,29 @@ type EventsFields_description_Update {
 }
 
 type EventsFields_description_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_link {
+  create: EventsFields_link_Create
+  read: EventsFields_link_Read
+  update: EventsFields_link_Update
+  delete: EventsFields_link_Delete
+}
+
+type EventsFields_link_Create {
+  permission: Boolean!
+}
+
+type EventsFields_link_Read {
+  permission: Boolean!
+}
+
+type EventsFields_link_Update {
+  permission: Boolean!
+}
+
+type EventsFields_link_Delete {
   permission: Boolean!
 }
 
@@ -32419,8 +32545,10 @@ input mutationEventInput {
   id: String!
   name: String!
   date: String!
+  endTime: String
   location: String
   description: String
+  link: String
   updatedAt: String
   createdAt: String
 }
@@ -32428,8 +32556,10 @@ input mutationEventInput {
 input mutationEventUpdateInput {
   name: String
   date: String
+  endTime: String
   location: String
   description: String
+  link: String
   updatedAt: String
   createdAt: String
 }
