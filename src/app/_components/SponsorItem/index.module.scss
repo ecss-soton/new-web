@@ -36,6 +36,7 @@
   display: flex;
   flex-direction: column;
   gap: calc(var(--base) / 2);
+  background-color: var(--theme-elevation-0);
 
   @include small-break {
     padding: calc(var(--base) / 2);
@@ -84,6 +85,7 @@
 
 .image {
   object-fit: contain;
+  background-color: white;
 }
 
 .placeholder {
