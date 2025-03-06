@@ -121,7 +121,7 @@ export const HomeTopBlock: React.FC<
           />
           <div className={[classes.stats, inter.className].join(' ')}>
             <div className={classes.stat}>
-              <span className={classes.number}>2500+</span>
+              <span className={classes.number}>1000+</span>
               <span className={classes.label}>members</span>
             </div>
             <div className={classes.stat}>
