@@ -12,6 +12,7 @@ import { getMeUser } from '../../_utilities/getMeUser'
 import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
 
 import classes from './index.module.scss'
+import { LowImpactHero } from '../../_heros/LowImpact'
 
 function formatDate(dateString: string) {
   const date = new Date(Date.parse(dateString))
@@ -56,35 +57,38 @@ export default async function Elections() {
   }
 
   return (
-    <Gutter className={classes.logout}>
-      {elections.map((election, index) => {
-        const { id, name, nominationStart, nominationEnd, votingStart, votingEnd, positions } =
-          election
-        const now = new Date().getTime()
-        const canCreateNomination =
-          now >= Date.parse(nominationStart) && now <= Date.parse(nominationEnd)
-        return (
-          <Fragment key={id}>
-            <h1>{name}</h1>
-            <p>
-              Nomination start: {formatDate(nominationStart)}
-              <br />
-              Nomination end: {formatDate(nominationEnd)}
-              <br />
-              Voting start: {formatDate(votingStart)}
-              <br />
-              Voting end: {formatDate(votingEnd)}
-            </p>
-            <Positions
-              positions={positions}
-              election={election}
-              canCreateNominations={canCreateNomination}
-              user={user}
-            />
-          </Fragment>
-        )
-      })}
-    </Gutter>
+    <>
+      <LowImpactHero title="Elections" type="lowImpact" />
+      <Gutter className={classes.logout}>
+        {elections.map((election, index) => {
+          const { id, name, nominationStart, nominationEnd, votingStart, votingEnd, positions } =
+            election
+          const now = new Date().getTime()
+          const canCreateNomination =
+            now >= Date.parse(nominationStart) && now <= Date.parse(nominationEnd)
+          return (
+            <Fragment key={id}>
+              <h1>{name}</h1>
+              <p>
+                Nomination start: {formatDate(nominationStart)}
+                <br />
+                Nomination end: {formatDate(nominationEnd)}
+                <br />
+                Voting start: {formatDate(votingStart)}
+                <br />
+                Voting end: {formatDate(votingEnd)}
+              </p>
+              <Positions
+                positions={positions}
+                election={election}
+                canCreateNominations={canCreateNomination}
+                user={user}
+              />
+            </Fragment>
+          )
+        })}
+      </Gutter>
+    </>
   )
 }
 
