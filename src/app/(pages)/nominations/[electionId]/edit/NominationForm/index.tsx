@@ -145,7 +145,7 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
               </Link>
             )
           })}
-        <p>URL to give to anyone who you want to join your nomination</p>
+        <p>If you want to run on a joint ticket, use this URL to do so</p>
         <span>{`${process.env.NEXT_PUBLIC_SERVER_URL}/nominations/${nomination?.id}/join/${nomination?.joinUUID}`}</span>
         <p>Edit your nomination below</p>
         <Input
