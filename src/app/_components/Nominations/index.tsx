@@ -84,16 +84,8 @@ export const Nominations: React.FC<{
           <Fragment key={id}>
             <div className={classes.container}>
               <h5 className={classes.title}>
-                {droppedOut && (
-                  <s>
-                    {nickname ? `${nickname} -` : ''} {nomineeNames}
-                  </s>
-                )}
-                {!droppedOut && (
-                  <span>
-                    {nickname ? `${nickname} -` : ''} {nomineeNames}
-                  </span>
-                )}
+                {droppedOut && <s>{nickname ? `${nickname}` : ''}</s>}
+                {!droppedOut && <span>{nickname ? `${nickname}` : ''}</span>}
               </h5>
               <div className={classes.buttonContainer}>
                 <div>
