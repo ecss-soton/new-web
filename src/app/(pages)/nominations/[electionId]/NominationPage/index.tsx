@@ -53,7 +53,7 @@ export const NominationPage: React.FC<{
           {droppedOut && <s>{nomination.nickname ?? names}</s>}
           {!droppedOut && <span>{nomination.nickname ?? names}</span>}
         </h3>
-        {nomination.populatedNominees.map(n => {
+        {/* {nomination.populatedNominees.map(n => {
           const email = `${n.username}@soton.ac.uk`
           return (
             <Fragment key={n.id}>
@@ -61,7 +61,7 @@ export const NominationPage: React.FC<{
               <Link href={`mailto:${email}`}>{n.name}</Link>{' '}
             </Fragment>
           )
-        })}
+        })} */}
         <h4>Running for {position.name}</h4>
         {isMyNomination && (
           <Button
