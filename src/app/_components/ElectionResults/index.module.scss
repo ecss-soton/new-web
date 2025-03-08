@@ -5,6 +5,7 @@
   grid-template-columns: repeat(3, auto);
   width: 100%;
   gap: var(--base) 40px;
+  // color: var(--color-base-1000);
 
   @include mid-break {
     grid-template-columns: repeat(6, 1fr);
