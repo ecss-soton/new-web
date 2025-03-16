@@ -226,6 +226,8 @@ export const CollectionArchive: React.FC<Props> = props => {
     }
   }, [page, categories, relationTo, onResultChange, sort, limit, populateBy])
 
+  const today = new Date()
+
   return (
     <div className={[classes.collectionArchive, className].filter(Boolean).join(' ')}>
       <div className={classes.scrollRef} ref={scrollRef} />
@@ -278,9 +280,12 @@ export const CollectionArchive: React.FC<Props> = props => {
                     {relationTo === 'committee' && 'position' in result && (
                       <CommitteeItem committee={result} onCommitteeClick={CommitteeClick} />
                     )}
-                    {relationTo === 'events' && 'name' in result && 'date' in result && (
-                      <EventItem event={result} onEventClick={EventClick} />
-                    )}
+                    {relationTo === 'events' &&
+                      'name' in result &&
+                      'date' in result &&
+                      new Date(result.date) > today && (
+                        <EventItem event={result} onEventClick={EventClick} />
+                      )}
                   </div>
                 )
               }
