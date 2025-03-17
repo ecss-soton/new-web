@@ -13,8 +13,9 @@ import classes from './index.module.scss'
 export const NominationPage: React.FC<{
   nominationId?: string
   user?: User
+  isBeingVoted?: Boolean
 }> = props => {
-  const { nominationId, user } = props
+  const { nominationId, user, isBeingVoted } = props
   const [nomination, setNomination] = useState<Nomination | null>(null)
 
   useEffect(() => {
@@ -40,32 +41,6 @@ export const NominationPage: React.FC<{
     return <Fragment>Loading...</Fragment>
   }
 
-  let elections: (Omit<Election, 'positions'> & { positions: Position[] })[] | null = null
-
-  const searchQuery = qs.stringify(
-    {
-      depth: 2,
-      sort: '-nominationStart',
-    },
-    { encode: false },
-  )
-
-  try {
-    const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/elections?${searchQuery}`)
-
-    const json = await req.json()
-
-    const { docs } = json as { docs: (Election & { positions: Position[] })[] }
-
-    elections = docs
-  } catch (err) {
-    console.warn(err) // eslint-disable-line no-console
-  }
-
-  if (!elections) {
-    notFound()
-  }
-
   const names = nomination.populatedNominees.map(n => n.name).join(' & ')
   const position = nomination.position as Position
   const isMyNomination = nomination.populatedNominees.some(p => p.id === user.id)
@@ -74,7 +49,7 @@ export const NominationPage: React.FC<{
   return (
     <Fragment>
       <Gutter>
-        {isMyNomination ? (
+        {isMyNomination || isBeingVoted ? (
           <>
             <Button href={`/elections`} appearance="primary" label={'Back'} />
             <h3>
