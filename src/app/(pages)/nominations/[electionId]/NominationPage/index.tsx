@@ -13,8 +13,9 @@ import classes from './index.module.scss'
 export const NominationPage: React.FC<{
   nominationId?: string
   user?: User
+  isBeingVoted?: Boolean
 }> = props => {
-  const { nominationId, user } = props
+  const { nominationId, user, isBeingVoted } = props
   const [nomination, setNomination] = useState<Nomination | null>(null)
 
   useEffect(() => {
@@ -48,12 +49,15 @@ export const NominationPage: React.FC<{
   return (
     <Fragment>
       <Gutter>
-        <Button href={`/elections`} appearance="primary" label={'Back'} />
-        <h3>
-          {droppedOut && <s>{nomination.nickname ?? names}</s>}
-          {!droppedOut && <span>{nomination.nickname ?? names}</span>}
-        </h3>
-        {/* {nomination.populatedNominees.map(n => {
+        {isMyNomination || isBeingVoted ? (
+          <>
+            <Button href={`/elections`} appearance="primary" label={'Back'} />
+            <h3>
+              {droppedOut && <s>{nomination.nickname ?? names}</s>}
+              {!droppedOut && <span>{nomination.nickname ?? names}</span>}
+            </h3>
+
+            {/* {nomination.populatedNominees.map(n => {
           const email = `${n.username}@soton.ac.uk`
           return (
             <Fragment key={n.id}>
@@ -62,18 +66,25 @@ export const NominationPage: React.FC<{
             </Fragment>
           )
         })} */}
-        <h4>Running for {position.name}</h4>
-        {isMyNomination && (
-          <Button
-            href={`/nominations/${nominationId}/edit`}
-            appearance="primary"
-            label={'Edit Nomination'}
-          />
+            <h4>Running for {position.name}</h4>
+            {isMyNomination && (
+              <Button
+                href={`/nominations/${nominationId}/edit`}
+                appearance="primary"
+                label={'Edit Nomination'}
+              />
+            )}
+            <Suspense fallback={<Fragment>Loading...</Fragment>}>
+              <Media resource={nomination.image} imgClassName={classes.image} />
+            </Suspense>
+            <span className={classes.manifesto}>{nomination.manifesto}</span>
+          </>
+        ) : (
+          <span> Error: This user does not have acess to this nomination page</span>
         )}
-        <Suspense fallback={<Fragment>Loading...</Fragment>}>
-          <Media resource={nomination.image} imgClassName={classes.image} />
-        </Suspense>
-        <span className={classes.manifesto}>{nomination.manifesto}</span>
+        {/* <span>{nomination.id} hello</span>
+        {user && <span> {user.id}</span>}
+        {!user && <span>wompwomp</span>} */}
       </Gutter>
     </Fragment>
   )
