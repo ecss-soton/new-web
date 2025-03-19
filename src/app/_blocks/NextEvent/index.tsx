@@ -144,7 +144,6 @@ export const NextEventBlock: React.FC<
       const searchQuery = qs.stringify(
         {
           depth: 1,
-          limit: 1,
           sort: 'date',
         },
         { encode: false },
@@ -182,6 +181,12 @@ export const NextEventBlock: React.FC<
       if (timer) clearTimeout(timer)
     }
   }, [page])
+
+  const today = new Date()
+
+  results.docs = results.docs.filter(
+    result => typeof result === 'object' && 'date' in result && new Date(result.date) > today,
+  )
 
   if (typeof results.docs[0] === 'object') {
     const result = results.docs[0]
@@ -221,6 +226,39 @@ export const NextEventBlock: React.FC<
                   <span className={classes.startTime}>{time}</span>
                   <span className={classes.startText}>ends</span>
                   <span className={classes.startTime}>{concEndTime}</span>
+                </div>
+              </div>
+            </div>
+            <div className={classes.moreInfo}>
+              <Link href="/events" className={classes.link}>
+                more info &gt;
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  } else {
+    return (
+      <div style={backgroundStyle} className={classes.background}>
+        {!isLoading && error && <Gutter>{error}</Gutter>}
+        <div className={[classes.container, inter.className].join(' ')}>
+          <div className={classes.text}>
+            <h3 className={classes.nextEvent}>Next Event</h3>
+            <h1 className={classes.title}>No Events</h1>
+          </div>
+          <div className={classes.info}>
+            <div className={classes.when}>
+              <div className={classes.date}>
+                <span className={classes.day}></span>
+                <span className={classes.month}></span>
+              </div>
+              <div className={classes.time}>
+                <div className={classes.start}>
+                  <span className={classes.startText}></span>
+                  <span className={classes.startTime}></span>
+                  <span className={classes.startText}></span>
+                  <span className={classes.startTime}></span>
                 </div>
               </div>
             </div>
