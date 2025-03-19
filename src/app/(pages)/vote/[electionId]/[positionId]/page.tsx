@@ -1,22 +1,23 @@
 import React, { Fragment, Suspense } from 'react'
 import { Metadata } from 'next'
-
-import { getMeUser } from '../../../../_utilities/getMeUser'
-import { mergeOpenGraph } from '../../../../_utilities/mergeOpenGraph'
-import { Position } from '../../../../../payload/payload-types'
-import { Gutter } from '../../../../_components/Gutter'
 import Link from 'next/link'
-import { Button } from '../../../../_components/Button'
-import { Media } from '../../../../_components/Media'
-import classes from '../../../nominations/[electionId]/NominationPage/index.module.scss'
 // eslint-disable-next-line import/no-duplicates
 import payload from 'payload'
-import payloadConfig from '../../../../../payload/payload.config'
-import { VoteCandidate } from '../../../../_components/VoteCandidate'
-import { getID } from '../../../../../payload/utilities/getID'
-import DraggableList from '../../../../_components/DraggableList'
-import { VoteCandidateList } from '../../../../_components/VoteCandidateList'
 import qs from 'qs'
+
+import payloadConfig from '../../../../../payload/payload.config'
+import { Position } from '../../../../../payload/payload-types'
+import { getID } from '../../../../../payload/utilities/getID'
+import { Button } from '../../../../_components/Button'
+import DraggableList from '../../../../_components/DraggableList'
+import { Gutter } from '../../../../_components/Gutter'
+import { Media } from '../../../../_components/Media'
+import { VoteCandidate } from '../../../../_components/VoteCandidate'
+import { VoteCandidateList } from '../../../../_components/VoteCandidateList'
+import { getMeUser } from '../../../../_utilities/getMeUser'
+import { mergeOpenGraph } from '../../../../_utilities/mergeOpenGraph'
+
+import classes from '../../../nominations/[electionId]/NominationPage/index.module.scss'
 
 // Pres = http://localhost:3000/vote/65ea0784b436290ac4943c39/65e62035b733f7583ee3b795
 
