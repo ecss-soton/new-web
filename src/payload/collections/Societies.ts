@@ -33,13 +33,6 @@ const Societies: CollectionConfig = {
       type: 'text',
     },
     {
-      name: 'level',
-      label: 'Level',
-      type: 'select',
-      options: ['not-shit', 'shit'],
-      required: true,
-    },
-    {
       name: 'description',
       label: 'Description',
       type: 'richText',
