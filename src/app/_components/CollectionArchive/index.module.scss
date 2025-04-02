@@ -39,6 +39,21 @@
   // }
 }
 
+.heading {
+  color: var(--theme-elevation-1000);
+  font-family: Inter;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  // opacity: 0;
+  // animation: fadeInLeft 1s ease-in-out forwards;
+
+  @include extra-small-break {
+      font-size: 16px;
+  }
+}
+
 .resultCountWrapper {
   display: flex;
   margin-bottom: calc(var(--base) * 2);
