@@ -1,6 +1,7 @@
 'use client'
 
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import { Inter } from '@next/font/google'
 import qs from 'qs'
 
 import type {
@@ -24,6 +25,12 @@ import { SocietyItem } from '../SocietyItem'
 import { SponsorItem } from '../SponsorItem'
 
 import classes from './index.module.scss'
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  style: ['normal'],
+})
 
 type Result = {
   docs: (Post | Project | Sponsor | Society | Committee | Event | string)[]
@@ -138,7 +145,13 @@ export const CollectionArchive: React.FC<Props> = props => {
           limit,
           page,
           sort:
-            relationTo === 'committee' ? 'position' : relationTo === 'events' ? 'date' : 'level',
+            relationTo === 'committee'
+              ? 'position'
+              : relationTo === 'events'
+              ? 'date'
+              : relationTo === 'societies'
+              ? 'name'
+              : 'level',
           where: {
             ...(categories
               ? {
@@ -246,6 +259,19 @@ export const CollectionArchive: React.FC<Props> = props => {
           </Gutter>
         )} */}
         <Gutter>
+          {relationTo === 'events' &&
+            results.docs?.filter((result, index) => {
+              relationTo === 'events' &&
+                typeof result === 'object' &&
+                result !== null &&
+                'name' in result &&
+                'date' in result &&
+                new Date(result.date) > today
+            }).length === 0 && (
+              <span className={[classes.heading, inter.className].join(' ')}>
+                No Events are planned at the moment, come back soon!
+              </span>
+            )}
           <div
             className={
               relationTo === 'committee' || relationTo === 'events'
