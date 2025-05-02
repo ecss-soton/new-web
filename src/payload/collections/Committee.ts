@@ -75,6 +75,12 @@ const Committee: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
     },
+    {
+      name: 'isCurrent',
+      type: 'checkbox',
+      label: 'Is in current committee?',
+      required: true,
+    },
   ],
 }
 
