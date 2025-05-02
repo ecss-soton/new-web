@@ -128,7 +128,7 @@ export const HomeTopBlock: React.FC<
               <span className={classes.label}>members</span>
             </div>
             <div className={classes.stat}>
-              <span className={classes.number}>{results.docs?.length}</span>
+              <span className={classes.number}>{committeeCount}</span>
               <span className={classes.label}>committee</span>
             </div>
           </div>
