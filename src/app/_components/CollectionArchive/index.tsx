@@ -280,15 +280,11 @@ export const CollectionArchive: React.FC<Props> = props => {
             }
           >
             {results.docs?.map((result, index) => {
-              if (typeof result === 'object' && result !== null) {
+              if (typeof result === 'object' && result !== null && relationTo !== 'committee') {
                 return (
                   <div
                     className={[
-                      relationTo === 'committee'
-                        ? classes.columnCommittee
-                        : relationTo === 'events'
-                        ? classes.columnEvents
-                        : classes.column,
+                      relationTo === 'events' ? classes.columnEvents : classes.column,
                       classes.fadeIn,
                     ].join(' ')}
                     key={index}
@@ -303,15 +299,35 @@ export const CollectionArchive: React.FC<Props> = props => {
                     {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
                       <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
                     )}
-                    {relationTo === 'committee' && 'position' in result && (
-                      <CommitteeItem committee={result} onCommitteeClick={CommitteeClick} />
-                    )}
                     {relationTo === 'events' &&
                       'name' in result &&
                       'date' in result &&
                       new Date(result.date) > today && (
                         <EventItem event={result} onEventClick={EventClick} />
                       )}
+                  </div>
+                )
+              }
+              if (
+                typeof result === 'object' &&
+                result !== null &&
+                relationTo === 'committee' &&
+                'isCurrent' in result &&
+                result.isCurrent === true
+              ) {
+                return (
+                  <div
+                    className={[
+                      relationTo === 'committee'
+                        ? classes.columnCommittee
+                        : relationTo === 'events'
+                        ? classes.columnEvents
+                        : classes.column,
+                      classes.fadeIn,
+                    ].join(' ')}
+                    key={index}
+                  >
+                    <CommitteeItem committee={result} onCommitteeClick={CommitteeClick} />
                   </div>
                 )
               }
