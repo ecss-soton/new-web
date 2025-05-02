@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Inter } from '@next/font/google'
 import qs from 'qs'
 
-import type { Committee, Sponsor } from '../../../payload/payload-types'
+import type { Committee, Society, Sponsor } from '../../../payload/payload-types'
 import { Page } from '../../../payload/payload-types'
 import { Button } from '../../_components/Button'
 import { Gutter } from '../../_components/Gutter'
@@ -22,7 +22,7 @@ const inter = Inter({
 })
 
 type Result = {
-  docs: (Sponsor | string)[]
+  docs: (Sponsor | Committee | Society | string)[]
 }
 
 type Props = Extract<Page['layout'][0], { blockType: 'homeTop' }>
@@ -107,6 +107,9 @@ export const HomeTopBlock: React.FC<
       if (timer) clearTimeout(timer)
     }
   }, [])
+
+  const committeeCount =
+    results.docs?.filter(doc => (doc as Committee).isCurrent === true).length || 0
 
   return (
     <VerticalPadding top="none" bottom="none">
