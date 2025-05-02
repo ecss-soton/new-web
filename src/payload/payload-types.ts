@@ -923,6 +923,7 @@ export interface Committee {
       }[]
     | null;
   logo?: string | Media | null;
+  isCurrent: boolean;
   updatedAt: string;
   createdAt: string;
 }
