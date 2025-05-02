@@ -1756,7 +1756,6 @@ type Society {
   slug: String
   id: String!
   name: String
-  level: Society_level!
   description(depth: Int): JSON
   logo(where: Society_Logo_where): Media!
   email: EmailAddress
@@ -1768,11 +1767,6 @@ type Society {
   links: [Society_Links!]
   updatedAt: DateTime
   createdAt: DateTime
-}
-
-enum Society_level {
-  not_shit
-  shit
 }
 
 input Society_Logo_where {
@@ -1980,6 +1974,7 @@ type Committee {
   position: Committee_position
   bio(depth: Int): JSON
   logo(where: Committee_Logo_where): Media
+  isCurrent: Boolean!
   updatedAt: DateTime
   createdAt: DateTime
 }
@@ -17679,7 +17674,6 @@ input Society_where {
   slug: Society_slug_operator
   id: Society_id_operator
   name: Society_name_operator
-  level: Society_level_operator
   description: Society_description_operator
   logo: Society_logo_operator
   email: Society_email_operator
@@ -17731,19 +17725,6 @@ input Society_name_operator {
   not_in: [String]
   all: [String]
   exists: Boolean
-}
-
-input Society_level_operator {
-  equals: Society_level_Input
-  not_equals: Society_level_Input
-  in: [Society_level_Input]
-  not_in: [Society_level_Input]
-  all: [Society_level_Input]
-}
-
-enum Society_level_Input {
-  not_shit
-  shit
 }
 
 input Society_description_operator {
@@ -17925,7 +17906,6 @@ input Society_where_and {
   slug: Society_slug_operator
   id: Society_id_operator
   name: Society_name_operator
-  level: Society_level_operator
   description: Society_description_operator
   logo: Society_logo_operator
   email: Society_email_operator
@@ -17951,7 +17931,6 @@ input Society_where_or {
   slug: Society_slug_operator
   id: Society_id_operator
   name: Society_name_operator
-  level: Society_level_operator
   description: Society_description_operator
   logo: Society_logo_operator
   email: Society_email_operator
@@ -17985,7 +17964,6 @@ type SocietiesDocAccessFields {
   slug: SocietiesDocAccessFields_slug
   id: SocietiesDocAccessFields_id
   name: SocietiesDocAccessFields_name
-  level: SocietiesDocAccessFields_level
   description: SocietiesDocAccessFields_description
   logo: SocietiesDocAccessFields_logo
   email: SocietiesDocAccessFields_email
@@ -18065,29 +18043,6 @@ type SocietiesDocAccessFields_name_Update {
 }
 
 type SocietiesDocAccessFields_name_Delete {
-  permission: Boolean!
-}
-
-type SocietiesDocAccessFields_level {
-  create: SocietiesDocAccessFields_level_Create
-  read: SocietiesDocAccessFields_level_Read
-  update: SocietiesDocAccessFields_level_Update
-  delete: SocietiesDocAccessFields_level_Delete
-}
-
-type SocietiesDocAccessFields_level_Create {
-  permission: Boolean!
-}
-
-type SocietiesDocAccessFields_level_Read {
-  permission: Boolean!
-}
-
-type SocietiesDocAccessFields_level_Update {
-  permission: Boolean!
-}
-
-type SocietiesDocAccessFields_level_Delete {
   permission: Boolean!
 }
 
@@ -18585,6 +18540,7 @@ input Committee_where {
   position: Committee_position_operator
   bio: Committee_bio_operator
   logo: Committee_logo_operator
+  isCurrent: Committee_isCurrent_operator
   updatedAt: Committee_updatedAt_operator
   createdAt: Committee_createdAt_operator
   AND: [Committee_where_and]
@@ -18672,6 +18628,11 @@ input Committee_logo_operator {
   exists: Boolean
 }
 
+input Committee_isCurrent_operator {
+  equals: Boolean
+  not_equals: Boolean
+}
+
 input Committee_updatedAt_operator {
   equals: DateTime
   not_equals: DateTime
@@ -18701,6 +18662,7 @@ input Committee_where_and {
   position: Committee_position_operator
   bio: Committee_bio_operator
   logo: Committee_logo_operator
+  isCurrent: Committee_isCurrent_operator
   updatedAt: Committee_updatedAt_operator
   createdAt: Committee_createdAt_operator
   AND: [Committee_where_and]
@@ -18714,6 +18676,7 @@ input Committee_where_or {
   position: Committee_position_operator
   bio: Committee_bio_operator
   logo: Committee_logo_operator
+  isCurrent: Committee_isCurrent_operator
   updatedAt: Committee_updatedAt_operator
   createdAt: Committee_createdAt_operator
   AND: [Committee_where_and]
@@ -18735,6 +18698,7 @@ type CommitteeDocAccessFields {
   position: CommitteeDocAccessFields_position
   bio: CommitteeDocAccessFields_bio
   logo: CommitteeDocAccessFields_logo
+  isCurrent: CommitteeDocAccessFields_isCurrent
   updatedAt: CommitteeDocAccessFields_updatedAt
   createdAt: CommitteeDocAccessFields_createdAt
 }
@@ -18874,6 +18838,29 @@ type CommitteeDocAccessFields_logo_Update {
 }
 
 type CommitteeDocAccessFields_logo_Delete {
+  permission: Boolean!
+}
+
+type CommitteeDocAccessFields_isCurrent {
+  create: CommitteeDocAccessFields_isCurrent_Create
+  read: CommitteeDocAccessFields_isCurrent_Read
+  update: CommitteeDocAccessFields_isCurrent_Update
+  delete: CommitteeDocAccessFields_isCurrent_Delete
+}
+
+type CommitteeDocAccessFields_isCurrent_Create {
+  permission: Boolean!
+}
+
+type CommitteeDocAccessFields_isCurrent_Read {
+  permission: Boolean!
+}
+
+type CommitteeDocAccessFields_isCurrent_Update {
+  permission: Boolean!
+}
+
+type CommitteeDocAccessFields_isCurrent_Delete {
   permission: Boolean!
 }
 
@@ -28470,7 +28457,6 @@ type SocietiesFields {
   slug: SocietiesFields_slug
   id: SocietiesFields_id
   name: SocietiesFields_name
-  level: SocietiesFields_level
   description: SocietiesFields_description
   logo: SocietiesFields_logo
   email: SocietiesFields_email
@@ -28550,29 +28536,6 @@ type SocietiesFields_name_Update {
 }
 
 type SocietiesFields_name_Delete {
-  permission: Boolean!
-}
-
-type SocietiesFields_level {
-  create: SocietiesFields_level_Create
-  read: SocietiesFields_level_Read
-  update: SocietiesFields_level_Update
-  delete: SocietiesFields_level_Delete
-}
-
-type SocietiesFields_level_Create {
-  permission: Boolean!
-}
-
-type SocietiesFields_level_Read {
-  permission: Boolean!
-}
-
-type SocietiesFields_level_Update {
-  permission: Boolean!
-}
-
-type SocietiesFields_level_Delete {
   permission: Boolean!
 }
 
@@ -29064,6 +29027,7 @@ type CommitteeFields {
   position: CommitteeFields_position
   bio: CommitteeFields_bio
   logo: CommitteeFields_logo
+  isCurrent: CommitteeFields_isCurrent
   updatedAt: CommitteeFields_updatedAt
   createdAt: CommitteeFields_createdAt
 }
@@ -29203,6 +29167,29 @@ type CommitteeFields_logo_Update {
 }
 
 type CommitteeFields_logo_Delete {
+  permission: Boolean!
+}
+
+type CommitteeFields_isCurrent {
+  create: CommitteeFields_isCurrent_Create
+  read: CommitteeFields_isCurrent_Read
+  update: CommitteeFields_isCurrent_Update
+  delete: CommitteeFields_isCurrent_Delete
+}
+
+type CommitteeFields_isCurrent_Create {
+  permission: Boolean!
+}
+
+type CommitteeFields_isCurrent_Read {
+  permission: Boolean!
+}
+
+type CommitteeFields_isCurrent_Update {
+  permission: Boolean!
+}
+
+type CommitteeFields_isCurrent_Delete {
   permission: Boolean!
 }
 
@@ -32365,7 +32352,6 @@ input mutationSocietyInput {
   slug: String
   id: String!
   name: String
-  level: Society_level_MutationInput!
   description: JSON
   logo: String!
   email: String
@@ -32377,11 +32363,6 @@ input mutationSocietyInput {
   links: [mutationSociety_LinksInput]
   updatedAt: String
   createdAt: String
-}
-
-enum Society_level_MutationInput {
-  not_shit
-  shit
 }
 
 input mutationSociety_LinksInput {
@@ -32416,7 +32397,6 @@ enum Society_Links_Link_appearance_MutationInput {
 input mutationSocietyUpdateInput {
   slug: String
   name: String
-  level: SocietyUpdate_level_MutationInput
   description: JSON
   logo: String
   email: String
@@ -32428,11 +32408,6 @@ input mutationSocietyUpdateInput {
   links: [mutationSocietyUpdate_LinksInput]
   updatedAt: String
   createdAt: String
-}
-
-enum SocietyUpdate_level_MutationInput {
-  not_shit
-  shit
 }
 
 input mutationSocietyUpdate_LinksInput {
@@ -32471,6 +32446,7 @@ input mutationCommitteeInput {
   position: Committee_position_MutationInput
   bio: JSON
   logo: String
+  isCurrent: Boolean
   updatedAt: String
   createdAt: String
 }
@@ -32509,6 +32485,7 @@ input mutationCommitteeUpdateInput {
   position: CommitteeUpdate_position_MutationInput
   bio: JSON
   logo: String
+  isCurrent: Boolean
   updatedAt: String
   createdAt: String
 }
