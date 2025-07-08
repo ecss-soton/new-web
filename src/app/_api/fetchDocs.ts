@@ -5,6 +5,8 @@ import { EVENTS } from '../_graphql/events'
 import { PAGES } from '../_graphql/pages'
 import { POSTS } from '../_graphql/posts'
 import { PROJECTS } from '../_graphql/projects'
+import { SOCIETIES } from '../_graphql/societies'
+import { SPONSORS } from '../_graphql/sponsors'
 import { GRAPHQL_API_URL } from './shared'
 import { payloadToken } from './token'
 
@@ -24,6 +26,14 @@ const queryMap = {
   events: {
     query: EVENTS,
     key: 'Events',
+  },
+  societies: {
+    query: SOCIETIES,
+    key: 'Societies',
+  },
+  sponsors: {
+    query: SPONSORS,
+    key: 'Sponsors',
   },
 }
 

@@ -1,9 +1,10 @@
 import React from 'react'
+import type { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
-import qs from 'qs'
 
-import { Society } from '../../../../payload/payload-types'
+import type { Society } from '../../../../payload/payload-types'
+import { fetchDoc } from '../../../_api/fetchDoc'
 import { fetchDocs } from '../../../_api/fetchDocs'
 import { SocietyPage } from '../../../_components/SocietyPage'
 
@@ -16,28 +17,14 @@ export default async function Society({ params: { slug } }) {
 
   let society: Society | null = null
 
-  const searchQuery = qs.stringify(
-    {
-      depth: 1,
-      where: {
-        slug: {
-          equals: slug,
-        },
-      },
-    },
-    { encode: false },
-  )
-
   try {
-    const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/societies?${searchQuery}`)
-
-    const json = await req.json()
-
-    const { docs } = json as { docs: Society[] }
-
-    society = docs[0]
-  } catch (err) {
-    console.warn(err) // eslint-disable-line no-console
+    society = await fetchDoc<Society>({
+      collection: 'societies',
+      slug,
+      draft: isDraftMode,
+    })
+  } catch (error) {
+    console.warn(error) // eslint-disable-line no-console
   }
 
   if (!society) {
@@ -53,25 +40,28 @@ export default async function Society({ params: { slug } }) {
 
 export async function generateStaticParams() {
   try {
-    const projects = await fetchDocs<Society>('societies')
-    return projects?.map(({ slug }) => slug)
+    const societies = await fetchDocs<Society>('societies')
+    return societies?.map(({ slug }) => slug)
   } catch (error) {
     return []
   }
 }
 
-// export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
-//   const { isEnabled: isDraftMode } = draftMode()
-//
-//   let sponsor: Sponsor | null = null
-//
-//   try {
-//     sponsor = await fetchDoc<Sponsor>({
-//       collection: 'projects',
-//       slug,
-//       draft: isDraftMode,
-//     })
-//   } catch (error) {}
-//
-//   return generateMeta({ doc: sponsor })
-// }
+export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
+  const { isEnabled: isDraftMode } = draftMode()
+
+  let society: Society | null = null
+
+  try {
+    society = await fetchDoc<Society>({
+      collection: 'societies',
+      slug,
+      draft: isDraftMode,
+    })
+  } catch (error) {}
+
+  return {
+    title: society?.name || 'Society',
+    description: society?.description ? 'Learn more about ' + society.name : undefined,
+  }
+}
