@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 
 import { Society } from '../../../payload/payload-types'
+import { LowImpactHero } from '../../_heros/LowImpact'
 import { Gutter } from '../Gutter'
 import { LinkList } from '../LinkList'
 import { Media as MediaComp } from '../Media'
@@ -25,8 +26,9 @@ export const SocietyPage: React.FC<{
   // const href = `/${relationTo}/${slug}`
 
   return (
-    <Gutter>
-      <div>
+    <>
+      {name && <LowImpactHero type="lowImpact" title={name} />}
+      <Gutter>
         {website && (
           <Link href={website} className={classes.mediaWrapper}>
             {!logo && <div className={classes.placeholder}>No image</div>}
@@ -35,27 +37,25 @@ export const SocietyPage: React.FC<{
             )}
           </Link>
         )}
-      </div>
 
-      <div className={classes.content}>{name && <h2 className={classes.title}>{name}</h2>}</div>
+        <RichText content={description} />
 
-      <div>{website && <Link href={website}>Website</Link>}</div>
+        <div>{website && <Link href={website}>Website</Link>}</div>
 
-      <RichText content={description} />
+        <div>{email && <Link href={'mailto: ' + email}>Email</Link>}</div>
 
-      <div>{email && <Link href={'mailto: ' + email}>Email</Link>}</div>
+        <div>{susu && <Link href={susu}>Susu Page</Link>}</div>
 
-      <div>{susu && <Link href={susu}>Susu Page</Link>}</div>
+        <div>{github && <Link href={'https://github.com/' + github}>Github</Link>}</div>
 
-      <div>{github && <Link href={'https://github.com/' + github}>Github</Link>}</div>
+        <div>{instagram && <Link href={'https://instagram.com/' + instagram}>Instagram</Link>}</div>
 
-      <div>{instagram && <Link href={'https://instagram.com/' + instagram}>Instagram</Link>}</div>
+        <div>{discord && <Link href={discord}>Discord</Link>}</div>
 
-      <div>{discord && <Link href={discord}>Discord</Link>}</div>
-
-      <div>
-        <LinkList links={links.map(link => link.link)} />
-      </div>
-    </Gutter>
+        <div>
+          <LinkList links={links.map(link => link.link)} />
+        </div>
+      </Gutter>
+    </>
   )
 }

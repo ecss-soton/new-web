@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 
 import { Sponsor } from '../../../payload/payload-types'
+import { LowImpactHero } from '../../_heros/LowImpact'
 import { Gutter } from '../Gutter'
 import { LinkList } from '../LinkList'
 import { Media as MediaComp } from '../Media'
@@ -25,25 +26,32 @@ export const SponsorPage: React.FC<{
   // const href = `/${relationTo}/${slug}`
 
   return (
-    <Gutter>
-      <div>{level && <h4 className={classes.title}>{level}</h4>}</div>
+    <>
+      {name && <LowImpactHero type="lowImpact" title={name} />}
+      <Gutter>
+        <Link href={websiteUrl} className={classes.mediaWrapper}>
+          {!logo && <div className={classes.placeholder}>No image</div>}
+          {logo && typeof logo !== 'string' && (
+            <MediaComp imgClassName={classes.image} resource={logo} fill />
+          )}
+        </Link>
 
-      <Link href={websiteUrl} className={classes.mediaWrapper}>
-        {!logo && <div className={classes.placeholder}>No image</div>}
-        {logo && typeof logo !== 'string' && (
-          <MediaComp imgClassName={classes.image} resource={logo} fill />
-        )}
-      </Link>
+        <div>
+          {level && (
+            <h4 className={classes.title} style={{ textTransform: 'capitalize' }}>
+              {level}
+            </h4>
+          )}
+        </div>
 
-      <div className={classes.content}>{name && <h2 className={classes.title}>{name}</h2>}</div>
+        <RichText content={description} />
 
-      <div>{websiteUrl && <Link href={websiteUrl} />}</div>
+        <div>{websiteUrl && <Link href={websiteUrl} />}</div>
 
-      <RichText content={description} />
-
-      <div>
-        <LinkList links={links.map(link => link.link)} />
-      </div>
-    </Gutter>
+        <div>
+          <LinkList links={links.map(link => link.link)} />
+        </div>
+      </Gutter>
+    </>
   )
 }

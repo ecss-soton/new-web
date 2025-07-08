@@ -46,47 +46,7 @@ export const SponsorItem: React.FC<{
           <MediaComp imgClassName={classes.image} resource={logo} fill />
         )}
       </Link>
-      <div className={classes.content}>
-        {name && <h4 className={classes.title}>{name}</h4>}
-        {/*{showCategories && hasCategories && (*/}
-        {/*  <div className={classes.leader}>*/}
-        {/*    {showCategories && hasCategories && (*/}
-        {/*      <div>*/}
-        {/*        {categories?.map((category, index) => {*/}
-        {/*          if (typeof category === 'object') {*/}
-        {/*            const { title: titleFromCategory } = category*/}
-
-        {/*            const categoryTitle = titleFromCategory || 'Untitled category'*/}
-
-        {/*            const isLast = index === categories.length - 1*/}
-
-        {/*            return (*/}
-        {/*              <Fragment key={index}>*/}
-        {/*                {categoryTitle}*/}
-        {/*                {!isLast && <Fragment>, &nbsp;</Fragment>}*/}
-        {/*              </Fragment>*/}
-        {/*            )*/}
-        {/*          }*/}
-
-        {/*          return null*/}
-        {/*        })}*/}
-        {/*      </div>*/}
-        {/*    )}*/}
-        {/*  </div>*/}
-        {/*)}*/}
-        {/*{titleToUse && (*/}
-        {/*  <h4 className={classes.title}>*/}
-        {/*    <Link href={href} className={classes.titleLink}>*/}
-        {/*      {titleToUse}*/}
-        {/*    </Link>*/}
-        {/*  </h4>*/}
-        {/*)}*/}
-        {/*{description && (*/}
-        {/*  <div className={classes.body}>*/}
-        {/*    {description && <p className={classes.description}>{sanitizedDescription}</p>}*/}
-        {/*  </div>*/}
-        {/*)}*/}
-      </div>
+      <div className={classes.content}>{name && <h4 className={classes.title}>{name}</h4>}</div>
     </div>
   )
 }

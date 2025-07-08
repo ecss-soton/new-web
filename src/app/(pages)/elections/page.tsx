@@ -8,11 +8,11 @@ import { fetchSettings } from '../../_api/fetchGlobals'
 import { Gutter } from '../../_components/Gutter'
 import { CMSLink } from '../../_components/Link'
 import { Positions } from '../../_components/Positions'
+import { LowImpactHero } from '../../_heros/LowImpact'
 import { getMeUser } from '../../_utilities/getMeUser'
 import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
 
 import classes from './index.module.scss'
-import { LowImpactHero } from '../../_heros/LowImpact'
 
 function formatDate(dateString: string) {
   const date = new Date(Date.parse(dateString))
