@@ -14,9 +14,13 @@ const inter = Inter({
   style: ['normal'],
 })
 
-export const LowImpactHero: React.FC<Page['hero']> = ({ title, richText }) => {
+export const LowImpactHero: React.FC<Page['hero'] & { className?: string }> = ({
+  title,
+  richText,
+  className,
+}) => {
   return (
-    <Gutter className={classes.lowImpactHero}>
+    <Gutter className={[classes.lowImpactHero, className].filter(Boolean).join(' ')}>
       <div className={classes.content}>
         <VerticalPadding top="none" bottom="small">
           <h1 className={[classes.title, inter.className].join(' ')}>
