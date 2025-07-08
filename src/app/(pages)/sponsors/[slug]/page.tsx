@@ -1,9 +1,10 @@
 import React from 'react'
+import type { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
-import qs from 'qs'
 
-import { Sponsor } from '../../../../payload/payload-types'
+import type { Sponsor } from '../../../../payload/payload-types'
+import { fetchDoc } from '../../../_api/fetchDoc'
 import { fetchDocs } from '../../../_api/fetchDocs'
 import { SponsorPage } from '../../../_components/SponsorPage'
 
@@ -16,29 +17,14 @@ export default async function Sponsor({ params: { slug } }) {
 
   let sponsor: Sponsor | null = null
 
-  const searchQuery = qs.stringify(
-    {
-      depth: 1,
-      sort: '-level',
-      where: {
-        slug: {
-          equals: slug,
-        },
-      },
-    },
-    { encode: false },
-  )
-
   try {
-    const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/sponsors?${searchQuery}`)
-
-    const json = await req.json()
-
-    const { docs } = json as { docs: Sponsor[] }
-
-    sponsor = docs[0]
-  } catch (err) {
-    console.warn(err) // eslint-disable-line no-console
+    sponsor = await fetchDoc<Sponsor>({
+      collection: 'sponsors',
+      slug,
+      draft: isDraftMode,
+    })
+  } catch (error) {
+    console.warn(error) // eslint-disable-line no-console
   }
 
   if (!sponsor) {
@@ -54,25 +40,28 @@ export default async function Sponsor({ params: { slug } }) {
 
 export async function generateStaticParams() {
   try {
-    const projects = await fetchDocs<Sponsor>('sponsors')
-    return projects?.map(({ slug }) => slug)
+    const sponsors = await fetchDocs<Sponsor>('sponsors')
+    return sponsors?.map(({ slug }) => slug)
   } catch (error) {
     return []
   }
 }
 
-// export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
-//   const { isEnabled: isDraftMode } = draftMode()
-//
-//   let sponsor: Sponsor | null = null
-//
-//   try {
-//     sponsor = await fetchDoc<Sponsor>({
-//       collection: 'projects',
-//       slug,
-//       draft: isDraftMode,
-//     })
-//   } catch (error) {}
-//
-//   return generateMeta({ doc: sponsor })
-// }
+export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
+  const { isEnabled: isDraftMode } = draftMode()
+
+  let sponsor: Sponsor | null = null
+
+  try {
+    sponsor = await fetchDoc<Sponsor>({
+      collection: 'sponsors',
+      slug,
+      draft: isDraftMode,
+    })
+  } catch (error) {}
+
+  return {
+    title: sponsor?.name || 'Sponsor',
+    description: sponsor?.description ? 'Learn more about ' + sponsor.name : undefined,
+  }
+}
