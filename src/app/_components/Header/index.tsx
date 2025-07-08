@@ -96,8 +96,7 @@ const Header: React.FC = () => {
             <ThemeImage
               className={classes.logo}
               src="/ecss.svg"
-              darksrc="ecss-light.svg"
-              alt="ECSS logo"
+              darksrc="ecss-light.svg" alt="ECSS logo"
             />
             {/* <span className={[classes.title, inter.className].join(' ')}>ECSS</span> */}
           </Link>
