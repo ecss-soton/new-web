@@ -19,7 +19,7 @@ const Societies: CollectionConfig = {
     defaultColumns: ['id', 'name'],
   },
   versions: {
-    drafts: true,
+    drafts: false,
   },
   fields: [
     slugField(),

@@ -25,7 +25,7 @@ const Sponsors: CollectionConfig = {
     defaultColumns: ['name', 'level'],
   },
   versions: {
-    drafts: true,
+    drafts: false,
   },
   fields: [
     slugField(),
