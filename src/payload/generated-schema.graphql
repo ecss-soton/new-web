@@ -70,9 +70,13 @@ type Query {
   Sponsor(id: String!, draft: Boolean): Sponsor
   Sponsors(draft: Boolean, where: Sponsor_where, limit: Int, page: Int, sort: String): Sponsors
   docAccessSponsor(id: String!): sponsorsDocAccess
+  versionSponsor(id: String): SponsorVersion
+  versionsSponsors(where: versionsSponsor_where, limit: Int, page: Int, sort: String): versionsSponsors
   Society(id: String!, draft: Boolean): Society
   Societies(draft: Boolean, where: Society_where, limit: Int, page: Int, sort: String): Societies
   docAccessSociety(id: String!): societiesDocAccess
+  versionSociety(id: String): SocietyVersion
+  versionsSocieties(where: versionsSociety_where, limit: Int, page: Int, sort: String): versionsSocieties
   Committee(id: String!, draft: Boolean): Committee
   Committees(draft: Boolean, where: Committee_where, limit: Int, page: Int, sort: String): Committees
   docAccessCommittee(id: String!): committeeDocAccess
@@ -1535,14 +1539,15 @@ enum Project__status {
 type Sponsor {
   id: String
   slug: String
-  name: String!
+  name: String
   level: Sponsor_level
   description(depth: Int): JSON
-  logo(where: Sponsor_Logo_where): Media!
+  logo(where: Sponsor_Logo_where): Media
   websiteUrl: String
   links: [Sponsor_Links!]
   updatedAt: DateTime
   createdAt: DateTime
+  _status: Sponsor__status
 }
 
 enum Sponsor_level {
@@ -1752,12 +1757,17 @@ enum Sponsor_Links_Link_appearance {
   secondary
 }
 
+enum Sponsor__status {
+  draft
+  published
+}
+
 type Society {
   slug: String
-  id: String!
+  id: String
   name: String
   description(depth: Int): JSON
-  logo(where: Society_Logo_where): Media!
+  logo(where: Society_Logo_where): Media
   email: EmailAddress
   website: String
   susu: String
@@ -1767,6 +1777,7 @@ type Society {
   links: [Society_Links!]
   updatedAt: DateTime
   createdAt: DateTime
+  _status: Society__status
 }
 
 input Society_Logo_where {
@@ -1965,6 +1976,11 @@ enum Society_Links_Link_appearance {
   default
   primary
   secondary
+}
+
+enum Society__status {
+  draft
+  published
 }
 
 type Committee {
@@ -16992,6 +17008,7 @@ input Sponsor_where {
   links__id: Sponsor_links__id_operator
   updatedAt: Sponsor_updatedAt_operator
   createdAt: Sponsor_createdAt_operator
+  _status: Sponsor__status_operator
   id: Sponsor_id_operator
   AND: [Sponsor_where_and]
   OR: [Sponsor_where_or]
@@ -17156,6 +17173,20 @@ input Sponsor_createdAt_operator {
   exists: Boolean
 }
 
+input Sponsor__status_operator {
+  equals: Sponsor__status_Input
+  not_equals: Sponsor__status_Input
+  in: [Sponsor__status_Input]
+  not_in: [Sponsor__status_Input]
+  all: [Sponsor__status_Input]
+  exists: Boolean
+}
+
+enum Sponsor__status_Input {
+  draft
+  published
+}
+
 input Sponsor_id_operator {
   equals: String
   not_equals: String
@@ -17183,6 +17214,7 @@ input Sponsor_where_and {
   links__id: Sponsor_links__id_operator
   updatedAt: Sponsor_updatedAt_operator
   createdAt: Sponsor_createdAt_operator
+  _status: Sponsor__status_operator
   id: Sponsor_id_operator
   AND: [Sponsor_where_and]
   OR: [Sponsor_where_or]
@@ -17204,6 +17236,7 @@ input Sponsor_where_or {
   links__id: Sponsor_links__id_operator
   updatedAt: Sponsor_updatedAt_operator
   createdAt: Sponsor_createdAt_operator
+  _status: Sponsor__status_operator
   id: Sponsor_id_operator
   AND: [Sponsor_where_and]
   OR: [Sponsor_where_or]
@@ -17215,6 +17248,7 @@ type sponsorsDocAccess {
   read: SponsorsReadDocAccess
   update: SponsorsUpdateDocAccess
   delete: SponsorsDeleteDocAccess
+  readVersions: SponsorsReadVersionsDocAccess
 }
 
 type SponsorsDocAccessFields {
@@ -17227,6 +17261,7 @@ type SponsorsDocAccessFields {
   links: SponsorsDocAccessFields_links
   updatedAt: SponsorsDocAccessFields_updatedAt
   createdAt: SponsorsDocAccessFields_createdAt
+  _status: SponsorsDocAccessFields__status
 }
 
 type SponsorsDocAccessFields_slug {
@@ -17636,6 +17671,29 @@ type SponsorsDocAccessFields_createdAt_Delete {
   permission: Boolean!
 }
 
+type SponsorsDocAccessFields__status {
+  create: SponsorsDocAccessFields__status_Create
+  read: SponsorsDocAccessFields__status_Read
+  update: SponsorsDocAccessFields__status_Update
+  delete: SponsorsDocAccessFields__status_Delete
+}
+
+type SponsorsDocAccessFields__status_Create {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields__status_Read {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields__status_Update {
+  permission: Boolean!
+}
+
+type SponsorsDocAccessFields__status_Delete {
+  permission: Boolean!
+}
+
 type SponsorsCreateDocAccess {
   permission: Boolean!
   where: JSONObject
@@ -17654,6 +17712,558 @@ type SponsorsUpdateDocAccess {
 type SponsorsDeleteDocAccess {
   permission: Boolean!
   where: JSONObject
+}
+
+type SponsorsReadVersionsDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SponsorVersion {
+  parent: Sponsor
+  version: SponsorVersion_Version
+  createdAt: DateTime
+  updatedAt: DateTime
+  latest: Boolean
+  id: String
+}
+
+type SponsorVersion_Version {
+  slug: String
+  name: String
+  level: SponsorVersion_Version_level
+  description(depth: Int): JSON
+  logo(where: SponsorVersion_Version_Logo_where): Media
+  websiteUrl: String
+  links: [SponsorVersion_Version_Links!]
+  updatedAt: DateTime
+  createdAt: DateTime
+  _status: SponsorVersion_Version__status
+}
+
+enum SponsorVersion_Version_level {
+  gold
+  silver
+  bronze
+  _64bit
+  _32bit
+  _16bit
+}
+
+input SponsorVersion_Version_Logo_where {
+  alt: SponsorVersion_Version_Logo_alt_operator
+  caption: SponsorVersion_Version_Logo_caption_operator
+  updatedAt: SponsorVersion_Version_Logo_updatedAt_operator
+  createdAt: SponsorVersion_Version_Logo_createdAt_operator
+  url: SponsorVersion_Version_Logo_url_operator
+  filename: SponsorVersion_Version_Logo_filename_operator
+  mimeType: SponsorVersion_Version_Logo_mimeType_operator
+  filesize: SponsorVersion_Version_Logo_filesize_operator
+  width: SponsorVersion_Version_Logo_width_operator
+  height: SponsorVersion_Version_Logo_height_operator
+  id: SponsorVersion_Version_Logo_id_operator
+  AND: [SponsorVersion_Version_Logo_where_and]
+  OR: [SponsorVersion_Version_Logo_where_or]
+}
+
+input SponsorVersion_Version_Logo_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input SponsorVersion_Version_Logo_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input SponsorVersion_Version_Logo_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input SponsorVersion_Version_Logo_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input SponsorVersion_Version_Logo_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SponsorVersion_Version_Logo_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SponsorVersion_Version_Logo_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SponsorVersion_Version_Logo_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input SponsorVersion_Version_Logo_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input SponsorVersion_Version_Logo_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input SponsorVersion_Version_Logo_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SponsorVersion_Version_Logo_where_and {
+  alt: SponsorVersion_Version_Logo_alt_operator
+  caption: SponsorVersion_Version_Logo_caption_operator
+  updatedAt: SponsorVersion_Version_Logo_updatedAt_operator
+  createdAt: SponsorVersion_Version_Logo_createdAt_operator
+  url: SponsorVersion_Version_Logo_url_operator
+  filename: SponsorVersion_Version_Logo_filename_operator
+  mimeType: SponsorVersion_Version_Logo_mimeType_operator
+  filesize: SponsorVersion_Version_Logo_filesize_operator
+  width: SponsorVersion_Version_Logo_width_operator
+  height: SponsorVersion_Version_Logo_height_operator
+  id: SponsorVersion_Version_Logo_id_operator
+  AND: [SponsorVersion_Version_Logo_where_and]
+  OR: [SponsorVersion_Version_Logo_where_or]
+}
+
+input SponsorVersion_Version_Logo_where_or {
+  alt: SponsorVersion_Version_Logo_alt_operator
+  caption: SponsorVersion_Version_Logo_caption_operator
+  updatedAt: SponsorVersion_Version_Logo_updatedAt_operator
+  createdAt: SponsorVersion_Version_Logo_createdAt_operator
+  url: SponsorVersion_Version_Logo_url_operator
+  filename: SponsorVersion_Version_Logo_filename_operator
+  mimeType: SponsorVersion_Version_Logo_mimeType_operator
+  filesize: SponsorVersion_Version_Logo_filesize_operator
+  width: SponsorVersion_Version_Logo_width_operator
+  height: SponsorVersion_Version_Logo_height_operator
+  id: SponsorVersion_Version_Logo_id_operator
+  AND: [SponsorVersion_Version_Logo_where_and]
+  OR: [SponsorVersion_Version_Logo_where_or]
+}
+
+type SponsorVersion_Version_Links {
+  link: SponsorVersion_Version_Links_Link
+  id: String
+}
+
+type SponsorVersion_Version_Links_Link {
+  type: SponsorVersion_Version_Links_Link_type
+  newTab: Boolean
+  reference: SponsorVersion_Version_Links_Link_Reference_Relationship
+  url: String
+  label: String
+  appearance: SponsorVersion_Version_Links_Link_appearance
+}
+
+enum SponsorVersion_Version_Links_Link_type {
+  reference
+  custom
+}
+
+type SponsorVersion_Version_Links_Link_Reference_Relationship {
+  relationTo: SponsorVersion_Version_Links_Link_Reference_RelationTo
+  value: SponsorVersion_Version_Links_Link_Reference
+}
+
+enum SponsorVersion_Version_Links_Link_Reference_RelationTo {
+  pages
+}
+
+union SponsorVersion_Version_Links_Link_Reference = Page
+
+enum SponsorVersion_Version_Links_Link_appearance {
+  default
+  primary
+  secondary
+}
+
+enum SponsorVersion_Version__status {
+  draft
+  published
+}
+
+type versionsSponsors {
+  docs: [SponsorVersion]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input versionsSponsor_where {
+  parent: versionsSponsor_parent_operator
+  version__slug: versionsSponsor_version__slug_operator
+  version__name: versionsSponsor_version__name_operator
+  version__level: versionsSponsor_version__level_operator
+  version__description: versionsSponsor_version__description_operator
+  version__logo: versionsSponsor_version__logo_operator
+  version__websiteUrl: versionsSponsor_version__websiteUrl_operator
+  version__links__link__type: versionsSponsor_version__links__link__type_operator
+  version__links__link__newTab: versionsSponsor_version__links__link__newTab_operator
+  version__links__link__reference: versionsSponsor_version__links__link__reference_Relation
+  version__links__link__url: versionsSponsor_version__links__link__url_operator
+  version__links__link__label: versionsSponsor_version__links__link__label_operator
+  version__links__link__appearance: versionsSponsor_version__links__link__appearance_operator
+  version__links__id: versionsSponsor_version__links__id_operator
+  version__updatedAt: versionsSponsor_version__updatedAt_operator
+  version__createdAt: versionsSponsor_version__createdAt_operator
+  version___status: versionsSponsor_version___status_operator
+  createdAt: versionsSponsor_createdAt_operator
+  updatedAt: versionsSponsor_updatedAt_operator
+  latest: versionsSponsor_latest_operator
+  id: versionsSponsor_id_operator
+  AND: [versionsSponsor_where_and]
+  OR: [versionsSponsor_where_or]
+}
+
+input versionsSponsor_parent_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input versionsSponsor_version__slug_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsSponsor_version__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsSponsor_version__level_operator {
+  equals: versionsSponsor_version__level_Input
+  not_equals: versionsSponsor_version__level_Input
+  in: [versionsSponsor_version__level_Input]
+  not_in: [versionsSponsor_version__level_Input]
+  all: [versionsSponsor_version__level_Input]
+  exists: Boolean
+}
+
+enum versionsSponsor_version__level_Input {
+  gold
+  silver
+  bronze
+  _64bit
+  _32bit
+  _16bit
+}
+
+input versionsSponsor_version__description_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input versionsSponsor_version__logo_operator {
+  equals: String
+  not_equals: String
+}
+
+input versionsSponsor_version__websiteUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsSponsor_version__links__link__type_operator {
+  equals: versionsSponsor_version__links__link__type_Input
+  not_equals: versionsSponsor_version__links__link__type_Input
+  like: versionsSponsor_version__links__link__type_Input
+  contains: versionsSponsor_version__links__link__type_Input
+  exists: Boolean
+}
+
+enum versionsSponsor_version__links__link__type_Input {
+  reference
+  custom
+}
+
+input versionsSponsor_version__links__link__newTab_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsSponsor_version__links__link__reference_Relation {
+  relationTo: versionsSponsor_version__links__link__reference_Relation_RelationTo
+  value: JSON
+}
+
+enum versionsSponsor_version__links__link__reference_Relation_RelationTo {
+  pages
+}
+
+input versionsSponsor_version__links__link__url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsSponsor_version__links__link__label_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsSponsor_version__links__link__appearance_operator {
+  equals: versionsSponsor_version__links__link__appearance_Input
+  not_equals: versionsSponsor_version__links__link__appearance_Input
+  in: [versionsSponsor_version__links__link__appearance_Input]
+  not_in: [versionsSponsor_version__links__link__appearance_Input]
+  all: [versionsSponsor_version__links__link__appearance_Input]
+  exists: Boolean
+}
+
+enum versionsSponsor_version__links__link__appearance_Input {
+  default
+  primary
+  secondary
+}
+
+input versionsSponsor_version__links__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsSponsor_version__updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsSponsor_version__createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsSponsor_version___status_operator {
+  equals: versionsSponsor_version___status_Input
+  not_equals: versionsSponsor_version___status_Input
+  in: [versionsSponsor_version___status_Input]
+  not_in: [versionsSponsor_version___status_Input]
+  all: [versionsSponsor_version___status_Input]
+  exists: Boolean
+}
+
+enum versionsSponsor_version___status_Input {
+  draft
+  published
+}
+
+input versionsSponsor_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsSponsor_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsSponsor_latest_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsSponsor_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsSponsor_where_and {
+  parent: versionsSponsor_parent_operator
+  version__slug: versionsSponsor_version__slug_operator
+  version__name: versionsSponsor_version__name_operator
+  version__level: versionsSponsor_version__level_operator
+  version__description: versionsSponsor_version__description_operator
+  version__logo: versionsSponsor_version__logo_operator
+  version__websiteUrl: versionsSponsor_version__websiteUrl_operator
+  version__links__link__type: versionsSponsor_version__links__link__type_operator
+  version__links__link__newTab: versionsSponsor_version__links__link__newTab_operator
+  version__links__link__reference: versionsSponsor_version__links__link__reference_Relation
+  version__links__link__url: versionsSponsor_version__links__link__url_operator
+  version__links__link__label: versionsSponsor_version__links__link__label_operator
+  version__links__link__appearance: versionsSponsor_version__links__link__appearance_operator
+  version__links__id: versionsSponsor_version__links__id_operator
+  version__updatedAt: versionsSponsor_version__updatedAt_operator
+  version__createdAt: versionsSponsor_version__createdAt_operator
+  version___status: versionsSponsor_version___status_operator
+  createdAt: versionsSponsor_createdAt_operator
+  updatedAt: versionsSponsor_updatedAt_operator
+  latest: versionsSponsor_latest_operator
+  id: versionsSponsor_id_operator
+  AND: [versionsSponsor_where_and]
+  OR: [versionsSponsor_where_or]
+}
+
+input versionsSponsor_where_or {
+  parent: versionsSponsor_parent_operator
+  version__slug: versionsSponsor_version__slug_operator
+  version__name: versionsSponsor_version__name_operator
+  version__level: versionsSponsor_version__level_operator
+  version__description: versionsSponsor_version__description_operator
+  version__logo: versionsSponsor_version__logo_operator
+  version__websiteUrl: versionsSponsor_version__websiteUrl_operator
+  version__links__link__type: versionsSponsor_version__links__link__type_operator
+  version__links__link__newTab: versionsSponsor_version__links__link__newTab_operator
+  version__links__link__reference: versionsSponsor_version__links__link__reference_Relation
+  version__links__link__url: versionsSponsor_version__links__link__url_operator
+  version__links__link__label: versionsSponsor_version__links__link__label_operator
+  version__links__link__appearance: versionsSponsor_version__links__link__appearance_operator
+  version__links__id: versionsSponsor_version__links__id_operator
+  version__updatedAt: versionsSponsor_version__updatedAt_operator
+  version__createdAt: versionsSponsor_version__createdAt_operator
+  version___status: versionsSponsor_version___status_operator
+  createdAt: versionsSponsor_createdAt_operator
+  updatedAt: versionsSponsor_updatedAt_operator
+  latest: versionsSponsor_latest_operator
+  id: versionsSponsor_id_operator
+  AND: [versionsSponsor_where_and]
+  OR: [versionsSponsor_where_or]
 }
 
 type Societies {
@@ -17691,6 +18301,7 @@ input Society_where {
   links__id: Society_links__id_operator
   updatedAt: Society_updatedAt_operator
   createdAt: Society_createdAt_operator
+  _status: Society__status_operator
   AND: [Society_where_and]
   OR: [Society_where_or]
 }
@@ -17902,6 +18513,20 @@ input Society_createdAt_operator {
   exists: Boolean
 }
 
+input Society__status_operator {
+  equals: Society__status_Input
+  not_equals: Society__status_Input
+  in: [Society__status_Input]
+  not_in: [Society__status_Input]
+  all: [Society__status_Input]
+  exists: Boolean
+}
+
+enum Society__status_Input {
+  draft
+  published
+}
+
 input Society_where_and {
   slug: Society_slug_operator
   id: Society_id_operator
@@ -17923,6 +18548,7 @@ input Society_where_and {
   links__id: Society_links__id_operator
   updatedAt: Society_updatedAt_operator
   createdAt: Society_createdAt_operator
+  _status: Society__status_operator
   AND: [Society_where_and]
   OR: [Society_where_or]
 }
@@ -17948,6 +18574,7 @@ input Society_where_or {
   links__id: Society_links__id_operator
   updatedAt: Society_updatedAt_operator
   createdAt: Society_createdAt_operator
+  _status: Society__status_operator
   AND: [Society_where_and]
   OR: [Society_where_or]
 }
@@ -17958,6 +18585,7 @@ type societiesDocAccess {
   read: SocietiesReadDocAccess
   update: SocietiesUpdateDocAccess
   delete: SocietiesDeleteDocAccess
+  readVersions: SocietiesReadVersionsDocAccess
 }
 
 type SocietiesDocAccessFields {
@@ -17975,6 +18603,7 @@ type SocietiesDocAccessFields {
   links: SocietiesDocAccessFields_links
   updatedAt: SocietiesDocAccessFields_updatedAt
   createdAt: SocietiesDocAccessFields_createdAt
+  _status: SocietiesDocAccessFields__status
 }
 
 type SocietiesDocAccessFields_slug {
@@ -18499,6 +19128,29 @@ type SocietiesDocAccessFields_createdAt_Delete {
   permission: Boolean!
 }
 
+type SocietiesDocAccessFields__status {
+  create: SocietiesDocAccessFields__status_Create
+  read: SocietiesDocAccessFields__status_Read
+  update: SocietiesDocAccessFields__status_Update
+  delete: SocietiesDocAccessFields__status_Delete
+}
+
+type SocietiesDocAccessFields__status_Create {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields__status_Read {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields__status_Update {
+  permission: Boolean!
+}
+
+type SocietiesDocAccessFields__status_Delete {
+  permission: Boolean!
+}
+
 type SocietiesCreateDocAccess {
   permission: Boolean!
   where: JSONObject
@@ -18517,6 +19169,603 @@ type SocietiesUpdateDocAccess {
 type SocietiesDeleteDocAccess {
   permission: Boolean!
   where: JSONObject
+}
+
+type SocietiesReadVersionsDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SocietyVersion {
+  parent: Society
+  version: SocietyVersion_Version
+  createdAt: DateTime
+  updatedAt: DateTime
+  latest: Boolean
+  id: String
+}
+
+type SocietyVersion_Version {
+  slug: String
+  name: String
+  description(depth: Int): JSON
+  logo(where: SocietyVersion_Version_Logo_where): Media
+  email: EmailAddress
+  website: String
+  susu: String
+  github: String
+  instagram: String
+  discord: String
+  links: [SocietyVersion_Version_Links!]
+  updatedAt: DateTime
+  createdAt: DateTime
+  _status: SocietyVersion_Version__status
+}
+
+input SocietyVersion_Version_Logo_where {
+  alt: SocietyVersion_Version_Logo_alt_operator
+  caption: SocietyVersion_Version_Logo_caption_operator
+  updatedAt: SocietyVersion_Version_Logo_updatedAt_operator
+  createdAt: SocietyVersion_Version_Logo_createdAt_operator
+  url: SocietyVersion_Version_Logo_url_operator
+  filename: SocietyVersion_Version_Logo_filename_operator
+  mimeType: SocietyVersion_Version_Logo_mimeType_operator
+  filesize: SocietyVersion_Version_Logo_filesize_operator
+  width: SocietyVersion_Version_Logo_width_operator
+  height: SocietyVersion_Version_Logo_height_operator
+  id: SocietyVersion_Version_Logo_id_operator
+  AND: [SocietyVersion_Version_Logo_where_and]
+  OR: [SocietyVersion_Version_Logo_where_or]
+}
+
+input SocietyVersion_Version_Logo_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input SocietyVersion_Version_Logo_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input SocietyVersion_Version_Logo_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input SocietyVersion_Version_Logo_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input SocietyVersion_Version_Logo_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SocietyVersion_Version_Logo_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SocietyVersion_Version_Logo_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SocietyVersion_Version_Logo_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input SocietyVersion_Version_Logo_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input SocietyVersion_Version_Logo_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input SocietyVersion_Version_Logo_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SocietyVersion_Version_Logo_where_and {
+  alt: SocietyVersion_Version_Logo_alt_operator
+  caption: SocietyVersion_Version_Logo_caption_operator
+  updatedAt: SocietyVersion_Version_Logo_updatedAt_operator
+  createdAt: SocietyVersion_Version_Logo_createdAt_operator
+  url: SocietyVersion_Version_Logo_url_operator
+  filename: SocietyVersion_Version_Logo_filename_operator
+  mimeType: SocietyVersion_Version_Logo_mimeType_operator
+  filesize: SocietyVersion_Version_Logo_filesize_operator
+  width: SocietyVersion_Version_Logo_width_operator
+  height: SocietyVersion_Version_Logo_height_operator
+  id: SocietyVersion_Version_Logo_id_operator
+  AND: [SocietyVersion_Version_Logo_where_and]
+  OR: [SocietyVersion_Version_Logo_where_or]
+}
+
+input SocietyVersion_Version_Logo_where_or {
+  alt: SocietyVersion_Version_Logo_alt_operator
+  caption: SocietyVersion_Version_Logo_caption_operator
+  updatedAt: SocietyVersion_Version_Logo_updatedAt_operator
+  createdAt: SocietyVersion_Version_Logo_createdAt_operator
+  url: SocietyVersion_Version_Logo_url_operator
+  filename: SocietyVersion_Version_Logo_filename_operator
+  mimeType: SocietyVersion_Version_Logo_mimeType_operator
+  filesize: SocietyVersion_Version_Logo_filesize_operator
+  width: SocietyVersion_Version_Logo_width_operator
+  height: SocietyVersion_Version_Logo_height_operator
+  id: SocietyVersion_Version_Logo_id_operator
+  AND: [SocietyVersion_Version_Logo_where_and]
+  OR: [SocietyVersion_Version_Logo_where_or]
+}
+
+type SocietyVersion_Version_Links {
+  link: SocietyVersion_Version_Links_Link
+  id: String
+}
+
+type SocietyVersion_Version_Links_Link {
+  type: SocietyVersion_Version_Links_Link_type
+  newTab: Boolean
+  reference: SocietyVersion_Version_Links_Link_Reference_Relationship
+  url: String
+  label: String
+  appearance: SocietyVersion_Version_Links_Link_appearance
+}
+
+enum SocietyVersion_Version_Links_Link_type {
+  reference
+  custom
+}
+
+type SocietyVersion_Version_Links_Link_Reference_Relationship {
+  relationTo: SocietyVersion_Version_Links_Link_Reference_RelationTo
+  value: SocietyVersion_Version_Links_Link_Reference
+}
+
+enum SocietyVersion_Version_Links_Link_Reference_RelationTo {
+  pages
+}
+
+union SocietyVersion_Version_Links_Link_Reference = Page
+
+enum SocietyVersion_Version_Links_Link_appearance {
+  default
+  primary
+  secondary
+}
+
+enum SocietyVersion_Version__status {
+  draft
+  published
+}
+
+type versionsSocieties {
+  docs: [SocietyVersion]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input versionsSociety_where {
+  parent: versionsSociety_parent_operator
+  version__slug: versionsSociety_version__slug_operator
+  version__name: versionsSociety_version__name_operator
+  version__description: versionsSociety_version__description_operator
+  version__logo: versionsSociety_version__logo_operator
+  version__email: versionsSociety_version__email_operator
+  version__website: versionsSociety_version__website_operator
+  version__susu: versionsSociety_version__susu_operator
+  version__github: versionsSociety_version__github_operator
+  version__instagram: versionsSociety_version__instagram_operator
+  version__discord: versionsSociety_version__discord_operator
+  version__links__link__type: versionsSociety_version__links__link__type_operator
+  version__links__link__newTab: versionsSociety_version__links__link__newTab_operator
+  version__links__link__reference: versionsSociety_version__links__link__reference_Relation
+  version__links__link__url: versionsSociety_version__links__link__url_operator
+  version__links__link__label: versionsSociety_version__links__link__label_operator
+  version__links__link__appearance: versionsSociety_version__links__link__appearance_operator
+  version__links__id: versionsSociety_version__links__id_operator
+  version__updatedAt: versionsSociety_version__updatedAt_operator
+  version__createdAt: versionsSociety_version__createdAt_operator
+  version___status: versionsSociety_version___status_operator
+  createdAt: versionsSociety_createdAt_operator
+  updatedAt: versionsSociety_updatedAt_operator
+  latest: versionsSociety_latest_operator
+  id: versionsSociety_id_operator
+  AND: [versionsSociety_where_and]
+  OR: [versionsSociety_where_or]
+}
+
+input versionsSociety_parent_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input versionsSociety_version__slug_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsSociety_version__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsSociety_version__description_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input versionsSociety_version__logo_operator {
+  equals: String
+  not_equals: String
+}
+
+input versionsSociety_version__email_operator {
+  equals: EmailAddress
+  not_equals: EmailAddress
+  like: EmailAddress
+  contains: EmailAddress
+  in: [EmailAddress]
+  not_in: [EmailAddress]
+  all: [EmailAddress]
+  exists: Boolean
+}
+
+input versionsSociety_version__website_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsSociety_version__susu_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsSociety_version__github_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsSociety_version__instagram_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsSociety_version__discord_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsSociety_version__links__link__type_operator {
+  equals: versionsSociety_version__links__link__type_Input
+  not_equals: versionsSociety_version__links__link__type_Input
+  like: versionsSociety_version__links__link__type_Input
+  contains: versionsSociety_version__links__link__type_Input
+  exists: Boolean
+}
+
+enum versionsSociety_version__links__link__type_Input {
+  reference
+  custom
+}
+
+input versionsSociety_version__links__link__newTab_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsSociety_version__links__link__reference_Relation {
+  relationTo: versionsSociety_version__links__link__reference_Relation_RelationTo
+  value: JSON
+}
+
+enum versionsSociety_version__links__link__reference_Relation_RelationTo {
+  pages
+}
+
+input versionsSociety_version__links__link__url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsSociety_version__links__link__label_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsSociety_version__links__link__appearance_operator {
+  equals: versionsSociety_version__links__link__appearance_Input
+  not_equals: versionsSociety_version__links__link__appearance_Input
+  in: [versionsSociety_version__links__link__appearance_Input]
+  not_in: [versionsSociety_version__links__link__appearance_Input]
+  all: [versionsSociety_version__links__link__appearance_Input]
+  exists: Boolean
+}
+
+enum versionsSociety_version__links__link__appearance_Input {
+  default
+  primary
+  secondary
+}
+
+input versionsSociety_version__links__id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsSociety_version__updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsSociety_version__createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsSociety_version___status_operator {
+  equals: versionsSociety_version___status_Input
+  not_equals: versionsSociety_version___status_Input
+  in: [versionsSociety_version___status_Input]
+  not_in: [versionsSociety_version___status_Input]
+  all: [versionsSociety_version___status_Input]
+  exists: Boolean
+}
+
+enum versionsSociety_version___status_Input {
+  draft
+  published
+}
+
+input versionsSociety_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsSociety_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsSociety_latest_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsSociety_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsSociety_where_and {
+  parent: versionsSociety_parent_operator
+  version__slug: versionsSociety_version__slug_operator
+  version__name: versionsSociety_version__name_operator
+  version__description: versionsSociety_version__description_operator
+  version__logo: versionsSociety_version__logo_operator
+  version__email: versionsSociety_version__email_operator
+  version__website: versionsSociety_version__website_operator
+  version__susu: versionsSociety_version__susu_operator
+  version__github: versionsSociety_version__github_operator
+  version__instagram: versionsSociety_version__instagram_operator
+  version__discord: versionsSociety_version__discord_operator
+  version__links__link__type: versionsSociety_version__links__link__type_operator
+  version__links__link__newTab: versionsSociety_version__links__link__newTab_operator
+  version__links__link__reference: versionsSociety_version__links__link__reference_Relation
+  version__links__link__url: versionsSociety_version__links__link__url_operator
+  version__links__link__label: versionsSociety_version__links__link__label_operator
+  version__links__link__appearance: versionsSociety_version__links__link__appearance_operator
+  version__links__id: versionsSociety_version__links__id_operator
+  version__updatedAt: versionsSociety_version__updatedAt_operator
+  version__createdAt: versionsSociety_version__createdAt_operator
+  version___status: versionsSociety_version___status_operator
+  createdAt: versionsSociety_createdAt_operator
+  updatedAt: versionsSociety_updatedAt_operator
+  latest: versionsSociety_latest_operator
+  id: versionsSociety_id_operator
+  AND: [versionsSociety_where_and]
+  OR: [versionsSociety_where_or]
+}
+
+input versionsSociety_where_or {
+  parent: versionsSociety_parent_operator
+  version__slug: versionsSociety_version__slug_operator
+  version__name: versionsSociety_version__name_operator
+  version__description: versionsSociety_version__description_operator
+  version__logo: versionsSociety_version__logo_operator
+  version__email: versionsSociety_version__email_operator
+  version__website: versionsSociety_version__website_operator
+  version__susu: versionsSociety_version__susu_operator
+  version__github: versionsSociety_version__github_operator
+  version__instagram: versionsSociety_version__instagram_operator
+  version__discord: versionsSociety_version__discord_operator
+  version__links__link__type: versionsSociety_version__links__link__type_operator
+  version__links__link__newTab: versionsSociety_version__links__link__newTab_operator
+  version__links__link__reference: versionsSociety_version__links__link__reference_Relation
+  version__links__link__url: versionsSociety_version__links__link__url_operator
+  version__links__link__label: versionsSociety_version__links__link__label_operator
+  version__links__link__appearance: versionsSociety_version__links__link__appearance_operator
+  version__links__id: versionsSociety_version__links__id_operator
+  version__updatedAt: versionsSociety_version__updatedAt_operator
+  version__createdAt: versionsSociety_version__createdAt_operator
+  version___status: versionsSociety_version___status_operator
+  createdAt: versionsSociety_createdAt_operator
+  updatedAt: versionsSociety_updatedAt_operator
+  latest: versionsSociety_latest_operator
+  id: versionsSociety_id_operator
+  AND: [versionsSociety_where_and]
+  OR: [versionsSociety_where_or]
 }
 
 type Committees {
@@ -28004,6 +29253,7 @@ type sponsorsAccess {
   read: SponsorsReadAccess
   update: SponsorsUpdateAccess
   delete: SponsorsDeleteAccess
+  readVersions: SponsorsReadVersionsAccess
 }
 
 type SponsorsFields {
@@ -28016,6 +29266,7 @@ type SponsorsFields {
   links: SponsorsFields_links
   updatedAt: SponsorsFields_updatedAt
   createdAt: SponsorsFields_createdAt
+  _status: SponsorsFields__status
 }
 
 type SponsorsFields_slug {
@@ -28425,6 +29676,29 @@ type SponsorsFields_createdAt_Delete {
   permission: Boolean!
 }
 
+type SponsorsFields__status {
+  create: SponsorsFields__status_Create
+  read: SponsorsFields__status_Read
+  update: SponsorsFields__status_Update
+  delete: SponsorsFields__status_Delete
+}
+
+type SponsorsFields__status_Create {
+  permission: Boolean!
+}
+
+type SponsorsFields__status_Read {
+  permission: Boolean!
+}
+
+type SponsorsFields__status_Update {
+  permission: Boolean!
+}
+
+type SponsorsFields__status_Delete {
+  permission: Boolean!
+}
+
 type SponsorsCreateAccess {
   permission: Boolean!
   where: JSONObject
@@ -28445,12 +29719,18 @@ type SponsorsDeleteAccess {
   where: JSONObject
 }
 
+type SponsorsReadVersionsAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type societiesAccess {
   fields: SocietiesFields
   create: SocietiesCreateAccess
   read: SocietiesReadAccess
   update: SocietiesUpdateAccess
   delete: SocietiesDeleteAccess
+  readVersions: SocietiesReadVersionsAccess
 }
 
 type SocietiesFields {
@@ -28468,6 +29748,7 @@ type SocietiesFields {
   links: SocietiesFields_links
   updatedAt: SocietiesFields_updatedAt
   createdAt: SocietiesFields_createdAt
+  _status: SocietiesFields__status
 }
 
 type SocietiesFields_slug {
@@ -28992,6 +30273,29 @@ type SocietiesFields_createdAt_Delete {
   permission: Boolean!
 }
 
+type SocietiesFields__status {
+  create: SocietiesFields__status_Create
+  read: SocietiesFields__status_Read
+  update: SocietiesFields__status_Update
+  delete: SocietiesFields__status_Delete
+}
+
+type SocietiesFields__status_Create {
+  permission: Boolean!
+}
+
+type SocietiesFields__status_Read {
+  permission: Boolean!
+}
+
+type SocietiesFields__status_Update {
+  permission: Boolean!
+}
+
+type SocietiesFields__status_Delete {
+  permission: Boolean!
+}
+
 type SocietiesCreateAccess {
   permission: Boolean!
   where: JSONObject
@@ -29008,6 +30312,11 @@ type SocietiesUpdateAccess {
 }
 
 type SocietiesDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SocietiesReadVersionsAccess {
   permission: Boolean!
   where: JSONObject
 }
@@ -31254,9 +32563,11 @@ type Mutation {
   createSponsor(data: mutationSponsorInput!, draft: Boolean): Sponsor
   updateSponsor(id: String!, autosave: Boolean, data: mutationSponsorUpdateInput!, draft: Boolean): Sponsor
   deleteSponsor(id: String!): Sponsor
+  restoreVersionSponsor(id: String): Sponsor
   createSociety(data: mutationSocietyInput!, draft: Boolean): Society
   updateSociety(id: String!, autosave: Boolean, data: mutationSocietyUpdateInput!, draft: Boolean): Society
   deleteSociety(id: String!): Society
+  restoreVersionSociety(id: String): Society
   createCommittee(data: mutationCommitteeInput!, draft: Boolean): Committee
   updateCommittee(id: String!, autosave: Boolean, data: mutationCommitteeUpdateInput!, draft: Boolean): Committee
   deleteCommittee(id: String!): Committee
@@ -32258,6 +33569,7 @@ input mutationSponsorInput {
   links: [mutationSponsor_LinksInput]
   updatedAt: String
   createdAt: String
+  _status: Sponsor__status_MutationInput
 }
 
 enum Sponsor_level_MutationInput {
@@ -32298,6 +33610,11 @@ enum Sponsor_Links_Link_appearance_MutationInput {
   secondary
 }
 
+enum Sponsor__status_MutationInput {
+  draft
+  published
+}
+
 input mutationSponsorUpdateInput {
   slug: String
   name: String
@@ -32308,6 +33625,7 @@ input mutationSponsorUpdateInput {
   links: [mutationSponsorUpdate_LinksInput]
   updatedAt: String
   createdAt: String
+  _status: SponsorUpdate__status_MutationInput
 }
 
 enum SponsorUpdate_level_MutationInput {
@@ -32348,6 +33666,11 @@ enum SponsorUpdate_Links_Link_appearance_MutationInput {
   secondary
 }
 
+enum SponsorUpdate__status_MutationInput {
+  draft
+  published
+}
+
 input mutationSocietyInput {
   slug: String
   id: String!
@@ -32363,6 +33686,7 @@ input mutationSocietyInput {
   links: [mutationSociety_LinksInput]
   updatedAt: String
   createdAt: String
+  _status: Society__status_MutationInput
 }
 
 input mutationSociety_LinksInput {
@@ -32394,6 +33718,11 @@ enum Society_Links_Link_appearance_MutationInput {
   secondary
 }
 
+enum Society__status_MutationInput {
+  draft
+  published
+}
+
 input mutationSocietyUpdateInput {
   slug: String
   name: String
@@ -32408,6 +33737,7 @@ input mutationSocietyUpdateInput {
   links: [mutationSocietyUpdate_LinksInput]
   updatedAt: String
   createdAt: String
+  _status: SocietyUpdate__status_MutationInput
 }
 
 input mutationSocietyUpdate_LinksInput {
@@ -32437,6 +33767,11 @@ enum SocietyUpdate_Links_Link_appearance_MutationInput {
   default
   primary
   secondary
+}
+
+enum SocietyUpdate__status_MutationInput {
+  draft
+  published
 }
 
 input mutationCommitteeInput {
