@@ -19,6 +19,8 @@ COPY --from=deps /home/node/app/node_modules ./node_modules
 COPY . .
 COPY .env.production .env
 
+RUN --network=host npm run generate:types
+RUN --network=host npm run generate:graphQLSchema
 RUN --network=host npm run build
 
 FROM node:18-slim AS runtime
