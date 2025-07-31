@@ -18,9 +18,9 @@ const Societies: CollectionConfig = {
     useAsTitle: 'id',
     defaultColumns: ['id', 'name'],
   },
-  versions: {
-    drafts: false,
-  },
+  // versions: {
+  //   drafts: false,
+  // },
   fields: [
     slugField(),
     {

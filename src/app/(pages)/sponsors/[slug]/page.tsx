@@ -1,6 +1,5 @@
 import React from 'react'
 import type { Metadata } from 'next'
-import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 
 import type { Sponsor } from '../../../../payload/payload-types'
@@ -13,15 +12,12 @@ import { SponsorPage } from '../../../_components/SponsorPage'
 export const dynamic = 'force-dynamic'
 
 export default async function Sponsor({ params: { slug } }) {
-  const { isEnabled: isDraftMode } = draftMode()
-
   let sponsor: Sponsor | null = null
 
   try {
     sponsor = await fetchDoc<Sponsor>({
       collection: 'sponsors',
       slug,
-      draft: isDraftMode,
     })
   } catch (error) {
     console.warn(error) // eslint-disable-line no-console
@@ -48,15 +44,12 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
-  const { isEnabled: isDraftMode } = draftMode()
-
   let sponsor: Sponsor | null = null
 
   try {
     sponsor = await fetchDoc<Sponsor>({
       collection: 'sponsors',
       slug,
-      draft: isDraftMode,
     })
   } catch (error) {}
 
