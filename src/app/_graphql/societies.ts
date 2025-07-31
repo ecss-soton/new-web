@@ -12,8 +12,8 @@ export const SOCIETIES = `
 `
 
 export const SOCIETY = `
-  query Society($slug: String, $draft: Boolean) {
-    Societies(where: { slug: { equals: $slug }}, limit: 1, draft: $draft) {
+  query Society($slug: String) {
+    Societies(where: { slug: { equals: $slug }}, limit: 1) {
       docs {
         id
         slug
