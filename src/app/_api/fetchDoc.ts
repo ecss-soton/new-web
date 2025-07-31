@@ -61,7 +61,6 @@ export const fetchDoc = async <T>(args: {
       query: queryMap[collection].query,
       variables: {
         slug,
-        draft,
       },
     }),
   })

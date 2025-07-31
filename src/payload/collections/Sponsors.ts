@@ -24,9 +24,9 @@ const Sponsors: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'level'],
   },
-  versions: {
-    drafts: false,
-  },
+  // versions: {
+  //   drafts: false,
+  // },
   fields: [
     slugField(),
     {

@@ -12,8 +12,8 @@ export const SPONSORS = `
 `
 
 export const SPONSOR = `
-  query Sponsor($slug: String, $draft: Boolean) {
-    Sponsors(where: { slug: { equals: $slug }}, limit: 1, draft: $draft) {
+  query Sponsor($slug: String) {
+    Sponsors(where: { slug: { equals: $slug }}, limit: 1) {
       docs {
         id
         slug
