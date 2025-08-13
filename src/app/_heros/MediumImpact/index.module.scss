@@ -2,6 +2,10 @@
 
 .hero {
   padding-top: calc(var(--base) * 3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   @include mid-break {
     padding-top: var(--base);
@@ -56,14 +60,23 @@
   }
 }
 
-.media {
+.mediaContainer {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
+  margin: 0 auto;
+}
+
+.media {
+  width: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .richText {
   text-align: center;
+  padding-top: 30px;
 }

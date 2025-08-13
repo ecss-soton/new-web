@@ -13,7 +13,7 @@ export const MediumImpactHero: React.FC<Page['hero']> = props => {
 
   return (
     <Gutter className={classes.hero}>
-      <div className={classes.media}>
+      <div className={classes.mediaContainer}>
         {typeof media === 'object' && <Media className={classes.media} resource={media} />}
       </div>
       <RichText content={richText} className={classes.richText} />
