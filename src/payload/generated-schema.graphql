@@ -89,14 +89,14 @@ type Query {
   Sponsors(where: Sponsor_where, limit: Int, page: Int, sort: String): Sponsors
   countSponsors(where: Sponsor_where): countSponsors
   docAccessSponsor(id: String!): sponsorsDocAccess
-  versionSponsor(id: String): SponsorVersion
-  versionsSponsors(where: versionsSponsor_where, limit: Int, page: Int, sort: String): versionsSponsors
+  JumpstartEvent(id: String!): JumpstartEvent
+  JumpstartEvents(where: JumpstartEvent_where, limit: Int, page: Int, sort: String): JumpstartEvents
+  countJumpstartEvents(where: JumpstartEvent_where): countJumpstartEvents
+  docAccessJumpstartEvent(id: String!): jumpstartEventsDocAccess
   Society(id: String!): Society
   Societies(where: Society_where, limit: Int, page: Int, sort: String): Societies
   countSocieties(where: Society_where): countSocieties
   docAccessSociety(id: String!): societiesDocAccess
-  versionSociety(id: String): SocietyVersion
-  versionsSocieties(where: versionsSociety_where, limit: Int, page: Int, sort: String): versionsSocieties
   Committee(id: String!): Committee
   Committees(where: Committee_where, limit: Int, page: Int, sort: String): Committees
   countCommittees(where: Committee_where): countCommittees
@@ -736,6 +736,7 @@ enum Archive_relationTo {
   committee
   societies
   events
+  jumpstartEvents
 }
 
 type Category {
@@ -766,9 +767,10 @@ enum Archive_SelectedDocs_RelationTo {
   societies
   committee
   events
+  jumpstartEvents
 }
 
-union Archive_SelectedDocs = Post | Project | Sponsor | Society | Committee | Event
+union Archive_SelectedDocs = Post | Project | Sponsor | Society | Committee | Event | JumpstartEvent
 
 type Post {
   id: String
@@ -2447,6 +2449,208 @@ type Event {
   createdAt: DateTime
 }
 
+type JumpstartEvent {
+  id: String
+  slug: String
+  title: String!
+  description: String
+  image(where: JumpstartEvent_Image_where): Media
+  link: String
+  date: DateTime!
+  endTime: DateTime
+  location: String
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+input JumpstartEvent_Image_where {
+  alt: JumpstartEvent_Image_alt_operator
+  caption: JumpstartEvent_Image_caption_operator
+  updatedAt: JumpstartEvent_Image_updatedAt_operator
+  createdAt: JumpstartEvent_Image_createdAt_operator
+  url: JumpstartEvent_Image_url_operator
+  filename: JumpstartEvent_Image_filename_operator
+  mimeType: JumpstartEvent_Image_mimeType_operator
+  filesize: JumpstartEvent_Image_filesize_operator
+  width: JumpstartEvent_Image_width_operator
+  height: JumpstartEvent_Image_height_operator
+  focalX: JumpstartEvent_Image_focalX_operator
+  focalY: JumpstartEvent_Image_focalY_operator
+  id: JumpstartEvent_Image_id_operator
+  AND: [JumpstartEvent_Image_where_and]
+  OR: [JumpstartEvent_Image_where_or]
+}
+
+input JumpstartEvent_Image_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input JumpstartEvent_Image_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input JumpstartEvent_Image_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input JumpstartEvent_Image_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input JumpstartEvent_Image_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input JumpstartEvent_Image_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input JumpstartEvent_Image_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input JumpstartEvent_Image_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input JumpstartEvent_Image_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input JumpstartEvent_Image_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input JumpstartEvent_Image_focalX_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input JumpstartEvent_Image_focalY_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input JumpstartEvent_Image_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input JumpstartEvent_Image_where_and {
+  alt: JumpstartEvent_Image_alt_operator
+  caption: JumpstartEvent_Image_caption_operator
+  updatedAt: JumpstartEvent_Image_updatedAt_operator
+  createdAt: JumpstartEvent_Image_createdAt_operator
+  url: JumpstartEvent_Image_url_operator
+  filename: JumpstartEvent_Image_filename_operator
+  mimeType: JumpstartEvent_Image_mimeType_operator
+  filesize: JumpstartEvent_Image_filesize_operator
+  width: JumpstartEvent_Image_width_operator
+  height: JumpstartEvent_Image_height_operator
+  focalX: JumpstartEvent_Image_focalX_operator
+  focalY: JumpstartEvent_Image_focalY_operator
+  id: JumpstartEvent_Image_id_operator
+  AND: [JumpstartEvent_Image_where_and]
+  OR: [JumpstartEvent_Image_where_or]
+}
+
+input JumpstartEvent_Image_where_or {
+  alt: JumpstartEvent_Image_alt_operator
+  caption: JumpstartEvent_Image_caption_operator
+  updatedAt: JumpstartEvent_Image_updatedAt_operator
+  createdAt: JumpstartEvent_Image_createdAt_operator
+  url: JumpstartEvent_Image_url_operator
+  filename: JumpstartEvent_Image_filename_operator
+  mimeType: JumpstartEvent_Image_mimeType_operator
+  filesize: JumpstartEvent_Image_filesize_operator
+  width: JumpstartEvent_Image_width_operator
+  height: JumpstartEvent_Image_height_operator
+  focalX: JumpstartEvent_Image_focalX_operator
+  focalY: JumpstartEvent_Image_focalY_operator
+  id: JumpstartEvent_Image_id_operator
+  AND: [JumpstartEvent_Image_where_and]
+  OR: [JumpstartEvent_Image_where_or]
+}
+
 type Archive_PopulatedDocs_Relationship {
   relationTo: Archive_PopulatedDocs_RelationTo
   value: Archive_PopulatedDocs
@@ -2459,9 +2663,10 @@ enum Archive_PopulatedDocs_RelationTo {
   societies
   committee
   events
+  jumpstartEvents
 }
 
-union Archive_PopulatedDocs = Post | Project | Sponsor | Society | Committee | Event
+union Archive_PopulatedDocs = Post | Project | Sponsor | Society | Committee | Event | JumpstartEvent
 
 type HomeTop {
   heading: String
@@ -18022,7 +18227,6 @@ type sponsorsDocAccess {
   read: SponsorsReadDocAccess
   update: SponsorsUpdateDocAccess
   delete: SponsorsDeleteDocAccess
-  readVersions: SponsorsReadVersionsDocAccess
 }
 
 type SponsorsDocAccessFields {
@@ -18464,266 +18668,8 @@ type SponsorsDeleteDocAccess {
   where: JSONObject
 }
 
-type SponsorsReadVersionsDocAccess {
-  permission: Boolean!
-  where: JSONObject
-}
-
-type SponsorVersion {
-  parent: Sponsor
-  version: SponsorVersion_Version
-  createdAt: DateTime
-  updatedAt: DateTime
-  id: String
-}
-
-type SponsorVersion_Version {
-  slug: String
-  name: String
-  level: SponsorVersion_Version_level
-  description(depth: Int): JSON
-  logo(where: SponsorVersion_Version_Logo_where): Media
-  websiteUrl: String
-  links: [SponsorVersion_Version_Links!]
-  updatedAt: DateTime
-  createdAt: DateTime
-}
-
-enum SponsorVersion_Version_level {
-  gold
-  silver
-  bronze
-  _64bit
-  _32bit
-  _16bit
-}
-
-input SponsorVersion_Version_Logo_where {
-  alt: SponsorVersion_Version_Logo_alt_operator
-  caption: SponsorVersion_Version_Logo_caption_operator
-  updatedAt: SponsorVersion_Version_Logo_updatedAt_operator
-  createdAt: SponsorVersion_Version_Logo_createdAt_operator
-  url: SponsorVersion_Version_Logo_url_operator
-  filename: SponsorVersion_Version_Logo_filename_operator
-  mimeType: SponsorVersion_Version_Logo_mimeType_operator
-  filesize: SponsorVersion_Version_Logo_filesize_operator
-  width: SponsorVersion_Version_Logo_width_operator
-  height: SponsorVersion_Version_Logo_height_operator
-  focalX: SponsorVersion_Version_Logo_focalX_operator
-  focalY: SponsorVersion_Version_Logo_focalY_operator
-  id: SponsorVersion_Version_Logo_id_operator
-  AND: [SponsorVersion_Version_Logo_where_and]
-  OR: [SponsorVersion_Version_Logo_where_or]
-}
-
-input SponsorVersion_Version_Logo_alt_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-}
-
-input SponsorVersion_Version_Logo_caption_operator {
-  equals: JSON
-  not_equals: JSON
-  like: JSON
-  contains: JSON
-  exists: Boolean
-}
-
-input SponsorVersion_Version_Logo_updatedAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input SponsorVersion_Version_Logo_createdAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input SponsorVersion_Version_Logo_url_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input SponsorVersion_Version_Logo_filename_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input SponsorVersion_Version_Logo_mimeType_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input SponsorVersion_Version_Logo_filesize_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input SponsorVersion_Version_Logo_width_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input SponsorVersion_Version_Logo_height_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input SponsorVersion_Version_Logo_focalX_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input SponsorVersion_Version_Logo_focalY_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input SponsorVersion_Version_Logo_id_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input SponsorVersion_Version_Logo_where_and {
-  alt: SponsorVersion_Version_Logo_alt_operator
-  caption: SponsorVersion_Version_Logo_caption_operator
-  updatedAt: SponsorVersion_Version_Logo_updatedAt_operator
-  createdAt: SponsorVersion_Version_Logo_createdAt_operator
-  url: SponsorVersion_Version_Logo_url_operator
-  filename: SponsorVersion_Version_Logo_filename_operator
-  mimeType: SponsorVersion_Version_Logo_mimeType_operator
-  filesize: SponsorVersion_Version_Logo_filesize_operator
-  width: SponsorVersion_Version_Logo_width_operator
-  height: SponsorVersion_Version_Logo_height_operator
-  focalX: SponsorVersion_Version_Logo_focalX_operator
-  focalY: SponsorVersion_Version_Logo_focalY_operator
-  id: SponsorVersion_Version_Logo_id_operator
-  AND: [SponsorVersion_Version_Logo_where_and]
-  OR: [SponsorVersion_Version_Logo_where_or]
-}
-
-input SponsorVersion_Version_Logo_where_or {
-  alt: SponsorVersion_Version_Logo_alt_operator
-  caption: SponsorVersion_Version_Logo_caption_operator
-  updatedAt: SponsorVersion_Version_Logo_updatedAt_operator
-  createdAt: SponsorVersion_Version_Logo_createdAt_operator
-  url: SponsorVersion_Version_Logo_url_operator
-  filename: SponsorVersion_Version_Logo_filename_operator
-  mimeType: SponsorVersion_Version_Logo_mimeType_operator
-  filesize: SponsorVersion_Version_Logo_filesize_operator
-  width: SponsorVersion_Version_Logo_width_operator
-  height: SponsorVersion_Version_Logo_height_operator
-  focalX: SponsorVersion_Version_Logo_focalX_operator
-  focalY: SponsorVersion_Version_Logo_focalY_operator
-  id: SponsorVersion_Version_Logo_id_operator
-  AND: [SponsorVersion_Version_Logo_where_and]
-  OR: [SponsorVersion_Version_Logo_where_or]
-}
-
-type SponsorVersion_Version_Links {
-  link: SponsorVersion_Version_Links_Link
-  id: String
-}
-
-type SponsorVersion_Version_Links_Link {
-  type: SponsorVersion_Version_Links_Link_type
-  newTab: Boolean
-  reference(draft: Boolean): SponsorVersion_Version_Links_Link_Reference_Relationship
-  url: String
-  label: String
-  appearance: SponsorVersion_Version_Links_Link_appearance
-}
-
-enum SponsorVersion_Version_Links_Link_type {
-  reference
-  custom
-}
-
-type SponsorVersion_Version_Links_Link_Reference_Relationship {
-  relationTo: SponsorVersion_Version_Links_Link_Reference_RelationTo
-  value: SponsorVersion_Version_Links_Link_Reference
-}
-
-enum SponsorVersion_Version_Links_Link_Reference_RelationTo {
-  pages
-}
-
-union SponsorVersion_Version_Links_Link_Reference = Page
-
-enum SponsorVersion_Version_Links_Link_appearance {
-  default
-  primary
-  secondary
-}
-
-type versionsSponsors {
-  docs: [SponsorVersion]
+type JumpstartEvents {
+  docs: [JumpstartEvent]
   hasNextPage: Boolean
   hasPrevPage: Boolean
   limit: Int
@@ -18736,40 +18682,23 @@ type versionsSponsors {
   totalPages: Int
 }
 
-input versionsSponsor_where {
-  parent: versionsSponsor_parent_operator
-  version__slug: versionsSponsor_version__slug_operator
-  version__name: versionsSponsor_version__name_operator
-  version__level: versionsSponsor_version__level_operator
-  version__description: versionsSponsor_version__description_operator
-  version__logo: versionsSponsor_version__logo_operator
-  version__websiteUrl: versionsSponsor_version__websiteUrl_operator
-  version__links__link__type: versionsSponsor_version__links__link__type_operator
-  version__links__link__newTab: versionsSponsor_version__links__link__newTab_operator
-  version__links__link__reference: versionsSponsor_version__links__link__reference_Relation
-  version__links__link__url: versionsSponsor_version__links__link__url_operator
-  version__links__link__label: versionsSponsor_version__links__link__label_operator
-  version__links__link__appearance: versionsSponsor_version__links__link__appearance_operator
-  version__links__id: versionsSponsor_version__links__id_operator
-  version__updatedAt: versionsSponsor_version__updatedAt_operator
-  version__createdAt: versionsSponsor_version__createdAt_operator
-  createdAt: versionsSponsor_createdAt_operator
-  updatedAt: versionsSponsor_updatedAt_operator
-  id: versionsSponsor_id_operator
-  AND: [versionsSponsor_where_and]
-  OR: [versionsSponsor_where_or]
+input JumpstartEvent_where {
+  slug: JumpstartEvent_slug_operator
+  title: JumpstartEvent_title_operator
+  description: JumpstartEvent_description_operator
+  image: JumpstartEvent_image_operator
+  link: JumpstartEvent_link_operator
+  date: JumpstartEvent_date_operator
+  endTime: JumpstartEvent_endTime_operator
+  location: JumpstartEvent_location_operator
+  updatedAt: JumpstartEvent_updatedAt_operator
+  createdAt: JumpstartEvent_createdAt_operator
+  id: JumpstartEvent_id_operator
+  AND: [JumpstartEvent_where_and]
+  OR: [JumpstartEvent_where_or]
 }
 
-input versionsSponsor_parent_operator {
-  equals: JSON
-  not_equals: JSON
-  in: [JSON]
-  not_in: [JSON]
-  all: [JSON]
-  exists: Boolean
-}
-
-input versionsSponsor_version__slug_operator {
+input JumpstartEvent_slug_operator {
   equals: String
   not_equals: String
   like: String
@@ -18780,7 +18709,7 @@ input versionsSponsor_version__slug_operator {
   exists: Boolean
 }
 
-input versionsSponsor_version__name_operator {
+input JumpstartEvent_title_operator {
   equals: String
   not_equals: String
   like: String
@@ -18790,38 +18719,7 @@ input versionsSponsor_version__name_operator {
   all: [String]
 }
 
-input versionsSponsor_version__level_operator {
-  equals: versionsSponsor_version__level_Input
-  not_equals: versionsSponsor_version__level_Input
-  in: [versionsSponsor_version__level_Input]
-  not_in: [versionsSponsor_version__level_Input]
-  all: [versionsSponsor_version__level_Input]
-  exists: Boolean
-}
-
-enum versionsSponsor_version__level_Input {
-  gold
-  silver
-  bronze
-  _64bit
-  _32bit
-  _16bit
-}
-
-input versionsSponsor_version__description_operator {
-  equals: JSON
-  not_equals: JSON
-  like: JSON
-  contains: JSON
-  exists: Boolean
-}
-
-input versionsSponsor_version__logo_operator {
-  equals: String
-  not_equals: String
-}
-
-input versionsSponsor_version__websiteUrl_operator {
+input JumpstartEvent_description_operator {
   equals: String
   not_equals: String
   like: String
@@ -18832,70 +18730,13 @@ input versionsSponsor_version__websiteUrl_operator {
   exists: Boolean
 }
 
-input versionsSponsor_version__links__link__type_operator {
-  equals: versionsSponsor_version__links__link__type_Input
-  not_equals: versionsSponsor_version__links__link__type_Input
-  like: versionsSponsor_version__links__link__type_Input
-  contains: versionsSponsor_version__links__link__type_Input
-  exists: Boolean
-}
-
-enum versionsSponsor_version__links__link__type_Input {
-  reference
-  custom
-}
-
-input versionsSponsor_version__links__link__newTab_operator {
-  equals: Boolean
-  not_equals: Boolean
-  exists: Boolean
-}
-
-input versionsSponsor_version__links__link__reference_Relation {
-  relationTo: versionsSponsor_version__links__link__reference_Relation_RelationTo
-  value: JSON
-}
-
-enum versionsSponsor_version__links__link__reference_Relation_RelationTo {
-  pages
-}
-
-input versionsSponsor_version__links__link__url_operator {
+input JumpstartEvent_image_operator {
   equals: String
   not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-}
-
-input versionsSponsor_version__links__link__label_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-}
-
-input versionsSponsor_version__links__link__appearance_operator {
-  equals: versionsSponsor_version__links__link__appearance_Input
-  not_equals: versionsSponsor_version__links__link__appearance_Input
-  in: [versionsSponsor_version__links__link__appearance_Input]
-  not_in: [versionsSponsor_version__links__link__appearance_Input]
-  all: [versionsSponsor_version__links__link__appearance_Input]
   exists: Boolean
 }
 
-enum versionsSponsor_version__links__link__appearance_Input {
-  default
-  primary
-  secondary
-}
-
-input versionsSponsor_version__links__id_operator {
+input JumpstartEvent_link_operator {
   equals: String
   not_equals: String
   like: String
@@ -18906,7 +18747,17 @@ input versionsSponsor_version__links__id_operator {
   exists: Boolean
 }
 
-input versionsSponsor_version__updatedAt_operator {
+input JumpstartEvent_date_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input JumpstartEvent_endTime_operator {
   equals: DateTime
   not_equals: DateTime
   greater_than_equal: DateTime
@@ -18917,40 +18768,7 @@ input versionsSponsor_version__updatedAt_operator {
   exists: Boolean
 }
 
-input versionsSponsor_version__createdAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input versionsSponsor_createdAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input versionsSponsor_updatedAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input versionsSponsor_id_operator {
+input JumpstartEvent_location_operator {
   equals: String
   not_equals: String
   like: String
@@ -18961,52 +18779,344 @@ input versionsSponsor_id_operator {
   exists: Boolean
 }
 
-input versionsSponsor_where_and {
-  parent: versionsSponsor_parent_operator
-  version__slug: versionsSponsor_version__slug_operator
-  version__name: versionsSponsor_version__name_operator
-  version__level: versionsSponsor_version__level_operator
-  version__description: versionsSponsor_version__description_operator
-  version__logo: versionsSponsor_version__logo_operator
-  version__websiteUrl: versionsSponsor_version__websiteUrl_operator
-  version__links__link__type: versionsSponsor_version__links__link__type_operator
-  version__links__link__newTab: versionsSponsor_version__links__link__newTab_operator
-  version__links__link__reference: versionsSponsor_version__links__link__reference_Relation
-  version__links__link__url: versionsSponsor_version__links__link__url_operator
-  version__links__link__label: versionsSponsor_version__links__link__label_operator
-  version__links__link__appearance: versionsSponsor_version__links__link__appearance_operator
-  version__links__id: versionsSponsor_version__links__id_operator
-  version__updatedAt: versionsSponsor_version__updatedAt_operator
-  version__createdAt: versionsSponsor_version__createdAt_operator
-  createdAt: versionsSponsor_createdAt_operator
-  updatedAt: versionsSponsor_updatedAt_operator
-  id: versionsSponsor_id_operator
-  AND: [versionsSponsor_where_and]
-  OR: [versionsSponsor_where_or]
+input JumpstartEvent_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
 }
 
-input versionsSponsor_where_or {
-  parent: versionsSponsor_parent_operator
-  version__slug: versionsSponsor_version__slug_operator
-  version__name: versionsSponsor_version__name_operator
-  version__level: versionsSponsor_version__level_operator
-  version__description: versionsSponsor_version__description_operator
-  version__logo: versionsSponsor_version__logo_operator
-  version__websiteUrl: versionsSponsor_version__websiteUrl_operator
-  version__links__link__type: versionsSponsor_version__links__link__type_operator
-  version__links__link__newTab: versionsSponsor_version__links__link__newTab_operator
-  version__links__link__reference: versionsSponsor_version__links__link__reference_Relation
-  version__links__link__url: versionsSponsor_version__links__link__url_operator
-  version__links__link__label: versionsSponsor_version__links__link__label_operator
-  version__links__link__appearance: versionsSponsor_version__links__link__appearance_operator
-  version__links__id: versionsSponsor_version__links__id_operator
-  version__updatedAt: versionsSponsor_version__updatedAt_operator
-  version__createdAt: versionsSponsor_version__createdAt_operator
-  createdAt: versionsSponsor_createdAt_operator
-  updatedAt: versionsSponsor_updatedAt_operator
-  id: versionsSponsor_id_operator
-  AND: [versionsSponsor_where_and]
-  OR: [versionsSponsor_where_or]
+input JumpstartEvent_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input JumpstartEvent_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input JumpstartEvent_where_and {
+  slug: JumpstartEvent_slug_operator
+  title: JumpstartEvent_title_operator
+  description: JumpstartEvent_description_operator
+  image: JumpstartEvent_image_operator
+  link: JumpstartEvent_link_operator
+  date: JumpstartEvent_date_operator
+  endTime: JumpstartEvent_endTime_operator
+  location: JumpstartEvent_location_operator
+  updatedAt: JumpstartEvent_updatedAt_operator
+  createdAt: JumpstartEvent_createdAt_operator
+  id: JumpstartEvent_id_operator
+  AND: [JumpstartEvent_where_and]
+  OR: [JumpstartEvent_where_or]
+}
+
+input JumpstartEvent_where_or {
+  slug: JumpstartEvent_slug_operator
+  title: JumpstartEvent_title_operator
+  description: JumpstartEvent_description_operator
+  image: JumpstartEvent_image_operator
+  link: JumpstartEvent_link_operator
+  date: JumpstartEvent_date_operator
+  endTime: JumpstartEvent_endTime_operator
+  location: JumpstartEvent_location_operator
+  updatedAt: JumpstartEvent_updatedAt_operator
+  createdAt: JumpstartEvent_createdAt_operator
+  id: JumpstartEvent_id_operator
+  AND: [JumpstartEvent_where_and]
+  OR: [JumpstartEvent_where_or]
+}
+
+type countJumpstartEvents {
+  totalDocs: Int
+}
+
+type jumpstartEventsDocAccess {
+  fields: JumpstartEventsDocAccessFields
+  create: JumpstartEventsCreateDocAccess
+  read: JumpstartEventsReadDocAccess
+  update: JumpstartEventsUpdateDocAccess
+  delete: JumpstartEventsDeleteDocAccess
+}
+
+type JumpstartEventsDocAccessFields {
+  slug: JumpstartEventsDocAccessFields_slug
+  title: JumpstartEventsDocAccessFields_title
+  description: JumpstartEventsDocAccessFields_description
+  image: JumpstartEventsDocAccessFields_image
+  link: JumpstartEventsDocAccessFields_link
+  date: JumpstartEventsDocAccessFields_date
+  endTime: JumpstartEventsDocAccessFields_endTime
+  location: JumpstartEventsDocAccessFields_location
+  updatedAt: JumpstartEventsDocAccessFields_updatedAt
+  createdAt: JumpstartEventsDocAccessFields_createdAt
+}
+
+type JumpstartEventsDocAccessFields_slug {
+  create: JumpstartEventsDocAccessFields_slug_Create
+  read: JumpstartEventsDocAccessFields_slug_Read
+  update: JumpstartEventsDocAccessFields_slug_Update
+  delete: JumpstartEventsDocAccessFields_slug_Delete
+}
+
+type JumpstartEventsDocAccessFields_slug_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_slug_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_slug_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_slug_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_title {
+  create: JumpstartEventsDocAccessFields_title_Create
+  read: JumpstartEventsDocAccessFields_title_Read
+  update: JumpstartEventsDocAccessFields_title_Update
+  delete: JumpstartEventsDocAccessFields_title_Delete
+}
+
+type JumpstartEventsDocAccessFields_title_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_title_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_title_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_title_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_description {
+  create: JumpstartEventsDocAccessFields_description_Create
+  read: JumpstartEventsDocAccessFields_description_Read
+  update: JumpstartEventsDocAccessFields_description_Update
+  delete: JumpstartEventsDocAccessFields_description_Delete
+}
+
+type JumpstartEventsDocAccessFields_description_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_description_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_description_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_description_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_image {
+  create: JumpstartEventsDocAccessFields_image_Create
+  read: JumpstartEventsDocAccessFields_image_Read
+  update: JumpstartEventsDocAccessFields_image_Update
+  delete: JumpstartEventsDocAccessFields_image_Delete
+}
+
+type JumpstartEventsDocAccessFields_image_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_image_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_image_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_image_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_link {
+  create: JumpstartEventsDocAccessFields_link_Create
+  read: JumpstartEventsDocAccessFields_link_Read
+  update: JumpstartEventsDocAccessFields_link_Update
+  delete: JumpstartEventsDocAccessFields_link_Delete
+}
+
+type JumpstartEventsDocAccessFields_link_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_link_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_link_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_link_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_date {
+  create: JumpstartEventsDocAccessFields_date_Create
+  read: JumpstartEventsDocAccessFields_date_Read
+  update: JumpstartEventsDocAccessFields_date_Update
+  delete: JumpstartEventsDocAccessFields_date_Delete
+}
+
+type JumpstartEventsDocAccessFields_date_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_date_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_date_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_date_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_endTime {
+  create: JumpstartEventsDocAccessFields_endTime_Create
+  read: JumpstartEventsDocAccessFields_endTime_Read
+  update: JumpstartEventsDocAccessFields_endTime_Update
+  delete: JumpstartEventsDocAccessFields_endTime_Delete
+}
+
+type JumpstartEventsDocAccessFields_endTime_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_endTime_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_endTime_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_endTime_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_location {
+  create: JumpstartEventsDocAccessFields_location_Create
+  read: JumpstartEventsDocAccessFields_location_Read
+  update: JumpstartEventsDocAccessFields_location_Update
+  delete: JumpstartEventsDocAccessFields_location_Delete
+}
+
+type JumpstartEventsDocAccessFields_location_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_location_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_location_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_location_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_updatedAt {
+  create: JumpstartEventsDocAccessFields_updatedAt_Create
+  read: JumpstartEventsDocAccessFields_updatedAt_Read
+  update: JumpstartEventsDocAccessFields_updatedAt_Update
+  delete: JumpstartEventsDocAccessFields_updatedAt_Delete
+}
+
+type JumpstartEventsDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_createdAt {
+  create: JumpstartEventsDocAccessFields_createdAt_Create
+  read: JumpstartEventsDocAccessFields_createdAt_Read
+  update: JumpstartEventsDocAccessFields_createdAt_Update
+  delete: JumpstartEventsDocAccessFields_createdAt_Delete
+}
+
+type JumpstartEventsDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type JumpstartEventsReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type JumpstartEventsUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type JumpstartEventsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
 }
 
 type Societies {
@@ -19315,7 +19425,6 @@ type societiesDocAccess {
   read: SocietiesReadDocAccess
   update: SocietiesUpdateDocAccess
   delete: SocietiesDeleteDocAccess
-  readVersions: SocietiesReadVersionsDocAccess
 }
 
 type SocietiesDocAccessFields {
@@ -19875,596 +19984,6 @@ type SocietiesUpdateDocAccess {
 type SocietiesDeleteDocAccess {
   permission: Boolean!
   where: JSONObject
-}
-
-type SocietiesReadVersionsDocAccess {
-  permission: Boolean!
-  where: JSONObject
-}
-
-type SocietyVersion {
-  parent: Society
-  version: SocietyVersion_Version
-  createdAt: DateTime
-  updatedAt: DateTime
-  id: String
-}
-
-type SocietyVersion_Version {
-  slug: String
-  name: String
-  description(depth: Int): JSON
-  logo(where: SocietyVersion_Version_Logo_where): Media
-  email: EmailAddress
-  website: String
-  susu: String
-  github: String
-  instagram: String
-  discord: String
-  links: [SocietyVersion_Version_Links!]
-  updatedAt: DateTime
-  createdAt: DateTime
-}
-
-input SocietyVersion_Version_Logo_where {
-  alt: SocietyVersion_Version_Logo_alt_operator
-  caption: SocietyVersion_Version_Logo_caption_operator
-  updatedAt: SocietyVersion_Version_Logo_updatedAt_operator
-  createdAt: SocietyVersion_Version_Logo_createdAt_operator
-  url: SocietyVersion_Version_Logo_url_operator
-  filename: SocietyVersion_Version_Logo_filename_operator
-  mimeType: SocietyVersion_Version_Logo_mimeType_operator
-  filesize: SocietyVersion_Version_Logo_filesize_operator
-  width: SocietyVersion_Version_Logo_width_operator
-  height: SocietyVersion_Version_Logo_height_operator
-  focalX: SocietyVersion_Version_Logo_focalX_operator
-  focalY: SocietyVersion_Version_Logo_focalY_operator
-  id: SocietyVersion_Version_Logo_id_operator
-  AND: [SocietyVersion_Version_Logo_where_and]
-  OR: [SocietyVersion_Version_Logo_where_or]
-}
-
-input SocietyVersion_Version_Logo_alt_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-}
-
-input SocietyVersion_Version_Logo_caption_operator {
-  equals: JSON
-  not_equals: JSON
-  like: JSON
-  contains: JSON
-  exists: Boolean
-}
-
-input SocietyVersion_Version_Logo_updatedAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input SocietyVersion_Version_Logo_createdAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input SocietyVersion_Version_Logo_url_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input SocietyVersion_Version_Logo_filename_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input SocietyVersion_Version_Logo_mimeType_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input SocietyVersion_Version_Logo_filesize_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input SocietyVersion_Version_Logo_width_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input SocietyVersion_Version_Logo_height_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input SocietyVersion_Version_Logo_focalX_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input SocietyVersion_Version_Logo_focalY_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
-input SocietyVersion_Version_Logo_id_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input SocietyVersion_Version_Logo_where_and {
-  alt: SocietyVersion_Version_Logo_alt_operator
-  caption: SocietyVersion_Version_Logo_caption_operator
-  updatedAt: SocietyVersion_Version_Logo_updatedAt_operator
-  createdAt: SocietyVersion_Version_Logo_createdAt_operator
-  url: SocietyVersion_Version_Logo_url_operator
-  filename: SocietyVersion_Version_Logo_filename_operator
-  mimeType: SocietyVersion_Version_Logo_mimeType_operator
-  filesize: SocietyVersion_Version_Logo_filesize_operator
-  width: SocietyVersion_Version_Logo_width_operator
-  height: SocietyVersion_Version_Logo_height_operator
-  focalX: SocietyVersion_Version_Logo_focalX_operator
-  focalY: SocietyVersion_Version_Logo_focalY_operator
-  id: SocietyVersion_Version_Logo_id_operator
-  AND: [SocietyVersion_Version_Logo_where_and]
-  OR: [SocietyVersion_Version_Logo_where_or]
-}
-
-input SocietyVersion_Version_Logo_where_or {
-  alt: SocietyVersion_Version_Logo_alt_operator
-  caption: SocietyVersion_Version_Logo_caption_operator
-  updatedAt: SocietyVersion_Version_Logo_updatedAt_operator
-  createdAt: SocietyVersion_Version_Logo_createdAt_operator
-  url: SocietyVersion_Version_Logo_url_operator
-  filename: SocietyVersion_Version_Logo_filename_operator
-  mimeType: SocietyVersion_Version_Logo_mimeType_operator
-  filesize: SocietyVersion_Version_Logo_filesize_operator
-  width: SocietyVersion_Version_Logo_width_operator
-  height: SocietyVersion_Version_Logo_height_operator
-  focalX: SocietyVersion_Version_Logo_focalX_operator
-  focalY: SocietyVersion_Version_Logo_focalY_operator
-  id: SocietyVersion_Version_Logo_id_operator
-  AND: [SocietyVersion_Version_Logo_where_and]
-  OR: [SocietyVersion_Version_Logo_where_or]
-}
-
-type SocietyVersion_Version_Links {
-  link: SocietyVersion_Version_Links_Link
-  id: String
-}
-
-type SocietyVersion_Version_Links_Link {
-  type: SocietyVersion_Version_Links_Link_type
-  newTab: Boolean
-  reference(draft: Boolean): SocietyVersion_Version_Links_Link_Reference_Relationship
-  url: String
-  label: String
-  appearance: SocietyVersion_Version_Links_Link_appearance
-}
-
-enum SocietyVersion_Version_Links_Link_type {
-  reference
-  custom
-}
-
-type SocietyVersion_Version_Links_Link_Reference_Relationship {
-  relationTo: SocietyVersion_Version_Links_Link_Reference_RelationTo
-  value: SocietyVersion_Version_Links_Link_Reference
-}
-
-enum SocietyVersion_Version_Links_Link_Reference_RelationTo {
-  pages
-}
-
-union SocietyVersion_Version_Links_Link_Reference = Page
-
-enum SocietyVersion_Version_Links_Link_appearance {
-  default
-  primary
-  secondary
-}
-
-type versionsSocieties {
-  docs: [SocietyVersion]
-  hasNextPage: Boolean
-  hasPrevPage: Boolean
-  limit: Int
-  nextPage: Int
-  offset: Int
-  page: Int
-  pagingCounter: Int
-  prevPage: Int
-  totalDocs: Int
-  totalPages: Int
-}
-
-input versionsSociety_where {
-  parent: versionsSociety_parent_operator
-  version__slug: versionsSociety_version__slug_operator
-  version__name: versionsSociety_version__name_operator
-  version__description: versionsSociety_version__description_operator
-  version__logo: versionsSociety_version__logo_operator
-  version__email: versionsSociety_version__email_operator
-  version__website: versionsSociety_version__website_operator
-  version__susu: versionsSociety_version__susu_operator
-  version__github: versionsSociety_version__github_operator
-  version__instagram: versionsSociety_version__instagram_operator
-  version__discord: versionsSociety_version__discord_operator
-  version__links__link__type: versionsSociety_version__links__link__type_operator
-  version__links__link__newTab: versionsSociety_version__links__link__newTab_operator
-  version__links__link__reference: versionsSociety_version__links__link__reference_Relation
-  version__links__link__url: versionsSociety_version__links__link__url_operator
-  version__links__link__label: versionsSociety_version__links__link__label_operator
-  version__links__link__appearance: versionsSociety_version__links__link__appearance_operator
-  version__links__id: versionsSociety_version__links__id_operator
-  version__updatedAt: versionsSociety_version__updatedAt_operator
-  version__createdAt: versionsSociety_version__createdAt_operator
-  createdAt: versionsSociety_createdAt_operator
-  updatedAt: versionsSociety_updatedAt_operator
-  id: versionsSociety_id_operator
-  AND: [versionsSociety_where_and]
-  OR: [versionsSociety_where_or]
-}
-
-input versionsSociety_parent_operator {
-  equals: JSON
-  not_equals: JSON
-  in: [JSON]
-  not_in: [JSON]
-  all: [JSON]
-  exists: Boolean
-}
-
-input versionsSociety_version__slug_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input versionsSociety_version__name_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input versionsSociety_version__description_operator {
-  equals: JSON
-  not_equals: JSON
-  like: JSON
-  contains: JSON
-  exists: Boolean
-}
-
-input versionsSociety_version__logo_operator {
-  equals: String
-  not_equals: String
-}
-
-input versionsSociety_version__email_operator {
-  equals: EmailAddress
-  not_equals: EmailAddress
-  like: EmailAddress
-  contains: EmailAddress
-  in: [EmailAddress]
-  not_in: [EmailAddress]
-  all: [EmailAddress]
-  exists: Boolean
-}
-
-input versionsSociety_version__website_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input versionsSociety_version__susu_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input versionsSociety_version__github_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input versionsSociety_version__instagram_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input versionsSociety_version__discord_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input versionsSociety_version__links__link__type_operator {
-  equals: versionsSociety_version__links__link__type_Input
-  not_equals: versionsSociety_version__links__link__type_Input
-  like: versionsSociety_version__links__link__type_Input
-  contains: versionsSociety_version__links__link__type_Input
-  exists: Boolean
-}
-
-enum versionsSociety_version__links__link__type_Input {
-  reference
-  custom
-}
-
-input versionsSociety_version__links__link__newTab_operator {
-  equals: Boolean
-  not_equals: Boolean
-  exists: Boolean
-}
-
-input versionsSociety_version__links__link__reference_Relation {
-  relationTo: versionsSociety_version__links__link__reference_Relation_RelationTo
-  value: JSON
-}
-
-enum versionsSociety_version__links__link__reference_Relation_RelationTo {
-  pages
-}
-
-input versionsSociety_version__links__link__url_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-}
-
-input versionsSociety_version__links__link__label_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-}
-
-input versionsSociety_version__links__link__appearance_operator {
-  equals: versionsSociety_version__links__link__appearance_Input
-  not_equals: versionsSociety_version__links__link__appearance_Input
-  in: [versionsSociety_version__links__link__appearance_Input]
-  not_in: [versionsSociety_version__links__link__appearance_Input]
-  all: [versionsSociety_version__links__link__appearance_Input]
-  exists: Boolean
-}
-
-enum versionsSociety_version__links__link__appearance_Input {
-  default
-  primary
-  secondary
-}
-
-input versionsSociety_version__links__id_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input versionsSociety_version__updatedAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input versionsSociety_version__createdAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input versionsSociety_createdAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input versionsSociety_updatedAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input versionsSociety_id_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input versionsSociety_where_and {
-  parent: versionsSociety_parent_operator
-  version__slug: versionsSociety_version__slug_operator
-  version__name: versionsSociety_version__name_operator
-  version__description: versionsSociety_version__description_operator
-  version__logo: versionsSociety_version__logo_operator
-  version__email: versionsSociety_version__email_operator
-  version__website: versionsSociety_version__website_operator
-  version__susu: versionsSociety_version__susu_operator
-  version__github: versionsSociety_version__github_operator
-  version__instagram: versionsSociety_version__instagram_operator
-  version__discord: versionsSociety_version__discord_operator
-  version__links__link__type: versionsSociety_version__links__link__type_operator
-  version__links__link__newTab: versionsSociety_version__links__link__newTab_operator
-  version__links__link__reference: versionsSociety_version__links__link__reference_Relation
-  version__links__link__url: versionsSociety_version__links__link__url_operator
-  version__links__link__label: versionsSociety_version__links__link__label_operator
-  version__links__link__appearance: versionsSociety_version__links__link__appearance_operator
-  version__links__id: versionsSociety_version__links__id_operator
-  version__updatedAt: versionsSociety_version__updatedAt_operator
-  version__createdAt: versionsSociety_version__createdAt_operator
-  createdAt: versionsSociety_createdAt_operator
-  updatedAt: versionsSociety_updatedAt_operator
-  id: versionsSociety_id_operator
-  AND: [versionsSociety_where_and]
-  OR: [versionsSociety_where_or]
-}
-
-input versionsSociety_where_or {
-  parent: versionsSociety_parent_operator
-  version__slug: versionsSociety_version__slug_operator
-  version__name: versionsSociety_version__name_operator
-  version__description: versionsSociety_version__description_operator
-  version__logo: versionsSociety_version__logo_operator
-  version__email: versionsSociety_version__email_operator
-  version__website: versionsSociety_version__website_operator
-  version__susu: versionsSociety_version__susu_operator
-  version__github: versionsSociety_version__github_operator
-  version__instagram: versionsSociety_version__instagram_operator
-  version__discord: versionsSociety_version__discord_operator
-  version__links__link__type: versionsSociety_version__links__link__type_operator
-  version__links__link__newTab: versionsSociety_version__links__link__newTab_operator
-  version__links__link__reference: versionsSociety_version__links__link__reference_Relation
-  version__links__link__url: versionsSociety_version__links__link__url_operator
-  version__links__link__label: versionsSociety_version__links__link__label_operator
-  version__links__link__appearance: versionsSociety_version__links__link__appearance_operator
-  version__links__id: versionsSociety_version__links__id_operator
-  version__updatedAt: versionsSociety_version__updatedAt_operator
-  version__createdAt: versionsSociety_version__createdAt_operator
-  createdAt: versionsSociety_createdAt_operator
-  updatedAt: versionsSociety_updatedAt_operator
-  id: versionsSociety_id_operator
-  AND: [versionsSociety_where_and]
-  OR: [versionsSociety_where_or]
 }
 
 type Committees {
@@ -23730,6 +23249,7 @@ type Access {
   orderedMerch: orderedMerchAccess
   orders: ordersAccess
   sponsors: sponsorsAccess
+  jumpstartEvents: jumpstartEventsAccess
   societies: societiesAccess
   committee: committeeAccess
   events: eventsAccess
@@ -30024,7 +29544,6 @@ type sponsorsAccess {
   read: SponsorsReadAccess
   update: SponsorsUpdateAccess
   delete: SponsorsDeleteAccess
-  readVersions: SponsorsReadVersionsAccess
 }
 
 type SponsorsFields {
@@ -30466,7 +29985,273 @@ type SponsorsDeleteAccess {
   where: JSONObject
 }
 
-type SponsorsReadVersionsAccess {
+type jumpstartEventsAccess {
+  fields: JumpstartEventsFields
+  create: JumpstartEventsCreateAccess
+  read: JumpstartEventsReadAccess
+  update: JumpstartEventsUpdateAccess
+  delete: JumpstartEventsDeleteAccess
+}
+
+type JumpstartEventsFields {
+  slug: JumpstartEventsFields_slug
+  title: JumpstartEventsFields_title
+  description: JumpstartEventsFields_description
+  image: JumpstartEventsFields_image
+  link: JumpstartEventsFields_link
+  date: JumpstartEventsFields_date
+  endTime: JumpstartEventsFields_endTime
+  location: JumpstartEventsFields_location
+  updatedAt: JumpstartEventsFields_updatedAt
+  createdAt: JumpstartEventsFields_createdAt
+}
+
+type JumpstartEventsFields_slug {
+  create: JumpstartEventsFields_slug_Create
+  read: JumpstartEventsFields_slug_Read
+  update: JumpstartEventsFields_slug_Update
+  delete: JumpstartEventsFields_slug_Delete
+}
+
+type JumpstartEventsFields_slug_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_slug_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_slug_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_slug_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_title {
+  create: JumpstartEventsFields_title_Create
+  read: JumpstartEventsFields_title_Read
+  update: JumpstartEventsFields_title_Update
+  delete: JumpstartEventsFields_title_Delete
+}
+
+type JumpstartEventsFields_title_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_title_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_title_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_title_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_description {
+  create: JumpstartEventsFields_description_Create
+  read: JumpstartEventsFields_description_Read
+  update: JumpstartEventsFields_description_Update
+  delete: JumpstartEventsFields_description_Delete
+}
+
+type JumpstartEventsFields_description_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_description_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_description_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_description_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_image {
+  create: JumpstartEventsFields_image_Create
+  read: JumpstartEventsFields_image_Read
+  update: JumpstartEventsFields_image_Update
+  delete: JumpstartEventsFields_image_Delete
+}
+
+type JumpstartEventsFields_image_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_image_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_image_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_image_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_link {
+  create: JumpstartEventsFields_link_Create
+  read: JumpstartEventsFields_link_Read
+  update: JumpstartEventsFields_link_Update
+  delete: JumpstartEventsFields_link_Delete
+}
+
+type JumpstartEventsFields_link_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_link_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_link_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_link_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_date {
+  create: JumpstartEventsFields_date_Create
+  read: JumpstartEventsFields_date_Read
+  update: JumpstartEventsFields_date_Update
+  delete: JumpstartEventsFields_date_Delete
+}
+
+type JumpstartEventsFields_date_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_date_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_date_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_date_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_endTime {
+  create: JumpstartEventsFields_endTime_Create
+  read: JumpstartEventsFields_endTime_Read
+  update: JumpstartEventsFields_endTime_Update
+  delete: JumpstartEventsFields_endTime_Delete
+}
+
+type JumpstartEventsFields_endTime_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_endTime_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_endTime_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_endTime_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_location {
+  create: JumpstartEventsFields_location_Create
+  read: JumpstartEventsFields_location_Read
+  update: JumpstartEventsFields_location_Update
+  delete: JumpstartEventsFields_location_Delete
+}
+
+type JumpstartEventsFields_location_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_location_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_location_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_location_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_updatedAt {
+  create: JumpstartEventsFields_updatedAt_Create
+  read: JumpstartEventsFields_updatedAt_Read
+  update: JumpstartEventsFields_updatedAt_Update
+  delete: JumpstartEventsFields_updatedAt_Delete
+}
+
+type JumpstartEventsFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_createdAt {
+  create: JumpstartEventsFields_createdAt_Create
+  read: JumpstartEventsFields_createdAt_Read
+  update: JumpstartEventsFields_createdAt_Update
+  delete: JumpstartEventsFields_createdAt_Delete
+}
+
+type JumpstartEventsFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type JumpstartEventsFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type JumpstartEventsCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type JumpstartEventsReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type JumpstartEventsUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type JumpstartEventsDeleteAccess {
   permission: Boolean!
   where: JSONObject
 }
@@ -30477,7 +30262,6 @@ type societiesAccess {
   read: SocietiesReadAccess
   update: SocietiesUpdateAccess
   delete: SocietiesDeleteAccess
-  readVersions: SocietiesReadVersionsAccess
 }
 
 type SocietiesFields {
@@ -31035,11 +30819,6 @@ type SocietiesUpdateAccess {
 }
 
 type SocietiesDeleteAccess {
-  permission: Boolean!
-  where: JSONObject
-}
-
-type SocietiesReadVersionsAccess {
   permission: Boolean!
   where: JSONObject
 }
@@ -33286,11 +33065,12 @@ type Mutation {
   createSponsor(data: mutationSponsorInput!): Sponsor
   updateSponsor(id: String!, autosave: Boolean, data: mutationSponsorUpdateInput!): Sponsor
   deleteSponsor(id: String!): Sponsor
-  restoreVersionSponsor(id: String): Sponsor
+  createJumpstartEvent(data: mutationJumpstartEventInput!): JumpstartEvent
+  updateJumpstartEvent(id: String!, autosave: Boolean, data: mutationJumpstartEventUpdateInput!): JumpstartEvent
+  deleteJumpstartEvent(id: String!): JumpstartEvent
   createSociety(data: mutationSocietyInput!): Society
   updateSociety(id: String!, autosave: Boolean, data: mutationSocietyUpdateInput!): Society
   deleteSociety(id: String!): Society
-  restoreVersionSociety(id: String): Society
   createCommittee(data: mutationCommitteeInput!): Committee
   updateCommittee(id: String!, autosave: Boolean, data: mutationCommitteeUpdateInput!): Committee
   deleteCommittee(id: String!): Committee
@@ -34385,6 +34165,32 @@ enum SponsorUpdate_Links_Link_appearance_MutationInput {
   default
   primary
   secondary
+}
+
+input mutationJumpstartEventInput {
+  slug: String
+  title: String!
+  description: String
+  image: String
+  link: String
+  date: String!
+  endTime: String
+  location: String
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationJumpstartEventUpdateInput {
+  slug: String
+  title: String
+  description: String
+  image: String
+  link: String
+  date: String
+  endTime: String
+  location: String
+  updatedAt: String
+  createdAt: String
 }
 
 input mutationSocietyInput {
