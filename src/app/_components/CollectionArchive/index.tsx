@@ -7,6 +7,7 @@ import qs from 'qs'
 import type {
   Committee,
   Event,
+  JumpstartEvent,
   Post,
   Project,
   Society,
@@ -19,6 +20,7 @@ import { CommitteePopUp } from '../CommitteePopUp'
 import { EventItem } from '../EventItem'
 import { EventPopUp } from '../EventPopUp'
 import { Gutter } from '../Gutter'
+import { JumpstartEventItem } from '../JumpstartEventItem'
 import { PageRange } from '../PageRange'
 import { Pagination } from '../Pagination'
 import { SocietyItem } from '../SocietyItem'
@@ -33,7 +35,7 @@ const inter = Inter({
 })
 
 type Result = {
-  docs: (Post | Project | Sponsor | Society | Committee | Event | string)[]
+  docs: (Post | Project | Sponsor | Society | Committee | Event | JumpstartEvent | string)[]
   hasNextPage: boolean
   hasPrevPage: boolean
   nextPage: number
@@ -51,7 +53,14 @@ export type Props = {
   populateBy?: 'collection' | 'selection'
   populatedDocs?: ArchiveBlockProps['populatedDocs']
   populatedDocsTotal?: ArchiveBlockProps['populatedDocsTotal']
-  relationTo?: 'posts' | 'projects' | 'committee' | 'sponsors' | 'societies' | 'events'
+  relationTo?:
+    | 'posts'
+    | 'projects'
+    | 'committee'
+    | 'sponsors'
+    | 'societies'
+    | 'events'
+    | 'jumpstartEvents'
   selectedDocs?: ArchiveBlockProps['selectedDocs']
   showPageRange?: boolean
   sort?: string
@@ -203,7 +212,7 @@ export const CollectionArchive: React.FC<Props> = props => {
           clearTimeout(timer)
 
           let { docs } = json as {
-            docs: (Post | Project | Committee | Sponsor | Society | Event)[]
+            docs: (Post | Project | Committee | Sponsor | Society | Event | JumpstartEvent)[]
           }
 
           if (docs && Array.isArray(docs)) {
@@ -299,6 +308,10 @@ export const CollectionArchive: React.FC<Props> = props => {
                     {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
                       <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
                     )}
+                    {relationTo === 'jumpstartEvents' &&
+                      'slug' in result &&
+                      'title' in result &&
+                      'image' in result && <JumpstartEventItem jumpstartEvent={result} />}
                     {relationTo === 'events' &&
                       'name' in result &&
                       'date' in result &&

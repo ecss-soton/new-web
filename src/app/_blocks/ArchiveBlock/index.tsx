@@ -1,12 +1,17 @@
 import React from 'react'
 
-import { Committee, Event, Post, Project, Society, Sponsor } from '../../../payload/payload-types'
+import {
+  Committee,
+  Event,
+  JumpstartEvent,
+  Post,
+  Project,
+  Society,
+  Sponsor,
+} from '../../../payload/payload-types'
 import { CollectionArchive } from '../../_components/CollectionArchive'
-import { CommitteeArchive } from '../../_components/CommitteeArchive'
 import { Gutter } from '../../_components/Gutter'
 import RichText from '../../_components/RichText'
-import { SocietyArchive } from '../../_components/SocietyArchive'
-import { SponsorArchive } from '../../_components/SponsorArchive'
 import { ArchiveBlockProps } from './types'
 
 import classes from './index.module.scss'
@@ -51,6 +56,7 @@ export const ArchiveBlock: React.FC<
     | { relationTo: 'societies'; value: string | Society }
     | { relationTo: 'committee'; value: string | Committee }
     | { relationTo: 'events'; value: string | Event }
+    | { relationTo: 'jumpstartEvents'; value: string | JumpstartEvent }
   )[] = populatedDocs.filter(Boolean) as (
     | { relationTo: 'posts'; value: string | Post }
     | { relationTo: 'projects'; value: string | Project }
@@ -58,6 +64,7 @@ export const ArchiveBlock: React.FC<
     | { relationTo: 'societies'; value: string | Society }
     | { relationTo: 'committee'; value: string | Committee }
     | { relationTo: 'events'; value: string | Event }
+    | { relationTo: 'jumpstartEvents'; value: string | JumpstartEvent }
   )[]
 
   return (
