@@ -65,7 +65,9 @@ export const NEXT_EVENT = `
   ${MEDIA}
 }
 `
-
+// adding sponsors and societies exectra breaks shit
+// this needs to be fixed by changing sponsors and scoieties to have title not name
+// or like implement them here properly idk
 export const ARCHIVE_BLOCK = `
 ...on Archive {
   blockType
