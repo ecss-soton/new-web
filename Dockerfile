@@ -43,7 +43,7 @@ COPY --from=builder /home/node/app/next.config.js ./next.config.js
 COPY --from=builder /home/node/app/redirects.js ./redirects.js
 COPY --from=builder /home/node/app/csp.js ./csp.js
 
-COPY --from=rustbuilder /usr/local/cargo/bin/stv-rs /usr/local/bin/stv-rs
+# COPY --from=rustbuilder /usr/local/cargo/bin/stv-rs /usr/local/bin/stv-rs
 
 EXPOSE 3000
 
