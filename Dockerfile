@@ -1,4 +1,4 @@
-FROM rust:1.76-buster as rustbuilder
+# FROM rust:1.76-buster as rustbuilder
 
 # RUN --network=host cargo install stv-rs
 
