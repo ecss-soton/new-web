@@ -53,14 +53,7 @@ export type Props = {
   populateBy?: 'collection' | 'selection'
   populatedDocs?: ArchiveBlockProps['populatedDocs']
   populatedDocsTotal?: ArchiveBlockProps['populatedDocsTotal']
-  relationTo?:
-    | 'posts'
-    | 'projects'
-    | 'committee'
-    | 'sponsors'
-    | 'societies'
-    | 'events'
-    | 'jumpstartEvents'
+  relationTo?: 'posts' | 'projects' | 'committee' | 'sponsors' | 'societies' | 'events'
   selectedDocs?: ArchiveBlockProps['selectedDocs']
   showPageRange?: boolean
   sort?: string
@@ -250,7 +243,7 @@ export const CollectionArchive: React.FC<Props> = props => {
     return () => {
       if (timer) clearTimeout(timer)
     }
-  }, [page, categories, relationTo, onResultChange, sort, limit, populateBy])
+  }, [page, categories, relationTo, onResultChange, sort, limit, populateBy, isJumpstart])
 
   const today = new Date()
 
