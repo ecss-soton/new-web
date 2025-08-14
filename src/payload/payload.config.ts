@@ -18,7 +18,6 @@ import Committee from './collections/Committee'
 import { ElectionResults } from './collections/ElectionResults'
 import Elections from './collections/Elections'
 import Events from './collections/Events'
-import JumpstartEvents from './collections/JumpstartEvents'
 import { Media } from './collections/Media'
 import Merch from './collections/Merch'
 import Nominations from './collections/Nominations'
@@ -112,7 +111,6 @@ export default buildConfig({
     OrderedMerch,
     Orders,
     Sponsors,
-    JumpstartEvents,
     Societies,
     Committee,
     Events,
