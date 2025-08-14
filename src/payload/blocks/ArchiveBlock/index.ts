@@ -62,11 +62,12 @@ export const Archive: Block = {
           label: 'Events',
           value: 'events',
         },
-        {
-          label: 'JumpstartEvents',
-          value: 'jumpstartEvents',
-        },
       ],
+    },
+    {
+      type: 'checkbox',
+      name: 'isJumpstart',
+      label: 'If event, is it Jumpstart?',
     },
     {
       type: 'relationship',
@@ -92,15 +93,7 @@ export const Archive: Block = {
       type: 'relationship',
       name: 'selectedDocs',
       label: 'Selection',
-      relationTo: [
-        'posts',
-        'projects',
-        'sponsors',
-        'societies',
-        'committee',
-        'events',
-        'jumpstartEvents',
-      ],
+      relationTo: ['posts', 'projects', 'sponsors', 'societies', 'committee', 'events'],
       hasMany: true,
       admin: {
         condition: (_, siblingData) => siblingData.populateBy === 'selection',
@@ -110,15 +103,7 @@ export const Archive: Block = {
       type: 'relationship',
       name: 'populatedDocs',
       label: 'Populated Docs',
-      relationTo: [
-        'posts',
-        'projects',
-        'sponsors',
-        'societies',
-        'committee',
-        'events',
-        'jumpstartEvents',
-      ],
+      relationTo: ['posts', 'projects', 'sponsors', 'societies', 'committee', 'events'],
       hasMany: true,
       admin: {
         disabled: true,

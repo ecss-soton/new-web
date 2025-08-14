@@ -5,8 +5,9 @@ import { Inter } from '@next/font/google'
 import moment from 'moment'
 import Link from 'next/link'
 
-import { Event } from '../../../payload/payload-types'
+import type { Event as EventType, Media as MediaType } from '../../../payload/payload-types'
 import { Button } from '../Button'
+import { Media } from '../Media'
 import RichText from '../RichText'
 
 import classes from './index.module.scss'
@@ -24,7 +25,8 @@ interface PopUpProps {
   description: string | null
   endTime: string | null
   link: string | null
-  onEventClick: (event: Event | null) => void
+  image?: string | MediaType | null
+  onEventClick: (event: any) => void
 }
 
 export const EventPopUp: React.FC<PopUpProps> = ({
@@ -35,6 +37,7 @@ export const EventPopUp: React.FC<PopUpProps> = ({
   endTime,
   link,
   onEventClick,
+  image,
 }) => {
   const closeClick = () => {
     onEventClick(null)
@@ -76,30 +79,28 @@ export const EventPopUp: React.FC<PopUpProps> = ({
     <>
       <div className={[classes.background, inter.className].join(' ')} onClick={closeClick} />
       <div className={classes.rectangle}>
-        <Link onClick={closeClick} className={classes.close} href={''}></Link>
+        {/* <Link onClick={closeClick} className={classes.close} href={''}></Link> */}
         <div className={classes.info}>
-          <div className={classes.when}>
-            <div className={classes.date}>{day}</div>
-            <div className={classes.month}>{monthName}</div>
-            {endTime ? (
-              <span className={classes.time}>{time + ' - ' + concEndTime}</span>
-            ) : (
-              <span className={classes.time}>{time}</span>
-            )}
+          <div className={classes.infoText}>
+            <div className={classes.when}>
+              <div className={classes.date}>{day}</div>
+              <div className={classes.month}>{monthName}</div>
+              {endTime ? (
+                <span className={classes.time}>{time + ' - ' + concEndTime}</span>
+              ) : (
+                <span className={classes.time}>{time}</span>
+              )}
+            </div>
+            <div className={classes.bits}>
+              <span className={classes.name}>{name}</span>
+              <span className={classes.role}>{location}</span>
+            </div>
           </div>
-          <div className={classes.bits}>
-            <span className={classes.name}>{name}</span>
-            <span className={classes.role}>{location}</span>
-          </div>
+          {image && <Media resource={image} className={classes.media}></Media>}
         </div>
         {description && <p className={classes.bio}>{description}</p>}
         {link && (
-          <Button
-            label="Get Tickets Here"
-            appearance="primary"
-            className={classes.button}
-            href={link}
-          />
+          <Button label="Event Link" appearance="primary" className={classes.button} href={link} />
         )}
       </div>
     </>

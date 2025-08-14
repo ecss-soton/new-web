@@ -67,6 +67,17 @@ const Events: CollectionConfig = {
       type: 'text',
       validate: isHTTPS,
     },
+    {
+      name: 'image',
+      label: 'Image',
+      type: 'upload',
+      relationTo: 'media',
+    },
+    {
+      name: 'isJumpstart',
+      label: 'Is this a Jumpstart Event?',
+      type: 'checkbox',
+    },
   ],
 }
 
