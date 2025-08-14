@@ -69,6 +69,11 @@ export const Archive: Block = {
       ],
     },
     {
+      type: 'checkbox',
+      name: 'isJumpstart',
+      label: 'If event, is it Jumpstart?',
+    },
+    {
       type: 'relationship',
       name: 'categories',
       label: 'Categories To Show',

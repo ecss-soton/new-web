@@ -63,22 +63,46 @@
         width: 70%;
     }
 
-    @include small-break {
+    @include mid-break {
         width: 80%;
+        padding: 0;
+        padding-bottom: 30px;
     }
 }
 
 .info {
     display: flex;
     flex-direction: row;
-    flex: 30%;
+    justify-content: flex-start;
+    align-content: flex-start;
+
+    @include mid-break {
+        flex-direction: column-reverse;
+    }
+}
+
+.infoText {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: flex-start;
+    
+    @include mid-break {
+        margin-top: 10px;
+    }
+    // flex: 30%;
 }
 
 .bits {
     display: flex;
     flex-direction: column;
-    padding-left: 20px;
+    padding-left: 50px;
     flex: 70%;
+
+    @include mid-break {
+        padding-right: 2%;
+        flex: 60%
+    }
 }
 
 .name {
@@ -118,8 +142,7 @@
 
 .when {
     text-align: center;
-    padding-left: 10%;
-    padding-right: 10%;
+    margin-left: 50px;
     display: inline-flex;
     flex-direction: column;
     justify-content: center;
@@ -166,6 +189,35 @@
 
     @include extra-small-break {
         font-size: 4vw;
+    }
+  }
+
+  .media {
+    // margin-left: 10%;
+    height: 200px;
+    margin-left: 10%;
+    
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    
+    img {
+      object-fit: cover;
+      object-position: center center;
+      height: 100%;
+    }
+
+    @include mid-break {
+        margin-left: 0;
+        overflow: hidden;
+        border-radius: 37px 37px 0 0 ;
+        margin: 0;
+    }
+
+    @include small-break {
+        // position: relative;
+        // aspect-ratio: 16 / 9;
+        
     }
   }
 
