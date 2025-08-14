@@ -90,10 +90,10 @@ export const EventPopUp: React.FC<PopUpProps> = ({
               ) : (
                 <span className={classes.time}>{time}</span>
               )}
+              <span className={classes.role}>{location}</span>
             </div>
             <div className={classes.bits}>
               <span className={classes.name}>{name}</span>
-              <span className={classes.role}>{location}</span>
             </div>
           </div>
           {image && <Media resource={image} className={classes.media}></Media>}
