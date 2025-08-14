@@ -3,7 +3,6 @@ import type { AfterReadHook } from 'payload/dist/collections/config/types'
 import type {
   Committee,
   Event,
-  JumpstartEvent,
   Page,
   Post,
   Project,
@@ -28,7 +27,7 @@ export const populateArchiveBlock: AfterReadHook = async ({ doc, context, req: {
         if (archiveBlock.populateBy === 'collection' && !context.isPopulatingArchiveBlock) {
           const res: {
             totalDocs: number
-            docs: Array<Post | Project | Sponsor | Committee | Society | Event | JumpstartEvent>
+            docs: Array<Post | Project | Sponsor | Committee | Society | Event>
           } = await payload.find({
             collection: archiveBlock.relationTo,
             limit: archiveBlock.limit || 10,
