@@ -75,6 +75,7 @@
     flex-direction: row;
     justify-content: flex-start;
     align-content: flex-start;
+    width: 100%;
 
     @include mid-break {
         flex-direction: column-reverse;
@@ -196,11 +197,13 @@
   .media {
     // margin-left: 10%;
     height: 200px;
+    max-width: 500px;
     margin-left: 10%;
     
     position: relative;
     overflow: hidden;
     border-radius: 8px;
+    align-items: end;
     
     img {
       object-fit: cover;
@@ -210,6 +213,7 @@
 
     @include mid-break {
         margin-left: 0;
+        max-width: 9999px;
         overflow: hidden;
         border-radius: 37px 37px 0 0 ;
         margin: 0;
