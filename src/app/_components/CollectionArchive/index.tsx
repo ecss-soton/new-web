@@ -160,6 +160,8 @@ export const CollectionArchive: React.FC<Props> = props => {
               ? 'position'
               : relationTo === 'events' && !isJumpstart
               ? 'date'
+              : relationTo === 'events' && isJumpstart
+              ? '-isJumpstart'
               : relationTo === 'societies'
               ? 'name'
               : 'level',
@@ -298,6 +300,8 @@ export const CollectionArchive: React.FC<Props> = props => {
                     className={[
                       relationTo === 'events' && !isJumpstart
                         ? classes.columnEvents
+                        : relationTo === 'events' && isJumpstart
+                        ? classes.columnCommittee
                         : classes.column,
                       classes.fadeIn,
                     ].join(' ')}
