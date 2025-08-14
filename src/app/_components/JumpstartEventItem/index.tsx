@@ -4,7 +4,7 @@ import moment from 'moment'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { Event, JumpstartEvent, Media } from '../../../payload/payload-types'
+import { Event, Media } from '../../../payload/payload-types'
 import { Media as MediaComp } from '../Media'
 
 import classes from './index.module.scss'
