@@ -74,34 +74,18 @@ export const JumpstartEventItem: React.FC<{
     return description
   }
 
-  // Safe date parsing with null checks
-  let dateInfo = null
-  if (date) {
-    try {
-      const dateParts = date.split('-')
-      if (dateParts.length >= 3) {
-        const year = dateParts[0]
-        const month = parseInt(dateParts[1], 10)
-        const dayPart = dateParts[2].split('T')[0]
-        const monthName = getMonthName(month)
-        // Safe time extraction
-        let time = ''
-        if (dateParts[2].includes(' ')) {
-          const timePart = dateParts[2].split(' ')[1]
-          if (timePart) {
-            time = timePart.split(':').slice(0, 2).join(':')
-          }
-        }
-        if (localEndTime) {
-          const endTimeParts = localEndTime.split('-')
-          concEndTime = endTimeParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
-        }
-        dateInfo = { day: dayPart, monthName, time }
-      }
-    } catch (error) {
-      // Silently handle date parsing errors
-    }
+  const dateParts = localDate.split('-')
+  const year = dateParts[0]
+  const month = parseInt(dateParts[1], 10)
+  const day = dateParts[2].split(' ')[0]
+  const time = dateParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
+  const monthName = getMonthName(month)
+  if (localEndTime) {
+    const endTimeParts = localEndTime.split('-')
+    concEndTime = endTimeParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
   }
+
+  // console.log(dateInfo)
 
   const truncatedDesc = description ? truncateDescription(description, 150) : ''
 
@@ -115,17 +99,17 @@ export const JumpstartEventItem: React.FC<{
       </div>
       <div className={classes.content}>
         {name && <h4 className={[classes.title, inter.className].join(' ')}>{name}</h4>}
-        {description && <p>{truncatedDesc}</p>}
+        {/* {description && <p>{truncatedDesc}</p>} */}
         {location && (
           <div className={classes.iconLine}>
             <Image src="/location-pin-svgrepo-com.svg" alt="location icon" width={16} height={16} />
             <span>{location}</span>
           </div>
         )}
-        {dateInfo && (
+        {date && (
           <div className={classes.iconLine}>
             <Image src="/calendar-svgrepo-com.svg" alt="calander icon" width={16} height={16} />
-            <span>{dateInfo.day + ' ' + dateInfo.monthName + ' ' + dateInfo.time}</span>
+            <span>{day + ' ' + monthName + ' ' + time + '-' + (endTime ? concEndTime : '')}</span>
           </div>
         )}
         {link && (

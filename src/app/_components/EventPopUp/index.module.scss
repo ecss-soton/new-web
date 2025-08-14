@@ -101,7 +101,8 @@
 
     @include mid-break {
         padding-right: 2%;
-        flex: 60%
+        flex: 60%;
+        align-self: center;
     }
 }
 
