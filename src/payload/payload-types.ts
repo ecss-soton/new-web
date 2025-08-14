@@ -27,7 +27,6 @@ export interface Config {
     orderedMerch: OrderedMerch;
     orders: Order;
     sponsors: Sponsor;
-    jumpstartEvents: JumpstartEvent;
     societies: Society;
     committee: Committee;
     events: Event;
@@ -145,9 +144,8 @@ export interface Page {
             }[]
           | null;
         populateBy?: ('collection' | 'selection') | null;
-        relationTo?:
-          | ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events' | 'jumpstartEvents')
-          | null;
+        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events') | null;
+        isJumpstart?: boolean | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
         selectedDocs?:
@@ -176,10 +174,6 @@ export interface Page {
                   relationTo: 'events';
                   value: string | Event;
                 }
-              | {
-                  relationTo: 'jumpstartEvents';
-                  value: string | JumpstartEvent;
-                }
             )[]
           | null;
         populatedDocs?:
@@ -207,10 +201,6 @@ export interface Page {
               | {
                   relationTo: 'events';
                   value: string | Event;
-                }
-              | {
-                  relationTo: 'jumpstartEvents';
-                  value: string | JumpstartEvent;
                 }
             )[]
           | null;
@@ -406,9 +396,8 @@ export interface Post {
             }[]
           | null;
         populateBy?: ('collection' | 'selection') | null;
-        relationTo?:
-          | ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events' | 'jumpstartEvents')
-          | null;
+        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events') | null;
+        isJumpstart?: boolean | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
         selectedDocs?:
@@ -437,10 +426,6 @@ export interface Post {
                   relationTo: 'events';
                   value: string | Event;
                 }
-              | {
-                  relationTo: 'jumpstartEvents';
-                  value: string | JumpstartEvent;
-                }
             )[]
           | null;
         populatedDocs?:
@@ -468,10 +453,6 @@ export interface Post {
               | {
                   relationTo: 'events';
                   value: string | Event;
-                }
-              | {
-                  relationTo: 'jumpstartEvents';
-                  value: string | JumpstartEvent;
                 }
             )[]
           | null;
@@ -551,9 +532,8 @@ export interface Post {
                 }[]
               | null;
             populateBy?: ('collection' | 'selection') | null;
-            relationTo?:
-              | ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events' | 'jumpstartEvents')
-              | null;
+            relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events') | null;
+            isJumpstart?: boolean | null;
             categories?: (string | Category)[] | null;
             limit?: number | null;
             selectedDocs?:
@@ -582,10 +562,6 @@ export interface Post {
                       relationTo: 'events';
                       value: string | Event;
                     }
-                  | {
-                      relationTo: 'jumpstartEvents';
-                      value: string | JumpstartEvent;
-                    }
                 )[]
               | null;
             populatedDocs?:
@@ -613,10 +589,6 @@ export interface Post {
                   | {
                       relationTo: 'events';
                       value: string | Event;
-                    }
-                  | {
-                      relationTo: 'jumpstartEvents';
-                      value: string | JumpstartEvent;
                     }
                 )[]
               | null;
@@ -763,9 +735,8 @@ export interface Project {
             }[]
           | null;
         populateBy?: ('collection' | 'selection') | null;
-        relationTo?:
-          | ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events' | 'jumpstartEvents')
-          | null;
+        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events') | null;
+        isJumpstart?: boolean | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
         selectedDocs?:
@@ -794,10 +765,6 @@ export interface Project {
                   relationTo: 'events';
                   value: string | Event;
                 }
-              | {
-                  relationTo: 'jumpstartEvents';
-                  value: string | JumpstartEvent;
-                }
             )[]
           | null;
         populatedDocs?:
@@ -825,10 +792,6 @@ export interface Project {
               | {
                   relationTo: 'events';
                   value: string | Event;
-                }
-              | {
-                  relationTo: 'jumpstartEvents';
-                  value: string | JumpstartEvent;
                 }
             )[]
           | null;
@@ -982,23 +945,8 @@ export interface Event {
   location?: string | null;
   description?: string | null;
   link?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "jumpstartEvents".
- */
-export interface JumpstartEvent {
-  id: string;
-  slug?: string | null;
-  title: string;
-  description?: string | null;
   image?: string | Media | null;
-  link?: string | null;
-  date: string;
-  endTime?: string | null;
-  location?: string | null;
+  isJumpstart?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }

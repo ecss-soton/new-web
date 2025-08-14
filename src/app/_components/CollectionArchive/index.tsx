@@ -7,7 +7,7 @@ import qs from 'qs'
 import type {
   Committee,
   Event,
-  JumpstartEvent,
+  Media,
   Post,
   Project,
   Society,
@@ -35,7 +35,7 @@ const inter = Inter({
 })
 
 type Result = {
-  docs: (Post | Project | Sponsor | Society | Committee | Event | JumpstartEvent | string)[]
+  docs: (Post | Project | Sponsor | Society | Committee | Event | string)[]
   hasNextPage: boolean
   hasPrevPage: boolean
   nextPage: number
@@ -53,17 +53,11 @@ export type Props = {
   populateBy?: 'collection' | 'selection'
   populatedDocs?: ArchiveBlockProps['populatedDocs']
   populatedDocsTotal?: ArchiveBlockProps['populatedDocsTotal']
-  relationTo?:
-    | 'posts'
-    | 'projects'
-    | 'committee'
-    | 'sponsors'
-    | 'societies'
-    | 'events'
-    | 'jumpstartEvents'
+  relationTo?: 'posts' | 'projects' | 'committee' | 'sponsors' | 'societies' | 'events'
   selectedDocs?: ArchiveBlockProps['selectedDocs']
   showPageRange?: boolean
   sort?: string
+  isJumpstart?: boolean | null
 }
 
 export const CollectionArchive: React.FC<Props> = props => {
@@ -78,6 +72,7 @@ export const CollectionArchive: React.FC<Props> = props => {
     relationTo,
     selectedDocs,
     showPageRange,
+    isJumpstart,
     sort = '-createdAt',
   } = props
 
@@ -156,8 +151,10 @@ export const CollectionArchive: React.FC<Props> = props => {
           sort:
             relationTo === 'committee'
               ? 'position'
-              : relationTo === 'events'
+              : relationTo === 'events' && !isJumpstart
               ? 'date'
+              : relationTo === 'events' && isJumpstart
+              ? '-isJumpstart'
               : relationTo === 'societies'
               ? 'name'
               : 'level',
@@ -212,7 +209,7 @@ export const CollectionArchive: React.FC<Props> = props => {
           clearTimeout(timer)
 
           let { docs } = json as {
-            docs: (Post | Project | Committee | Sponsor | Society | Event | JumpstartEvent)[]
+            docs: (Post | Project | Committee | Sponsor | Society | Event)[]
           }
 
           if (docs && Array.isArray(docs)) {
@@ -246,7 +243,7 @@ export const CollectionArchive: React.FC<Props> = props => {
     return () => {
       if (timer) clearTimeout(timer)
     }
-  }, [page, categories, relationTo, onResultChange, sort, limit, populateBy])
+  }, [page, categories, relationTo, onResultChange, sort, limit, populateBy, isJumpstart])
 
   const today = new Date()
 
@@ -269,6 +266,7 @@ export const CollectionArchive: React.FC<Props> = props => {
         )} */}
         <Gutter>
           {relationTo === 'events' &&
+            !isJumpstart &&
             results.docs?.filter((result, index) => {
               relationTo === 'events' &&
                 typeof result === 'object' &&
@@ -283,7 +281,7 @@ export const CollectionArchive: React.FC<Props> = props => {
             )}
           <div
             className={
-              relationTo === 'committee' || relationTo === 'events'
+              relationTo === 'committee' || (relationTo === 'events' && !isJumpstart)
                 ? classes.committeegrid
                 : classes.grid
             }
@@ -293,7 +291,11 @@ export const CollectionArchive: React.FC<Props> = props => {
                 return (
                   <div
                     className={[
-                      relationTo === 'events' ? classes.columnEvents : classes.column,
+                      relationTo === 'events' && !isJumpstart
+                        ? classes.columnEvents
+                        : relationTo === 'events' && isJumpstart
+                        ? classes.columnCommittee
+                        : classes.column,
                       classes.fadeIn,
                     ].join(' ')}
                     key={index}
@@ -308,11 +310,17 @@ export const CollectionArchive: React.FC<Props> = props => {
                     {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
                       <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
                     )}
-                    {relationTo === 'jumpstartEvents' &&
-                      'slug' in result &&
-                      'title' in result &&
-                      'image' in result && <JumpstartEventItem jumpstartEvent={result} />}
                     {relationTo === 'events' &&
+                      isJumpstart &&
+                      'isJumpstart' in result &&
+                      // result.isJumpstart &&
+                      'name' in result && (
+                        <JumpstartEventItem event={result} onEventClick={EventClick} />
+                      )}
+                    {relationTo === 'events' &&
+                      !isJumpstart &&
+                      // 'isJumpstart' in result &&
+                      // !result.isJumpstart &&
                       'name' in result &&
                       'date' in result &&
                       new Date(result.date) > today && (
@@ -376,6 +384,7 @@ export const CollectionArchive: React.FC<Props> = props => {
           location={isPopUpVisible.location}
           endTime={isPopUpVisible.endTime}
           link={isPopUpVisible.link}
+          image={isPopUpVisible.image || null}
           onEventClick={EventClick}
         />
       )}

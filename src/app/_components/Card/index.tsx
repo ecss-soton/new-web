@@ -12,14 +12,7 @@ export const Card: React.FC<{
   showCategories?: boolean
   hideImagesOnMobile?: boolean
   title?: string
-  relationTo?:
-    | 'projects'
-    | 'posts'
-    | 'societies'
-    | 'sponsors'
-    | 'committee'
-    | 'events'
-    | 'jumpstartEvents'
+  relationTo?: 'projects' | 'posts' | 'societies' | 'sponsors' | 'committee' | 'events'
   doc?: Project | Post
   orientation?: 'horizontal' | 'vertical'
 }> = props => {

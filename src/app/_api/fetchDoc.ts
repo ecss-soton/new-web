@@ -1,7 +1,6 @@
 import type { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 
 import type { Config } from '../../payload/payload-types'
-import { JUMPSTARTEVENT } from '../_graphql/jumpstartEvents'
 import { PAGE } from '../_graphql/pages'
 import { POST } from '../_graphql/posts'
 import { PROJECT } from '../_graphql/projects'
@@ -30,10 +29,6 @@ const queryMap = {
   sponsors: {
     query: SPONSOR,
     key: 'Sponsors',
-  },
-  jumpstartevents: {
-    query: JUMPSTARTEVENT,
-    key: 'JumpstartEvents',
   },
 }
 
