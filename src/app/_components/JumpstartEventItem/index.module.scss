@@ -15,6 +15,17 @@
   &:hover {
       transform: scale(1.05); 
     }
+
+  @include mid-break {
+    width: 80%;
+    align-self: center;
+  }
+
+  @include small-break {
+    width: 100%;
+  }
+
+  
 }
 
 .vertical {
@@ -61,6 +72,7 @@
 
 .title {
   margin: 0;
+  margin-bottom: 10px;
   color: var(--theme-elevation-1000);
   font-size: 32px;
   font-style: normal;
@@ -102,6 +114,7 @@
   aspect-ratio: 16 / 9;
   overflow: hidden;
   border-radius: 42px 42px 0 0; /* Match the card's border-radius but only on top */
+  height: auto;
 }
 
 .image {
