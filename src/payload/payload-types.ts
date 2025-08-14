@@ -148,6 +148,7 @@ export interface Page {
         relationTo?:
           | ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events' | 'jumpstartEvents')
           | null;
+        isJumpstart?: boolean | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
         selectedDocs?:
@@ -409,6 +410,7 @@ export interface Post {
         relationTo?:
           | ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events' | 'jumpstartEvents')
           | null;
+        isJumpstart?: boolean | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
         selectedDocs?:
@@ -554,6 +556,7 @@ export interface Post {
             relationTo?:
               | ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events' | 'jumpstartEvents')
               | null;
+            isJumpstart?: boolean | null;
             categories?: (string | Category)[] | null;
             limit?: number | null;
             selectedDocs?:
@@ -766,6 +769,7 @@ export interface Project {
         relationTo?:
           | ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events' | 'jumpstartEvents')
           | null;
+        isJumpstart?: boolean | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
         selectedDocs?:
@@ -982,6 +986,8 @@ export interface Event {
   location?: string | null;
   description?: string | null;
   link?: string | null;
+  image?: string | Media | null;
+  isJumpstart?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }

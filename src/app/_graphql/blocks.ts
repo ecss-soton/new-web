@@ -76,6 +76,7 @@ export const ARCHIVE_BLOCK = `
   relationTo
   ${CATEGORIES}
   limit
+  isJumpstart
   selectedDocs {
     relationTo
     value {

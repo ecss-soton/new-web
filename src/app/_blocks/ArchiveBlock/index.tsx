@@ -27,6 +27,7 @@ export const ArchiveBlock: React.FC<
     relationTo,
     populateBy,
     limit,
+    isJumpstart,
     populatedDocs,
     populatedDocsTotal,
     selectedDocs,
@@ -86,6 +87,7 @@ export const ArchiveBlock: React.FC<
           selectedDocs={selectedDocs}
           categories={categories}
           limit={limit}
+          isJumpstart={isJumpstart}
           sort="-publishedAt"
         />
       }
