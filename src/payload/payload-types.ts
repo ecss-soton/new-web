@@ -233,6 +233,14 @@ export interface Page {
         blockName?: string | null;
         blockType: 'nextEvent';
       }
+    | {
+        text: string;
+        link?: string | null;
+        appearance?: ('default' | 'primary' | 'secondary' | 'none') | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'button';
+      }
   )[];
   slug?: string | null;
   meta?: {
