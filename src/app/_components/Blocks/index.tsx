@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 
 import { Page } from '../../../payload/payload-types.js'
 import { ArchiveBlock } from '../../_blocks/ArchiveBlock'
+import { ButtonBlock } from '../../_blocks/Button'
 import { CallToActionBlock } from '../../_blocks/CallToAction'
 import { CommentsBlock, type CommentsBlockProps } from '../../_blocks/Comments/index'
 import { ContentBlock } from '../../_blocks/Content'
@@ -24,6 +25,7 @@ const blockComponents = {
   relatedPosts: RelatedPosts,
   comments: CommentsBlock,
   nextEvent: NextEventBlock,
+  button: ButtonBlock,
 }
 
 export const Blocks: React.FC<{

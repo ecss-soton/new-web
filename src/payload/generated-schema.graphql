@@ -89,10 +89,6 @@ type Query {
   Sponsors(where: Sponsor_where, limit: Int, page: Int, sort: String): Sponsors
   countSponsors(where: Sponsor_where): countSponsors
   docAccessSponsor(id: String!): sponsorsDocAccess
-  JumpstartEvent(id: String!): JumpstartEvent
-  JumpstartEvents(where: JumpstartEvent_where, limit: Int, page: Int, sort: String): JumpstartEvents
-  countJumpstartEvents(where: JumpstartEvent_where): countJumpstartEvents
-  docAccessJumpstartEvent(id: String!): jumpstartEventsDocAccess
   Society(id: String!): Society
   Societies(where: Society_where, limit: Int, page: Int, sort: String): Societies
   countSocieties(where: Society_where): countSocieties
@@ -714,6 +710,7 @@ type Archive {
   introContent(depth: Int): JSON
   populateBy: Archive_populateBy
   relationTo: Archive_relationTo
+  isJumpstart: Boolean
   categories: [Category!]
   limit: Float
   selectedDocs(draft: Boolean): [Archive_SelectedDocs_Relationship!]
@@ -736,7 +733,6 @@ enum Archive_relationTo {
   committee
   societies
   events
-  jumpstartEvents
 }
 
 type Category {
@@ -767,10 +763,9 @@ enum Archive_SelectedDocs_RelationTo {
   societies
   committee
   events
-  jumpstartEvents
 }
 
-union Archive_SelectedDocs = Post | Project | Sponsor | Society | Committee | Event | JumpstartEvent
+union Archive_SelectedDocs = Post | Project | Sponsor | Society | Committee | Event
 
 type Post {
   id: String
@@ -2445,43 +2440,31 @@ type Event {
   location: String
   description: String
   link: String
+  image(where: Event_Image_where): Media
+  isJumpstart: Boolean
   updatedAt: DateTime
   createdAt: DateTime
 }
 
-type JumpstartEvent {
-  id: String
-  slug: String
-  title: String!
-  description: String
-  image(where: JumpstartEvent_Image_where): Media
-  link: String
-  date: DateTime!
-  endTime: DateTime
-  location: String
-  updatedAt: DateTime
-  createdAt: DateTime
+input Event_Image_where {
+  alt: Event_Image_alt_operator
+  caption: Event_Image_caption_operator
+  updatedAt: Event_Image_updatedAt_operator
+  createdAt: Event_Image_createdAt_operator
+  url: Event_Image_url_operator
+  filename: Event_Image_filename_operator
+  mimeType: Event_Image_mimeType_operator
+  filesize: Event_Image_filesize_operator
+  width: Event_Image_width_operator
+  height: Event_Image_height_operator
+  focalX: Event_Image_focalX_operator
+  focalY: Event_Image_focalY_operator
+  id: Event_Image_id_operator
+  AND: [Event_Image_where_and]
+  OR: [Event_Image_where_or]
 }
 
-input JumpstartEvent_Image_where {
-  alt: JumpstartEvent_Image_alt_operator
-  caption: JumpstartEvent_Image_caption_operator
-  updatedAt: JumpstartEvent_Image_updatedAt_operator
-  createdAt: JumpstartEvent_Image_createdAt_operator
-  url: JumpstartEvent_Image_url_operator
-  filename: JumpstartEvent_Image_filename_operator
-  mimeType: JumpstartEvent_Image_mimeType_operator
-  filesize: JumpstartEvent_Image_filesize_operator
-  width: JumpstartEvent_Image_width_operator
-  height: JumpstartEvent_Image_height_operator
-  focalX: JumpstartEvent_Image_focalX_operator
-  focalY: JumpstartEvent_Image_focalY_operator
-  id: JumpstartEvent_Image_id_operator
-  AND: [JumpstartEvent_Image_where_and]
-  OR: [JumpstartEvent_Image_where_or]
-}
-
-input JumpstartEvent_Image_alt_operator {
+input Event_Image_alt_operator {
   equals: String
   not_equals: String
   like: String
@@ -2491,7 +2474,7 @@ input JumpstartEvent_Image_alt_operator {
   all: [String]
 }
 
-input JumpstartEvent_Image_caption_operator {
+input Event_Image_caption_operator {
   equals: JSON
   not_equals: JSON
   like: JSON
@@ -2499,7 +2482,7 @@ input JumpstartEvent_Image_caption_operator {
   exists: Boolean
 }
 
-input JumpstartEvent_Image_updatedAt_operator {
+input Event_Image_updatedAt_operator {
   equals: DateTime
   not_equals: DateTime
   greater_than_equal: DateTime
@@ -2510,7 +2493,7 @@ input JumpstartEvent_Image_updatedAt_operator {
   exists: Boolean
 }
 
-input JumpstartEvent_Image_createdAt_operator {
+input Event_Image_createdAt_operator {
   equals: DateTime
   not_equals: DateTime
   greater_than_equal: DateTime
@@ -2521,7 +2504,7 @@ input JumpstartEvent_Image_createdAt_operator {
   exists: Boolean
 }
 
-input JumpstartEvent_Image_url_operator {
+input Event_Image_url_operator {
   equals: String
   not_equals: String
   like: String
@@ -2532,7 +2515,7 @@ input JumpstartEvent_Image_url_operator {
   exists: Boolean
 }
 
-input JumpstartEvent_Image_filename_operator {
+input Event_Image_filename_operator {
   equals: String
   not_equals: String
   like: String
@@ -2543,7 +2526,7 @@ input JumpstartEvent_Image_filename_operator {
   exists: Boolean
 }
 
-input JumpstartEvent_Image_mimeType_operator {
+input Event_Image_mimeType_operator {
   equals: String
   not_equals: String
   like: String
@@ -2554,7 +2537,7 @@ input JumpstartEvent_Image_mimeType_operator {
   exists: Boolean
 }
 
-input JumpstartEvent_Image_filesize_operator {
+input Event_Image_filesize_operator {
   equals: Float
   not_equals: Float
   greater_than_equal: Float
@@ -2564,7 +2547,7 @@ input JumpstartEvent_Image_filesize_operator {
   exists: Boolean
 }
 
-input JumpstartEvent_Image_width_operator {
+input Event_Image_width_operator {
   equals: Float
   not_equals: Float
   greater_than_equal: Float
@@ -2574,7 +2557,7 @@ input JumpstartEvent_Image_width_operator {
   exists: Boolean
 }
 
-input JumpstartEvent_Image_height_operator {
+input Event_Image_height_operator {
   equals: Float
   not_equals: Float
   greater_than_equal: Float
@@ -2584,7 +2567,7 @@ input JumpstartEvent_Image_height_operator {
   exists: Boolean
 }
 
-input JumpstartEvent_Image_focalX_operator {
+input Event_Image_focalX_operator {
   equals: Float
   not_equals: Float
   greater_than_equal: Float
@@ -2594,7 +2577,7 @@ input JumpstartEvent_Image_focalX_operator {
   exists: Boolean
 }
 
-input JumpstartEvent_Image_focalY_operator {
+input Event_Image_focalY_operator {
   equals: Float
   not_equals: Float
   greater_than_equal: Float
@@ -2604,7 +2587,7 @@ input JumpstartEvent_Image_focalY_operator {
   exists: Boolean
 }
 
-input JumpstartEvent_Image_id_operator {
+input Event_Image_id_operator {
   equals: String
   not_equals: String
   like: String
@@ -2615,40 +2598,40 @@ input JumpstartEvent_Image_id_operator {
   exists: Boolean
 }
 
-input JumpstartEvent_Image_where_and {
-  alt: JumpstartEvent_Image_alt_operator
-  caption: JumpstartEvent_Image_caption_operator
-  updatedAt: JumpstartEvent_Image_updatedAt_operator
-  createdAt: JumpstartEvent_Image_createdAt_operator
-  url: JumpstartEvent_Image_url_operator
-  filename: JumpstartEvent_Image_filename_operator
-  mimeType: JumpstartEvent_Image_mimeType_operator
-  filesize: JumpstartEvent_Image_filesize_operator
-  width: JumpstartEvent_Image_width_operator
-  height: JumpstartEvent_Image_height_operator
-  focalX: JumpstartEvent_Image_focalX_operator
-  focalY: JumpstartEvent_Image_focalY_operator
-  id: JumpstartEvent_Image_id_operator
-  AND: [JumpstartEvent_Image_where_and]
-  OR: [JumpstartEvent_Image_where_or]
+input Event_Image_where_and {
+  alt: Event_Image_alt_operator
+  caption: Event_Image_caption_operator
+  updatedAt: Event_Image_updatedAt_operator
+  createdAt: Event_Image_createdAt_operator
+  url: Event_Image_url_operator
+  filename: Event_Image_filename_operator
+  mimeType: Event_Image_mimeType_operator
+  filesize: Event_Image_filesize_operator
+  width: Event_Image_width_operator
+  height: Event_Image_height_operator
+  focalX: Event_Image_focalX_operator
+  focalY: Event_Image_focalY_operator
+  id: Event_Image_id_operator
+  AND: [Event_Image_where_and]
+  OR: [Event_Image_where_or]
 }
 
-input JumpstartEvent_Image_where_or {
-  alt: JumpstartEvent_Image_alt_operator
-  caption: JumpstartEvent_Image_caption_operator
-  updatedAt: JumpstartEvent_Image_updatedAt_operator
-  createdAt: JumpstartEvent_Image_createdAt_operator
-  url: JumpstartEvent_Image_url_operator
-  filename: JumpstartEvent_Image_filename_operator
-  mimeType: JumpstartEvent_Image_mimeType_operator
-  filesize: JumpstartEvent_Image_filesize_operator
-  width: JumpstartEvent_Image_width_operator
-  height: JumpstartEvent_Image_height_operator
-  focalX: JumpstartEvent_Image_focalX_operator
-  focalY: JumpstartEvent_Image_focalY_operator
-  id: JumpstartEvent_Image_id_operator
-  AND: [JumpstartEvent_Image_where_and]
-  OR: [JumpstartEvent_Image_where_or]
+input Event_Image_where_or {
+  alt: Event_Image_alt_operator
+  caption: Event_Image_caption_operator
+  updatedAt: Event_Image_updatedAt_operator
+  createdAt: Event_Image_createdAt_operator
+  url: Event_Image_url_operator
+  filename: Event_Image_filename_operator
+  mimeType: Event_Image_mimeType_operator
+  filesize: Event_Image_filesize_operator
+  width: Event_Image_width_operator
+  height: Event_Image_height_operator
+  focalX: Event_Image_focalX_operator
+  focalY: Event_Image_focalY_operator
+  id: Event_Image_id_operator
+  AND: [Event_Image_where_and]
+  OR: [Event_Image_where_or]
 }
 
 type Archive_PopulatedDocs_Relationship {
@@ -2663,10 +2646,9 @@ enum Archive_PopulatedDocs_RelationTo {
   societies
   committee
   events
-  jumpstartEvents
 }
 
-union Archive_PopulatedDocs = Post | Project | Sponsor | Society | Committee | Event | JumpstartEvent
+union Archive_PopulatedDocs = Post | Project | Sponsor | Society | Committee | Event
 
 type HomeTop {
   heading: String
@@ -18668,457 +18650,6 @@ type SponsorsDeleteDocAccess {
   where: JSONObject
 }
 
-type JumpstartEvents {
-  docs: [JumpstartEvent]
-  hasNextPage: Boolean
-  hasPrevPage: Boolean
-  limit: Int
-  nextPage: Int
-  offset: Int
-  page: Int
-  pagingCounter: Int
-  prevPage: Int
-  totalDocs: Int
-  totalPages: Int
-}
-
-input JumpstartEvent_where {
-  slug: JumpstartEvent_slug_operator
-  title: JumpstartEvent_title_operator
-  description: JumpstartEvent_description_operator
-  image: JumpstartEvent_image_operator
-  link: JumpstartEvent_link_operator
-  date: JumpstartEvent_date_operator
-  endTime: JumpstartEvent_endTime_operator
-  location: JumpstartEvent_location_operator
-  updatedAt: JumpstartEvent_updatedAt_operator
-  createdAt: JumpstartEvent_createdAt_operator
-  id: JumpstartEvent_id_operator
-  AND: [JumpstartEvent_where_and]
-  OR: [JumpstartEvent_where_or]
-}
-
-input JumpstartEvent_slug_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input JumpstartEvent_title_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-}
-
-input JumpstartEvent_description_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input JumpstartEvent_image_operator {
-  equals: String
-  not_equals: String
-  exists: Boolean
-}
-
-input JumpstartEvent_link_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input JumpstartEvent_date_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-}
-
-input JumpstartEvent_endTime_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input JumpstartEvent_location_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input JumpstartEvent_updatedAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input JumpstartEvent_createdAt_operator {
-  equals: DateTime
-  not_equals: DateTime
-  greater_than_equal: DateTime
-  greater_than: DateTime
-  less_than_equal: DateTime
-  less_than: DateTime
-  like: DateTime
-  exists: Boolean
-}
-
-input JumpstartEvent_id_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
-input JumpstartEvent_where_and {
-  slug: JumpstartEvent_slug_operator
-  title: JumpstartEvent_title_operator
-  description: JumpstartEvent_description_operator
-  image: JumpstartEvent_image_operator
-  link: JumpstartEvent_link_operator
-  date: JumpstartEvent_date_operator
-  endTime: JumpstartEvent_endTime_operator
-  location: JumpstartEvent_location_operator
-  updatedAt: JumpstartEvent_updatedAt_operator
-  createdAt: JumpstartEvent_createdAt_operator
-  id: JumpstartEvent_id_operator
-  AND: [JumpstartEvent_where_and]
-  OR: [JumpstartEvent_where_or]
-}
-
-input JumpstartEvent_where_or {
-  slug: JumpstartEvent_slug_operator
-  title: JumpstartEvent_title_operator
-  description: JumpstartEvent_description_operator
-  image: JumpstartEvent_image_operator
-  link: JumpstartEvent_link_operator
-  date: JumpstartEvent_date_operator
-  endTime: JumpstartEvent_endTime_operator
-  location: JumpstartEvent_location_operator
-  updatedAt: JumpstartEvent_updatedAt_operator
-  createdAt: JumpstartEvent_createdAt_operator
-  id: JumpstartEvent_id_operator
-  AND: [JumpstartEvent_where_and]
-  OR: [JumpstartEvent_where_or]
-}
-
-type countJumpstartEvents {
-  totalDocs: Int
-}
-
-type jumpstartEventsDocAccess {
-  fields: JumpstartEventsDocAccessFields
-  create: JumpstartEventsCreateDocAccess
-  read: JumpstartEventsReadDocAccess
-  update: JumpstartEventsUpdateDocAccess
-  delete: JumpstartEventsDeleteDocAccess
-}
-
-type JumpstartEventsDocAccessFields {
-  slug: JumpstartEventsDocAccessFields_slug
-  title: JumpstartEventsDocAccessFields_title
-  description: JumpstartEventsDocAccessFields_description
-  image: JumpstartEventsDocAccessFields_image
-  link: JumpstartEventsDocAccessFields_link
-  date: JumpstartEventsDocAccessFields_date
-  endTime: JumpstartEventsDocAccessFields_endTime
-  location: JumpstartEventsDocAccessFields_location
-  updatedAt: JumpstartEventsDocAccessFields_updatedAt
-  createdAt: JumpstartEventsDocAccessFields_createdAt
-}
-
-type JumpstartEventsDocAccessFields_slug {
-  create: JumpstartEventsDocAccessFields_slug_Create
-  read: JumpstartEventsDocAccessFields_slug_Read
-  update: JumpstartEventsDocAccessFields_slug_Update
-  delete: JumpstartEventsDocAccessFields_slug_Delete
-}
-
-type JumpstartEventsDocAccessFields_slug_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_slug_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_slug_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_slug_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_title {
-  create: JumpstartEventsDocAccessFields_title_Create
-  read: JumpstartEventsDocAccessFields_title_Read
-  update: JumpstartEventsDocAccessFields_title_Update
-  delete: JumpstartEventsDocAccessFields_title_Delete
-}
-
-type JumpstartEventsDocAccessFields_title_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_title_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_title_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_title_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_description {
-  create: JumpstartEventsDocAccessFields_description_Create
-  read: JumpstartEventsDocAccessFields_description_Read
-  update: JumpstartEventsDocAccessFields_description_Update
-  delete: JumpstartEventsDocAccessFields_description_Delete
-}
-
-type JumpstartEventsDocAccessFields_description_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_description_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_description_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_description_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_image {
-  create: JumpstartEventsDocAccessFields_image_Create
-  read: JumpstartEventsDocAccessFields_image_Read
-  update: JumpstartEventsDocAccessFields_image_Update
-  delete: JumpstartEventsDocAccessFields_image_Delete
-}
-
-type JumpstartEventsDocAccessFields_image_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_image_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_image_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_image_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_link {
-  create: JumpstartEventsDocAccessFields_link_Create
-  read: JumpstartEventsDocAccessFields_link_Read
-  update: JumpstartEventsDocAccessFields_link_Update
-  delete: JumpstartEventsDocAccessFields_link_Delete
-}
-
-type JumpstartEventsDocAccessFields_link_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_link_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_link_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_link_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_date {
-  create: JumpstartEventsDocAccessFields_date_Create
-  read: JumpstartEventsDocAccessFields_date_Read
-  update: JumpstartEventsDocAccessFields_date_Update
-  delete: JumpstartEventsDocAccessFields_date_Delete
-}
-
-type JumpstartEventsDocAccessFields_date_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_date_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_date_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_date_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_endTime {
-  create: JumpstartEventsDocAccessFields_endTime_Create
-  read: JumpstartEventsDocAccessFields_endTime_Read
-  update: JumpstartEventsDocAccessFields_endTime_Update
-  delete: JumpstartEventsDocAccessFields_endTime_Delete
-}
-
-type JumpstartEventsDocAccessFields_endTime_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_endTime_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_endTime_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_endTime_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_location {
-  create: JumpstartEventsDocAccessFields_location_Create
-  read: JumpstartEventsDocAccessFields_location_Read
-  update: JumpstartEventsDocAccessFields_location_Update
-  delete: JumpstartEventsDocAccessFields_location_Delete
-}
-
-type JumpstartEventsDocAccessFields_location_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_location_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_location_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_location_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_updatedAt {
-  create: JumpstartEventsDocAccessFields_updatedAt_Create
-  read: JumpstartEventsDocAccessFields_updatedAt_Read
-  update: JumpstartEventsDocAccessFields_updatedAt_Update
-  delete: JumpstartEventsDocAccessFields_updatedAt_Delete
-}
-
-type JumpstartEventsDocAccessFields_updatedAt_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_updatedAt_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_updatedAt_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_updatedAt_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_createdAt {
-  create: JumpstartEventsDocAccessFields_createdAt_Create
-  read: JumpstartEventsDocAccessFields_createdAt_Read
-  update: JumpstartEventsDocAccessFields_createdAt_Update
-  delete: JumpstartEventsDocAccessFields_createdAt_Delete
-}
-
-type JumpstartEventsDocAccessFields_createdAt_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_createdAt_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_createdAt_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsDocAccessFields_createdAt_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsCreateDocAccess {
-  permission: Boolean!
-  where: JSONObject
-}
-
-type JumpstartEventsReadDocAccess {
-  permission: Boolean!
-  where: JSONObject
-}
-
-type JumpstartEventsUpdateDocAccess {
-  permission: Boolean!
-  where: JSONObject
-}
-
-type JumpstartEventsDeleteDocAccess {
-  permission: Boolean!
-  where: JSONObject
-}
-
 type Societies {
   docs: [Society]
   hasNextPage: Boolean
@@ -20423,6 +19954,8 @@ input Event_where {
   location: Event_location_operator
   description: Event_description_operator
   link: Event_link_operator
+  image: Event_image_operator
+  isJumpstart: Event_isJumpstart_operator
   updatedAt: Event_updatedAt_operator
   createdAt: Event_createdAt_operator
   AND: [Event_where_and]
@@ -20503,6 +20036,18 @@ input Event_link_operator {
   exists: Boolean
 }
 
+input Event_image_operator {
+  equals: String
+  not_equals: String
+  exists: Boolean
+}
+
+input Event_isJumpstart_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
 input Event_updatedAt_operator {
   equals: DateTime
   not_equals: DateTime
@@ -20533,6 +20078,8 @@ input Event_where_and {
   location: Event_location_operator
   description: Event_description_operator
   link: Event_link_operator
+  image: Event_image_operator
+  isJumpstart: Event_isJumpstart_operator
   updatedAt: Event_updatedAt_operator
   createdAt: Event_createdAt_operator
   AND: [Event_where_and]
@@ -20547,6 +20094,8 @@ input Event_where_or {
   location: Event_location_operator
   description: Event_description_operator
   link: Event_link_operator
+  image: Event_image_operator
+  isJumpstart: Event_isJumpstart_operator
   updatedAt: Event_updatedAt_operator
   createdAt: Event_createdAt_operator
   AND: [Event_where_and]
@@ -20573,6 +20122,8 @@ type EventsDocAccessFields {
   location: EventsDocAccessFields_location
   description: EventsDocAccessFields_description
   link: EventsDocAccessFields_link
+  image: EventsDocAccessFields_image
+  isJumpstart: EventsDocAccessFields_isJumpstart
   updatedAt: EventsDocAccessFields_updatedAt
   createdAt: EventsDocAccessFields_createdAt
 }
@@ -20735,6 +20286,52 @@ type EventsDocAccessFields_link_Update {
 }
 
 type EventsDocAccessFields_link_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_image {
+  create: EventsDocAccessFields_image_Create
+  read: EventsDocAccessFields_image_Read
+  update: EventsDocAccessFields_image_Update
+  delete: EventsDocAccessFields_image_Delete
+}
+
+type EventsDocAccessFields_image_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_image_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_image_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_image_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_isJumpstart {
+  create: EventsDocAccessFields_isJumpstart_Create
+  read: EventsDocAccessFields_isJumpstart_Read
+  update: EventsDocAccessFields_isJumpstart_Update
+  delete: EventsDocAccessFields_isJumpstart_Delete
+}
+
+type EventsDocAccessFields_isJumpstart_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_isJumpstart_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_isJumpstart_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_isJumpstart_Delete {
   permission: Boolean!
 }
 
@@ -23249,7 +22846,6 @@ type Access {
   orderedMerch: orderedMerchAccess
   orders: ordersAccess
   sponsors: sponsorsAccess
-  jumpstartEvents: jumpstartEventsAccess
   societies: societiesAccess
   committee: committeeAccess
   events: eventsAccess
@@ -29985,277 +29581,6 @@ type SponsorsDeleteAccess {
   where: JSONObject
 }
 
-type jumpstartEventsAccess {
-  fields: JumpstartEventsFields
-  create: JumpstartEventsCreateAccess
-  read: JumpstartEventsReadAccess
-  update: JumpstartEventsUpdateAccess
-  delete: JumpstartEventsDeleteAccess
-}
-
-type JumpstartEventsFields {
-  slug: JumpstartEventsFields_slug
-  title: JumpstartEventsFields_title
-  description: JumpstartEventsFields_description
-  image: JumpstartEventsFields_image
-  link: JumpstartEventsFields_link
-  date: JumpstartEventsFields_date
-  endTime: JumpstartEventsFields_endTime
-  location: JumpstartEventsFields_location
-  updatedAt: JumpstartEventsFields_updatedAt
-  createdAt: JumpstartEventsFields_createdAt
-}
-
-type JumpstartEventsFields_slug {
-  create: JumpstartEventsFields_slug_Create
-  read: JumpstartEventsFields_slug_Read
-  update: JumpstartEventsFields_slug_Update
-  delete: JumpstartEventsFields_slug_Delete
-}
-
-type JumpstartEventsFields_slug_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_slug_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_slug_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_slug_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_title {
-  create: JumpstartEventsFields_title_Create
-  read: JumpstartEventsFields_title_Read
-  update: JumpstartEventsFields_title_Update
-  delete: JumpstartEventsFields_title_Delete
-}
-
-type JumpstartEventsFields_title_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_title_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_title_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_title_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_description {
-  create: JumpstartEventsFields_description_Create
-  read: JumpstartEventsFields_description_Read
-  update: JumpstartEventsFields_description_Update
-  delete: JumpstartEventsFields_description_Delete
-}
-
-type JumpstartEventsFields_description_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_description_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_description_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_description_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_image {
-  create: JumpstartEventsFields_image_Create
-  read: JumpstartEventsFields_image_Read
-  update: JumpstartEventsFields_image_Update
-  delete: JumpstartEventsFields_image_Delete
-}
-
-type JumpstartEventsFields_image_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_image_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_image_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_image_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_link {
-  create: JumpstartEventsFields_link_Create
-  read: JumpstartEventsFields_link_Read
-  update: JumpstartEventsFields_link_Update
-  delete: JumpstartEventsFields_link_Delete
-}
-
-type JumpstartEventsFields_link_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_link_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_link_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_link_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_date {
-  create: JumpstartEventsFields_date_Create
-  read: JumpstartEventsFields_date_Read
-  update: JumpstartEventsFields_date_Update
-  delete: JumpstartEventsFields_date_Delete
-}
-
-type JumpstartEventsFields_date_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_date_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_date_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_date_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_endTime {
-  create: JumpstartEventsFields_endTime_Create
-  read: JumpstartEventsFields_endTime_Read
-  update: JumpstartEventsFields_endTime_Update
-  delete: JumpstartEventsFields_endTime_Delete
-}
-
-type JumpstartEventsFields_endTime_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_endTime_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_endTime_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_endTime_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_location {
-  create: JumpstartEventsFields_location_Create
-  read: JumpstartEventsFields_location_Read
-  update: JumpstartEventsFields_location_Update
-  delete: JumpstartEventsFields_location_Delete
-}
-
-type JumpstartEventsFields_location_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_location_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_location_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_location_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_updatedAt {
-  create: JumpstartEventsFields_updatedAt_Create
-  read: JumpstartEventsFields_updatedAt_Read
-  update: JumpstartEventsFields_updatedAt_Update
-  delete: JumpstartEventsFields_updatedAt_Delete
-}
-
-type JumpstartEventsFields_updatedAt_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_updatedAt_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_updatedAt_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_updatedAt_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_createdAt {
-  create: JumpstartEventsFields_createdAt_Create
-  read: JumpstartEventsFields_createdAt_Read
-  update: JumpstartEventsFields_createdAt_Update
-  delete: JumpstartEventsFields_createdAt_Delete
-}
-
-type JumpstartEventsFields_createdAt_Create {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_createdAt_Read {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_createdAt_Update {
-  permission: Boolean!
-}
-
-type JumpstartEventsFields_createdAt_Delete {
-  permission: Boolean!
-}
-
-type JumpstartEventsCreateAccess {
-  permission: Boolean!
-  where: JSONObject
-}
-
-type JumpstartEventsReadAccess {
-  permission: Boolean!
-  where: JSONObject
-}
-
-type JumpstartEventsUpdateAccess {
-  permission: Boolean!
-  where: JSONObject
-}
-
-type JumpstartEventsDeleteAccess {
-  permission: Boolean!
-  where: JSONObject
-}
-
 type societiesAccess {
   fields: SocietiesFields
   create: SocietiesCreateAccess
@@ -31086,6 +30411,8 @@ type EventsFields {
   location: EventsFields_location
   description: EventsFields_description
   link: EventsFields_link
+  image: EventsFields_image
+  isJumpstart: EventsFields_isJumpstart
   updatedAt: EventsFields_updatedAt
   createdAt: EventsFields_createdAt
 }
@@ -31248,6 +30575,52 @@ type EventsFields_link_Update {
 }
 
 type EventsFields_link_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_image {
+  create: EventsFields_image_Create
+  read: EventsFields_image_Read
+  update: EventsFields_image_Update
+  delete: EventsFields_image_Delete
+}
+
+type EventsFields_image_Create {
+  permission: Boolean!
+}
+
+type EventsFields_image_Read {
+  permission: Boolean!
+}
+
+type EventsFields_image_Update {
+  permission: Boolean!
+}
+
+type EventsFields_image_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_isJumpstart {
+  create: EventsFields_isJumpstart_Create
+  read: EventsFields_isJumpstart_Read
+  update: EventsFields_isJumpstart_Update
+  delete: EventsFields_isJumpstart_Delete
+}
+
+type EventsFields_isJumpstart_Create {
+  permission: Boolean!
+}
+
+type EventsFields_isJumpstart_Read {
+  permission: Boolean!
+}
+
+type EventsFields_isJumpstart_Update {
+  permission: Boolean!
+}
+
+type EventsFields_isJumpstart_Delete {
   permission: Boolean!
 }
 
@@ -33065,9 +32438,6 @@ type Mutation {
   createSponsor(data: mutationSponsorInput!): Sponsor
   updateSponsor(id: String!, autosave: Boolean, data: mutationSponsorUpdateInput!): Sponsor
   deleteSponsor(id: String!): Sponsor
-  createJumpstartEvent(data: mutationJumpstartEventInput!): JumpstartEvent
-  updateJumpstartEvent(id: String!, autosave: Boolean, data: mutationJumpstartEventUpdateInput!): JumpstartEvent
-  deleteJumpstartEvent(id: String!): JumpstartEvent
   createSociety(data: mutationSocietyInput!): Society
   updateSociety(id: String!, autosave: Boolean, data: mutationSocietyUpdateInput!): Society
   deleteSociety(id: String!): Society
@@ -34167,32 +33537,6 @@ enum SponsorUpdate_Links_Link_appearance_MutationInput {
   secondary
 }
 
-input mutationJumpstartEventInput {
-  slug: String
-  title: String!
-  description: String
-  image: String
-  link: String
-  date: String!
-  endTime: String
-  location: String
-  updatedAt: String
-  createdAt: String
-}
-
-input mutationJumpstartEventUpdateInput {
-  slug: String
-  title: String
-  description: String
-  image: String
-  link: String
-  date: String
-  endTime: String
-  location: String
-  updatedAt: String
-  createdAt: String
-}
-
 input mutationSocietyInput {
   slug: String
   id: String!
@@ -34371,6 +33715,8 @@ input mutationEventInput {
   location: String
   description: String
   link: String
+  image: String
+  isJumpstart: Boolean
   updatedAt: String
   createdAt: String
 }
@@ -34382,6 +33728,8 @@ input mutationEventUpdateInput {
   location: String
   description: String
   link: String
+  image: String
+  isJumpstart: Boolean
   updatedAt: String
   createdAt: String
 }

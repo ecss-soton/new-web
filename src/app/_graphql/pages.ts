@@ -1,5 +1,6 @@
 import {
   ARCHIVE_BLOCK,
+  BUTTON,
   CALL_TO_ACTION,
   CONTENT,
   HOME_TOP,
@@ -45,6 +46,7 @@ export const PAGE = `
           ${HOME_TOP}
           ${INTRO}
           ${NEXT_EVENT}
+          ${BUTTON}
         }
         ${META}
       }
