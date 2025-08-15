@@ -25,7 +25,7 @@ const blockComponents = {
   relatedPosts: RelatedPosts,
   comments: CommentsBlock,
   nextEvent: NextEventBlock,
-  Button: ButtonBlock,
+  button: ButtonBlock,
 }
 
 export const Blocks: React.FC<{
