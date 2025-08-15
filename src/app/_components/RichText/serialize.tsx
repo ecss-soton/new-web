@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import escapeHTML from 'escape-html'
+import Link from 'next/link'
 import { Text } from 'slate'
 
 import { Label } from '../Label'
@@ -93,7 +94,15 @@ const serialize = (children?: Children): React.ReactNode[] =>
             {serialize(node?.children)}
           </CMSLink>
         )
+      case 'inline-link':
+        if (Text.isText(node.children[0]) && node.children[0].text.split(';').length > 1) {
+          const linkText = node.children[0].text.split(';')[0]
+          const linkURL = node.children[0].text.split(';')[1]
 
+          return <Link href={linkURL}>{linkText}</Link>
+        } else {
+          return <p key={i}>Inline link is formatted wrong!</p>
+        }
       case 'label':
         return <Label key={i}>{serialize(node?.children)}</Label>
 
