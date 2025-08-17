@@ -1,0 +1,10 @@
+@import "~payload/scss";
+
+.rich-text-inline-link {
+  color: blue;
+  background-color: rgba(0, 0, 255, 0.1);
+  padding: 2px 4px;
+  border-radius: 3px;
+  text-decoration: underline;
+  font-weight: 500;
+}
