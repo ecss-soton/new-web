@@ -54,6 +54,21 @@ const serialize = (children?: Children): React.ReactNode[] =>
         )
       }
 
+      if (node.inlineLink || node['inline-link']) {
+        try {
+          const linkText = node.text.split(';')[0]
+          const linkURL = node.text.split(';')[1]
+
+          text = (
+            <Link href={linkURL} key={i}>
+              {linkText}
+            </Link>
+          )
+        } catch {
+          text = <span key={i}>!ERROR</span>
+        }
+      }
+
       return <Fragment key={i}>{text}</Fragment>
     }
 
@@ -94,15 +109,15 @@ const serialize = (children?: Children): React.ReactNode[] =>
             {serialize(node?.children)}
           </CMSLink>
         )
-      case 'inline-link':
-        if (Text.isText(node.children[0]) && node.children[0].text.split(';').length > 1) {
-          const linkText = node.children[0].text.split(';')[0]
-          const linkURL = node.children[0].text.split(';')[1]
+      // case 'inline-link':
+      //   if (Text.isText(node.children[0]) && node.children[0].text.split(';').length > 1) {
+      //     const linkText = node.children[0].text.split(';')[0]
+      //     const linkURL = node.children[0].text.split(';')[1]
 
-          return <Link href={linkURL}>{linkText}</Link>
-        } else {
-          return <p key={i}>Inline link is formatted wrong!</p>
-        }
+      //     return <Link href={linkURL}>{linkText}</Link>
+      //   } else {
+      //     return <p key={i}>Inline link is formatted wrong!</p>
+      //   }
       case 'label':
         return <Label key={i}>{serialize(node?.children)}</Label>
 

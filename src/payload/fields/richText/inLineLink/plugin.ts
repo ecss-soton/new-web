@@ -1,7 +1,7 @@
-import type { RichTextCustomElement } from '@payloadcms/richtext-slate/dist/types'
+import type { RichTextCustomLeaf } from '@payloadcms/richtext-slate/dist/types'
 import type { BaseEditor } from 'slate'
 
-type RichTextPlugin = Exclude<RichTextCustomElement['plugins'], undefined>[0]
+type RichTextPlugin = Exclude<RichTextCustomLeaf['plugins'], undefined>[0]
 
 const withInLineLink: RichTextPlugin = incomingEditor => {
   const editor: BaseEditor & {
