@@ -1,13 +1,13 @@
-import type { RichTextCustomElement } from '@payloadcms/richtext-slate/dist/types'
+import type { RichTextCustomLeaf } from '@payloadcms/richtext-slate/dist/types'
 
 import Button from './Button'
-import Element from './Element'
+import Leaf from './Leaf'
 import withInLineLink from './plugin'
 
-const richTextInLineLink: RichTextCustomElement = {
+const richTextInLineLink: RichTextCustomLeaf = {
   name: 'inline-link',
   Button,
-  Element,
+  Leaf,
   plugins: [withInLineLink],
 }
 
