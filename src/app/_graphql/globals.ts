@@ -1,4 +1,5 @@
 import { LINK_FIELDS } from './link'
+import { MEDIA_FIELDS } from './media'
 
 export const HEADER = `
   Header {
@@ -18,6 +19,7 @@ export const FOOTER = `
   Footer {
     navItems {
       link ${LINK_FIELDS({ disableAppearance: true })}
+      icon { ${MEDIA_FIELDS} }
 		}
   }
 `

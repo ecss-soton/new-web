@@ -1,16 +1,18 @@
 import React from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 
-import { Footer } from '../../../payload/payload-types'
+import type { Footer as FooterType } from '../../../payload/payload-types'
 import { fetchFooter } from '../../_api/fetchGlobals'
 import { ThemeSelector } from '../../_providers/Theme/ThemeSelector'
 import { Gutter } from '../Gutter'
 import { CMSLink } from '../Link'
+import { Media } from '../Media'
 
 import classes from './index.module.scss'
 
 export async function Footer() {
-  let footer: Footer | null = null
+  let footer: FooterType | null = null
 
   try {
     footer = await fetchFooter()
@@ -33,8 +35,14 @@ export async function Footer() {
         </Link>
         <nav className={classes.nav}>
           <ThemeSelector />
-          {navItems.map(({ link }, i) => {
-            return <CMSLink key={i} {...link} />
+          {navItems.map(({ link, icon }, i) => {
+            return icon ? (
+              <Link key={i} href={link.url}>
+                <Media resource={icon} className={classes.icon} imgClassName={classes.iconImage} />
+              </Link>
+            ) : (
+              <CMSLink key={i} {...link} />
+            )
           })}
         </nav>
       </Gutter>

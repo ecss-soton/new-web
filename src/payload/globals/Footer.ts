@@ -16,6 +16,12 @@ export const Footer: GlobalConfig = {
         link({
           appearances: false,
         }),
+        {
+          name: 'icon',
+          label: 'SVG Icon',
+          type: 'upload',
+          relationTo: 'media',
+        },
       ],
     },
   ],
