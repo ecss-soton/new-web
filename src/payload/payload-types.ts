@@ -1442,6 +1442,7 @@ export interface Footer {
           url?: string | null;
           label: string;
         };
+        icon?: string | Media | null;
         id?: string | null;
       }[]
     | null;
