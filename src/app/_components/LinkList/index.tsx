@@ -9,7 +9,7 @@ type LinkListType = {
 export const LinkList: React.FC<LinkListType> = ({ links }) => {
   return (
     // WARNING THIS IS CURSED AND STUPID FIX THIS
-    <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}> 
+    <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
       {links.map((link, index) => {
         return (
           <CMSLink
