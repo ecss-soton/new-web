@@ -404,7 +404,7 @@ input Page_Hero_Media_where_or {
   OR: [Page_Hero_Media_where_or]
 }
 
-union Page_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent
+union Page_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent | Button
 
 type Cta {
   invertBackground: Boolean
@@ -3615,6 +3615,22 @@ input NextEvent_Media_where_or {
   OR: [NextEvent_Media_where_or]
 }
 
+type Button {
+  text: String
+  link: String
+  appearance: Button_appearance
+  id: String
+  blockName: String
+  blockType: String
+}
+
+enum Button_appearance {
+  default
+  primary
+  secondary
+  none
+}
+
 type Page_Meta {
   title: String
   description: String
@@ -5045,7 +5061,7 @@ input PageVersion_Version_Hero_Media_where_or {
   OR: [PageVersion_Version_Hero_Media_where_or]
 }
 
-union PageVersion_Version_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent
+union PageVersion_Version_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent | Button
 
 type PageVersion_Version_Meta {
   title: String
@@ -22531,6 +22547,7 @@ type Footer {
 
 type Footer_NavItems {
   link: Footer_NavItems_Link
+  icon(where: Footer_NavItems_Icon_where): Media
   id: String
 }
 
@@ -22557,6 +22574,194 @@ enum Footer_NavItems_Link_Reference_RelationTo {
 }
 
 union Footer_NavItems_Link_Reference = Page
+
+input Footer_NavItems_Icon_where {
+  alt: Footer_NavItems_Icon_alt_operator
+  caption: Footer_NavItems_Icon_caption_operator
+  updatedAt: Footer_NavItems_Icon_updatedAt_operator
+  createdAt: Footer_NavItems_Icon_createdAt_operator
+  url: Footer_NavItems_Icon_url_operator
+  filename: Footer_NavItems_Icon_filename_operator
+  mimeType: Footer_NavItems_Icon_mimeType_operator
+  filesize: Footer_NavItems_Icon_filesize_operator
+  width: Footer_NavItems_Icon_width_operator
+  height: Footer_NavItems_Icon_height_operator
+  focalX: Footer_NavItems_Icon_focalX_operator
+  focalY: Footer_NavItems_Icon_focalY_operator
+  id: Footer_NavItems_Icon_id_operator
+  AND: [Footer_NavItems_Icon_where_and]
+  OR: [Footer_NavItems_Icon_where_or]
+}
+
+input Footer_NavItems_Icon_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Footer_NavItems_Icon_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Footer_NavItems_Icon_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Footer_NavItems_Icon_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Footer_NavItems_Icon_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Footer_NavItems_Icon_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Footer_NavItems_Icon_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Footer_NavItems_Icon_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Footer_NavItems_Icon_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Footer_NavItems_Icon_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Footer_NavItems_Icon_focalX_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Footer_NavItems_Icon_focalY_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Footer_NavItems_Icon_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Footer_NavItems_Icon_where_and {
+  alt: Footer_NavItems_Icon_alt_operator
+  caption: Footer_NavItems_Icon_caption_operator
+  updatedAt: Footer_NavItems_Icon_updatedAt_operator
+  createdAt: Footer_NavItems_Icon_createdAt_operator
+  url: Footer_NavItems_Icon_url_operator
+  filename: Footer_NavItems_Icon_filename_operator
+  mimeType: Footer_NavItems_Icon_mimeType_operator
+  filesize: Footer_NavItems_Icon_filesize_operator
+  width: Footer_NavItems_Icon_width_operator
+  height: Footer_NavItems_Icon_height_operator
+  focalX: Footer_NavItems_Icon_focalX_operator
+  focalY: Footer_NavItems_Icon_focalY_operator
+  id: Footer_NavItems_Icon_id_operator
+  AND: [Footer_NavItems_Icon_where_and]
+  OR: [Footer_NavItems_Icon_where_or]
+}
+
+input Footer_NavItems_Icon_where_or {
+  alt: Footer_NavItems_Icon_alt_operator
+  caption: Footer_NavItems_Icon_caption_operator
+  updatedAt: Footer_NavItems_Icon_updatedAt_operator
+  createdAt: Footer_NavItems_Icon_createdAt_operator
+  url: Footer_NavItems_Icon_url_operator
+  filename: Footer_NavItems_Icon_filename_operator
+  mimeType: Footer_NavItems_Icon_mimeType_operator
+  filesize: Footer_NavItems_Icon_filesize_operator
+  width: Footer_NavItems_Icon_width_operator
+  height: Footer_NavItems_Icon_height_operator
+  focalX: Footer_NavItems_Icon_focalX_operator
+  focalY: Footer_NavItems_Icon_focalY_operator
+  id: Footer_NavItems_Icon_id_operator
+  AND: [Footer_NavItems_Icon_where_and]
+  OR: [Footer_NavItems_Icon_where_or]
+}
 
 type footerDocAccess {
   fields: FooterDocAccessFields
@@ -22596,6 +22801,7 @@ type FooterDocAccessFields_navItems_Delete {
 
 type FooterDocAccessFields_navItems_Fields {
   link: FooterDocAccessFields_navItems_link
+  icon: FooterDocAccessFields_navItems_icon
   id: FooterDocAccessFields_navItems_id
 }
 
@@ -22743,6 +22949,29 @@ type FooterDocAccessFields_navItems_link_label_Update {
 }
 
 type FooterDocAccessFields_navItems_link_label_Delete {
+  permission: Boolean!
+}
+
+type FooterDocAccessFields_navItems_icon {
+  create: FooterDocAccessFields_navItems_icon_Create
+  read: FooterDocAccessFields_navItems_icon_Read
+  update: FooterDocAccessFields_navItems_icon_Update
+  delete: FooterDocAccessFields_navItems_icon_Delete
+}
+
+type FooterDocAccessFields_navItems_icon_Create {
+  permission: Boolean!
+}
+
+type FooterDocAccessFields_navItems_icon_Read {
+  permission: Boolean!
+}
+
+type FooterDocAccessFields_navItems_icon_Update {
+  permission: Boolean!
+}
+
+type FooterDocAccessFields_navItems_icon_Delete {
   permission: Boolean!
 }
 
@@ -32138,6 +32367,7 @@ type FooterFields_navItems_Delete {
 
 type FooterFields_navItems_Fields {
   link: FooterFields_navItems_link
+  icon: FooterFields_navItems_icon
   id: FooterFields_navItems_id
 }
 
@@ -32285,6 +32515,29 @@ type FooterFields_navItems_link_label_Update {
 }
 
 type FooterFields_navItems_link_label_Delete {
+  permission: Boolean!
+}
+
+type FooterFields_navItems_icon {
+  create: FooterFields_navItems_icon_Create
+  read: FooterFields_navItems_icon_Read
+  update: FooterFields_navItems_icon_Update
+  delete: FooterFields_navItems_icon_Delete
+}
+
+type FooterFields_navItems_icon_Create {
+  permission: Boolean!
+}
+
+type FooterFields_navItems_icon_Read {
+  permission: Boolean!
+}
+
+type FooterFields_navItems_icon_Update {
+  permission: Boolean!
+}
+
+type FooterFields_navItems_icon_Delete {
   permission: Boolean!
 }
 
@@ -33937,6 +34190,7 @@ input mutationFooterInput {
 
 input mutationFooter_NavItemsInput {
   link: mutationFooter_NavItems_LinkInput
+  icon: String
   id: String
 }
 
