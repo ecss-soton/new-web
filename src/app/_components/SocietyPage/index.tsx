@@ -1,11 +1,13 @@
 import React from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { Society } from '../../../payload/payload-types'
 import { LowImpactHero } from '../../_heros/LowImpact'
+import { Button } from '../Button'
 import { Gutter } from '../Gutter'
 import { LinkList } from '../LinkList'
-import { Media as MediaComp } from '../Media'
+import { Media } from '../Media'
 import RichText from '../RichText'
 
 import classes from './index.module.scss'
@@ -29,32 +31,100 @@ export const SocietyPage: React.FC<{
     <>
       {name && <LowImpactHero type="lowImpact" title={name} />}
       <Gutter>
-        {website && (
-          <Link href={website} className={classes.mediaWrapper}>
-            {!logo && <div className={classes.placeholder}>No image</div>}
-            {logo && typeof logo !== 'string' && (
-              <MediaComp imgClassName={classes.image} resource={logo} fill />
-            )}
-          </Link>
+        {logo && (
+          <Media className={classes.imageContainer} imgClassName={classes.image} resource={logo} />
         )}
 
         <RichText content={description} />
 
-        <div>{website && <Link href={website}>Website</Link>}</div>
+        <div className={classes.links}>
+          <div>
+            {website && (
+              <Link href={website}>
+                <Image
+                  src="/link-svgrepo-com.svg"
+                  alt="website"
+                  width={40}
+                  height={40}
+                  className={classes.icon}
+                />
+              </Link>
+            )}
+          </div>
 
-        <div>{email && <Link href={'mailto: ' + email}>Email</Link>}</div>
+          <div>
+            {email && (
+              <Link href={'mailto: ' + email}>
+                <Image
+                  src="/mail-142.svg"
+                  alt="mail"
+                  width={40}
+                  height={40}
+                  className={classes.icon}
+                />
+              </Link>
+            )}
+          </div>
 
-        <div>{susu && <Link href={susu}>Susu Page</Link>}</div>
+          <div>
+            {discord && (
+              <Link href={discord}>
+                <Image
+                  src="/discord.svg"
+                  alt="discord"
+                  width={40}
+                  height={40}
+                  className={classes.icon}
+                />
+              </Link>
+            )}
+          </div>
 
-        <div>{github && <Link href={'https://github.com/' + github}>Github</Link>}</div>
+          <div>
+            {instagram && (
+              <Link href={'https://instagram.com/' + instagram}>
+                <Image
+                  src="/instagram-logo-facebook-2-svgrepo-com.svg"
+                  alt="instagram"
+                  width={40}
+                  height={40}
+                  className={classes.icon}
+                />
+              </Link>
+            )}
+          </div>
 
-        <div>{instagram && <Link href={'https://instagram.com/' + instagram}>Instagram</Link>}</div>
+          <div>
+            {github && (
+              <Link href={'https://github.com/' + github}>
+                <Image
+                  src="/github-mark.svg"
+                  alt="github"
+                  width={40}
+                  height={40}
+                  className={classes.icon}
+                />
+              </Link>
+            )}
+          </div>
 
-        <div>{discord && <Link href={discord}>Discord</Link>}</div>
+          <div>
+            {susu && (
+              <Button
+                href={susu}
+                label="SUSU Page"
+                appearance="secondary"
+                className={classes.icon}
+              />
+            )}
+          </div>
 
-        <div>
           <LinkList links={links.map(link => link.link)} />
         </div>
+
+        {/* <div>
+          <LinkList links={links.map(link => link.link)} />
+        </div> */}
       </Gutter>
     </>
   )
