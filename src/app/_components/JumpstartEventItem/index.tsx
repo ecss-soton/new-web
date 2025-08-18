@@ -103,19 +103,23 @@ export const JumpstartEventItem: React.FC<{
         {location && (
           <div className={classes.iconLine}>
             <Image src="/location-pin-svgrepo-com.svg" alt="location icon" width={16} height={16} />
-            <span>{location}</span>
+            <span className={classes.linkSpan}>{location}</span>
           </div>
         )}
         {date && (
           <div className={classes.iconLine}>
             <Image src="/calendar-svgrepo-com.svg" alt="calander icon" width={16} height={16} />
-            <span>{day + ' ' + monthName + ' ' + time + '-' + (endTime ? concEndTime : '')}</span>
+            <span className={classes.linkSpan}>
+              {day + ' ' + monthName + ' ' + time + '-' + (endTime ? concEndTime : '')}
+            </span>
           </div>
         )}
         {link && (
           <div className={classes.iconLine}>
             <Image src="/link-svgrepo-com.svg" alt="link icon" width={16} height={16} />
-            <Link href={link}>{link}</Link>
+            <Link className={classes.linkSpan} href={link}>
+              {link}
+            </Link>
           </div>
         )}
       </div>
