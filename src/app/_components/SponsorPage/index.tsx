@@ -1,11 +1,12 @@
 import React from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { Sponsor } from '../../../payload/payload-types'
 import { LowImpactHero } from '../../_heros/LowImpact'
 import { Gutter } from '../Gutter'
 import { LinkList } from '../LinkList'
-import { Media as MediaComp } from '../Media'
+import { Media } from '../Media'
 import RichText from '../RichText'
 
 import classes from './index.module.scss'
@@ -29,12 +30,9 @@ export const SponsorPage: React.FC<{
     <>
       {name && <LowImpactHero type="lowImpact" title={name} />}
       <Gutter>
-        <Link href={websiteUrl} className={classes.mediaWrapper}>
-          {!logo && <div className={classes.placeholder}>No image</div>}
-          {logo && typeof logo !== 'string' && (
-            <MediaComp imgClassName={classes.image} resource={logo} fill />
-          )}
-        </Link>
+        {logo && (
+          <Media className={classes.imageContainer} imgClassName={classes.image} resource={logo} />
+        )}
 
         <div>
           {level && (
@@ -46,10 +44,24 @@ export const SponsorPage: React.FC<{
 
         <RichText content={description} />
 
-        <div>{websiteUrl && <Link href={websiteUrl} />}</div>
+        <div className={classes.links}>
+          <div>
+            {websiteUrl && (
+              <Link href={websiteUrl}>
+                <Image
+                  src="/link-svgrepo-com.svg"
+                  alt="website"
+                  width={40}
+                  height={40}
+                  className={classes.icon}
+                />
+              </Link>
+            )}
+          </div>
 
-        <div>
-          <LinkList links={links.map(link => link.link)} />
+          <div>
+            <LinkList links={links.map(link => link.link)} />
+          </div>
         </div>
       </Gutter>
     </>
