@@ -108,16 +108,7 @@ export const SocietyPage: React.FC<{
             )}
           </div>
 
-          <div>
-            {susu && (
-              <Button
-                href={susu}
-                label="SUSU Page"
-                appearance="secondary"
-                className={classes.icon}
-              />
-            )}
-          </div>
+          <div>{susu && <Button href={susu} label="SUSU Page" appearance="secondary" />}</div>
 
           <LinkList links={links.map(link => link.link)} />
         </div>

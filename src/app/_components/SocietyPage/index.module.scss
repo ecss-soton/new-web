@@ -126,7 +126,9 @@
   gap: 15px; // This adds space between all children including LinkList
 }
 
-// .icon {
-//   margin-right: 15px;
-// }
+:global([data-theme="dark"]) {
+  .icon {
+    filter: invert(1);
+  }
+}
 
