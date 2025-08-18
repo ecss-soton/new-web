@@ -154,7 +154,7 @@ export const CollectionArchive: React.FC<Props> = props => {
               : relationTo === 'events' && !isJumpstart
               ? 'date'
               : relationTo === 'events' && isJumpstart
-              ? '-isJumpstart'
+              ? 'date'
               : relationTo === 'societies'
               ? 'name'
               : 'level',
@@ -247,6 +247,16 @@ export const CollectionArchive: React.FC<Props> = props => {
 
   const today = new Date()
 
+  // isJumpstart &&
+  //   results.docs?.filter((result, index) => {
+  //     return (
+  //       typeof result === 'object' &&
+  //       result !== null &&
+  //       'isJumpstart' in result &&
+  //       result.isJumpstart
+  //     )
+  //   })
+
   return (
     <div className={[classes.collectionArchive, className].filter(Boolean).join(' ')}>
       <div className={classes.scrollRef} ref={scrollRef} />
@@ -286,75 +296,86 @@ export const CollectionArchive: React.FC<Props> = props => {
                 : classes.grid
             }
           >
-            {results.docs?.map((result, index) => {
-              if (typeof result === 'object' && result !== null && relationTo !== 'committee') {
+            {results.docs
+              ?.filter(result => {
+                if (!isJumpstart) return true
                 return (
-                  <div
-                    className={[
-                      relationTo === 'events' && !isJumpstart
-                        ? classes.columnEvents
-                        : relationTo === 'events' && isJumpstart
-                        ? classes.columnCommittee
-                        : classes.column,
-                      classes.fadeIn,
-                    ].join(' ')}
-                    key={index}
-                  >
-                    {/* {relationTo == ('projects' || 'posts' || 'committee') && (
+                  typeof result === 'object' &&
+                  result !== null &&
+                  'isJumpstart' in result &&
+                  result.isJumpstart === true
+                )
+              })
+              .map((result, index) => {
+                if (typeof result === 'object' && result !== null && relationTo !== 'committee') {
+                  return (
+                    <div
+                      className={[
+                        relationTo === 'events' && !isJumpstart
+                          ? classes.columnEvents
+                          : relationTo === 'events' && isJumpstart
+                          ? classes.columnCommittee
+                          : classes.column,
+                        classes.fadeIn,
+                      ].join(' ')}
+                      key={index}
+                    >
+                      {/* {relationTo == ('projects' || 'posts' || 'committee') && (
                       <Card doc={result} relationTo={relationTo} showCategories />
                     )} */}
-                    {relationTo === 'societies' && 'slug' in result && 'name' in result && (
-                      <SocietyItem slug={result.slug} name={result.name} logo={result.logo} />
-                      // TODO: Fix scuffed typing fix here.
-                    )}
-                    {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
-                      <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
-                    )}
-                    {relationTo === 'events' &&
-                      isJumpstart &&
-                      'isJumpstart' in result &&
-                      // result.isJumpstart &&
-                      'name' in result && (
-                        <JumpstartEventItem event={result} onEventClick={EventClick} />
+                      {relationTo === 'societies' && 'slug' in result && 'name' in result && (
+                        <SocietyItem slug={result.slug} name={result.name} logo={result.logo} />
+                        // TODO: Fix scuffed typing fix here.
                       )}
-                    {relationTo === 'events' &&
-                      !isJumpstart &&
-                      // 'isJumpstart' in result &&
-                      // !result.isJumpstart &&
-                      'name' in result &&
-                      'date' in result &&
-                      new Date(result.date) > today && (
-                        <EventItem event={result} onEventClick={EventClick} />
+                      {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
+                        <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
                       )}
-                  </div>
-                )
-              }
-              if (
-                typeof result === 'object' &&
-                result !== null &&
-                relationTo === 'committee' &&
-                'isCurrent' in result &&
-                result.isCurrent === true
-              ) {
-                return (
-                  <div
-                    className={[
-                      relationTo === 'committee'
-                        ? classes.columnCommittee
-                        : relationTo === 'events'
-                        ? classes.columnEvents
-                        : classes.column,
-                      classes.fadeIn,
-                    ].join(' ')}
-                    key={index}
-                  >
-                    <CommitteeItem committee={result} onCommitteeClick={CommitteeClick} />
-                  </div>
-                )
-              }
+                      {relationTo === 'events' &&
+                        isJumpstart &&
+                        'isJumpstart' in result &&
+                        result.isJumpstart &&
+                        // result.isJumpstart &&
+                        'name' in result && (
+                          <JumpstartEventItem event={result} onEventClick={EventClick} />
+                        )}
+                      {relationTo === 'events' &&
+                        !isJumpstart &&
+                        // 'isJumpstart' in result &&
+                        // !result.isJumpstart &&
+                        'name' in result &&
+                        'date' in result &&
+                        new Date(result.date) > today && (
+                          <EventItem event={result} onEventClick={EventClick} />
+                        )}
+                    </div>
+                  )
+                }
+                if (
+                  typeof result === 'object' &&
+                  result !== null &&
+                  relationTo === 'committee' &&
+                  'isCurrent' in result &&
+                  result.isCurrent === true
+                ) {
+                  return (
+                    <div
+                      className={[
+                        relationTo === 'committee'
+                          ? classes.columnCommittee
+                          : relationTo === 'events'
+                          ? classes.columnEvents
+                          : classes.column,
+                        classes.fadeIn,
+                      ].join(' ')}
+                      key={index}
+                    >
+                      <CommitteeItem committee={result} onCommitteeClick={CommitteeClick} />
+                    </div>
+                  )
+                }
 
-              return null
-            })}
+                return null
+              })}
           </div>
           {results.totalPages > 1 && populateBy !== 'selection' && (
             <Pagination

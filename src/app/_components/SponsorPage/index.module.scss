@@ -88,7 +88,13 @@
   }
 }
 
+.imageContainer {
+  height: 300px;
+}
+
 .image {
+  height: 100%;
+  width: 100%;
   object-fit: contain;
 }
 
@@ -109,4 +115,12 @@
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 30px;
+  gap: 15px; // This adds space between all children including LinkList
 }
