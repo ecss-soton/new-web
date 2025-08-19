@@ -1,8 +1,8 @@
 @import '../../_css/common';
 
 .background {
+    position: relative;
     padding-right: var(--gutter-h);
-    background-size: cover;
     height: 670px;
     padding-top: 274px;
 
@@ -13,6 +13,21 @@
     @include mid-break {
         height: 70vw;
         padding-top: 30vw;
+    }
+}
+
+.backgroundMedia {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 }
 
