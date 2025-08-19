@@ -40,7 +40,7 @@ export const HeaderNav: React.FC<HeaderNavComponentProps> = ({
       setIsOpen(false)
       onToggleMenu(false)
     }
-  }, [currentPath]) 
+  }, [currentPath])
 
   const toggleMenu = () => {
     const newIsOpen = !isOpen
@@ -94,7 +94,7 @@ export const HeaderNav: React.FC<HeaderNavComponentProps> = ({
                   color: 'red',
                 }
             const label = (
-              <div className={classes.fadeIn} >
+              <div className={classes.fadeIn}>
                 <span style={style} className={classes.redBrackets}>
                   &nbsp;[&nbsp;
                 </span>
