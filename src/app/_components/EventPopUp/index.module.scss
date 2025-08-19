@@ -91,13 +91,14 @@
     @include mid-break {
         margin-top: 10px;
     }
+
     // flex: 30%;
 }
 
 .bits {
     display: flex;
     flex-direction: column;
-    padding-left: 50px;
+    padding-left: 7%;
     flex: 70%;
 
     @include mid-break {
@@ -113,6 +114,7 @@
     font-weight: 700;
     letter-spacing: 0;
     line-height: normal;
+    text-align: center;
 
     @include small-break {
         font-size: 6vw;
@@ -144,10 +146,15 @@
 
 .when {
     text-align: center;
-    margin-left: 50px;
+    margin-left: 7%;
     display: inline-flex;
     flex-direction: column;
     justify-content: center;
+
+
+    // @include mid-break {
+    //     margin-left: 2px;
+    // }
 
   }
 

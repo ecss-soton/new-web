@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { Page } from '../../../payload/payload-types'
 import { Button, Props as ButtonProps } from '../Button'
 
+import classes from './index.module.scss'
+
 export type CMSLinkType = {
   type?: 'custom' | 'reference'
   url?: string
