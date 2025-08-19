@@ -1,0 +1,16 @@
+@import '../../_css/common';
+
+.linkList {
+
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    // @include small-break {
+    //     flex-direction: column;
+    //     // align-items: center;
+    //     // align-self: center;
+    //     // justify-self: center;
+    // }
+}

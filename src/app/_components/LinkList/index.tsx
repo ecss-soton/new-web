@@ -6,10 +6,12 @@ type LinkListType = {
   links: CMSLinkType[]
 }
 
+import classes from './index.module.scss'
+
 export const LinkList: React.FC<LinkListType> = ({ links }) => {
   return (
     // WARNING THIS IS CURSED AND STUPID FIX THIS
-    <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+    <div className={classes.linkList}>
       {links.map((link, index) => {
         return (
           <CMSLink
