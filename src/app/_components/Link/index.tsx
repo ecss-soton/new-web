@@ -19,6 +19,7 @@ export type CMSLinkType = {
   children?: React.ReactNode
   className?: string
   invert?: ButtonProps['invert']
+  onClick?: () => void
 }
 
 export const CMSLink: React.FC<CMSLinkType> = ({
@@ -31,6 +32,7 @@ export const CMSLink: React.FC<CMSLinkType> = ({
   children,
   className,
   invert,
+  onClick,
 }) => {
   const href =
     type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
@@ -62,6 +64,7 @@ export const CMSLink: React.FC<CMSLinkType> = ({
       appearance={appearance}
       label={label}
       invert={invert}
+      onClick={onClick}
     />
   )
 }

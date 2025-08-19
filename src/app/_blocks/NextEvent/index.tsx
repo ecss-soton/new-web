@@ -30,30 +30,6 @@ export const NextEventBlock: React.FC<
     id?: string
   }
 > = ({ media }) => {
-  let src: string | StaticImageData | ''
-  let width: number | undefined
-  let height: number | undefined
-
-  if (!src && media && typeof media !== 'string') {
-    const {
-      width: fullWidth,
-      height: fullHeight,
-      filename: fullFilename,
-      alt: altFromResource,
-    } = media
-
-    const filename = fullFilename
-
-    src = `${process.env.NEXT_PUBLIC_SERVER_URL}/media/${filename}`
-  }
-
-  const backgroundStyle: React.CSSProperties = {
-    width: '100%',
-    zIndex: '-1',
-    backgroundImage: `url(${src})`,
-    objectFit: 'cover',
-  }
-
   const getMonthName = (monthNumber: number): string => {
     const monthNames = [
       'January',
@@ -207,7 +183,8 @@ export const NextEventBlock: React.FC<
     }
 
     return (
-      <div style={backgroundStyle} className={classes.background}>
+      <div className={classes.background}>
+        {media && <MediaComp resource={media} className={classes.backgroundMedia} />}
         {!isLoading && error && <Gutter>{error}</Gutter>}
         <div className={[classes.container, inter.className].join(' ')}>
           <div className={classes.text}>
@@ -240,7 +217,8 @@ export const NextEventBlock: React.FC<
     )
   } else {
     return (
-      <div style={backgroundStyle} className={classes.background}>
+      <div className={classes.background}>
+        {media && <MediaComp resource={media} className={classes.backgroundMedia} />}
         {!isLoading && error && <Gutter>{error}</Gutter>}
         <div className={[classes.container, inter.className].join(' ')}>
           <div className={classes.text}>

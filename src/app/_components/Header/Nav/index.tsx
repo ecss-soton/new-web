@@ -35,6 +35,13 @@ export const HeaderNav: React.FC<HeaderNavComponentProps> = ({
 
   const [isOpen, setIsOpen] = useState(false)
 
+  useEffect(() => {
+    if (isOpen) {
+      setIsOpen(false)
+      onToggleMenu(false)
+    }
+  }, [currentPath])
+
   const toggleMenu = () => {
     const newIsOpen = !isOpen
     setIsOpen(newIsOpen)
