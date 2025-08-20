@@ -10,7 +10,7 @@ import { slateEditor } from '@payloadcms/richtext-slate' // editor-import
 import dotenv from 'dotenv'
 import path from 'path'
 import { buildConfig } from 'payload/config'
-import { oAuthPlugin } from 'payload-plugin-oauth'
+import { OAuthButton, oAuthPlugin } from 'payload-plugin-oauth'
 
 import Categories from './collections/Categories'
 import Comments from './collections/Comments'
@@ -34,12 +34,9 @@ import Sponsors from './collections/Sponsors'
 import Tickets from './collections/Tickets'
 import Users from './collections/Users'
 import Votes from './collections/Votes'
-import OAuthButton from './components/BeforeLogin'
-import { seed } from './endpoints/seed'
 import { Footer } from './globals/Footer'
 import { Header } from './globals/Header'
 import { Settings } from './globals/Settings'
-import { handleRawExpress, handleWebhook } from './payments'
 
 const generateTitle: GenerateTitle = () => {
   return 'ECSS'
@@ -127,17 +124,12 @@ export default buildConfig({
   endpoints: [
     // The seed endpoint is used to populate the database with some example data
     // You should delete this endpoint before deploying your site to production
-    {
-      path: '/seed',
-      method: 'get',
-      handler: seed,
-    },
-    {
-      path: '/stripe/webhooks',
-      method: 'post',
-      root: true,
-      handler: [handleRawExpress, handleWebhook],
-    },
+    // {
+    //   path: '/stripe/webhooks',
+    //   method: 'post',
+    //   root: true,
+    //   handler: [handleRawExpress, handleWebhook],
+    // },
   ],
   plugins: [
     redirects({
