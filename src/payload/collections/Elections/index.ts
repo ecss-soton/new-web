@@ -3,15 +3,15 @@ import type { CollectionConfig } from 'payload/types'
 import { admins } from '../../access/admins'
 import { publishedOrAdmin } from '../ElectionResults/access/publishedOrAdmin'
 import Groups from '../groups'
+import { electionResults } from './endpoints/results'
 import { checkNominations } from './hooks/checkNominations'
 import { countVotes } from './hooks/checkVotes'
+import { PrettyPrintLink } from './react/prettyPrintLink'
 import {
   isAfterNomination,
   isNominationConstitutional,
   isVotingConstitutional,
 } from './validate/dateValidate'
-import { PrettyPrintLink } from './react/prettyPrintLink'
-import { electionResults } from './endpoints/results'
 
 const Elections: CollectionConfig = {
   slug: 'elections',
