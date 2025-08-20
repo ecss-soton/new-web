@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload/types'
 import { v4 as uuidv4 } from 'uuid'
 
 import { admins } from '../../access/admins'
+import { userOrAdmin } from '../../access/userOrAdmin'
 import Groups from '../groups'
 import { beforeVoting } from './access/beforeVoting'
 import { adminOrNominee, nominee } from './access/nominees'
@@ -14,8 +15,8 @@ import { nominationIsUnique } from './validate/nominationIsUnique'
 const Nominations: CollectionConfig = {
   slug: 'nominations',
   access: {
-    read: (): boolean => true,
-    create: (): boolean => true,
+    read: beforeVoting,
+    create: userOrAdmin,
     update: adminOrNominee,
     delete: admins,
   },
