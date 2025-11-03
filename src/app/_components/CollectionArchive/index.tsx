@@ -275,20 +275,19 @@ export const CollectionArchive: React.FC<Props> = props => {
           </Gutter>
         )} */}
         <Gutter>
-          {relationTo === 'events' &&
-            !isJumpstart &&
-            results.docs?.filter((result, index) => {
-              relationTo === 'events' &&
-                typeof result === 'object' &&
-                result !== null &&
-                'name' in result &&
-                'date' in result &&
-                new Date(result.date) > today
-            }).length === 0 && (
-              <span className={[classes.heading, inter.className].join(' ')}>
-                No Events are planned at the moment, come back soon!
-              </span>
-            )}
+          {results.docs?.filter(result => {
+            if (!isJumpstart) return true
+            return (
+              typeof result === 'object' &&
+              result !== null &&
+              'isJumpstart' in result &&
+              result.isJumpstart === true
+            )
+          }).length === 0 && (
+            <span className={[classes.heading, inter.className].join(' ')}>
+              No Events are planned at the moment, come back soon!
+            </span>
+          )}
           <div
             className={
               relationTo === 'committee' || (relationTo === 'events' && !isJumpstart)
