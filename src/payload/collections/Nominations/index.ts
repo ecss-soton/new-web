@@ -5,6 +5,7 @@ import { admins } from '../../access/admins'
 import { userOrAdmin } from '../../access/userOrAdmin'
 import Groups from '../groups'
 import { beforeVoting } from './access/beforeVoting'
+import { nomineeOrBeforeVoting } from './access/nomineeOrBeforeVoting'
 import { adminOrNominee, nominee } from './access/nominees'
 import { joinNomination } from './endpoints/joinNomination'
 import { toggleSupport } from './endpoints/toggleSupport'
@@ -15,11 +16,7 @@ import { nominationIsUnique } from './validate/nominationIsUnique'
 const Nominations: CollectionConfig = {
   slug: 'nominations',
   access: {
-    read: async args => {
-      const NomineeResult = await nominee(args)
-      if (NomineeResult) return true
-      return beforeVoting(args)
-    },
+    read: nomineeOrBeforeVoting,
     create: userOrAdmin,
     update: adminOrNominee,
     delete: admins,
