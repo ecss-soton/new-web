@@ -5,7 +5,7 @@ import { admins } from '../../access/admins'
 import { userOrAdmin } from '../../access/userOrAdmin'
 import Groups from '../groups'
 import { beforeVoting } from './access/beforeVoting'
-import { nomineeOrBeforeVoting } from './access/nomineeOrBeforeVoting'
+import { nomineeOrBeforeVotingField } from './access/nomineeOrBeforeVotingField'
 import { adminOrNominee, nominee } from './access/nominees'
 import { joinNomination } from './endpoints/joinNomination'
 import { toggleSupport } from './endpoints/toggleSupport'
@@ -16,7 +16,7 @@ import { nominationIsUnique } from './validate/nominationIsUnique'
 const Nominations: CollectionConfig = {
   slug: 'nominations',
   access: {
-    read: nomineeOrBeforeVoting,
+    read: userOrAdmin,
     create: userOrAdmin,
     update: adminOrNominee,
     delete: admins,
@@ -86,6 +86,9 @@ const Nominations: CollectionConfig = {
       name: 'manifesto',
       label: 'Manifesto',
       type: 'textarea',
+      access: {
+        read: nomineeOrBeforeVotingField,
+      },
     },
     {
       name: 'position',
