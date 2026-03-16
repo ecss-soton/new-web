@@ -15,7 +15,11 @@ import { nominationIsUnique } from './validate/nominationIsUnique'
 const Nominations: CollectionConfig = {
   slug: 'nominations',
   access: {
-    read: () => true,
+    read: async args => {
+      const NomineeResult = await nominee(args)
+      if (NomineeResult) return true
+      return beforeVoting(args)
+    },
     create: userOrAdmin,
     update: adminOrNominee,
     delete: admins,

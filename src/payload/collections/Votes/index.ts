@@ -4,6 +4,7 @@ import { user } from '../../access/user'
 import { getID } from '../../utilities/getID'
 import Groups from '../groups'
 import { hasVoted } from './endpoints/hasVoted'
+import { isSusuMember } from './endpoints/isSusuMember'
 import { validateCorrectElectionTime } from './validate/validateCorrectElectionTime'
 import { validatePreferences } from './validate/validatePreferences'
 import { validateRONPosition } from './validate/validateRONPosition'
@@ -25,6 +26,11 @@ const Votes: CollectionConfig = {
       method: 'get',
       handler: hasVoted,
       path: '/:electionId/:positionId/hasVoted',
+    },
+    {
+      method: 'get',
+      handler: isSusuMember,
+      path: '/isSusuMember',
     },
   ],
   fields: [
