@@ -1,6 +1,6 @@
 FROM rust:1.85-bookworm as rustbuilder
 RUN apt-get update && apt-get install -y build-essential
-RUN cargo install stv-rs
+RUN --network=host cargo install stv-rs
 
 FROM node:18-slim as base
 
@@ -23,7 +23,7 @@ COPY .env.production .env
 
 # RUN --network=host npm run generate:types
 # RUN --network=host npm run generate:graphQLSchema
-RUN npm run build
+RUN --network=host npm run build   
 
 FROM node:18-slim AS runtime
 
