@@ -19,6 +19,7 @@ import { ElectionResults } from './collections/ElectionResults'
 import Elections from './collections/Elections'
 import Events from './collections/Events'
 import { Media } from './collections/Media'
+import { MemberImports } from './collections/MemberImports'
 import Merch from './collections/Merch'
 import Nominations from './collections/Nominations'
 import OrderedMerch from './collections/OrderedMerch'
@@ -58,6 +59,7 @@ export default buildConfig({
         alias: {
           ...config.resolve.alias,
           dotenv: path.resolve(__dirname, './dotenv.js'),
+          fs: path.resolve(__dirname, './emptyModuleMock.js'),
           archiver: path.resolve(__dirname, './emptyModuleMock.js'),
           'node-schedule': path.resolve(__dirname, './emptyModuleMock.js'),
           jssha: path.resolve(__dirname, './emptyModuleMock.js'),
@@ -93,6 +95,7 @@ export default buildConfig({
     Posts,
     Projects,
     Media,
+    MemberImports,
     Categories,
     Users,
     Comments,

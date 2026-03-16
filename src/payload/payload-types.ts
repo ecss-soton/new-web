@@ -12,6 +12,7 @@ export interface Config {
     posts: Post;
     projects: Project;
     media: Media;
+    'member-imports': MemberImport;
     categories: Category;
     users: User;
     comments: Comment;
@@ -957,6 +958,26 @@ export interface Event {
   isJumpstart?: boolean | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "member-imports".
+ */
+export interface MemberImport {
+  id: string;
+  runStatus?: ('queued' | 'running' | 'completed' | 'failed') | null;
+  processedAt?: string | null;
+  summary?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
