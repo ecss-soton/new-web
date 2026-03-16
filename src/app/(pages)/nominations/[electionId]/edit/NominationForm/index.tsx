@@ -163,7 +163,8 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
           type="file"
           onChange={onChangePicture}
         />
-        {picture && <img className="image" src={picture} alt="" />}
+        {picture && <img className="image" src={picture} alt="" />} //TODO: have this as an next.js
+        Image
         {!picture && currentPicture && (
           <Media resource={currentPicture} imgClassName={classes.image} />
         )}
