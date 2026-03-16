@@ -1,6 +1,5 @@
-# FROM rust:1.76-buster as rustbuilder
-# RE_INPLIMENT CARGO MAYBE?
-# RUN --network=host cargo install stv-rs
+FROM rust:1.76-buster as rustbuilder
+RUN --network=host cargo install stv-rs
 
 FROM node:18-slim as base
 
@@ -43,7 +42,7 @@ COPY --from=builder /home/node/app/next.config.js ./next.config.js
 COPY --from=builder /home/node/app/redirects.js ./redirects.js
 COPY --from=builder /home/node/app/csp.js ./csp.js
 
-# COPY --from=rustbuilder /usr/local/cargo/bin/stv-rs /usr/local/bin/stv-rs
+COPY --from=rustbuilder /usr/local/cargo/bin/stv-rs /usr/local/bin/stv-rs
 
 EXPOSE 3000
 
