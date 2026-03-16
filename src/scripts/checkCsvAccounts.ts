@@ -17,14 +17,22 @@ const run = async () => {
   const csvFilePath = path.join(process.cwd(), 'members.csv')
 
   if (!fs.existsSync(csvFilePath)) {
-    console.error(`Could not find CSV file at ${csvFilePath}`)
+    payload.logger.error(`Could not find CSV file at ${csvFilePath}`)
     process.exit(1)
   }
 
   const fileContent = fs.readFileSync(csvFilePath, 'utf-8')
   const lines = fileContent.split('\n')
 
-  console.log(`Analyzing ${lines.length} rows...`)
+  payload.logger.info(`Analyzing ${lines.length} rows...`)
+
+  let stats = {
+    totalProcessed: 0,
+    matchesFound: 0,
+    rolesAdded: 0,
+    alreadyHadRole: 0,
+    noMatch: 0,
+  }
 
   // 3. Process each line in the CSV
   for (let i = 1; i < lines.length; i++) {
@@ -38,7 +46,7 @@ const run = async () => {
       const firstName = columns[1].trim() // 2nd column
       const lastName = columns[2].trim() // 3rd column
 
-      //   const fullNameParamsQuery = `${firstName} ${lastName}`
+      stats.totalProcessed++
 
       // 4. Check whether a user's name contains both the first and last name
       // Note: adjust 'users' to your actual collection slug, and 'name' to the actual field containing the user's name
@@ -50,9 +58,7 @@ const run = async () => {
       })
 
       if (matchedUsers.totalDocs > 0) {
-        console.log(
-          `✅ MATCH: Found ${matchedUsers.totalDocs} user(s) for "${firstName} ${lastName}"`,
-        )
+        stats.matchesFound++
 
         for (const user of matchedUsers.docs) {
           const currentRoles = user.roles || []
@@ -65,22 +71,28 @@ const run = async () => {
                 roles: [...currentRoles, 'susu'],
               },
             })
-            console.log(`   -> Added 'susu' role to user ID: ${user.id}.`)
+            stats.rolesAdded++
           } else {
-            console.log(`   -> User ID: ${user.id} already has 'susu' role.`)
+            stats.alreadyHadRole++
           }
         }
       } else {
-        console.log(`❌ NO MATCH: Could not find user for "${firstName} ${lastName}"`)
+        stats.noMatch++
       }
     }
   }
 
-  console.log('Finished checking CSV against users.')
+  payload.logger.info('\n--- Finished checking CSV against users ---')
+  payload.logger.info(`Rows processed: ${stats.totalProcessed}`)
+  payload.logger.info(`Matched users: ${stats.matchesFound}`)
+  payload.logger.info(`New 'susu' roles added: ${stats.rolesAdded}`)
+  payload.logger.info(`Users who already had role: ${stats.alreadyHadRole}`)
+  payload.logger.info(`No match found: ${stats.noMatch}`)
+  payload.logger.info('------------------------------------------\n')
   process.exit(0)
 }
 
 run().catch(err => {
-  console.error(err)
+  payload.logger.error(err)
   process.exit(1)
 })
