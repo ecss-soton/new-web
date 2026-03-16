@@ -16,7 +16,7 @@ import { nominationIsUnique } from './validate/nominationIsUnique'
 const Nominations: CollectionConfig = {
   slug: 'nominations',
   access: {
-    read: nomineeOrBeforeVoting,
+    read: userOrAdmin,
     create: userOrAdmin,
     update: adminOrNominee,
     delete: admins,

@@ -36,7 +36,7 @@ function splitNames(nomination: Nomination | null): string[] {
   if (!nomination) {
     return lineSplitter('Re-Open Nominations', 15)
   }
-  return nomination.populatedNominees.reduce((arr, n) => {
+  return (nomination.populatedNominees ?? []).reduce((arr, n) => {
     arr.push(...lineSplitter(n.name, 14))
     return arr
   }, [])
@@ -46,7 +46,7 @@ function getName(nominee: Nomination | null): string {
   if (!nominee) {
     return 'Re-Open Nominations'
   }
-  const nomineeNames = nominee.populatedNominees.map(n => n.name).join(' & ')
+  const nomineeNames = (nominee.populatedNominees ?? []).map(n => n.name).join(' & ')
   const nickname = nominee.nickname
   return nickname ? `${nickname} - ${nomineeNames}` : `${nomineeNames}`
 }
