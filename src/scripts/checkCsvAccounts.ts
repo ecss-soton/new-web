@@ -38,7 +38,7 @@ const run = async () => {
       const firstName = columns[1].trim() // 2nd column
       const lastName = columns[2].trim() // 3rd column
 
-    //   const fullNameParamsQuery = `${firstName} ${lastName}`
+      //   const fullNameParamsQuery = `${firstName} ${lastName}`
 
       // 4. Check whether a user's name contains both the first and last name
       // Note: adjust 'users' to your actual collection slug, and 'name' to the actual field containing the user's name
@@ -50,8 +50,10 @@ const run = async () => {
       })
 
       if (matchedUsers.totalDocs > 0) {
-        console.log(`✅ MATCH: Found ${matchedUsers.totalDocs} user(s) for "${firstName} ${lastName}"`)
-        
+        console.log(
+          `✅ MATCH: Found ${matchedUsers.totalDocs} user(s) for "${firstName} ${lastName}"`,
+        )
+
         for (const user of matchedUsers.docs) {
           const currentRoles = user.roles || []
 
