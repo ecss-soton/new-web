@@ -15,6 +15,7 @@
     "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png,js}\" dist/",
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload generate:types",
     "generate:graphQLSchema": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload generate:graphQLSchema",
+    "check-susu": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/checkCsvAccounts.ts",
     "lint": "eslint src",
     "lint:fix": "eslint --fix --ext .ts,.tsx src",
     "prettier": "prettier --check \"src/**/*.{ts,tsx,js,json,html}\"",
