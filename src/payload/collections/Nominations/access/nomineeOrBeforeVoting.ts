@@ -6,9 +6,9 @@ import { checkRole } from '../../Users/checkRole'
 export const nomineeOrBeforeVoting: Access<Nomination> = async ({ req: { user, payload } }) => {
   if (!user) return false
 
-  if (checkRole(['admin'], user)) {
-    return true
-  }
+  // if (checkRole(['admin'], user)) {
+  //   return true
+  // }
 
   const nowISO = new Date().toISOString()
 
@@ -19,7 +19,7 @@ export const nomineeOrBeforeVoting: Access<Nomination> = async ({ req: { user, p
       pagination: false,
       where: {
         votingStart: {
-          greater_than: nowISO,
+          less_than: nowISO,
         },
       },
     })
@@ -50,6 +50,7 @@ export const nomineeOrBeforeVoting: Access<Nomination> = async ({ req: { user, p
     }
   } catch {
     // Fail closed to nominee-only access if election lookup fails.
+    // eslint-disable-next-line no-console
     return {
       nominees: {
         contains: user.id,
