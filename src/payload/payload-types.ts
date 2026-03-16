@@ -628,7 +628,7 @@ export interface User {
   username?: string | null;
   quickfileClientID?: number | null;
   stripeClientID?: string | null;
-  roles?: ('admin' | 'user')[] | null;
+  roles?: ('admin' | 'user' | 'susu')[] | null;
   updatedAt: string;
   createdAt: string;
   email: string;

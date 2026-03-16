@@ -2,12 +2,11 @@ import type { FieldAccess } from 'payload/types'
 
 import type { Nomination } from '../../../payload-types'
 import { getID } from '../../../utilities/getID'
-import { checkRole } from '../../Users/checkRole'
 
 export const beforeVoting: FieldAccess<Nomination> = async ({ req, doc }) => {
-  if (req.user && checkRole(['admin'], req.user)) {
-    return true
-  }
+  // if (req.user && checkRole(['admin'], req.user)) {
+  //   return true
+  // }
 
   if (!doc) {
     return false

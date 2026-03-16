@@ -21,6 +21,8 @@ export const VotingButton: React.FC<{
 
   const [hasVoted, setHasVoted] = useState(false)
 
+  const [isSusuMember, setNotSusu] = useState(false)
+
   useEffect(() => {
     const asyncEffect = async () => {
       try {
@@ -39,9 +41,30 @@ export const VotingButton: React.FC<{
     })
   }, [electionId, election?.id, position.id])
 
+  useEffect(() => {
+    const asyncEffect = async () => {
+      try {
+        const req = await fetch(
+          `/api/votes/${electionId || election?.id}/${position.id}/isSusuMember`,
+        )
+
+        const json = (await req.json()) as { isSusuMember: boolean }
+
+        return json.isSusuMember
+      } catch (err) {
+        console.warn(err) // eslint-disable-line no-console
+      }
+    }
+
+    asyncEffect().then(v => {
+      setHasVoted(v)
+    })
+  }, [electionId, election?.id, position.id])
+
   return (
     <Fragment>
       {hasVoted && <h6>Already Voted</h6>}
+      {!isSusuMember && <h6>Not Susu member</h6>}
       {!hasVoted && (
         <Button
           className={props.className}
