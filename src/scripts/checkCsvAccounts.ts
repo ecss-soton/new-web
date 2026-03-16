@@ -6,7 +6,7 @@ import payload from 'payload'
 // Load environment variables
 dotenv.config()
 
-const run = async () => {
+const run = async (): Promise<void> => {
   // 1. Initialize Payload to access your database
   await payload.init({
     secret: process.env.PAYLOAD_SECRET || '',
