@@ -62,7 +62,7 @@ export const VotingButton: React.FC<{
   return (
     <Fragment>
       {hasVoted && <h6>Already Voted</h6>}
-      {!isSusuMember && <h6>Not Susu member</h6>}
+      {!isSusuMember && <h6>Please Register as a member of ECSS on SUSU to Vote</h6>}
       {!hasVoted && isSusuMember && (
         <Button
           className={props.className}
