@@ -247,14 +247,15 @@ export function scheduleVotesCount(
 ): void {
   const date = new Date(Date.parse(votingEnd))
   const prefix = 'nominations-votingEnd-'
-  const previousJob = scheduledJobs[`nominations-votingEnd-${electionID}-${positionID}`]
+  const jobName = `${prefix}${electionID}-${positionID}`
+  const previousJob = scheduledJobs[jobName]
   if (previousJob) {
     previousJob.cancel(false)
   }
 
   if (date.getTime() > new Date().getTime()) {
     const func = countVotesForPosition.bind(null, electionID, positionID)
-    scheduleJob(prefix + electionID, date, func)
+    scheduleJob(jobName, date, func)
   }
 }
 
