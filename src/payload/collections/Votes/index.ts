@@ -4,11 +4,11 @@ import { user } from '../../access/user'
 import { getID } from '../../utilities/getID'
 import Groups from '../groups'
 import { hasVoted } from './endpoints/hasVoted'
+import { isSusuMember } from './endpoints/isSusuMember'
 import { validateCorrectElectionTime } from './validate/validateCorrectElectionTime'
 import { validatePreferences } from './validate/validatePreferences'
 import { validateRONPosition } from './validate/validateRONPosition'
 import { voteIsUnique } from './validate/voteIsUnique'
-import { isSusuMember } from './endpoints/isSusuMember'
 
 const Votes: CollectionConfig = {
   slug: 'votes',
