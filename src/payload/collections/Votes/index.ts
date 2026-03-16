@@ -8,6 +8,7 @@ import { validateCorrectElectionTime } from './validate/validateCorrectElectionT
 import { validatePreferences } from './validate/validatePreferences'
 import { validateRONPosition } from './validate/validateRONPosition'
 import { voteIsUnique } from './validate/voteIsUnique'
+import { isSusuMember } from './endpoints/isSusuMember'
 
 const Votes: CollectionConfig = {
   slug: 'votes',
@@ -25,6 +26,11 @@ const Votes: CollectionConfig = {
       method: 'get',
       handler: hasVoted,
       path: '/:electionId/:positionId/hasVoted',
+    },
+    {
+      method: 'get',
+      handler: isSusuMember,
+      path: '/isSusuMember',
     },
   ],
   fields: [
