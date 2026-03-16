@@ -1,8 +1,8 @@
 import type { CollectionConfig } from 'payload/types'
 
-import { user } from '../../access/user'
 import { getID } from '../../utilities/getID'
 import Groups from '../groups'
+import { isSusuMemberAccess } from './access/isSusuMemberAccess'
 import { hasVoted } from './endpoints/hasVoted'
 import { isSusuMember } from './endpoints/isSusuMember'
 import { validateCorrectElectionTime } from './validate/validateCorrectElectionTime'
@@ -16,7 +16,7 @@ const Votes: CollectionConfig = {
     read: () => false,
     update: () => false,
     delete: () => false,
-    create: user,
+    create: isSusuMemberAccess,
   },
   admin: {
     group: Groups.Elections,
