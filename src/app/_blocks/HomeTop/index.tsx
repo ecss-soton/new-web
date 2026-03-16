@@ -43,6 +43,7 @@ export const HomeTopBlock: React.FC<
     // totalPages: 1,
   })
 
+  const [membersCount, setMembersCount] = useState<number>(500)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | undefined>(undefined)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -90,6 +91,18 @@ export const HomeTopBlock: React.FC<
             //   onResultChange(json)
             // }
           }
+
+          // Fetch members count (users with susu role)
+          const membersReq = await fetch(
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/count-susu-members`,
+          )
+
+          const membersJson = await membersReq.json()
+          const { susuCount } = membersJson as { susuCount: number }
+
+          if (typeof susuCount === 'number') {
+            setMembersCount(susuCount)
+          }
         } catch (err) {
           console.warn(err) // eslint-disable-line no-console
           setIsLoading(false)
@@ -124,7 +137,7 @@ export const HomeTopBlock: React.FC<
           />
           <div className={[classes.stats, inter.className].join(' ')}>
             <div className={classes.stat}>
-              <span className={classes.number}>1000+</span>
+              <span className={classes.number}>{membersCount}</span>
               <span className={classes.label}>members</span>
             </div>
             <div className={classes.stat}>

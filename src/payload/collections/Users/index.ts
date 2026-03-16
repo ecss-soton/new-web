@@ -5,6 +5,7 @@ import { anyone } from '../../access/anyone'
 import { isAnInt } from '../../validate/isAnInt'
 import adminsAndUser from './access/adminsAndUser'
 import { checkRole } from './checkRole'
+import { countSusuMembers } from './endpoints/countSusuMembers'
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin'
 import { loginAfterCreate } from './hooks/loginAfterCreate'
 
@@ -84,6 +85,13 @@ const Users: CollectionConfig = {
         create: admins,
         update: admins,
       },
+    },
+  ],
+  endpoints: [
+    {
+      path: '/count-susu-members',
+      method: 'get',
+      handler: countSusuMembers,
     },
   ],
   timestamps: true,
