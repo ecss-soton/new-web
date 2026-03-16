@@ -17,7 +17,7 @@ export const ElectionResults: CollectionConfig = {
     create: () => false,
     // Allow draft status to be updated.
     update: admins,
-    delete: () => false,
+    delete: admins,
   },
   admin: {
     group: Groups.Elections,
