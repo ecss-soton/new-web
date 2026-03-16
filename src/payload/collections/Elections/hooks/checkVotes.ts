@@ -149,95 +149,108 @@ function renameNominees(file: string, nominations: Nomination[]): string {
   return file
 }
 
+function runStv(ballotFile: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const stv = spawn('stv-rs', ['--arithmetic', 'exact', 'meek'], {
+      stdio: ['pipe', 'pipe', 'pipe'],
+    })
+    stv.on('error', reject)
+    stv.stdin.write(ballotFile)
+    stv.stdin.end()
+    readableToString(stv.stdout).then(resolve, reject)
+  })
+}
+
 export async function countVotesForPosition(electionID: string, positionID: string): Promise<void> {
   payload.logger.info(`Counting votes for position ${positionID} in election ${electionID}.`)
 
-  const votes = await payload.find({
-    collection: 'votes',
-    pagination: false,
-    depth: 0,
-    where: {
-      and: [
-        {
-          election: {
-            equals: electionID,
+  try {
+    const votes = await payload.find({
+      collection: 'votes',
+      pagination: false,
+      depth: 0,
+      where: {
+        and: [
+          {
+            election: {
+              equals: electionID,
+            },
           },
-        },
-        {
-          position: {
-            equals: positionID,
+          {
+            position: {
+              equals: positionID,
+            },
           },
-        },
-      ],
-    },
-  })
+        ],
+      },
+    })
 
-  const nominees = await payload.find({
-    collection: 'nominations',
-    pagination: false,
-    depth: 0,
-    where: {
-      and: [
-        {
-          election: {
-            equals: electionID,
+    const nominees = await payload.find({
+      collection: 'nominations',
+      pagination: false,
+      depth: 0,
+      where: {
+        and: [
+          {
+            election: {
+              equals: electionID,
+            },
           },
-        },
-        {
-          position: {
-            equals: positionID,
+          {
+            position: {
+              equals: positionID,
+            },
           },
-        },
-      ],
-    },
-  })
+        ],
+      },
+    })
 
-  if (nominees.docs.length === 0) {
-    payload.logger.warn(`No nominees found for position ${positionID} in election ${electionID}.`)
-    return
+    if (nominees.docs.length === 0) {
+      payload.logger.warn(`No nominees found for position ${positionID} in election ${electionID}.`)
+      return
+    }
+
+    // Keep same tie order in case this function is re-run
+    const shuffle: Nomination[] = nominees.docs
+      .map(value => ({
+        value,
+        // eslint-disable-next-line new-cap
+        sort: new jsSHA('SHA3-256', 'TEXT', { encoding: 'UTF8' })
+          .update(electionID)
+          .update(positionID)
+          .update(value.id)
+          .getHash('HEX'),
+      }))
+      .sort((a, b) => a.sort.localeCompare(b.sort))
+      .map(({ value }) => value)
+
+    payload.logger.info(
+      `Generating ballot file for position ${positionID} in election ${electionID}.`,
+    )
+
+    const ballotFile = generateBallotFile(votes.docs, shuffle)
+
+    const resultFile = await runStv(ballotFile)
+
+    payload.logger.info(`Parsing result for position ${positionID} in election ${electionID}.`)
+    const result = parseVoteResult(
+      electionID,
+      positionID,
+      resultFile,
+      shuffle.filter(n => n.droppedOut).map(n => n.id),
+    )
+    result.roundTranscript = renameNominees(result.roundTranscript, shuffle)
+    result.ballot = renameNominees(ballotFile, shuffle)
+    payload.logger.info(`Updating result for position ${positionID} in election ${electionID}.`)
+    await updateElectionResult(
+      result as Omit<ElectionResult, 'id' | 'updatedAt' | 'createdAt' | 'sizes'>,
+    )
+    payload.logger.info(`Updated result for position ${positionID} in election ${electionID}.`)
+  } catch (err: unknown) {
+    payload.logger.error(
+      `Failed to count votes for position ${positionID} in election ${electionID}: ${err}`,
+    )
   }
-
-  // Keep same tie order in case this function is re-run
-  const shuffle: Nomination[] = nominees.docs
-    .map(value => ({
-      value,
-      // eslint-disable-next-line new-cap
-      sort: new jsSHA('SHA3-256', 'TEXT', { encoding: 'UTF8' })
-        .update(electionID)
-        .update(positionID)
-        .update(value.id)
-        .getHash('HEX'),
-    }))
-    .sort((a, b) => a.sort.localeCompare(b.sort))
-    .map(({ value }) => value)
-
-  payload.logger.info(
-    `Generating ballot file for position ${positionID} in election ${electionID}.`,
-  )
-
-  const ballotFile = generateBallotFile(votes.docs, shuffle)
-
-  const stv = spawn('stv-rs', ['--arithmetic', 'exact', 'meek'], {
-    stdio: ['pipe', 'pipe', 'pipe'],
-  })
-  stv.stdin.write(ballotFile)
-  stv.stdin.end()
-  const resultFile = await readableToString(stv.stdout)
-
-  payload.logger.info(`Parsing result for position ${positionID} in election ${electionID}.`)
-  const result = parseVoteResult(
-    electionID,
-    positionID,
-    resultFile,
-    shuffle.filter(n => n.droppedOut).map(n => n.id),
-  )
-  result.roundTranscript = renameNominees(result.roundTranscript, shuffle)
-  result.ballot = renameNominees(ballotFile, shuffle)
-  payload.logger.info(`Updating result for position ${positionID} in election ${electionID}.`)
-  await updateElectionResult(
-    result as Omit<ElectionResult, 'id' | 'updatedAt' | 'createdAt' | 'sizes'>,
-  )
-  payload.logger.info(`Updated result for position ${positionID} in election ${electionID}.`)
 }
 
 export function scheduleVotesCount(
