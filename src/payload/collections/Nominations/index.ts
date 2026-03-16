@@ -6,7 +6,7 @@ import { anyone } from '../../access/anyone'
 import { userOrAdmin } from '../../access/userOrAdmin'
 import Groups from '../groups'
 import { beforeVoting } from './access/beforeVoting'
-import { nomineeOrBeforeVotingField } from './access/nomineeOrBeforeVotingField'
+import { nomineeOrAfterVotingField } from './access/nomineeOrAfterVotingField'
 import { adminOrNominee, nominee } from './access/nominees'
 import { joinNomination } from './endpoints/joinNomination'
 import { toggleSupport } from './endpoints/toggleSupport'
@@ -88,7 +88,8 @@ const Nominations: CollectionConfig = {
       label: 'Manifesto',
       type: 'textarea',
       access: {
-        read: nomineeOrBeforeVotingField,
+        read: nomineeOrAfterVotingField,
+        // manifestos are read restricted as it can be acess using the api, keep this for mathew grove reasons
       },
     },
     {
@@ -127,6 +128,9 @@ const Nominations: CollectionConfig = {
       relationTo: 'media',
       filterOptions: {
         mimeType: { contains: 'image' },
+      },
+      access: {
+        read: nomineeOrAfterVotingField,
       },
     },
     {

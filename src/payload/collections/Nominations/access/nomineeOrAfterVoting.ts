@@ -2,7 +2,7 @@ import type { Access } from 'payload/types'
 
 import type { Nomination } from '../../../payload-types'
 
-export const nomineeOrBeforeVoting: Access<Nomination> = async ({ req: { user, payload } }) => {
+export const nomineeOrAfterVoting: Access<Nomination> = async ({ req: { user, payload } }) => {
   if (!user) return false
 
   // if (checkRole(['admin'], user)) {
@@ -49,7 +49,6 @@ export const nomineeOrBeforeVoting: Access<Nomination> = async ({ req: { user, p
     }
   } catch {
     // Fail closed to nominee-only access if election lookup fails.
-    // eslint-disable-next-line no-console
     return {
       nominees: {
         contains: user.id,

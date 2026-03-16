@@ -1,14 +1,14 @@
 import type { FieldAccess } from 'payload/types'
 
 import type { Nomination } from '../../../payload-types'
-import { nomineeOrBeforeVoting } from './nomineeOrBeforeVoting'
+import { nomineeOrAfterVoting } from './nomineeOrAfterVoting'
 
-export const nomineeOrBeforeVotingField: FieldAccess<Nomination> = async ({ req, doc }) => {
+export const nomineeOrAfterVotingField: FieldAccess<Nomination> = async ({ req, doc }) => {
   if (!doc) {
     return false
   }
 
-  const access = await nomineeOrBeforeVoting({ req })
+  const access = await nomineeOrAfterVoting({ req })
 
   if (typeof access === 'boolean') {
     return access
