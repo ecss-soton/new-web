@@ -1,7 +1,10 @@
-FROM rust:1.76-buster as rustbuilder
-RUN --network=host cargo install stv-rs
+FROM rust:1.85-bookworm as rustbuilder
+RUN apt-get update && apt-get install -y build-essential
+RUN cargo install stv-rs
 
 FROM node:18-slim as base
+
+RUN apt-get update && apt-get install -y libc6
 
 FROM base as deps
 
@@ -20,7 +23,7 @@ COPY .env.production .env
 
 # RUN --network=host npm run generate:types
 # RUN --network=host npm run generate:graphQLSchema
-RUN --network=host npm run build
+RUN npm run build
 
 FROM node:18-slim AS runtime
 
