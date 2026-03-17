@@ -120,7 +120,7 @@ export const HomeTopBlock: React.FC<
       if (timer) clearTimeout(timer)
     }
   }, [])
-
+  //TODO: change this back to member count, and make memebr coutn coutn the memebrs in csv, NOT the memebrs who are logged into website
   const committeeCount =
     results.docs?.filter(doc => (doc as Committee).isCurrent === true).length || 0
 
@@ -137,9 +137,7 @@ export const HomeTopBlock: React.FC<
           />
           <div className={[classes.stats, inter.className].join(' ')}>
             <div className={classes.stat}>
-              <span className={classes.number}>{'500+'}</span> //TODO: change this back to member
-              count, and make memebr coutn coutn the memebrs in csv, NOT the memebrs who are logged
-              into website
+              <span className={classes.number}>{'500+'}</span> 
               <span className={classes.label}>members</span>
             </div>
             <div className={classes.stat}>
