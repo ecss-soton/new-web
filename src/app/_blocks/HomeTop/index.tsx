@@ -137,7 +137,7 @@ export const HomeTopBlock: React.FC<
           />
           <div className={[classes.stats, inter.className].join(' ')}>
             <div className={classes.stat}>
-              <span className={classes.number}>{508}</span> //TODO: change this back to member
+              <span className={classes.number}>{'500+'}</span> //TODO: change this back to member
               count, and make memebr coutn coutn the memebrs in csv, NOT the memebrs who are logged
               into website
               <span className={classes.label}>members</span>
