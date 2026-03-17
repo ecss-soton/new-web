@@ -43,7 +43,7 @@ export const HomeTopBlock: React.FC<
     // totalPages: 1,
   })
 
-  const [membersCount, setMembersCount] = useState<number>(500)
+  const [membersCount, setMembersCount] = useState<number>(508)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | undefined>(undefined)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -137,7 +137,9 @@ export const HomeTopBlock: React.FC<
           />
           <div className={[classes.stats, inter.className].join(' ')}>
             <div className={classes.stat}>
-              <span className={classes.number}>{membersCount}</span>
+              <span className={classes.number}>{508}</span> //TODO: change this back to member
+              count, and make memebr coutn coutn the memebrs in csv, NOT the memebrs who are logged
+              into website
               <span className={classes.label}>members</span>
             </div>
             <div className={classes.stat}>
