@@ -12,8 +12,9 @@ export const VotingButton: React.FC<{
   label: string
   onClick?: () => void
   appearance?: 'primary' | 'secondary'
+  disabled?: boolean
 }> = props => {
-  let { position, election, electionId, onClick, label, appearance } = props
+  let { position, election, electionId, onClick, label, appearance, disabled } = props
 
   if (appearance !== 'primary' && appearance !== 'secondary') {
     appearance = 'primary'
@@ -70,6 +71,7 @@ export const VotingButton: React.FC<{
           appearance={appearance}
           onClick={onClick}
           label={label}
+          disabled={disabled}
         ></Button>
       )}
     </Fragment>

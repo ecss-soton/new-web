@@ -37,10 +37,15 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
     unranked: [...candidates, RON],
   })
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [voteText, setVoteText] = useState('Submit')
   const router = useRouter()
 
   const submitVotes = async () => {
+    if (ranking.ranked.length === 0) {
+      setVoteText('Please rank at least one candidate before submitting your vote.')
+      return
+    }
+
     setLoading(true)
     const ronPos = ranking.ranked.findIndex(candidate => candidate.id === 'RON')
     const res = await fetch('/api/votes', {
@@ -60,13 +65,13 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
     const data = await res.json()
 
     if (data.errors) {
-      setError(data.errors[0].message)
+      setVoteText(data.errors[0].message)
       return
     }
 
     router.push('/elections')
 
-    setError('')
+    setVoteText('Submitted')
   }
 
   const swapElements = (array, index1, index2) => {
@@ -164,15 +169,15 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
           })}
         </div>
       </div>
-      {error && <p>{error}</p>}
       {loading && <p>Loading...</p>}
       <VotingButton
         className={classes.submitButton}
         position={position}
         electionId={electionId}
         onClick={submitVotes}
-        label="Submit"
+        label={voteText}
         appearance="primary"
+        // disabled={ranking.ranked.length === 0}
       />
     </div>
   )
