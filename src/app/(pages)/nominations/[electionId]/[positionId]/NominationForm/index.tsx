@@ -118,7 +118,7 @@ const NominationForm: React.FC<{ electionId?: string; positionId?: string }> = p
           onChange={onChangePicture}
         />
         {errors.image && <p>Please select an image</p>}
-        {picture && <img className="image" src={picture} alt="" />}
+        {picture && <Image className={classes.image} src={picture} alt="" />}
         <Input
           name="manifesto"
           label="Manifesto"

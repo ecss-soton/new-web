@@ -3,6 +3,7 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import RichTextField from '@payloadcms/richtext-slate/dist/field'
+import NextImage, { StaticImageData } from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createEditor } from 'slate'
@@ -163,7 +164,7 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
           type="file"
           onChange={onChangePicture}
         />
-        {picture && <img className="image" src={picture} alt="" />} //TODO: have this as an next.js
+        {picture && <NextImage className="image" src={picture} width={300} height={300} alt="" />}
         Image
         {!picture && currentPicture && (
           <Media resource={currentPicture} imgClassName={classes.image} />
