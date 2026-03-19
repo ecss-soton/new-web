@@ -6,9 +6,9 @@ import { checkRole } from '../../Users/checkRole'
 export const nomineeOrAfterVoting: Access<Nomination> = async ({ req: { user, payload } }) => {
   if (!user) return false
 
-  // if (checkRole(['admin'], user)) {
-  //   return true
-  // }
+  if (checkRole(['admin'], user)) {
+    return true
+  }
 
   const nowISO = new Date().toISOString()
 
