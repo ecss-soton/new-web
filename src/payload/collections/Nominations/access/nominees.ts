@@ -19,6 +19,10 @@ export const adminOrNominee: Access = async ({ req: { user } }) => {
     return true
   }
 
+  if (!user?.id) {
+    return false
+  }
+
   return {
     nominees: {
       contains: user.id,
