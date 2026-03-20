@@ -26,7 +26,9 @@ const Users: CollectionConfig = {
   hooks: {
     afterChange: [loginAfterCreate, processCsvImport],
   },
-  auth: true,
+  auth: {
+    disableLocalStrategy: true,
+  },
   fields: [
     {
       name: 'name',
