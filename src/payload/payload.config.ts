@@ -168,12 +168,32 @@ export default buildConfig({
           console.error(sotonData.error)
           throw new Error(sotonData.error)
         }
+
+        const candidateEmails = [
+          sotonData.mail,
+          sotonData.userPrincipalName,
+          sotonData?.otherMails?.[0],
+        ]
+          .filter((value): value is string => typeof value === 'string')
+          .map(value => value.trim())
+          .filter(Boolean)
+
+        const email = candidateEmails.find(value => value.includes('@'))
+
+        if (!email) {
+          throw new Error('No valid email returned by Azure AD userinfo')
+        }
+
+        const usernameSource =
+          (typeof sotonData.mailNickname === 'string' && sotonData.mailNickname.trim()) ||
+          email.split('@')[0]
+
         return {
-          username: sotonData.mail.split('@')[0],
+          username: usernameSource,
 
           // Custom fields to fill in if user is created
           name: sotonData.displayName,
-          email: sotonData.mail,
+          email,
         }
       },
       components: {
