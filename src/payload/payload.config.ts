@@ -200,7 +200,7 @@ export default buildConfig({
         Button: OAuthButton,
       },
       userCollection: Users,
-      subField: { name: 'username' },
+      subField: { name: 'email' },
       successRedirect: '/login-redirect',
       sessionOptions: {
         resave: false,
