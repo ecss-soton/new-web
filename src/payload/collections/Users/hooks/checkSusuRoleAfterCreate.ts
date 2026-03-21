@@ -14,7 +14,7 @@ export const checkSusuRoleAfterCreate: AfterChangeHook = async ({ doc, req, oper
       collection: 'member-imports',
       limit: 1,
       sort: '-createdAt',
-      overrideAccess: false,
+      overrideAccess: true,
     })
 
     if (latest.docs.length === 0) {
