@@ -6,7 +6,6 @@ import { isAnInt } from '../../validate/isAnInt'
 import adminsAndUser from './access/adminsAndUser'
 import { checkRole } from './checkRole'
 import { countSusuMembers } from './endpoints/countSusuMembers'
-import { checkSusuRoleAfterCreate } from './hooks/checkSusuRoleAfterCreate'
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin'
 import { loginAfterCreate } from './hooks/loginAfterCreate'
 
