@@ -24,7 +24,7 @@ const Users: CollectionConfig = {
     admin: ({ req: { user } }) => checkRole(['admin'], user),
   },
   hooks: {
-    afterChange: [loginAfterCreate, checkSusuRoleAfterCreate],
+    afterChange: [loginAfterCreate],
   },
   auth: {
     disableLocalStrategy: true,
