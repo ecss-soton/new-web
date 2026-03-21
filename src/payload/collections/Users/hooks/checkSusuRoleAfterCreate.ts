@@ -8,7 +8,7 @@ import {
 
 const memberImportUploadDir = path.resolve(__dirname, '../../../../../media/member-imports')
 
-export const loginAfterCreate: AfterChangeHook = async ({ doc, req, operation }) => {
+export const checkSusuRoleAfterCreate: AfterChangeHook = async ({ doc, req, operation }) => {
   if (operation === 'create') {
     const latest = await req.payload.find({
       collection: 'member-imports',

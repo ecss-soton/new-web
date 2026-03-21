@@ -3,10 +3,10 @@ import type { CollectionConfig } from 'payload/types'
 import { admins } from '../../access/admins'
 import { anyone } from '../../access/anyone'
 import { isAnInt } from '../../validate/isAnInt'
-import { processCsvImport } from '../MemberImports/hooks/processCsvImport'
 import adminsAndUser from './access/adminsAndUser'
 import { checkRole } from './checkRole'
 import { countSusuMembers } from './endpoints/countSusuMembers'
+import { checkSusuRoleAfterCreate } from './hooks/checkSusuRoleAfterCreate'
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin'
 import { loginAfterCreate } from './hooks/loginAfterCreate'
 
@@ -24,7 +24,7 @@ const Users: CollectionConfig = {
     admin: ({ req: { user } }) => checkRole(['admin'], user),
   },
   hooks: {
-    afterChange: [loginAfterCreate, processCsvImport],
+    afterChange: [loginAfterCreate, checkSusuRoleAfterCreate],
   },
   auth: {
     disableLocalStrategy: true,
