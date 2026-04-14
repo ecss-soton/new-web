@@ -1,8 +1,10 @@
 'use client'
 
-import React, { useState, useEffect, useCallback, useRef } from 'react'
-import classes from './index.module.scss'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+
 import VALID_WORDS from './validWords.json'
+
+import classes from './index.module.scss'
 
 const SOLUTION = 'MERCH'
 const MAX_GUESSES = 6
