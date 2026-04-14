@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { Button } from '../../_components/Button'
 import classes from './index.module.scss'
 import VALID_WORDS from './validWords.json'
 
@@ -22,6 +21,13 @@ export const WordleGame: React.FC = () => {
   const [shakeRow, setShakeRow] = useState(false)
   const [message, setMessage] = useState('')
   const announcementRef = useRef<HTMLDivElement>(null)
+
+  const resetGame = () => {
+    setGuesses([])
+    setCurrentGuess('')
+    setGameStatus('playing')
+    setMessage('')
+  }
 
   const showMessage = (msg: string) => {
     setMessage(msg)
@@ -175,17 +181,15 @@ export const WordleGame: React.FC = () => {
 
       {(gameStatus === 'won' || gameStatus === 'lost') && (
         <div ref={announcementRef} className={classes.announcement}>
+          {gameStatus === 'won' && <div className={classes.dateDisplay}>20/04/2026.</div>}
           {gameStatus === 'lost' && (
-            <p className={classes.revealWord}>
-              The word was <strong>{SOLUTION}</strong>.
-            </p>
+            <>
+              <p className={classes.tryAgainText}>Not quite — give it another go!</p>
+              <button className={classes.tryAgainButton} onClick={resetGame}>
+                Try Again
+              </button>
+            </>
           )}
-          <h2 className={classes.announcementHeading}>We now have merch.</h2>
-          <p className={classes.announcementBody}>Check it out.</p>
-          <div className={classes.links}>
-            <Button el="a" href="#" appearance="primary" label="Shop Hoodies" />
-            <Button el="a" href="#" appearance="secondary" label="Shop T-Shirts" />
-          </div>
         </div>
       )}
     </div>
