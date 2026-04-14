@@ -79,6 +79,10 @@ export default buildConfig({
             __dirname,
             './emptyModuleMock.js',
           ),
+          'express': path.resolve(__dirname, './emptyModuleMock.js'),
+          'express-session': path.resolve(__dirname, './emptyModuleMock.js'),
+          'connect-mongo': path.resolve(__dirname, './emptyModuleMock.js'),
+          'passport': path.resolve(__dirname, './emptyModuleMock.js'),
         },
         fallback: {
           ...config.resolve?.fallback,
@@ -87,7 +91,6 @@ export default buildConfig({
           stream: false,
           dns: false,
           net: false,
-          express: false,
           tls: false,
           timers: false,
           url: false,
