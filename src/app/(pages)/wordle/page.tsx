@@ -18,7 +18,7 @@ export default async function WordlePage() {
 
 export const metadata: Metadata = {
   title: 'Wordle',
-  description: 'Play our custom Wordle game to unlock merch!',
+  description: 'Play our custom Wordle game!',
   openGraph: mergeOpenGraph({
     title: 'Wordle',
     url: '/wordle',
