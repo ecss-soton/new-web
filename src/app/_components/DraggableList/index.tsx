@@ -1,15 +1,16 @@
 'use client'
 
+import React, { useState } from 'react'
 import {
   closestCenter,
+  closestCorners,
   DndContext,
+  DragOverlay,
   KeyboardSensor,
   PointerSensor,
+  useDndMonitor,
   useSensor,
   useSensors,
-  DragOverlay,
-  closestCorners,
-  useDndMonitor,
 } from '@dnd-kit/core'
 import {
   arrayMove,
@@ -17,7 +18,6 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
-import React, { useState } from 'react'
 
 import Container from './DraggableContainer'
 import Item from './SortableItem'
