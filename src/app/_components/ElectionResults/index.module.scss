@@ -1,17 +1,35 @@
 @import '../../_css/common';
-
 .grid {
-  display: grid;
-  grid-template-columns: repeat(3, auto);
+  /* Switch from grid to flex to force a single row */
+  display: flex;
+  flex-wrap: nowrap;
+  
+  /* Enable horizontal scrolling */
+  overflow-x: auto;
+  
+  /* Hide vertical scrollbar if charts trigger it */
+  overflow-y: hidden; 
+  
   width: 100%;
-  gap: var(--base) 40px;
-  // color: var(--color-base-1000);
+  gap: 40px; /* You can keep your var(--base) 40px here if you prefer */
+  
+  /* Adds smooth scrolling on touch devices */
+  -webkit-overflow-scrolling: touch; 
+  
+  /* Add a little padding at the bottom so the scrollbar doesn't cut off the charts */
+  padding-bottom: 20px; 
 
+  /* Keep your breakpoint logic if you still want the gap to shrink on smaller screens */
   @include mid-break {
-    grid-template-columns: repeat(6, 1fr);
-    gap: calc(var(--base) / 2) var(--base);
+    gap: var(--base);
   }
 }
+
+/* Add this to prevent the individual chart containers from squishing together */
+.grid > div {
+  flex: 0 0 auto; 
+}
+
 
 .column {
   grid-column-end: span 4;
