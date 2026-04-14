@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
+import NextImage from 'next/image'
+
+import { Nomination, User } from '../../../payload/payload-types'
+import { Button } from '../Button'
+import { Media } from '../Media'
 
 import classes from './index.module.scss'
-import { Nomination, User } from '../../../payload/payload-types'
-import { Media } from '../Media'
-import NextImage from 'next/image'
-import { Button } from '../Button'
 
 type Props = {
   candidate: Nomination
