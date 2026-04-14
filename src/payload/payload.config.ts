@@ -80,6 +80,31 @@ export default buildConfig({
             './emptyModuleMock.js',
           ),
         },
+        fallback: {
+          ...config.resolve?.fallback,
+          console: false,
+          util: false,
+          stream: false,
+          dns: false,
+          net: false,
+          express: false,
+          tls: false,
+          timers: false,
+          url: false,
+          querystring: false,
+          os: false,
+          zlib: false,
+          crypto: false,
+          path: false,
+          http: false,
+          https: false,
+          'mongodb-client-encryption': false,
+          'bson-ext': false,
+          kerberos: false,
+          snappy: false,
+          aws4: false,
+          '@mongodb-js/zstd': false,
+        },
       },
     }),
   },
@@ -147,68 +172,72 @@ export default buildConfig({
       uploadsCollection: 'media',
     }),
     payloadCloud(),
-    oAuthPlugin({
-      databaseUri: process.env.DATABASE_URI,
-      clientID: process.env.AZURE_AD_CLIENT_ID,
-      clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
-      authorizationURL: `https://login.microsoftonline.com/${process.env.AZURE_AD_TENANT_ID}/oauth2/v2.0/authorize`,
-      tokenURL: `https://login.microsoftonline.com/${process.env.AZURE_AD_TENANT_ID}/oauth2/v2.0/token`,
-      callbackURL: `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/oauth2/callback`,
-      scope: 'openid profile User.Read email',
-      // @ts-expect-error expecting sub but we are returning username instead
-      async userinfo(accessToken: string) {
-        const data = await fetch(`https://graph.microsoft.com/v1.0/me/`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
-        const sotonData = await data.json()
-        if (sotonData?.error) {
-          // eslint-disable-next-line no-console -- logging error here is fine
-          console.error(sotonData.error)
-          throw new Error(sotonData.error)
-        }
+    ...(process.env.AZURE_AD_CLIENT_ID
+      ? [
+          oAuthPlugin({
+            databaseUri: process.env.DATABASE_URI,
+            clientID: process.env.AZURE_AD_CLIENT_ID,
+            clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
+            authorizationURL: `https://login.microsoftonline.com/${process.env.AZURE_AD_TENANT_ID}/oauth2/v2.0/authorize`,
+            tokenURL: `https://login.microsoftonline.com/${process.env.AZURE_AD_TENANT_ID}/oauth2/v2.0/token`,
+            callbackURL: `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/oauth2/callback`,
+            scope: 'openid profile User.Read email',
+            // @ts-expect-error expecting sub but we are returning username instead
+            async userinfo(accessToken: string) {
+              const data = await fetch(`https://graph.microsoft.com/v1.0/me/`, {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              })
+              const sotonData = await data.json()
+              if (sotonData?.error) {
+                // eslint-disable-next-line no-console -- logging error here is fine
+                console.error(sotonData.error)
+                throw new Error(sotonData.error)
+              }
 
-        const candidateEmails = [
-          sotonData.mail,
-          sotonData.userPrincipalName,
-          sotonData?.otherMails?.[0],
+              const candidateEmails = [
+                sotonData.mail,
+                sotonData.userPrincipalName,
+                sotonData?.otherMails?.[0],
+              ]
+                .filter((value): value is string => typeof value === 'string')
+                .map(value => value.trim())
+                .filter(Boolean)
+
+              const email = candidateEmails.find(value => value.includes('@'))
+
+              if (!email) {
+                throw new Error('No valid email returned by Azure AD userinfo')
+              }
+
+              const usernameSource =
+                (typeof sotonData.mailNickname === 'string' && sotonData.mailNickname.trim()) ||
+                email.split('@')[0]
+
+              return {
+                username: usernameSource,
+
+                // Custom fields to fill in if user is created
+                name: sotonData.displayName,
+                email,
+              }
+            },
+            components: {
+              Button: OAuthButton,
+            },
+            userCollection: Users,
+            subField: { name: 'email' },
+            successRedirect: '/login-redirect',
+            sessionOptions: {
+              resave: false,
+              saveUninitialized: false,
+              // PAYLOAD_SECRET existing is verified in server.ts
+              secret: process.env.PAYLOAD_SECRET ?? '',
+            },
+          }),
         ]
-          .filter((value): value is string => typeof value === 'string')
-          .map(value => value.trim())
-          .filter(Boolean)
-
-        const email = candidateEmails.find(value => value.includes('@'))
-
-        if (!email) {
-          throw new Error('No valid email returned by Azure AD userinfo')
-        }
-
-        const usernameSource =
-          (typeof sotonData.mailNickname === 'string' && sotonData.mailNickname.trim()) ||
-          email.split('@')[0]
-
-        return {
-          username: usernameSource,
-
-          // Custom fields to fill in if user is created
-          name: sotonData.displayName,
-          email,
-        }
-      },
-      components: {
-        Button: OAuthButton,
-      },
-      userCollection: Users,
-      subField: { name: 'email' },
-      successRedirect: '/login-redirect',
-      sessionOptions: {
-        resave: false,
-        saveUninitialized: false,
-        // PAYLOAD_SECRET existing is verified in server.ts
-        secret: process.env.PAYLOAD_SECRET ?? '',
-      },
-    }),
+      : []),
     formBuilder({}),
   ],
   rateLimit: {
