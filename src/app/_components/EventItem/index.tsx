@@ -43,18 +43,19 @@ export const EventItem: React.FC<{
     return monthNames[monthNumber - 1]
   }
 
-  const truncateDescription = (description: string, maxLength: number) => {
+  const truncateDescription = (description: string | null | undefined, maxLength: number) => {
+    if (!description) return ''
     if (description.length > maxLength) {
       return description.substring(0, maxLength) + '...'
     }
     return description
   }
 
-  const dateParts = date.split('-')
-  const year = dateParts[0]
-  const month = parseInt(dateParts[1], 10)
-  const day = dateParts[2].split('T')[0]
-  const monthName = getMonthName(month)
+  const dateParts = date ? date.split('-') : []
+  const year = dateParts[0] ?? ''
+  const month = dateParts[1] ? parseInt(dateParts[1], 10) : 0
+  const day = dateParts[2] ? dateParts[2].split('T')[0] : ''
+  const monthName = month ? getMonthName(month) : ''
 
   const truncatedDesc = truncateDescription(description, 150)
 

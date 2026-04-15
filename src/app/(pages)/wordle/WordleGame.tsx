@@ -16,6 +16,38 @@ const KEYBOARD_ROWS = [
   ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACKSPACE'],
 ]
 
+const getRowStatuses = (guess: string, solution: string) => {
+  const statuses = Array(WORD_LENGTH).fill(classes.absent)
+  const solutionChars = solution.split('')
+  const remainingSolutionChars: Record<string, number> = {}
+
+  // Pass 1: Count how many of each letter exist in the solution
+  solutionChars.forEach(char => {
+    remainingSolutionChars[char] = (remainingSolutionChars[char] || 0) + 1
+  })
+
+  // Pass 2: Find all EXACT matches (Green) first
+  for (let i = 0; i < WORD_LENGTH; i++) {
+    if (guess[i] === solution[i]) {
+      statuses[i] = classes.correct
+      remainingSolutionChars[guess[i]]--
+    }
+  }
+
+  // Pass 3: Find PARTIAL matches (Yellow) with remaining letters
+  for (let i = 0; i < WORD_LENGTH; i++) {
+    if (statuses[i] !== classes.correct) {
+      const char = guess[i]
+      if (remainingSolutionChars[char] > 0) {
+        statuses[i] = classes.present
+        remainingSolutionChars[char]--
+      }
+    }
+  }
+
+  return statuses
+}
+
 export const WordleGame: React.FC = () => {
   const [guesses, setGuesses] = useState<string[]>([])
   const [currentGuess, setCurrentGuess] = useState('')
@@ -95,38 +127,38 @@ export const WordleGame: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [onKeyPress])
 
-  // Auto-scroll to announcement when game ends
   useEffect(() => {
     if ((gameStatus === 'won' || gameStatus === 'lost') && announcementRef.current) {
-      // Small delay to allow the DOM to render the announcement first
       setTimeout(() => {
         announcementRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }, 300)
     }
   }, [gameStatus])
 
-  const getLetterStatus = (letter: string, i: number) => {
-    if (SOLUTION[i] === letter) return classes.correct
-    if (SOLUTION.includes(letter)) return classes.present
-    return classes.absent
-  }
-
   const getKeyStatus = (key: string) => {
-    let status = ''
+    let bestStatus = ''
+
     guesses.forEach(guess => {
+      // Evaluate the row accurately to avoid false yellow keyboard keys
+      const rowStatuses = getRowStatuses(guess, SOLUTION)
+
       for (let i = 0; i < guess.length; i++) {
         if (guess[i] === key) {
-          if (SOLUTION[i] === key) {
-            status = classes.correct
-          } else if (SOLUTION.includes(key) && status !== classes.correct) {
-            status = classes.present
-          } else if (status === '') {
-            status = classes.absent
+          const status = rowStatuses[i]
+
+          // Upgrade status based on priority: Correct > Present > Absent
+          if (status === classes.correct) {
+            bestStatus = classes.correct
+          } else if (status === classes.present && bestStatus !== classes.correct) {
+            bestStatus = classes.present
+          } else if (status === classes.absent && bestStatus === '') {
+            bestStatus = classes.absent
           }
         }
       }
     })
-    return status
+
+    return bestStatus
   }
 
   return (
@@ -139,12 +171,15 @@ export const WordleGame: React.FC = () => {
           const guess = guesses[rowIndex] || (isCurrentRow ? currentGuess : '')
           const rowClasses = [classes.row, isCurrentRow && shakeRow ? classes.shake : ''].join(' ')
 
+          // --- UPDATED ROW EVALUATION ---
+          const isSubmitted = rowIndex < guesses.length
+          const rowStatuses = isSubmitted ? getRowStatuses(guess, SOLUTION) : []
+
           return (
             <div key={rowIndex} className={rowClasses}>
               {[...Array(WORD_LENGTH)].map((_, colIndex) => {
                 const letter = guess[colIndex] || ''
-                const isSubmitted = rowIndex < guesses.length
-                const letterStatus = isSubmitted ? getLetterStatus(letter, colIndex) : ''
+                const letterStatus = isSubmitted ? rowStatuses[colIndex] : ''
 
                 return (
                   <div
