@@ -36,11 +36,12 @@ export default function SummerParty() {
         <div className={classes.buttonGroup}>
           <Button
             appearance="primary"
+            className={classes.redoverride}
             label="Get a Ticket"
             href="https://boxoffice.susu.org/view/ecs-summer-party-ticket/5b3692dc496fed6e74989435dd910b42"
           />
-          <Button appearance="primary" label="FAQs" href="#faqs" />
-          <Button appearance="primary" label="See the Menu" href="#menu" />
+          <Button appearance="primary" className={classes.redoverride} label="FAQs" href="#faqs" />
+          <Button appearance="primary" className={classes.redoverride} label="See the Menu" href="#menu" />
         </div>
 
         {/* Full width (of container), leaving about 20% margin on either side Image */}
@@ -62,7 +63,7 @@ export default function SummerParty() {
             <div className={classes.blockContent}>
               <h2 className={classes.titleText}>The Venue</h2>
               <p>
-                The venue is situated in the city centre - it is close to the Centrail Station and
+                Papillon Southampton is situated in the city centre - it is close to the Central Station and
                 various UniLink and Bluebus bus stops. Please note that there is very limited
                 parking at the venue.
               </p>
@@ -78,7 +79,7 @@ export default function SummerParty() {
               <h2 className={classes.titleText}>The Menu</h2>
               <p>
                 We’ve picked a fine selection of the best BBQ food - burgers, hot dogs and other
-                small bites available. Food will be clearly labeled, and utensils and tongues
+                small bites available. Food will be clearly labeled, and utensils and tongs
                 provided.
               </p>
             </div>
@@ -87,8 +88,8 @@ export default function SummerParty() {
 
         {/* Centered, 1/3 column */}
         <div className={classes.centerBlock}>
-          <p>Questions about allergies? Send an email!</p>
-          <Button appearance="primary" label="Send an email!" href="mailto:example@example.com" />
+          <p>Questions about allergies?</p>
+          <Button appearance="primary" className={classes.redoverride} label="Send an email!" href="mailto:example@example.com" />
         </div>
 
         {/* On the Day - Another yellow background with image */}
@@ -99,7 +100,7 @@ export default function SummerParty() {
               <h2 className={classes.titleText}>On the Day</h2>
               <p>
                 We have everything prepared for the day - professional photography through the
-                night, a free photobooth to memorise the day, and our very own in-house DJ - DJ
+                night, a free photobooth to remember the day, and our very own in-house DJ - DJ
                 Emmer!
               </p>
             </div>
