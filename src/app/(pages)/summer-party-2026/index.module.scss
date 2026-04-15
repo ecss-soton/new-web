@@ -12,6 +12,9 @@
   pointer-events: none;
 }
 
+.redoverride {
+  background-color: #e66454 !important;
+}
 .flowerLayer {
   position: fixed;
   inset: 0;
@@ -188,7 +191,7 @@
 }
 
 .yellowBlockWrapper {
-  background-color: #facc15;
+  background-color: #f6b84a;
   padding: 3rem;
   margin-bottom: 4rem;
   margin-top: 2rem;
