@@ -61,19 +61,27 @@ export const EventPopUp: React.FC<PopUpProps> = ({
     return monthNames[monthNumber - 1]
   }
 
-  const localDate = moment.utc(date).tz('Europe/London').format('YYYY-MM-DD HH:mm')
-  const localEndTime = moment.utc(endTime).tz('Europe/London').format('YYYY-MM-DD HH:mm')
+  const localDate = date ? moment.utc(date).tz('Europe/London').format('YYYY-MM-DD HH:mm') : null
+  const localEndTime = endTime
+    ? moment.utc(endTime).tz('Europe/London').format('YYYY-MM-DD HH:mm')
+    : null
   let concEndTime = null
 
-  const dateParts = localDate.split('-')
-  const year = dateParts[0]
-  const month = parseInt(dateParts[1], 10)
-  const day = dateParts[2].split(' ')[0]
-  const time = dateParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
-  const monthName = getMonthName(month)
+  const dateParts = localDate ? localDate.split('-') : []
+  const year = dateParts[0] ?? ''
+  const month = dateParts[1] ? parseInt(dateParts[1], 10) : 0
+  const day = dateParts[2] ? dateParts[2].split(' ')[0] : ''
+  const time =
+    dateParts[2] && dateParts[2].split(' ')[1]
+      ? dateParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
+      : ''
+  const monthName = month ? getMonthName(month) : ''
   if (localEndTime) {
     const endTimeParts = localEndTime.split('-')
-    concEndTime = endTimeParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
+    concEndTime =
+      endTimeParts[2] && endTimeParts[2].split(' ')[1]
+        ? endTimeParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
+        : null
   }
   return (
     <>
