@@ -168,7 +168,9 @@ export const NextEventBlock: React.FC<
     const result = results.docs[0]
 
     const date = moment.utc(result.date).tz('Europe/London').format('YYYY-MM-DD HH:mm')
-    const endTime = moment.utc(result.endTime).tz('Europe/London').format('YYYY-MM-DD HH:mm')
+    const endTime = result.endTime
+      ? moment.utc(result.endTime).tz('Europe/London').format('YYYY-MM-DD HH:mm')
+      : null
     let concEndTime = null
 
     const dateParts = date.split('-')
@@ -179,7 +181,10 @@ export const NextEventBlock: React.FC<
     const monthName = getMonthName(month)
     if (endTime) {
       const endTimeParts = endTime.split('-')
-      concEndTime = endTimeParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
+      concEndTime =
+        endTimeParts[2] && endTimeParts[2].split(' ')[1]
+          ? endTimeParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
+          : null
     }
 
     return (
