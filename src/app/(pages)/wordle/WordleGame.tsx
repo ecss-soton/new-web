@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import VALID_WORDS from './validWords.json'
+
 import classes from './index.module.scss'
 
 const SOLUTION = 'MERCH'
@@ -136,15 +137,15 @@ export const WordleGame: React.FC = () => {
 
   const getKeyStatus = (key: string) => {
     let bestStatus = ''
-    
+
     guesses.forEach(guess => {
       // Evaluate the row accurately to avoid false yellow keyboard keys
       const rowStatuses = getRowStatuses(guess, SOLUTION)
-      
+
       for (let i = 0; i < guess.length; i++) {
         if (guess[i] === key) {
           const status = rowStatuses[i]
-          
+
           // Upgrade status based on priority: Correct > Present > Absent
           if (status === classes.correct) {
             bestStatus = classes.correct
@@ -156,7 +157,7 @@ export const WordleGame: React.FC = () => {
         }
       }
     })
-    
+
     return bestStatus
   }
 
@@ -169,7 +170,7 @@ export const WordleGame: React.FC = () => {
           const isCurrentRow = rowIndex === guesses.length
           const guess = guesses[rowIndex] || (isCurrentRow ? currentGuess : '')
           const rowClasses = [classes.row, isCurrentRow && shakeRow ? classes.shake : ''].join(' ')
-          
+
           // --- UPDATED ROW EVALUATION ---
           const isSubmitted = rowIndex < guesses.length
           const rowStatuses = isSubmitted ? getRowStatuses(guess, SOLUTION) : []
