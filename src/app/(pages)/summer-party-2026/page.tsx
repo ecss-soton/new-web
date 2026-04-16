@@ -41,7 +41,12 @@ export default function SummerParty() {
             href="https://boxoffice.susu.org/view/ecs-summer-party-ticket/5b3692dc496fed6e74989435dd910b42"
           />
           <Button appearance="primary" className={classes.redoverride} label="FAQs" href="#faqs" />
-          <Button appearance="primary" className={classes.redoverride} label="See the Menu" href="#menu" />
+          <Button
+            appearance="primary"
+            className={classes.redoverride}
+            label="See the Menu"
+            href="#menu"
+          />
         </div>
 
         {/* Full width (of container), leaving about 20% margin on either side Image */}
@@ -63,9 +68,9 @@ export default function SummerParty() {
             <div className={classes.blockContent}>
               <h2 className={classes.titleText}>The Venue</h2>
               <p>
-                Papillon Southampton is situated in the city centre - it is close to the Central Station and
-                various UniLink and Bluebus bus stops. Please note that there is very limited
-                parking at the venue.
+                Papillon Southampton is situated in the city centre - it is close to the Central
+                Station and various UniLink and Bluebus bus stops. Please note that there is very
+                limited parking at the venue.
               </p>
             </div>
           </div>
@@ -89,7 +94,12 @@ export default function SummerParty() {
         {/* Centered, 1/3 column */}
         <div className={classes.centerBlock}>
           <p>Questions about allergies?</p>
-          <Button appearance="primary" className={classes.redoverride} label="Send an email!" href="mailto:example@example.com" />
+          <Button
+            appearance="primary"
+            className={classes.redoverride}
+            label="Send an email!"
+            href="mailto:example@example.com"
+          />
         </div>
 
         {/* On the Day - Another yellow background with image */}
