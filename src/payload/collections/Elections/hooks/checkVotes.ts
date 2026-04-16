@@ -259,6 +259,8 @@ export function scheduleVotesCount(
   votingEnd: string,
 ): void {
   const date = new Date(Date.parse(votingEnd))
+  // Delay by 1 minute to ensure all votes are in and avoid any "exactly at" issues
+  date.setMinutes(date.getMinutes() + 1)
   const prefix = 'nominations-votingEnd-'
   const jobName = `${prefix}${electionID}-${positionID}`
   const previousJob = scheduledJobs[jobName]

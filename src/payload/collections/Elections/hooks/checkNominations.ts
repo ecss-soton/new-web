@@ -46,6 +46,8 @@ export async function checkNominationsForElection(electionID: string): Promise<v
 
 export function scheduleNominationCheck(id: string, votingStart: string): void {
   const date = new Date(Date.parse(votingStart))
+  // Delay by 1 minute to ensure nominations are fully closed and avoid any "exactly at" issues
+  date.setMinutes(date.getMinutes() + 1)
   const prefix = 'nominations-votingStart-'
   const previousJob = scheduledJobs[prefix + id]
   if (previousJob) {
