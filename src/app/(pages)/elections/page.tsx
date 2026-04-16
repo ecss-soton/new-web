@@ -1,30 +1,19 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import qs from 'qs'
 
 import { Election, Position } from '../../../payload/payload-types'
-import { fetchSettings } from '../../_api/fetchGlobals'
 import { Gutter } from '../../_components/Gutter'
-import { CMSLink } from '../../_components/Link'
-import { Positions } from '../../_components/Positions'
 import { LowImpactHero } from '../../_heros/LowImpact'
 import { getMeUser } from '../../_utilities/getMeUser'
 import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
+import { ElectionCard } from './ElectionCard'
 
 import classes from './index.module.scss'
 
-function formatDate(dateString: string) {
-  const date = new Date(Date.parse(dateString))
-  return new Intl.DateTimeFormat('en-GB', {
-    dateStyle: 'long',
-    timeStyle: 'short',
-    timeZone: 'Europe/London',
-  }).format(date)
-}
-
 export default async function Elections() {
-  const { user } = await getMeUser({
+  const { user, token } = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to access your account.',
     )}&redirect=${encodeURIComponent('/elections')}`,
@@ -41,7 +30,11 @@ export default async function Elections() {
   )
 
   try {
-    const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/elections?${searchQuery}`)
+    const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/elections?${searchQuery}`, {
+      headers: {
+        Authorization: `JWT ${token}`,
+      },
+    })
 
     const json = await req.json()
 
@@ -60,33 +53,9 @@ export default async function Elections() {
     <>
       <LowImpactHero title="Elections" type="lowImpact" />
       <Gutter className={classes.logout}>
-        {elections.map((election, index) => {
-          const { id, name, nominationStart, nominationEnd, votingStart, votingEnd, positions } =
-            election
-          const now = new Date().getTime()
-          const canCreateNomination =
-            now >= Date.parse(nominationStart) && now <= Date.parse(nominationEnd)
-          return (
-            <Fragment key={id}>
-              <h1>{name}</h1>
-              <p>
-                Nomination start: {formatDate(nominationStart)}
-                <br />
-                Nomination end: {formatDate(nominationEnd)}
-                <br />
-                Voting start: {formatDate(votingStart)}
-                <br />
-                Voting end: {formatDate(votingEnd)}
-              </p>
-              <Positions
-                positions={positions}
-                election={election}
-                canCreateNominations={canCreateNomination}
-                user={user}
-              />
-            </Fragment>
-          )
-        })}
+        {elections.map((election, index) => (
+          <ElectionCard key={election.id} election={election} user={user} />
+        ))}
       </Gutter>
     </>
   )

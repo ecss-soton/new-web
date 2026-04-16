@@ -76,6 +76,9 @@ export const ElectionResults: React.FC<{
       try {
         const req = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/api/electionResults?${searchQuery}`,
+          {
+            credentials: 'include',
+          },
         )
 
         const json = await req.json()
@@ -97,9 +100,12 @@ export const ElectionResults: React.FC<{
   const electedNomineeName = getName(electedNominee as Nomination | null)
 
   return (
-    <Fragment>
+    <div className={classes.resultsContainer}>
       <div className={classes.titleHolder}>
-        <h4 className={classes.electedNominee}>{electedNomineeName} was Elected</h4>
+        <div className={classes.electedBadge}>
+          <span className={classes.electedLabel}>Elected</span>
+          <h4 className={classes.electedNominee}>{electedNomineeName}</h4>
+        </div>
         <Button
           newTab={true}
           className={classes.downloadTranscript}
@@ -115,35 +121,40 @@ export const ElectionResults: React.FC<{
           const sorted_votes = votes
             .map(v => ({ x: v.count, y: splitNames(v.nomination as Nomination) }))
             .sort((a, b) => b.x - a.x)
-          // const sorted_votes = [{ count: 4, nomination: 'A' }]
+
           return (
-            <div key={index}>
-              <h6 className={classes.chartTitle}>
-                Round {index + 1}:
-                <br />
-                {nomineeName} was {outcome}ed
-              </h6>
-              <Bar
-                width={500}
-                height={300}
-                className={classes.chart}
-                data={{
-                  labels: sorted_votes.map(v => v.y),
-                  datasets: [
-                    {
-                      label: 'Votes',
-                      data: sorted_votes.map(v => v.x),
-                      backgroundColor: 'rgba(211, 0, 26, 0.6)',
-                      borderColor: 'rgb(211, 0, 26)',
-                    },
-                  ],
-                }}
-                options={options}
-              />
+            <div key={index} className={classes.roundCard}>
+              <div className={classes.roundHeader}>
+                <span className={classes.roundNumber}>Round {index + 1}</span>
+                <span className={`${classes.outcomeBadge} ${classes[outcome.toLowerCase()]}`}>
+                  {nomineeName} was {outcome}ed
+                </span>
+              </div>
+              <div className={classes.chartWrapper}>
+                <Bar
+                  width={500}
+                  height={300}
+                  className={classes.chart}
+                  data={{
+                    labels: sorted_votes.map(v => v.y),
+                    datasets: [
+                      {
+                        label: 'Votes',
+                        data: sorted_votes.map(v => v.x),
+                        backgroundColor: 'rgba(211, 0, 26, 0.6)',
+                        borderColor: 'rgb(211, 0, 26)',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                      },
+                    ],
+                  }}
+                  options={options}
+                />
+              </div>
             </div>
           )
         })}
       </div>
-    </Fragment>
+    </div>
   )
 }

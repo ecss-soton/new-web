@@ -1,9 +1,101 @@
-@import "../../_css/common";
+@import '../../_css/common';
 
-.login {
-  margin-bottom: var(--block-padding);
+.electionCard {
+  margin-bottom: 2rem;
+  background: var(--theme-elevation-50);
+  border: 1px solid var(--theme-border-color);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-.params {
-  margin-top: var(--base);
+.electionHeader {
+  padding: 1.5rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: var(--theme-elevation-100);
+  }
+}
+
+.electionBody {
+  padding: 1.5rem;
+  border-top: 1px solid var(--theme-border-color);
+  background: var(--theme-bg);
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.electionTitle {
+  margin: 0;
+  font-size: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--theme-text);
+}
+
+.chevron {
+  font-size: 1rem;
+  transition: transform 0.3s ease;
+  color: var(--theme-elevation-500);
+
+  &.expanded {
+    transform: rotate(180deg);
+  }
+}
+
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: var(--theme-elevation-150);
+  color: var(--theme-text);
+
+  &.nominationsopen {
+    background: var(--theme-success-150);
+    color: var(--theme-success-800);
+  }
+
+  &.votingopen {
+    background: var(--theme-success-500);
+    color: var(--theme-elevation-0);
+  }
+
+  &.finished {
+    background: var(--theme-elevation-850);
+    color: var(--theme-elevation-100);
+  }
+
+  &.awaitingvoting {
+    background: var(--theme-warning-250);
+    color: var(--theme-warning-850);
+  }
+}
+
+.datesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 2rem;
+  font-size: 0.9rem;
+  color: var(--theme-elevation-700);
+}
+
+.dateItem {
+  white-space: nowrap;
+
+  strong {
+    color: var(--theme-text);
+    margin-right: 0.25rem;
+  }
 }
