@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 
 import { Election, Position, User } from '../../../payload/payload-types'
 import { Positions } from '../../_components/Positions'
+
 import classes from './index.module.scss'
 
 function formatDate(dateString: string) {
@@ -29,12 +30,12 @@ export const ElectionCard: React.FC<{
     now < Date.parse(nominationStart)
       ? 'Upcoming'
       : now <= Date.parse(nominationEnd)
-        ? 'Nominations Open'
-        : now < Date.parse(votingStart)
-          ? 'Awaiting Voting'
-          : now <= Date.parse(votingEnd)
-            ? 'Voting Open'
-            : 'Finished'
+      ? 'Nominations Open'
+      : now < Date.parse(votingStart)
+      ? 'Awaiting Voting'
+      : now <= Date.parse(votingEnd)
+      ? 'Voting Open'
+      : 'Finished'
 
   return (
     <div className={classes.electionCard}>
