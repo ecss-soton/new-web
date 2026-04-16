@@ -1,64 +1,123 @@
-
 @import '../../_css/common';
-.grid {
-  display: flex;
-  flex-wrap: nowrap;
-  
-  overflow-x: auto;
-  
-  overflow-y: hidden; 
-  
-  width: 100%;
-  gap: 40px;   
-  -webkit-overflow-scrolling: touch; 
-  
-  padding-bottom: 20px; 
 
-  @include mid-break {
-    gap: var(--base);
-  }
+.resultsContainer {
+  margin-top: 2rem;
+  background: var(--theme-elevation-50);
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid var(--theme-border-color);
 }
-
-.grid > div {
-  flex: 0 0 auto; 
-}
-
-
-.column {
-  grid-column-end: span 4;
-
-  @include mid-break {
-    grid-column-end: span 6;
-  }
-
-  @include small-break {
-    grid-column-end: span 6;
-  }
-}
-
-.chart {
-  width: 500px;
-  height: 400px;
-}
-
-.chartTitle {
-  text-align: center;
-  width: 500px;
-  margin-bottom: 0;
-}
-
 
 .titleHolder {
-  flex: auto;
-  flex-direction: row;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--theme-border-color);
+}
+
+.electedBadge {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.electedLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--theme-success-700);
+  letter-spacing: 0.05em;
+}
+
+.electedNominee {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--theme-text);
 }
 
 .downloadTranscript {
   display: inline-flex;
 }
 
-.electedNominee {
-  display: inline-flex;
+.grid {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
   width: 100%;
+  gap: 1.5rem;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 1rem;
+
+  /* Custom scrollbar for better look */
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: var(--theme-elevation-150);
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--theme-elevation-400);
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-elevation-500);
+  }
+}
+
+.roundCard {
+  flex: 0 0 auto;
+  background: var(--theme-elevation-0);
+  border-radius: 8px;
+  padding: 1.25rem;
+  border: 1px solid var(--theme-border-color);
+  box-shadow: 0 2px 4px var(--theme-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.roundHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.roundNumber {
+  font-weight: 600;
+  color: var(--theme-elevation-600);
+}
+
+.outcomeBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  &.elect {
+    background: var(--theme-success-150);
+    color: var(--theme-success-800);
+  }
+
+  &.defeat {
+    background: var(--theme-error-150);
+    color: var(--theme-error-800);
+  }
+}
+
+.chartWrapper {
+  width: 500px;
+  height: 300px;
+  position: relative;
+}
+
+.chart {
+  width: 100% !important;
+  height: 100% !important;
 }
