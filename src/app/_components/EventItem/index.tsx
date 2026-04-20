@@ -163,6 +163,7 @@ export const EventItem: React.FC<{
           {description && (
             <div className={classes.descriptionBox}>
               <div className={!isExpanded ? classes.truncatedDesc : ''}>{description}</div>
+              {event._status == 'draft' && <p>This is a Draft, it won't show for all users.</p>}
               {description.length > 150 && (
                 <button className={classes.expandButton} onClick={toggleExpand}>
                   {isExpanded ? 'Show Less' : 'Read More'}
