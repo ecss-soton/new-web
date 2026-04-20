@@ -1,11 +1,11 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { Poppins } from '@next/font/google'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { Committee, Media } from '../../../payload/payload-types'
+import { Committee, Position } from '../../../payload/payload-types' // Make sure Position is imported if needed
 import { CommitteePopUp } from '../CommitteePopUp'
 import { Media as MediaComp } from '../Media'
 
@@ -21,24 +21,23 @@ export const CommitteeItem: React.FC<{
   committee?: Committee
   onCommitteeClick: (committee: Committee | null) => void
 }> = ({ committee, onCommitteeClick }) => {
-  const { firstName, lastName, position, bio, logo } = committee || {}
-  // const [isPopUpVisible, setIsPopUpVisible] = useState(null)
+  const { firstName, lastName, positionRef, position, bio, logo } = committee || {}
   const fullName = firstName + ' ' + lastName
-
-  const handleClick = () => {
-    onCommitteeClick(committee)
-  }
 
   const handleClose = () => {
     onCommitteeClick(null)
   }
-  // const { slug, title, categories, meta } = doc || {}
-  // const { description, image: metaImage } = meta || {}
 
-  // const hasCategories = categories && Array.isArray(categories) && categories.length > 0
-  // const titleToUse = titleFromProps || title
-  // const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  // const href = `/${relationTo}/${slug}`
+  const handleClick = () => {
+    onCommitteeClick(committee || null) // Add fallback just in case
+  }
+
+  // Safely extract the position name.
+  // Payload returns relationships as either an ID string OR a populated object.
+  const positionThing = positionRef as Position
+
+  // Now TypeScript happily lets you access .name
+  const roleName = positionThing?.name || position
 
   return (
     <div className={classes.person} onClick={handleClick}>
@@ -47,7 +46,7 @@ export const CommitteeItem: React.FC<{
           className={classes.container}
           resource={logo}
           imgClassName={classes.profileImage}
-          alt={'Profile Picture for' + firstName + ' ' + lastName}
+          alt={`Profile Picture for ${firstName} ${lastName}`}
         />
       )}
       <div className={classes.rectangle}>
@@ -60,7 +59,8 @@ export const CommitteeItem: React.FC<{
             {lastName}
             <br />
           </span>
-          <span className={classes.role}>{position}</span>
+          {/* Use the safely extracted roleName here */}
+          <span className={classes.role}>{roleName}</span>
         </p>
       </div>
     </div>

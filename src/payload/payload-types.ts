@@ -1012,6 +1012,7 @@ export interface Committee {
         | 'Webmaster'
       )
     | null;
+  positionRef: string | Position;
   bio?:
     | {
         [k: string]: unknown;
@@ -1019,6 +1020,18 @@ export interface Committee {
     | null;
   logo?: string | Media | null;
   isCurrent: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "positions".
+ */
+export interface Position {
+  id: string;
+  name: string;
+  description: string;
+  importance: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -1108,18 +1121,6 @@ export interface Election {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "positions".
- */
-export interface Position {
-  id: string;
-  name: string;
-  description: string;
-  importance: number;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
