@@ -2,6 +2,7 @@
 
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { Inter } from '@next/font/google'
+import moment from 'moment-timezone'
 import qs from 'qs'
 
 import type {
@@ -232,83 +233,106 @@ export const CollectionArchive: React.FC<Props> = props => {
       {!isLoading && error && <Gutter>{error}</Gutter>}
       <Fragment>
         <Gutter>
-          {results.docs?.filter(result => {
-            if (!isJumpstart) return true
-            return (
-              typeof result === 'object' &&
-              result !== null &&
-              'isJumpstart' in result &&
-              result.isJumpstart === true
-            )
-          }).length === 0 && (
-            <span className={[classes.heading, inter.className].join(' ')}>
-              No Events are planned at the moment, come back soon!
-            </span>
-          )}
-          <div
-            className={
-              relationTo === 'committee'
-                ? classes.committeegrid
-                : relationTo === 'events'
-                  ? classes.timelineGrid
-                  : classes.grid
-            }
-          >
-            {results.docs
-              ?.filter(result => {
-                if (!isJumpstart) return true
-                return (
-                  typeof result === 'object' &&
-                  result !== null &&
-                  'isJumpstart' in result &&
-                  result.isJumpstart === true
-                )
-              })
-              .map((result, index) => {
-                if (typeof result === 'object' && result !== null && relationTo !== 'committee') {
-                  return (
-                    <div
-                      className={[
-                        relationTo === 'events' ? classes.columnTimeline : classes.column,
-                        classes.fadeIn,
-                      ].join(' ')}
-                      key={index}
-                    >
-                      {relationTo === 'societies' && 'slug' in result && 'name' in result && (
-                        <SocietyItem slug={result.slug} name={result.name} logo={result.logo} />
-                      )}
-                      {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
-                        <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
-                      )}
-                      {relationTo === 'events' &&
-                        'name' in result &&
-                        'date' in result &&
-                        (isJumpstart ? true : new Date(result.date) > today) && (
-                          <EventItem event={result as Event} />
-                        )}
-                    </div>
-                  )
-                }
-                if (
-                  typeof result === 'object' &&
-                  result !== null &&
-                  relationTo === 'committee' &&
-                  'isCurrent' in result &&
-                  result.isCurrent === true
-                ) {
-                  return (
-                    <div
-                      className={[classes.columnCommittee, classes.fadeIn].join(' ')}
-                      key={index}
-                    >
-                      <CommitteeItem committee={result} onCommitteeClick={CommitteeClick} />
-                    </div>
-                  )
-                }
+          {relationTo === 'events' &&
+            results.docs?.filter(result => {
+              if (typeof result !== 'object' || result === null || !('date' in result)) return false
+              if (isJumpstart) return 'isJumpstart' in result && result.isJumpstart === true
+              return new Date((result as Event).date) > today
+            }).length === 0 && (
+              <span className={[classes.heading, inter.className].join(' ')}>
+                No Events are planned at the moment, come back soon!
+              </span>
+            )}
+          {relationTo === 'events' ? (
+            <div className={classes.timelineGrid}>
+              {(() => {
+                const filteredEvents = (results.docs || []).filter(result => {
+                  if (typeof result !== 'object' || result === null || !('date' in result))
+                    return false
+                  if (isJumpstart) return 'isJumpstart' in result && result.isJumpstart === true
+                  return new Date((result as Event).date) > today
+                }) as Event[]
 
-                return null
-              })}
-          </div>
+                let lastMonthKey = ''
+                let isFirstEvent = true
+                const nodes: React.ReactNode[] = []
+
+                filteredEvents.forEach((result, index) => {
+                  const eventMoment = moment.utc(result.date).tz('Europe/London')
+                  const monthKey = eventMoment.format('YYYY-MM')
+                  const monthLabel = eventMoment.format('MMMM YYYY')
+
+                  if (monthKey !== lastMonthKey) {
+                    lastMonthKey = monthKey
+                    nodes.push(
+                      <div key={`month-${monthKey}`} className={classes.monthHeader}>
+                        <span className={classes.monthHeaderText}>{monthLabel}</span>
+                      </div>,
+                    )
+                  }
+
+                  const isNext = isFirstEvent && !isJumpstart
+                  if (isFirstEvent) isFirstEvent = false
+
+                  nodes.push(
+                    <div
+                      className={[classes.columnTimeline, classes.fadeIn].join(' ')}
+                      key={`event-${index}`}
+                    >
+                      <EventItem event={result} isNextEvent={isNext} />
+                    </div>,
+                  )
+                })
+
+                return nodes
+              })()}
+            </div>
+          ) : (
+            <div className={relationTo === 'committee' ? classes.committeegrid : classes.grid}>
+              {results.docs
+                ?.filter(result => {
+                  if (!isJumpstart) return true
+                  return (
+                    typeof result === 'object' &&
+                    result !== null &&
+                    'isJumpstart' in result &&
+                    result.isJumpstart === true
+                  )
+                })
+                .map((result, index) => {
+                  if (typeof result === 'object' && result !== null && relationTo !== 'committee') {
+                    return (
+                      <div className={[classes.column, classes.fadeIn].join(' ')} key={index}>
+                        {relationTo === 'societies' && 'slug' in result && 'name' in result && (
+                          <SocietyItem slug={result.slug} name={result.name} logo={result.logo} />
+                        )}
+                        {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
+                          <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
+                        )}
+                      </div>
+                    )
+                  }
+                  if (
+                    typeof result === 'object' &&
+                    result !== null &&
+                    relationTo === 'committee' &&
+                    'isCurrent' in result &&
+                    result.isCurrent === true
+                  ) {
+                    return (
+                      <div
+                        className={[classes.columnCommittee, classes.fadeIn].join(' ')}
+                        key={index}
+                      >
+                        <CommitteeItem committee={result} onCommitteeClick={CommitteeClick} />
+                      </div>
+                    )
+                  }
+
+                  return null
+                })}
+            </div>
+          )}
           {results.totalPages > 1 && populateBy !== 'selection' && relationTo !== 'events' && (
             <Pagination
               className={classes.pagination}

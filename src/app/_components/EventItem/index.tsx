@@ -4,7 +4,7 @@ import moment from 'moment-timezone'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { Event } from '../../../payload/payload-types'
+import { Event, Media } from '../../../payload/payload-types'
 
 import classes from './index.module.scss'
 
@@ -16,9 +16,10 @@ const inter = Inter({
 
 export const EventItem: React.FC<{
   event?: Event
+  isNextEvent?: boolean
   onEventClick?: (event: Event | null) => void // Kept for backwards compatibility but not really needed
-}> = ({ event }) => {
-  const { name, date, endTime, location, description, link, isJumpstart } = event || {}
+}> = ({ event, isNextEvent = false }) => {
+  const { name, date, endTime, location, description, link, isJumpstart, image } = event || {}
   const [isExpanded, setIsExpanded] = useState(false)
 
   const getMonthName = (monthNumber: number): string => {
@@ -66,6 +67,26 @@ export const EventItem: React.FC<{
   const dateString = day ? `${day} ${monthName} ${year}` : ''
   const timeString = time ? `${time}${concEndTime ? ` - ${concEndTime}` : ''}` : ''
 
+  // Calculate "in X days"
+  let daysLabel: string | null = null
+  if (date) {
+    const eventDate = moment.utc(date).tz('Europe/London').startOf('day')
+    const todayStart = moment().tz('Europe/London').startOf('day')
+    const diff = eventDate.diff(todayStart, 'days')
+    if (diff === 0) daysLabel = 'Today!'
+    else if (diff === 1) daysLabel = 'Tomorrow!'
+    else if (diff > 1) daysLabel = `in ${diff} days`
+  }
+
+  // Resolve image URL
+  let imageUrl: string | null = null
+  let imageAlt: string = name || 'Event image'
+  if (image && typeof image === 'object') {
+    const mediaImage = image as Media
+    imageUrl = mediaImage.url || null
+    if (mediaImage.alt) imageAlt = mediaImage.alt
+  }
+
   const toggleExpand = (e: React.MouseEvent) => {
     e.stopPropagation()
     setIsExpanded(!isExpanded)
@@ -75,67 +96,92 @@ export const EventItem: React.FC<{
     <div className={[classes.itemWrapper, inter.className].join(' ')}>
       <div className={classes.timelineLine} />
       <div
-        className={`${classes.timelineDot} ${isJumpstart ? classes.timelineDotJumpstart : ''}`}
+        className={`${classes.timelineDot} ${isJumpstart ? classes.timelineDotJumpstart : ''} ${isNextEvent ? classes.timelineDotNext : ''}`}
       />
-      <div className={`${classes.contentCard} ${isJumpstart ? classes.contentCardJumpstart : ''}`}>
+      <div
+        className={[
+          classes.contentCard,
+          isJumpstart ? classes.contentCardJumpstart : '',
+          isNextEvent ? classes.contentCardNext : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        {isNextEvent && <span className={classes.nextEventBadge}>Next Event</span>}
         {isJumpstart && <span className={classes.jumpstartBadge}>Jumpstart Event</span>}
-        <div className={classes.headerRow}>
-          <div className={classes.titleArea}>
-            <h3 className={classes.name}>{name}</h3>
-            <div className={classes.detailsList}>
-              {dateString && (
-                <div className={classes.detailItem}>
-                  <Image
-                    src="/calendar-svgrepo-com.svg"
-                    alt="calendar"
-                    width={16}
-                    height={16}
-                    className={classes.detailIcon}
-                  />
-                  <span>
-                    {dateString} {timeString && `• ${timeString}`}
-                  </span>
-                </div>
-              )}
-              {location && (
-                <div className={classes.detailItem}>
-                  <Image
-                    src="/location-pin-svgrepo-com.svg"
-                    alt="location"
-                    width={16}
-                    height={16}
-                    className={classes.detailIcon}
-                  />
-                  <span>{location}</span>
-                </div>
-              )}
+
+        {imageUrl && (
+          <div className={classes.imageWrapper}>
+            <Image
+              src={imageUrl}
+              alt={imageAlt}
+              fill
+              className={classes.eventImage}
+              sizes="(max-width: 768px) 100vw, 800px"
+            />
+          </div>
+        )}
+
+        <div className={classes.cardBody}>
+          <div className={classes.headerRow}>
+            <div className={classes.titleArea}>
+              <h2 className={classes.name}>{name}</h2>
+              <div className={classes.detailsList}>
+                {dateString && (
+                  <div className={classes.detailItem}>
+                    <Image
+                      src="/calendar-svgrepo-com.svg"
+                      alt="calendar"
+                      width={16}
+                      height={16}
+                      className={classes.detailIcon}
+                    />
+                    <span>
+                      {dateString} {timeString && `• ${timeString}`}
+                    </span>
+                    {daysLabel && <span className={classes.daysLabel}>{daysLabel}</span>}
+                  </div>
+                )}
+                {location && (
+                  <div className={classes.detailItem}>
+                    <Image
+                      src="/location-pin-svgrepo-com.svg"
+                      alt="location"
+                      width={16}
+                      height={16}
+                      className={classes.detailIcon}
+                    />
+                    <span>{location}</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
+
+          {description && (
+            <div className={classes.descriptionBox}>
+              <div className={!isExpanded ? classes.truncatedDesc : ''}>{description}</div>
+              {description.length > 150 && (
+                <button className={classes.expandButton} onClick={toggleExpand}>
+                  {isExpanded ? 'Show Less' : 'Read More'}
+                </button>
+              )}
+            </div>
+          )}
+
+          {link && (
+            <div className={classes.actions}>
+              <Link
+                href={link}
+                className={classes.linkButton}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Event Link
+              </Link>
+            </div>
+          )}
         </div>
-
-        {description && (
-          <div className={classes.descriptionBox}>
-            <div className={!isExpanded ? classes.truncatedDesc : ''}>{description}</div>
-            {description.length > 150 && (
-              <button className={classes.expandButton} onClick={toggleExpand}>
-                {isExpanded ? 'Show Less' : 'Read More'}
-              </button>
-            )}
-          </div>
-        )}
-
-        {link && (
-          <div className={classes.actions}>
-            <Link
-              href={link}
-              className={classes.linkButton}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Event Link
-            </Link>
-          </div>
-        )}
       </div>
     </div>
   )
