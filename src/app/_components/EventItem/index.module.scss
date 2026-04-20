@@ -1,106 +1,193 @@
 @import '../../_css/common';
 
-.rectangle {
-    background-color: var(--theme-elevation-50);
-    border-radius: 42px;
-    box-shadow: -8px 8px 33px -16px var(--theme-shadow);
-    height: 100%;
-    position: relative;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    transition: transform 0.3s ease;
-      
-    cursor: pointer;
+.itemWrapper {
+  display: flex;
+  position: relative;
+  width: 100%;
+  margin-bottom: 2rem;
+}
 
-    @include extra-small-break {
-      flex-direction: column;
-      width: 100%;
-    }
+/* Timeline Vertical Line */
+.timelineLine {
+  position: absolute;
+  top: 0;
+  bottom: -2rem; /* connect to next item */
+  left: 20px;
+  width: 4px;
+  background-color: var(--theme-elevation-200);
+  z-index: 1;
 
-    &:hover {
-      transform: scale(1.05); 
-    }
+  @include extra-small-break {
+    left: 10px;
+  }
+}
+
+/* Hide the line on the last item so it doesn't overshoot */
+.itemWrapper:last-child .timelineLine {
+  display: none;
+}
+
+/* Timeline Dot */
+.timelineDot {
+  position: absolute;
+  top: 30px; /* align with the top part of the card */
+  left: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--theme-elevation-800);
+  border: 4px solid var(--theme-bg);
+  z-index: 2;
+
+  @include extra-small-break {
+    left: 2px;
+  }
+}
+
+.timelineDotJumpstart {
+  background-color: var(--theme-primary); /* Use a pop color for jumpstart */
+}
+
+/* Content Card */
+.contentCard {
+  margin-left: 60px; /* space for the timeline */
+  background-color: var(--theme-elevation-50);
+  border-radius: 20px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
+  width: calc(100% - 60px);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  position: relative;
+
+  @include extra-small-break {
+    margin-left: 30px;
+    width: calc(100% - 30px);
+    padding: 1rem;
   }
 
-  .when {
-    text-align: center;
-    width: 150px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    @include extra-small-break {
-        width: 100%;
-      }
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
   }
+}
 
-  .date {
+.contentCardJumpstart {
+  border: 2px solid var(--theme-primary);
+}
+
+.jumpstartBadge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background-color: var(--theme-primary);
+  color: var(--theme-bg);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.titleArea {
+  flex: 1;
+}
+
+.name {
+  color: var(--theme-elevation-1000);
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+
+  @include extra-small-break {
+    font-size: 22px;
+  }
+}
+
+.detailsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--theme-elevation-800);
+  font-size: 14px;
+}
+
+.detailItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.detailIcon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+.descriptionBox {
+  margin-top: 1rem;
+  color: var(--theme-elevation-700);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.truncatedDesc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.expandButton {
+  background: none;
+  border: none;
+  color: var(--theme-elevation-800);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 0.5rem;
+  font-size: 14px;
+  text-decoration: underline;
+
+  &:hover {
     color: var(--theme-elevation-1000);
-    font-size: 48px;
-    font-weight: 700;
-    letter-spacing: 0;
-    line-height: normal;
-
-    @include extra-small-break {
-        font-size: 18vw;
-      }
   }
+}
 
-  .month {
-    color: var(--theme-elevation-400);
-    font-size: 24px;
-    font-weight: 400;
-    letter-spacing: 0;
-    line-height: normal;
-    width: 100%;
+.actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
 
-    @include extra-small-break {
-        font-size: 7vw;
-      }
+.linkButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  background-color: var(--theme-elevation-1000);
+  color: var(--theme-bg);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+
+  &:hover {
+    background-color: var(--theme-elevation-800);
   }
-
-  .desc {
-    color: var(--theme-elevation-800);
-    font-size: 24px;
-    font-weight: 400;
-    letter-spacing: 0;
-    line-height: normal;
-    width: 100%;
-
-    @include extra-small-break {
-        display: none;
-      }
-  }
-
-  .name {
-    color: var(--theme-elevation-1000);
-    font-size: 64px;
-    font-weight: 700;
-    letter-spacing: 0;
-    line-height: normal;
-    width: 100%;
-
-    @include extra-small-break {
-        font-size: 10vw;
-      }
-  }
-
-  .what {
-    flex: 75%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-top: 3%;
-    padding-bottom: 0.5%;
-    padding-right: 5%;
-    padding-left: 2%;
-
-    @include extra-small-break {
-        width: 100%;
-        padding-left: 1%;
-        padding-right: 1%;
-        padding-bottom: 2%;
-        text-align: center;
-      }
-  }
+}
