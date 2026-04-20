@@ -81,8 +81,8 @@ export const CollectionArchive: React.FC<Props> = props => {
     docs: (populateBy === 'collection'
       ? populatedDocs
       : populateBy === 'selection'
-      ? selectedDocs
-      : []
+        ? selectedDocs
+        : []
     )?.map(doc => doc.value),
     hasNextPage: false,
     hasPrevPage: false,
@@ -152,12 +152,12 @@ export const CollectionArchive: React.FC<Props> = props => {
             relationTo === 'committee'
               ? 'position'
               : relationTo === 'events' && !isJumpstart
-              ? 'date'
-              : relationTo === 'events' && isJumpstart
-              ? 'date'
-              : relationTo === 'societies'
-              ? 'name'
-              : 'level',
+                ? 'date'
+                : relationTo === 'events' && isJumpstart
+                  ? 'date'
+                  : relationTo === 'societies'
+                    ? 'name'
+                    : 'level',
           where: {
             ...(categories
               ? {
@@ -170,34 +170,6 @@ export const CollectionArchive: React.FC<Props> = props => {
         },
         { encode: false },
       )
-
-      const societyPositionOrder = [
-        'President',
-        'Vice President',
-        'Vice President Engagement',
-        'Vice President Operations',
-        'Secretary',
-        'Treasurer',
-        'Events Officer',
-        'Welfare Officer',
-        'Web Officer',
-        'Social Secretary',
-        'Sports Officer',
-        'Marketing Officer',
-        'Hackathon Officer',
-        'Industry Officer',
-        'Academic Secretary',
-        'Gamesmaster',
-        'Games Officer',
-        'International Representative',
-        'Masters Rep',
-        'Postgraduate Representative',
-        'Publicity Officer',
-        'Sports Representative',
-        'Staff Representative',
-        'Unknown Role',
-        'Webmaster',
-      ]
 
       const makeRequest = async () => {
         try {
@@ -215,9 +187,20 @@ export const CollectionArchive: React.FC<Props> = props => {
           if (docs && Array.isArray(docs)) {
             if (relationTo === 'committee') {
               docs = docs.sort((a, b) => {
-                const posA = 'position' in a ? a.position : ''
-                const posB = 'position' in b ? b.position : ''
-                return societyPositionOrder.indexOf(posA) - societyPositionOrder.indexOf(posB)
+                const posA =
+                  'positionRef' in a && typeof a.positionRef === 'object' && a.positionRef !== null
+                    ? a.positionRef.importance
+                    : Infinity
+                const posB =
+                  'positionRef' in b && typeof b.positionRef === 'object' && b.positionRef !== null
+                    ? b.positionRef.importance
+                    : Infinity
+
+                // Ensure missing importances or undefined positions are pushed to bottom
+                const importanceA = typeof posA === 'number' ? posA : Infinity
+                const importanceB = typeof posB === 'number' ? posB : Infinity
+
+                return importanceA - importanceB
               })
             }
 
@@ -313,8 +296,8 @@ export const CollectionArchive: React.FC<Props> = props => {
                         relationTo === 'events' && !isJumpstart
                           ? classes.columnEvents
                           : relationTo === 'events' && isJumpstart
-                          ? classes.columnCommittee
-                          : classes.column,
+                            ? classes.columnCommittee
+                            : classes.column,
                         classes.fadeIn,
                       ].join(' ')}
                       key={index}
@@ -362,8 +345,8 @@ export const CollectionArchive: React.FC<Props> = props => {
                         relationTo === 'committee'
                           ? classes.columnCommittee
                           : relationTo === 'events'
-                          ? classes.columnEvents
-                          : classes.column,
+                            ? classes.columnEvents
+                            : classes.column,
                         classes.fadeIn,
                       ].join(' ')}
                       key={index}
@@ -386,10 +369,16 @@ export const CollectionArchive: React.FC<Props> = props => {
           )}
         </Gutter>
       </Fragment>
-      {isPopUpVisible && 'position' in isPopUpVisible && (
+      {isPopUpVisible && ('position' in isPopUpVisible || 'positionRef' in isPopUpVisible) && (
         <CommitteePopUp
           name={isPopUpVisible.firstName + ' ' + isPopUpVisible.lastName}
-          role={isPopUpVisible.position}
+          role={
+            (isPopUpVisible.positionRef && typeof isPopUpVisible.positionRef === 'object'
+              ? isPopUpVisible.positionRef.name
+              : null) ||
+            isPopUpVisible.position ||
+            ''
+          }
           bio={isPopUpVisible.bio}
           logo={isPopUpVisible.logo}
           // onClose={handleClose}
