@@ -6,7 +6,7 @@
   left: 0;
   top: calc(var(--base) * -5);
   @include mid-break {
-    top:  calc(var(--base) * -2);
+    top: calc(var(--base) * -2);
   }
 }
 
@@ -50,7 +50,7 @@
   // animation: fadeInLeft 1s ease-in-out forwards;
 
   @include extra-small-break {
-      font-size: 16px;
+    font-size: 16px;
   }
 }
 
@@ -126,7 +126,7 @@
     grid-column-end: span 12;
   }
 
-  @include extra-small-break{
+  @include extra-small-break {
     grid-column-end: span 12;
   }
 }
@@ -153,4 +153,32 @@
 
 .columnTimeline {
   width: 100%;
+}
+
+.monthHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0 0.5rem 60px;
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background-color: var(--theme-elevation-200);
+    border-radius: 1px;
+  }
+
+  @include extra-small-break {
+    margin-left: 30px;
+  }
+}
+
+.monthHeaderText {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--theme-elevation-500);
+  white-space: nowrap;
 }
