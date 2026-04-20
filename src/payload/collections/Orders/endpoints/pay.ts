@@ -2,14 +2,7 @@ import { Mutex } from 'async-mutex'
 import type { Payload } from 'payload'
 import type { PayloadHandler } from 'payload/config'
 
-import type {
-  Merch,
-  Order,
-  OrderedMerch,
-  OrderedTicket,
-  Ticket,
-  User,
-} from '../../../payload-types'
+import type { Order, OrderedTicket, Ticket, User } from '../../../payload-types'
 import {
   createCheckoutSession,
   createClient,
@@ -25,6 +18,8 @@ import { soldCount } from '../../Tickets/endpoints/getSoldCount'
 const mutex = new Mutex()
 
 function checkTicketValid(order: Order, payload: Payload): Promise<boolean> {
+  if (!order.tickets || order.tickets.length === 0) return Promise.resolve(true)
+
   const ticketIDs = new Set(order.tickets.map(ot => getID((ot as OrderedTicket).ticket)))
 
   return Promise.all(
@@ -51,23 +46,7 @@ function generateInvoiceItems(order: Order): InvoiceItem[] {
       }))
     : []
 
-  const merch = order?.merch
-    ? (order.merch as Array<OrderedMerch & { merch: Merch }>).map(m => {
-        const variation = m.merch.variations.find(v => v.variation === m.variation)
-        const description = [`${variation.variation} variant`]
-        if (m.size) description.push(`${m.size} size`)
-        if (m.colour) description.push(`${m.colour} colour`)
-
-        return {
-          name: m.merch.name,
-          description: description.join(', '),
-          // @ts-expect-error
-          cost: variation.cost,
-        }
-      })
-    : []
-
-  return [...tickets, ...merch]
+  return tickets
 }
 
 async function stripePay(order: Order, payload: Payload, user: User): Promise<string> {
@@ -137,9 +116,9 @@ async function checkSalesActive(order: Order, payload: Payload): Promise<boolean
   const sales: Set<string> = new Set([
     // @ts-expect-error
     ...(order?.tickets ? order.tickets.map(ot => getID(ot.ticket.sale)) : []),
-    // @ts-expect-error
-    ...(order?.merch ? order.merch.map(ot => getID(ot.merch.sale)) : []),
   ])
+
+  if (sales.size === 0) return true
 
   const results = await payload.find({
     collection: 'sales',
