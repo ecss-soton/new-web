@@ -22,4 +22,3 @@ export const adminsOrPublished: Access = ({ req: { user } }) => {
     ],
   }
 }
-
