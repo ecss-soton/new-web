@@ -5,6 +5,7 @@ width
 height
 alt
 caption
+url
 `
 
 export const MEDIA = `media {
