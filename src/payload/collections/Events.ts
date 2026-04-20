@@ -1,12 +1,13 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../access/admins'
+import { adminsOrPublished } from '../access/adminsOrPublished'
 import { isHTTPS } from '../validate/isHTTPS'
 
 const Events: CollectionConfig = {
   slug: 'events',
   access: {
-    read: () => true,
+    read: adminsOrPublished,
     create: admins,
     update: admins,
     delete: admins,
@@ -14,6 +15,9 @@ const Events: CollectionConfig = {
   admin: {
     useAsTitle: 'id',
     defaultColumns: ['id', 'name', 'date'],
+  },
+  versions: {
+    drafts: true,
   },
   fields: [
     {
