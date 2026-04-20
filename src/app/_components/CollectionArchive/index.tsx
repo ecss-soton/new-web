@@ -18,9 +18,7 @@ import { Card } from '../Card'
 import { CommitteeItem } from '../CommitteeItem'
 import { CommitteePopUp } from '../CommitteePopUp'
 import { EventItem } from '../EventItem'
-import { EventPopUp } from '../EventPopUp'
 import { Gutter } from '../Gutter'
-import { JumpstartEventItem } from '../JumpstartEventItem'
 import { PageRange } from '../PageRange'
 import { Pagination } from '../Pagination'
 import { SocietyItem } from '../SocietyItem'
@@ -99,14 +97,10 @@ export const CollectionArchive: React.FC<Props> = props => {
   const hasHydrated = useRef(false)
   const isRequesting = useRef(false)
   const [page, setPage] = useState(1)
-  const [isPopUpVisible, setIsPopUpVisible] = useState(null)
+  const [isPopUpVisible, setIsPopUpVisible] = useState<Committee | null>(null)
 
   const CommitteeClick = (newCommittee: Committee) => {
     setIsPopUpVisible(newCommittee)
-  }
-
-  const EventClick = (newEvent: Event) => {
-    setIsPopUpVisible(newEvent)
   }
 
   const categories = (catsFromProps || [])
@@ -128,15 +122,15 @@ export const CollectionArchive: React.FC<Props> = props => {
     }
   }, [isLoading, scrollToRef, results])
 
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
   useEffect(() => {
     let timer: NodeJS.Timeout = null
 
     if (populateBy === 'collection' && !isRequesting.current) {
       isRequesting.current = true
 
-      // hydrate the block with fresh content after first render
-      // don't show loader unless the request takes longer than x ms
-      // and don't show it during initial hydration
       timer = setTimeout(() => {
         if (hasHydrated.current) {
           setIsLoading(true)
@@ -146,23 +140,28 @@ export const CollectionArchive: React.FC<Props> = props => {
       const searchQuery = qs.stringify(
         {
           depth: 1,
-          limit,
+          limit: relationTo === 'events' ? 300 : limit,
           page,
           sort:
             relationTo === 'committee'
               ? 'position'
-              : relationTo === 'events' && !isJumpstart
+              : relationTo === 'events'
                 ? 'date'
-                : relationTo === 'events' && isJumpstart
-                  ? 'date'
-                  : relationTo === 'societies'
-                    ? 'name'
-                    : 'level',
+                : relationTo === 'societies'
+                  ? 'name'
+                  : 'level',
           where: {
             ...(categories
               ? {
                   categories: {
                     in: categories,
+                  },
+                }
+              : {}),
+            ...(relationTo === 'events' && !isJumpstart
+              ? {
+                  date: {
+                    greater_than_equal: today.toISOString(),
                   },
                 }
               : {}),
@@ -196,7 +195,6 @@ export const CollectionArchive: React.FC<Props> = props => {
                     ? b.positionRef.importance
                     : Infinity
 
-                // Ensure missing importances or undefined positions are pushed to bottom
                 const importanceA = typeof posA === 'number' ? posA : Infinity
                 const importanceB = typeof posB === 'number' ? posB : Infinity
 
@@ -228,35 +226,11 @@ export const CollectionArchive: React.FC<Props> = props => {
     }
   }, [page, categories, relationTo, onResultChange, sort, limit, populateBy, isJumpstart])
 
-  const today = new Date()
-
-  // isJumpstart &&
-  //   results.docs?.filter((result, index) => {
-  //     return (
-  //       typeof result === 'object' &&
-  //       result !== null &&
-  //       'isJumpstart' in result &&
-  //       result.isJumpstart
-  //     )
-  //   })
-
   return (
     <div className={[classes.collectionArchive, className].filter(Boolean).join(' ')}>
       <div className={classes.scrollRef} ref={scrollRef} />
       {!isLoading && error && <Gutter>{error}</Gutter>}
       <Fragment>
-        {/* {showPageRange !== false && populateBy !== 'selection' && (
-          <Gutter>
-            <div className={classes.pageRange}>
-              <PageRange
-                collection={relationTo}
-                currentPage={results.page}
-                limit={limit}
-                totalDocs={results.totalDocs}
-              />
-            </div>
-          </Gutter>
-        )} */}
         <Gutter>
           {results.docs?.filter(result => {
             if (!isJumpstart) return true
@@ -273,9 +247,11 @@ export const CollectionArchive: React.FC<Props> = props => {
           )}
           <div
             className={
-              relationTo === 'committee' || (relationTo === 'events' && !isJumpstart)
+              relationTo === 'committee'
                 ? classes.committeegrid
-                : classes.grid
+                : relationTo === 'events'
+                  ? classes.timelineGrid
+                  : classes.grid
             }
           >
             {results.docs
@@ -293,41 +269,22 @@ export const CollectionArchive: React.FC<Props> = props => {
                   return (
                     <div
                       className={[
-                        relationTo === 'events' && !isJumpstart
-                          ? classes.columnEvents
-                          : relationTo === 'events' && isJumpstart
-                            ? classes.columnCommittee
-                            : classes.column,
+                        relationTo === 'events' ? classes.columnTimeline : classes.column,
                         classes.fadeIn,
                       ].join(' ')}
                       key={index}
                     >
-                      {/* {relationTo == ('projects' || 'posts' || 'committee') && (
-                      <Card doc={result} relationTo={relationTo} showCategories />
-                    )} */}
                       {relationTo === 'societies' && 'slug' in result && 'name' in result && (
                         <SocietyItem slug={result.slug} name={result.name} logo={result.logo} />
-                        // TODO: Fix scuffed typing fix here.
                       )}
                       {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
                         <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
                       )}
                       {relationTo === 'events' &&
-                        isJumpstart &&
-                        'isJumpstart' in result &&
-                        result.isJumpstart &&
-                        // result.isJumpstart &&
-                        'name' in result && (
-                          <JumpstartEventItem event={result} onEventClick={EventClick} />
-                        )}
-                      {relationTo === 'events' &&
-                        !isJumpstart &&
-                        // 'isJumpstart' in result &&
-                        // !result.isJumpstart &&
                         'name' in result &&
                         'date' in result &&
-                        new Date(result.date) > today && (
-                          <EventItem event={result} onEventClick={EventClick} />
+                        (isJumpstart ? true : new Date(result.date) > today) && (
+                          <EventItem event={result as Event} />
                         )}
                     </div>
                   )
@@ -341,14 +298,7 @@ export const CollectionArchive: React.FC<Props> = props => {
                 ) {
                   return (
                     <div
-                      className={[
-                        relationTo === 'committee'
-                          ? classes.columnCommittee
-                          : relationTo === 'events'
-                            ? classes.columnEvents
-                            : classes.column,
-                        classes.fadeIn,
-                      ].join(' ')}
+                      className={[classes.columnCommittee, classes.fadeIn].join(' ')}
                       key={index}
                     >
                       <CommitteeItem committee={result} onCommitteeClick={CommitteeClick} />
@@ -359,7 +309,7 @@ export const CollectionArchive: React.FC<Props> = props => {
                 return null
               })}
           </div>
-          {results.totalPages > 1 && populateBy !== 'selection' && (
+          {results.totalPages > 1 && populateBy !== 'selection' && relationTo !== 'events' && (
             <Pagination
               className={classes.pagination}
               onClick={setPage}
@@ -381,20 +331,7 @@ export const CollectionArchive: React.FC<Props> = props => {
           }
           bio={isPopUpVisible.bio}
           logo={isPopUpVisible.logo}
-          // onClose={handleClose}
           onCommitteeClick={CommitteeClick}
-        />
-      )}
-      {isPopUpVisible && 'date' in isPopUpVisible && (
-        <EventPopUp
-          name={isPopUpVisible.name}
-          date={isPopUpVisible.date}
-          description={isPopUpVisible.description}
-          location={isPopUpVisible.location}
-          endTime={isPopUpVisible.endTime}
-          link={isPopUpVisible.link}
-          image={isPopUpVisible.image || null}
-          onEventClick={EventClick}
         />
       )}
     </div>
