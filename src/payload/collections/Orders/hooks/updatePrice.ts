@@ -9,13 +9,8 @@ function sameElements<T>(lhs: T[], rhs: T[]): boolean {
 
 export const updatePrice: BeforeChangeHook<Order> = async ({ data, originalDoc, req }) => {
   const orderedTicketIDs = getArrayID(data.tickets)
-  const orderedMerchIDs = getArrayID(data.merch)
 
-  if (
-    !data.forceUpdate &&
-    sameElements(getArrayID(originalDoc?.tickets), orderedTicketIDs) &&
-    sameElements(getArrayID(originalDoc?.merch), orderedMerchIDs)
-  ) {
+  if (!data.forceUpdate && sameElements(getArrayID(originalDoc?.tickets), orderedTicketIDs)) {
     return data
   }
 
@@ -30,28 +25,11 @@ export const updatePrice: BeforeChangeHook<Order> = async ({ data, originalDoc, 
     },
   })
 
-  const orderedMerch = await req.payload.find({
-    collection: 'orderedMerch',
-    pagination: false,
-    depth: 1,
-    where: {
-      id: {
-        in: orderedMerchIDs,
-      },
-    },
-  })
-
   // @ts-expect-error
   const ticketPrice = orderedTickets.docs.reduce((sum, ot) => sum + ot.ticket.price, 0)
 
-  const merchPrice = orderedMerch.docs.reduce((sum, om) => {
-    // @ts-expect-error
-    const variation = om.merch.variations.find(v => v.variation === om.variation)
-    return sum + variation.price
-  }, 0)
-
   data.forceUpdate = false
-  data.price = ticketPrice + merchPrice
+  data.price = ticketPrice
   data.stripeTax = 0
   if (data.price > 0) {
     // Calculated by doing some simple napkin math

@@ -9,7 +9,9 @@ import { Content } from '../../blocks/Content'
 import { HomeTop } from '../../blocks/HomeTop'
 import { Intro } from '../../blocks/Intro'
 import { MediaBlock } from '../../blocks/MediaBlock'
+import { MerchBlock } from '../../blocks/MerchBlock'
 import { NextEvent } from '../../blocks/NextEvent'
+import { SummerPartyBlock } from '../../blocks/SummerPartyBlock'
 import { hero } from '../../fields/hero'
 import { slugField } from '../../fields/slug'
 import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
@@ -77,6 +79,8 @@ export const Pages: CollectionConfig = {
                 Intro,
                 NextEvent,
                 Button,
+                MerchBlock,
+                SummerPartyBlock,
               ],
             },
           ],

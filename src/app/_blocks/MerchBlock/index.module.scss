@@ -81,7 +81,6 @@
 
 .merchImageWrapper {
   width: 100%;
-  aspect-ratio: 1;
   background-color: var(--theme-elevation-150);
   position: relative;
   overflow: hidden;
@@ -92,6 +91,7 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+  display: block;
 }
 
 .merchImagePlaceholder {

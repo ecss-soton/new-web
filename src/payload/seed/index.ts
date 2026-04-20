@@ -75,7 +75,6 @@ export const seed = async (payload: Payload): Promise<void> => {
       data: {
         email: 'demo-author@payloadcms.com',
         name: 'Demo Author',
-        password: 'password',
         roles: ['admin'],
       },
     }),
@@ -84,7 +83,6 @@ export const seed = async (payload: Payload): Promise<void> => {
       data: {
         email: 'demo-user@payloadcms.com',
         name: 'Demo User',
-        password: 'password',
         roles: ['user'],
       },
     }),

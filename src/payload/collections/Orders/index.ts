@@ -43,26 +43,6 @@ const Orders: CollectionConfig = {
       type: 'relationship',
       relationTo: 'orderedTickets',
       hasMany: true,
-      filterOptions: ({ user }) => {
-        if (user) {
-          return {
-            user: {
-              equals: user.id,
-            },
-          }
-        }
-        return {
-          user: {
-            not_equals: undefined,
-          },
-        }
-      },
-    },
-    {
-      name: 'merch',
-      type: 'relationship',
-      relationTo: 'orderedMerch',
-      hasMany: true,
       validate: atLeastOneItem,
       filterOptions: ({ user }) => {
         if (user) {
@@ -79,6 +59,7 @@ const Orders: CollectionConfig = {
         }
       },
     },
+
     {
       name: 'price',
       label: 'Price (in pence)',

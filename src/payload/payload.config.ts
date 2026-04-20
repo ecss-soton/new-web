@@ -22,7 +22,6 @@ import { Media } from './collections/Media'
 import { MemberImports } from './collections/MemberImports'
 import Merch from './collections/Merch'
 import Nominations from './collections/Nominations'
-import OrderedMerch from './collections/OrderedMerch'
 import OrderedTickets from './collections/OrderedTickets'
 import Orders from './collections/Orders'
 import { Pages } from './collections/Pages'
@@ -138,7 +137,6 @@ export default buildConfig({
     Sales,
     Tickets,
     OrderedTickets,
-    OrderedMerch,
     Orders,
     Sponsors,
     Societies,
