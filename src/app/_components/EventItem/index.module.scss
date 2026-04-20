@@ -1,106 +1,263 @@
 @import '../../_css/common';
 
-.rectangle {
-    background-color: var(--theme-elevation-50);
-    border-radius: 42px;
-    box-shadow: -8px 8px 33px -16px var(--theme-shadow);
-    height: 100%;
-    position: relative;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    transition: transform 0.3s ease;
-      
-    cursor: pointer;
+.itemWrapper {
+  display: flex;
+  position: relative;
+  width: 100%;
+  margin-bottom: 2rem;
+}
 
-    @include extra-small-break {
-      flex-direction: column;
-      width: 100%;
-    }
+/* Timeline Vertical Line */
+.timelineLine {
+  position: absolute;
+  top: 0;
+  bottom: -2rem; /* connect to next item */
+  left: 20px;
+  width: 4px;
+  background-color: var(--theme-elevation-200);
+  z-index: 1;
 
-    &:hover {
-      transform: scale(1.05); 
-    }
+  @include extra-small-break {
+    left: 10px;
+  }
+}
+
+/* Hide the line on the last item so it doesn't overshoot */
+.itemWrapper:last-child .timelineLine {
+  display: none;
+}
+
+/* Timeline Dot */
+.timelineDot {
+  position: absolute;
+  top: 30px;
+  left: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--theme-elevation-800);
+  border: 4px solid var(--theme-bg);
+  z-index: 2;
+
+  @include extra-small-break {
+    left: 2px;
+  }
+}
+
+.timelineDotJumpstart {
+  background-color: var(--theme-primary);
+}
+
+.timelineDotNext {
+  width: 24px;
+  height: 24px;
+  left: 10px;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+
+  @include extra-small-break {
+    left: 0px;
+  }
+}
+
+/* Content Card */
+.contentCard {
+  margin-left: 60px;
+  background-color: var(--theme-elevation-50);
+  border-radius: 16px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
+  width: calc(100% - 60px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* so image respects border-radius */
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  position: relative;
+
+  @include extra-small-break {
+    margin-left: 30px;
+    width: calc(100% - 30px);
   }
 
-  .when {
-    text-align: center;
-    width: 150px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    @include extra-small-break {
-        width: 100%;
-      }
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
   }
+}
 
-  .date {
-    color: var(--theme-elevation-1000);
-    font-size: 48px;
-    font-weight: 700;
-    letter-spacing: 0;
-    line-height: normal;
+.contentCardJumpstart {
+  border: 2px solid var(--theme-primary);
+}
 
-    @include extra-small-break {
-        font-size: 18vw;
-      }
+.contentCardNext {
+  border: 2px solid var(--theme-primary);
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Badge row — badges are inside cardBody so they sit above text */
+.nextEventBadge {
+  display: inline-block;
+  background-color: var(--theme-primary);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 0.75rem;
+  align-self: flex-start;
+}
+
+.jumpstartBadge {
+  display: inline-block;
+  background-color: var(--theme-primary);
+  color: var(--theme-bg);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.75rem;
+  align-self: flex-start;
+}
+
+/* Event Image */
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  overflow: hidden;
+  background-color: var(--theme-elevation-100);
+  flex-shrink: 0;
+}
+
+.eventImage {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Card body wraps all text content below the image */
+.cardBody {
+  padding: 1.25rem 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+
+  @include extra-small-break {
+    padding: 1rem;
   }
+}
 
-  .month {
-    color: var(--theme-elevation-400);
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.titleArea {
+  flex: 1;
+}
+
+.name {
+  color: var(--theme-elevation-1000);
+  font-size: 30px;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+
+  @include extra-small-break {
     font-size: 24px;
-    font-weight: 400;
-    letter-spacing: 0;
-    line-height: normal;
-    width: 100%;
-
-    @include extra-small-break {
-        font-size: 7vw;
-      }
   }
+}
 
-  .desc {
-    color: var(--theme-elevation-800);
-    font-size: 24px;
-    font-weight: 400;
-    letter-spacing: 0;
-    line-height: normal;
-    width: 100%;
+.detailsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: var(--theme-elevation-700);
+  font-size: 16px;
+}
 
-    @include extra-small-break {
-        display: none;
-      }
-  }
+.detailItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
 
-  .name {
+.detailIcon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.daysLabel {
+  display: inline-block;
+  background-color: var(--theme-primary);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  line-height: 1.6;
+}
+
+.descriptionBox {
+  margin-top: 0.75rem;
+  color: var(--theme-elevation-700);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.truncatedDesc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.expandButton {
+  background: none;
+  border: none;
+  color: var(--theme-elevation-800);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 0.4rem;
+  font-size: 13px;
+  text-decoration: underline;
+
+  &:hover {
     color: var(--theme-elevation-1000);
-    font-size: 64px;
-    font-weight: 700;
-    letter-spacing: 0;
-    line-height: normal;
-    width: 100%;
-
-    @include extra-small-break {
-        font-size: 10vw;
-      }
   }
+}
 
-  .what {
-    flex: 75%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-top: 3%;
-    padding-bottom: 0.5%;
-    padding-right: 5%;
-    padding-left: 2%;
+.actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
 
-    @include extra-small-break {
-        width: 100%;
-        padding-left: 1%;
-        padding-right: 1%;
-        padding-bottom: 2%;
-        text-align: center;
-      }
+.linkButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  background-color: var(--theme-elevation-1000);
+  color: var(--theme-bg);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+
+  &:hover {
+    background-color: var(--theme-elevation-800);
   }
+}
