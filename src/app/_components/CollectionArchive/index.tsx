@@ -2,6 +2,7 @@
 
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { Inter } from '@next/font/google'
+import moment from 'moment-timezone'
 import qs from 'qs'
 
 import type {
@@ -18,9 +19,7 @@ import { Card } from '../Card'
 import { CommitteeItem } from '../CommitteeItem'
 import { CommitteePopUp } from '../CommitteePopUp'
 import { EventItem } from '../EventItem'
-import { EventPopUp } from '../EventPopUp'
 import { Gutter } from '../Gutter'
-import { JumpstartEventItem } from '../JumpstartEventItem'
 import { PageRange } from '../PageRange'
 import { Pagination } from '../Pagination'
 import { SocietyItem } from '../SocietyItem'
@@ -99,14 +98,10 @@ export const CollectionArchive: React.FC<Props> = props => {
   const hasHydrated = useRef(false)
   const isRequesting = useRef(false)
   const [page, setPage] = useState(1)
-  const [isPopUpVisible, setIsPopUpVisible] = useState(null)
+  const [isPopUpVisible, setIsPopUpVisible] = useState<Committee | null>(null)
 
   const CommitteeClick = (newCommittee: Committee) => {
     setIsPopUpVisible(newCommittee)
-  }
-
-  const EventClick = (newEvent: Event) => {
-    setIsPopUpVisible(newEvent)
   }
 
   const categories = (catsFromProps || [])
@@ -128,15 +123,15 @@ export const CollectionArchive: React.FC<Props> = props => {
     }
   }, [isLoading, scrollToRef, results])
 
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
   useEffect(() => {
     let timer: NodeJS.Timeout = null
 
     if (populateBy === 'collection' && !isRequesting.current) {
       isRequesting.current = true
 
-      // hydrate the block with fresh content after first render
-      // don't show loader unless the request takes longer than x ms
-      // and don't show it during initial hydration
       timer = setTimeout(() => {
         if (hasHydrated.current) {
           setIsLoading(true)
@@ -146,14 +141,12 @@ export const CollectionArchive: React.FC<Props> = props => {
       const searchQuery = qs.stringify(
         {
           depth: 1,
-          limit,
+          limit: relationTo === 'events' ? 300 : limit,
           page,
           sort:
             relationTo === 'committee'
               ? 'position'
-              : relationTo === 'events' && !isJumpstart
-              ? 'date'
-              : relationTo === 'events' && isJumpstart
+              : relationTo === 'events'
               ? 'date'
               : relationTo === 'societies'
               ? 'name'
@@ -166,38 +159,17 @@ export const CollectionArchive: React.FC<Props> = props => {
                   },
                 }
               : {}),
+            ...(relationTo === 'events' && !isJumpstart
+              ? {
+                  date: {
+                    greater_than_equal: today.toISOString(),
+                  },
+                }
+              : {}),
           },
         },
         { encode: false },
       )
-
-      const societyPositionOrder = [
-        'President',
-        'Vice President',
-        'Vice President Engagement',
-        'Vice President Operations',
-        'Secretary',
-        'Treasurer',
-        'Events Officer',
-        'Welfare Officer',
-        'Web Officer',
-        'Social Secretary',
-        'Sports Officer',
-        'Marketing Officer',
-        'Hackathon Officer',
-        'Industry Officer',
-        'Academic Secretary',
-        'Gamesmaster',
-        'Games Officer',
-        'International Representative',
-        'Masters Rep',
-        'Postgraduate Representative',
-        'Publicity Officer',
-        'Sports Representative',
-        'Staff Representative',
-        'Unknown Role',
-        'Webmaster',
-      ]
 
       const makeRequest = async () => {
         try {
@@ -215,9 +187,19 @@ export const CollectionArchive: React.FC<Props> = props => {
           if (docs && Array.isArray(docs)) {
             if (relationTo === 'committee') {
               docs = docs.sort((a, b) => {
-                const posA = 'position' in a ? a.position : ''
-                const posB = 'position' in b ? b.position : ''
-                return societyPositionOrder.indexOf(posA) - societyPositionOrder.indexOf(posB)
+                const posA =
+                  'positionRef' in a && typeof a.positionRef === 'object' && a.positionRef !== null
+                    ? a.positionRef.importance
+                    : Infinity
+                const posB =
+                  'positionRef' in b && typeof b.positionRef === 'object' && b.positionRef !== null
+                    ? b.positionRef.importance
+                    : Infinity
+
+                const importanceA = typeof posA === 'number' ? posA : Infinity
+                const importanceB = typeof posB === 'number' ? posB : Infinity
+
+                return importanceA - importanceB
               })
             }
 
@@ -245,138 +227,113 @@ export const CollectionArchive: React.FC<Props> = props => {
     }
   }, [page, categories, relationTo, onResultChange, sort, limit, populateBy, isJumpstart])
 
-  const today = new Date()
-
-  // isJumpstart &&
-  //   results.docs?.filter((result, index) => {
-  //     return (
-  //       typeof result === 'object' &&
-  //       result !== null &&
-  //       'isJumpstart' in result &&
-  //       result.isJumpstart
-  //     )
-  //   })
-
   return (
     <div className={[classes.collectionArchive, className].filter(Boolean).join(' ')}>
       <div className={classes.scrollRef} ref={scrollRef} />
       {!isLoading && error && <Gutter>{error}</Gutter>}
       <Fragment>
-        {/* {showPageRange !== false && populateBy !== 'selection' && (
-          <Gutter>
-            <div className={classes.pageRange}>
-              <PageRange
-                collection={relationTo}
-                currentPage={results.page}
-                limit={limit}
-                totalDocs={results.totalDocs}
-              />
-            </div>
-          </Gutter>
-        )} */}
         <Gutter>
-          {results.docs?.filter(result => {
-            if (!isJumpstart) return true
-            return (
-              typeof result === 'object' &&
-              result !== null &&
-              'isJumpstart' in result &&
-              result.isJumpstart === true
-            )
-          }).length === 0 && (
-            <span className={[classes.heading, inter.className].join(' ')}>
-              No Events are planned at the moment, come back soon!
-            </span>
-          )}
-          <div
-            className={
-              relationTo === 'committee' || (relationTo === 'events' && !isJumpstart)
-                ? classes.committeegrid
-                : classes.grid
-            }
-          >
-            {results.docs
-              ?.filter(result => {
-                if (!isJumpstart) return true
-                return (
-                  typeof result === 'object' &&
-                  result !== null &&
-                  'isJumpstart' in result &&
-                  result.isJumpstart === true
-                )
-              })
-              .map((result, index) => {
-                if (typeof result === 'object' && result !== null && relationTo !== 'committee') {
-                  return (
-                    <div
-                      className={[
-                        relationTo === 'events' && !isJumpstart
-                          ? classes.columnEvents
-                          : relationTo === 'events' && isJumpstart
-                          ? classes.columnCommittee
-                          : classes.column,
-                        classes.fadeIn,
-                      ].join(' ')}
-                      key={index}
-                    >
-                      {/* {relationTo == ('projects' || 'posts' || 'committee') && (
-                      <Card doc={result} relationTo={relationTo} showCategories />
-                    )} */}
-                      {relationTo === 'societies' && 'slug' in result && 'name' in result && (
-                        <SocietyItem slug={result.slug} name={result.name} logo={result.logo} />
-                        // TODO: Fix scuffed typing fix here.
-                      )}
-                      {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
-                        <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
-                      )}
-                      {relationTo === 'events' &&
-                        isJumpstart &&
-                        'isJumpstart' in result &&
-                        result.isJumpstart &&
-                        // result.isJumpstart &&
-                        'name' in result && (
-                          <JumpstartEventItem event={result} onEventClick={EventClick} />
-                        )}
-                      {relationTo === 'events' &&
-                        !isJumpstart &&
-                        // 'isJumpstart' in result &&
-                        // !result.isJumpstart &&
-                        'name' in result &&
-                        'date' in result &&
-                        new Date(result.date) > today && (
-                          <EventItem event={result} onEventClick={EventClick} />
-                        )}
-                    </div>
-                  )
-                }
-                if (
-                  typeof result === 'object' &&
-                  result !== null &&
-                  relationTo === 'committee' &&
-                  'isCurrent' in result &&
-                  result.isCurrent === true
-                ) {
-                  return (
-                    <div
-                      className={[
-                        relationTo === 'committee'
-                          ? classes.columnCommittee
-                          : relationTo === 'events'
-                          ? classes.columnEvents
-                          : classes.column,
-                        classes.fadeIn,
-                      ].join(' ')}
-                      key={index}
-                    >
-                      <CommitteeItem committee={result} onCommitteeClick={CommitteeClick} />
-                    </div>
-                  )
-                }
+          {relationTo === 'events' &&
+            results.docs?.filter(result => {
+              if (typeof result !== 'object' || result === null || !('date' in result)) return false
+              if (isJumpstart) return 'isJumpstart' in result && result.isJumpstart === true
+              return new Date((result as Event).date) > today
+            }).length === 0 && (
+              <span className={[classes.heading, inter.className].join(' ')}>
+                No Events are planned at the moment, come back soon!
+              </span>
+            )}
+          {relationTo === 'events' ? (
+            <div className={classes.timelineGrid}>
+              {(() => {
+                const filteredEvents = (results.docs || []).filter(result => {
+                  if (typeof result !== 'object' || result === null || !('date' in result))
+                    return false
+                  if (isJumpstart) return 'isJumpstart' in result && result.isJumpstart === true
+                  return new Date((result as Event).date) > today
+                }) as Event[]
 
-                return null
-              })}
-          </div>
-          {results.totalPages > 1 && populateBy !== 'selection' && (
+                let lastMonthKey = ''
+                let isFirstEvent = true
+                const nodes: React.ReactNode[] = []
+
+                filteredEvents.forEach((result, index) => {
+                  const eventMoment = moment.utc(result.date).tz('Europe/London')
+                  const monthKey = eventMoment.format('YYYY-MM')
+                  const monthLabel = eventMoment.format('MMMM YYYY')
+
+                  if (monthKey !== lastMonthKey) {
+                    lastMonthKey = monthKey
+                    nodes.push(
+                      <div key={`month-${monthKey}`} className={classes.monthHeader}>
+                        <span className={classes.monthHeaderText}>{monthLabel}</span>
+                      </div>,
+                    )
+                  }
+
+                  const isNext = isFirstEvent && !isJumpstart
+                  if (isFirstEvent) isFirstEvent = false
+
+                  nodes.push(
+                    <div
+                      className={[classes.columnTimeline, classes.fadeIn].join(' ')}
+                      key={`event-${index}`}
+                    >
+                      <EventItem event={result} isNextEvent={isNext} />
+                    </div>,
+                  )
+                })
+
+                return nodes
+              })()}
+            </div>
+          ) : (
+            <div className={relationTo === 'committee' ? classes.committeegrid : classes.grid}>
+              {results.docs
+                ?.filter(result => {
+                  if (!isJumpstart) return true
+                  return (
+                    typeof result === 'object' &&
+                    result !== null &&
+                    'isJumpstart' in result &&
+                    result.isJumpstart === true
+                  )
+                })
+                .map((result, index) => {
+                  if (typeof result === 'object' && result !== null && relationTo !== 'committee') {
+                    return (
+                      <div className={[classes.column, classes.fadeIn].join(' ')} key={index}>
+                        {relationTo === 'societies' && 'slug' in result && 'name' in result && (
+                          <SocietyItem slug={result.slug} name={result.name} logo={result.logo} />
+                        )}
+                        {relationTo === 'sponsors' && 'slug' in result && 'name' in result && (
+                          <SponsorItem slug={result.slug} name={result.name} logo={result.logo} />
+                        )}
+                      </div>
+                    )
+                  }
+                  if (
+                    typeof result === 'object' &&
+                    result !== null &&
+                    relationTo === 'committee' &&
+                    'isCurrent' in result &&
+                    result.isCurrent === true
+                  ) {
+                    return (
+                      <div
+                        className={[classes.columnCommittee, classes.fadeIn].join(' ')}
+                        key={index}
+                      >
+                        <CommitteeItem committee={result} onCommitteeClick={CommitteeClick} />
+                      </div>
+                    )
+                  }
+
+                  return null
+                })}
+            </div>
+          )}
+          {results.totalPages > 1 && populateBy !== 'selection' && relationTo !== 'events' && (
             <Pagination
               className={classes.pagination}
               onClick={setPage}
@@ -386,26 +343,19 @@ export const CollectionArchive: React.FC<Props> = props => {
           )}
         </Gutter>
       </Fragment>
-      {isPopUpVisible && 'position' in isPopUpVisible && (
+      {isPopUpVisible && ('position' in isPopUpVisible || 'positionRef' in isPopUpVisible) && (
         <CommitteePopUp
           name={isPopUpVisible.firstName + ' ' + isPopUpVisible.lastName}
-          role={isPopUpVisible.position}
+          role={
+            (isPopUpVisible.positionRef && typeof isPopUpVisible.positionRef === 'object'
+              ? isPopUpVisible.positionRef.name
+              : null) ||
+            isPopUpVisible.position ||
+            ''
+          }
           bio={isPopUpVisible.bio}
           logo={isPopUpVisible.logo}
-          // onClose={handleClose}
           onCommitteeClick={CommitteeClick}
-        />
-      )}
-      {isPopUpVisible && 'date' in isPopUpVisible && (
-        <EventPopUp
-          name={isPopUpVisible.name}
-          date={isPopUpVisible.date}
-          description={isPopUpVisible.description}
-          location={isPopUpVisible.location}
-          endTime={isPopUpVisible.endTime}
-          link={isPopUpVisible.link}
-          image={isPopUpVisible.image || null}
-          onEventClick={EventClick}
         />
       )}
     </div>

@@ -13,7 +13,7 @@ const Events: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'id',
-    defaultColumns: ['id', 'type'],
+    defaultColumns: ['id', 'name', 'date'],
   },
   fields: [
     {
