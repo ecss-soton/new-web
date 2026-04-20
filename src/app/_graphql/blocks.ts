@@ -125,3 +125,80 @@ export const ARCHIVE_BLOCK = `
   populatedDocsTotal
 }
 `
+
+export const MERCH_BLOCK = `
+...on MerchBlock {
+  blockType
+  heroTitle
+  heroContent
+  merchItems {
+    id
+    title
+    description
+    colours {
+      name
+      image {
+        ${MEDIA_FIELDS}
+      }
+    }
+    link
+  }
+  notices
+}
+`
+
+export const SUMMER_PARTY_BLOCK = `
+...on SummerPartyBlock {
+  blockType
+  heroTitle
+  heroText
+  heroImage {
+    ${MEDIA_FIELDS}
+  }
+  buttons {
+    link ${LINK_FIELDS()}
+  }
+  bigImage {
+    ${MEDIA_FIELDS}
+  }
+  squareImages {
+    image {
+      ${MEDIA_FIELDS}
+    }
+  }
+  venueBlock {
+    title
+    text
+    image {
+      ${MEDIA_FIELDS}
+    }
+  }
+  menuBlock {
+    title
+    text
+    image {
+      ${MEDIA_FIELDS}
+    }
+  }
+  questionsBlock {
+    text
+    link ${LINK_FIELDS()}
+  }
+  onTheDayBlock {
+    title
+    text
+    image {
+      ${MEDIA_FIELDS}
+    }
+  }
+  faqs {
+    question
+    answer
+  }
+  organisers {
+    logo {
+      ${MEDIA_FIELDS}
+    }
+  }
+}
+`

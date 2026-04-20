@@ -25,7 +25,6 @@ export interface Config {
     sales: Sale;
     tickets: Ticket;
     orderedTickets: OrderedTicket;
-    orderedMerch: OrderedMerch;
     orders: Order;
     sponsors: Sponsor;
     societies: Society;
@@ -241,6 +240,94 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'button';
+      }
+    | {
+        heroTitle: string;
+        heroContent: {
+          [k: string]: unknown;
+        }[];
+        merchItems: (string | Merch)[];
+        notices?:
+          | {
+              [k: string]: unknown;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'merchBlock';
+      }
+    | {
+        heroTitle: string;
+        heroText: string;
+        heroImage: string | Media;
+        buttons?:
+          | {
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: string | Page;
+                } | null;
+                url?: string | null;
+                label: string;
+                appearance?: ('primary' | 'secondary') | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        bigImage?: string | Media | null;
+        squareImages?:
+          | {
+              image: string | Media;
+              id?: string | null;
+            }[]
+          | null;
+        venueBlock: {
+          title: string;
+          text: string;
+          image: string | Media;
+        };
+        menuBlock: {
+          title: string;
+          text: string;
+          image: string | Media;
+        };
+        questionsBlock: {
+          text: string;
+          link: {
+            type?: ('reference' | 'custom') | null;
+            newTab?: boolean | null;
+            reference?: {
+              relationTo: 'pages';
+              value: string | Page;
+            } | null;
+            url?: string | null;
+            label: string;
+            appearance?: ('primary' | 'secondary') | null;
+          };
+        };
+        onTheDayBlock: {
+          title: string;
+          text: string;
+          image: string | Media;
+        };
+        faqs?:
+          | {
+              question: string;
+              answer: string;
+              id?: string | null;
+            }[]
+          | null;
+        organisers?:
+          | {
+              logo: string | Media;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'summerPartyBlock';
       }
   )[];
   slug?: string | null;
@@ -630,16 +717,9 @@ export interface User {
   quickfileClientID?: number | null;
   stripeClientID?: string | null;
   roles?: ('admin' | 'user' | 'susu')[] | null;
+  email?: string | null;
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -961,6 +1041,23 @@ export interface Event {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "merch".
+ */
+export interface Merch {
+  id: string;
+  title: string;
+  description: string;
+  colours: {
+    name: string;
+    image: string | Media;
+    id?: string | null;
+  }[];
+  link: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "member-imports".
  */
 export interface MemberImport {
@@ -1091,9 +1188,21 @@ export interface ElectionResult {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "merch".
+ * via the `definition` "sales".
  */
-export interface Merch {
+export interface Sale {
+  id: string;
+  name: string;
+  saleStart: string;
+  saleEnd: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tickets".
+ */
+export interface Ticket {
   id: string;
   name: string;
   sale: string | Sale;
@@ -1102,39 +1211,9 @@ export interface Merch {
         [k: string]: unknown;
       }[]
     | null;
-  sizes?:
-    | {
-        size: string;
-        id?: string | null;
-      }[]
-    | null;
-  colours?:
-    | {
-        colour: string;
-        image?: string | Media | null;
-        hexValue?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  variations: {
-    variation: string;
-    image?: string | Media | null;
-    price: number;
-    form?: (string | null) | Form;
-    id?: string | null;
-  }[];
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sales".
- */
-export interface Sale {
-  id: string;
-  name: string;
-  saleStart: string;
-  saleEnd: string;
+  count?: number | null;
+  price: number;
+  form?: (string | null) | Form;
   updatedAt: string;
   createdAt: string;
 }
@@ -1274,25 +1353,6 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tickets".
- */
-export interface Ticket {
-  id: string;
-  name: string;
-  sale: string | Sale;
-  description?:
-    | {
-        [k: string]: unknown;
-      }[]
-    | null;
-  count?: number | null;
-  price: number;
-  form?: (string | null) | Form;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "orderedTickets".
  */
 export interface OrderedTicket {
@@ -1322,28 +1382,12 @@ export interface FormSubmission {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "orderedMerch".
- */
-export interface OrderedMerch {
-  id: string;
-  merch: string | Merch;
-  user: string | User;
-  size?: string | null;
-  colour?: string | null;
-  variation: string;
-  form?: (string | null) | FormSubmission;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "orders".
  */
 export interface Order {
   id: string;
   user: string | User;
   tickets?: (string | OrderedTicket)[] | null;
-  merch?: (string | OrderedMerch)[] | null;
   price?: number | null;
   stripeTax?: number | null;
   quickfileID?: number | null;

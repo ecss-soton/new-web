@@ -1,10 +1,8 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../../access/admins'
-import { saleActiveOrAdmin } from '../../access/saleActiveOrAdmin'
-import { isAnInt } from '../../validate/isAnInt'
+import { anyone } from '../../access/anyone'
 import Groups from '../groups'
-import { uniqueFields } from './validate/uniqueFields'
 
 const Merch: CollectionConfig = {
   slug: 'merch',
@@ -17,60 +15,43 @@ const Merch: CollectionConfig = {
     plural: 'Merch',
   },
   access: {
-    read: saleActiveOrAdmin,
+    read: anyone,
     create: admins,
     update: admins,
     delete: admins,
   },
   admin: {
-    useAsTitle: 'name',
+    useAsTitle: 'title',
     group: Groups.Commerce,
-    defaultColumns: ['name', 'sale', 'description'],
+    defaultColumns: ['title', 'id', 'link'],
   },
   fields: [
     {
-      name: 'name',
+      name: 'id',
+      type: 'text',
+      required: true,
+      unique: true,
+      admin: {
+        description: 'e.g. simple-tshirt',
+      },
+    },
+    {
+      name: 'title',
       type: 'text',
       required: true,
     },
     {
-      name: 'sale',
-      type: 'relationship',
-      relationTo: 'sales',
-      required: true,
-    },
-    {
       name: 'description',
-      type: 'richText',
-    },
-    {
-      name: 'sizes',
-      type: 'array',
-      validate: uniqueFields(
-        d => d?.sizes,
-        s => s?.size,
-        true,
-      ),
-      fields: [
-        {
-          name: 'size',
-          type: 'text',
-          required: true,
-        },
-      ],
-      defaultValue: [{ size: 'small' }, { size: 'medium' }, { size: 'large' }],
+      type: 'textarea',
+      required: true,
     },
     {
       name: 'colours',
       type: 'array',
-      validate: uniqueFields(
-        d => d?.colours,
-        c => c?.colour,
-        true,
-      ),
+      required: true,
       fields: [
         {
-          name: 'colour',
+          name: 'name',
           type: 'text',
           required: true,
         },
@@ -78,51 +59,20 @@ const Merch: CollectionConfig = {
           name: 'image',
           type: 'upload',
           relationTo: 'media',
-        },
-        {
-          name: 'hexValue',
-          type: 'text',
+          required: true,
+          admin: {
+            description: 'Upload the image here. All media should be put into /media/merch/',
+          },
         },
       ],
     },
     {
-      name: 'variations',
-      type: 'array',
+      name: 'link',
+      type: 'text',
       required: true,
-      validate: uniqueFields(
-        d => d?.variations,
-        v => v?.variation,
-        false,
-      ),
-      fields: [
-        {
-          name: 'variation',
-          type: 'text',
-          required: true,
-          defaultValue: 'main',
-        },
-        {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-        },
-        {
-          name: 'price',
-          label: 'Price (in pence)',
-          type: 'number',
-          min: 1,
-          validate: isAnInt,
-          required: true,
-          admin: {
-            description: 'e.g. £23.52 should be 2352',
-          },
-        },
-        {
-          name: 'form',
-          type: 'relationship',
-          relationTo: 'forms',
-        },
-      ],
+      admin: {
+        description: 'Link to BoxOffice (e.g. https://boxoffice.susu.org/...)',
+      },
     },
   ],
 }

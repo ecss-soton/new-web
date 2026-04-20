@@ -6,7 +6,9 @@ import {
   HOME_TOP,
   INTRO,
   MEDIA_BLOCK,
+  MERCH_BLOCK,
   NEXT_EVENT,
+  SUMMER_PARTY_BLOCK,
 } from './blocks'
 import { LINK_FIELDS } from './link'
 import { MEDIA } from './media'
@@ -47,6 +49,8 @@ export const PAGE = `
           ${INTRO}
           ${NEXT_EVENT}
           ${BUTTON}
+          ${MERCH_BLOCK}
+          ${SUMMER_PARTY_BLOCK}
         }
         ${META}
       }

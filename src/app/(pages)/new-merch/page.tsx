@@ -14,8 +14,8 @@ export default function Merch() {
       description:
         'Want a designer T-Shirt to represent the best society on campus? This is for you!',
       colors: [
-
-        { name: 'Natural', image: '/media/merch/ECSS Natural T-Shirt.jpg' },,
+        { name: 'Natural', image: '/media/merch/ECSS Natural T-Shirt.jpg' },
+        ,
         { name: 'Off-White', image: '/media/merch/ECSS Off-White T-Shirt.jpg' },
 
         { name: 'Heather Navy', image: '/media/merch/ECSS Heather Navy T-Shirt.jpg' },
@@ -31,7 +31,7 @@ export default function Merch() {
         { name: 'Airforce Blue', image: '/media/merch/ECSS Airforce Blue Hoodie.jpg' },
 
         { name: 'Vanilla Milkshake', image: '/media/merch/ECSS Vanilla Milkshake Hoodie.jpg' },
-        
+
         { name: 'Natural Stone', image: '/media/merch/ECSS Natural Stone Hoodie.jpg' },
       ],
       link: 'https://boxoffice.susu.org/view/ecss-merch-graphic-hoodie/da79f3137a488e087f438ceee4398eff',
@@ -80,9 +80,7 @@ export default function Merch() {
       title: 'Q-zip',
       description:
         'A classic quarter-zip for a smart-casual society look. (Email us if interested!)',
-      colors: [
-        { name: 'Black and Red', image: '/media/merch/QZ.png' },
-      ],
+      colors: [{ name: 'Black and Red', image: '/media/merch/QZ.png' }],
       link: 'mailto:society@ecs.soton.ac.uk',
     },
   ]

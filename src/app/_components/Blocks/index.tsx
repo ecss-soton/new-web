@@ -9,8 +9,10 @@ import { ContentBlock } from '../../_blocks/Content'
 import { HomeTopBlock } from '../../_blocks/HomeTop/'
 import { IntroBlock } from '../../_blocks/Intro/'
 import { MediaBlock } from '../../_blocks/MediaBlock/'
+import { MerchBlock } from '../../_blocks/MerchBlock'
 import { NextEventBlock } from '../../_blocks/NextEvent'
 import { RelatedPosts, type RelatedPostsProps } from '../../_blocks/RelatedPosts'
+import { SummerPartyBlock } from '../../_blocks/SummerPartyBlock'
 import { toKebabCase } from '../../_utilities/toKebabCase'
 import { BackgroundColor } from '../BackgroundColor'
 import { VerticalPadding, VerticalPaddingOptions } from '../VerticalPadding'
@@ -26,6 +28,8 @@ const blockComponents = {
   comments: CommentsBlock,
   nextEvent: NextEventBlock,
   button: ButtonBlock,
+  merchBlock: MerchBlock,
+  summerPartyBlock: SummerPartyBlock,
 }
 
 export const Blocks: React.FC<{
