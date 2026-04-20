@@ -96,7 +96,9 @@ export const EventItem: React.FC<{
     <div className={[classes.itemWrapper, inter.className].join(' ')}>
       <div className={classes.timelineLine} />
       <div
-        className={`${classes.timelineDot} ${isJumpstart ? classes.timelineDotJumpstart : ''} ${isNextEvent ? classes.timelineDotNext : ''}`}
+        className={`${classes.timelineDot} ${isJumpstart ? classes.timelineDotJumpstart : ''} ${
+          isNextEvent ? classes.timelineDotNext : ''
+        }`}
       />
       <div
         className={[

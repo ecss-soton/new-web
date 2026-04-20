@@ -80,8 +80,8 @@ export const CollectionArchive: React.FC<Props> = props => {
     docs: (populateBy === 'collection'
       ? populatedDocs
       : populateBy === 'selection'
-        ? selectedDocs
-        : []
+      ? selectedDocs
+      : []
     )?.map(doc => doc.value),
     hasNextPage: false,
     hasPrevPage: false,
@@ -147,10 +147,10 @@ export const CollectionArchive: React.FC<Props> = props => {
             relationTo === 'committee'
               ? 'position'
               : relationTo === 'events'
-                ? 'date'
-                : relationTo === 'societies'
-                  ? 'name'
-                  : 'level',
+              ? 'date'
+              : relationTo === 'societies'
+              ? 'name'
+              : 'level',
           where: {
             ...(categories
               ? {
