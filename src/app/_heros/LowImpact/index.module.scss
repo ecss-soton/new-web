@@ -4,11 +4,11 @@
     color: var(--theme-elevation-1000);
     font-size: 64px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 700;
     line-height: normal;
 
     @include small-break {
-        font-size: max(9vw, 50px);
+        font-size: max(9vw, 30px);
     }
 }
 
