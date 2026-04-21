@@ -213,7 +213,7 @@ export const NextEventBlock: React.FC<
             </div>
             <div className={classes.moreInfo}>
               <Link href="/events" className={classes.link}>
-                more info &gt;
+                see more &gt;
               </Link>
             </div>
           </div>
@@ -247,7 +247,7 @@ export const NextEventBlock: React.FC<
             </div>
             <div className={classes.moreInfo}>
               <Link href="/events" className={classes.link}>
-                more info &gt;
+                see more &gt;
               </Link>
             </div>
           </div>
