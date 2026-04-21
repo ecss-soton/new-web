@@ -8,16 +8,23 @@ import classes from './index.module.scss'
 type Props = Extract<Page['layout'][0], { blockType: 'partyBlock' }>
 
 export const PartyBlock: React.FC<Props> = props => {
-  const { backgroundImage, floatingImage, heroTitle, heroText, decorationImage, buttons, sections } = props
+  const {
+    backgroundImage,
+    floatingImage,
+    heroTitle,
+    heroText,
+    decorationImage,
+    buttons,
+    sections,
+  } = props
 
   const bgUrl =
     backgroundImage && typeof backgroundImage !== 'string' && backgroundImage.url
       ? backgroundImage.url
       : ''
 
-  const floatingUrl = floatingImage && typeof floatingImage !== 'string' && floatingImage.url
-      ? floatingImage.url
-      : ''
+  const floatingUrl =
+    floatingImage && typeof floatingImage !== 'string' && floatingImage.url ? floatingImage.url : ''
   return (
     <>
       {/* Fixed background */}
@@ -129,7 +136,9 @@ export const PartyBlock: React.FC<Props> = props => {
                     style={{ backgroundColor: bgColor }}
                   >
                     <div
-                      className={`${classes.eventBlockInner}${reversed ? ` ${classes.reversed}` : ''}`}
+                      className={`${classes.eventBlockInner}${
+                        reversed ? ` ${classes.reversed}` : ''
+                      }`}
                     >
                       {eb.image && typeof eb.image !== 'string' && eb.image.url && (
                         <img src={eb.image.url} alt={eb.title} className={classes.blockImage} />

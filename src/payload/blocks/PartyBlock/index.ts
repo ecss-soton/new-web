@@ -19,7 +19,7 @@ export const PartyBlock: Block = {
         description: 'Full-page fixed background. Defaults to empty if not set.',
       },
     },
-     {
+    {
       name: 'floatingImage',
       type: 'upload',
       relationTo: 'media',
