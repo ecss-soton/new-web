@@ -257,9 +257,11 @@ export interface Page {
         blockType: 'merchBlock';
       }
     | {
+        backgroundImage?: string | Media | null;
+        floatingImage?: string | Media | null;
         heroTitle: string;
         heroText: string;
-        heroImage: string | Media;
+        decorationImage?: string | Media | null;
         buttons?:
           | {
               link: {
@@ -276,58 +278,56 @@ export interface Page {
               id?: string | null;
             }[]
           | null;
-        bigImage?: string | Media | null;
-        squareImages?:
+        sections?:
           | {
-              image: string | Media;
-              id?: string | null;
-            }[]
-          | null;
-        venueBlock: {
-          title: string;
-          text: string;
-          image: string | Media;
-        };
-        menuBlock: {
-          title: string;
-          text: string;
-          image: string | Media;
-        };
-        questionsBlock: {
-          text: string;
-          link: {
-            type?: ('reference' | 'custom') | null;
-            newTab?: boolean | null;
-            reference?: {
-              relationTo: 'pages';
-              value: string | Page;
-            } | null;
-            url?: string | null;
-            label: string;
-            appearance?: ('primary' | 'secondary') | null;
-          };
-        };
-        onTheDayBlock: {
-          title: string;
-          text: string;
-          image: string | Media;
-        };
-        faqs?:
-          | {
-              question: string;
-              answer: string;
-              id?: string | null;
-            }[]
-          | null;
-        organisers?:
-          | {
-              logo: string | Media;
+              sectionType: 'bigImage' | 'squareImages' | 'eventBlock' | 'centreCallout' | 'faqs' | 'organisers';
+              bigImage?: string | Media | null;
+              squareImages?:
+                | {
+                    image: string | Media;
+                    id?: string | null;
+                  }[]
+                | null;
+              eventBlock?: {
+                title: string;
+                text: string;
+                image?: string | Media | null;
+                imagePosition?: ('left' | 'right') | null;
+                backgroundColor?: string | null;
+              };
+              centreCallout?: {
+                text: string;
+                link: {
+                  type?: ('reference' | 'custom') | null;
+                  newTab?: boolean | null;
+                  reference?: {
+                    relationTo: 'pages';
+                    value: string | Page;
+                  } | null;
+                  url?: string | null;
+                  label: string;
+                  appearance?: ('primary' | 'secondary' | 'default') | null;
+                };
+              };
+              faqs?:
+                | {
+                    question: string;
+                    answer: string;
+                    id?: string | null;
+                  }[]
+                | null;
+              organisers?:
+                | {
+                    logo: string | Media;
+                    id?: string | null;
+                  }[]
+                | null;
               id?: string | null;
             }[]
           | null;
         id?: string | null;
         blockName?: string | null;
-        blockType: 'summerPartyBlock';
+        blockType: 'partyBlock';
       }
   )[];
   slug?: string | null;

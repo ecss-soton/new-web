@@ -1,10 +1,10 @@
+// ── Fixed background ──────────────────────────────────────────────────────────
 .bgImage {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-image: url('/media/wavy.png');
   background-size: cover;
   background-position: center;
   opacity: 0.7;
@@ -12,9 +12,7 @@
   pointer-events: none;
 }
 
-.redoverride {
-  background-color: #e66454 !important;
-}
+// ── Floating flower decorations ───────────────────────────────────────────────
 .flowerLayer {
   position: fixed;
   inset: 0;
@@ -97,63 +95,74 @@
   }
 }
 
+// ── Page container (max-width guards overflow on large screens) ──────────────
 .pageContainer {
-  margin: 0 20%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 10%;
   position: relative;
   z-index: 1;
   color: var(--theme-text);
+  overflow-x: hidden;
 
   @media (max-width: 1200px) {
-    margin: 0 10%;
+    padding: 0 6%;
   }
 
   @media (max-width: 768px) {
-    margin: 0 5%;
+    padding: 0 5%;
   }
 }
 
+// ── Hero header (title + tiny decoration image) ───────────────────────────────
+.heroHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+}
+
 .heroTitle {
-  width: 100%;
   font-size: 3rem;
   font-weight: 700;
-  margin: 4rem 0 2rem 0;
   line-height: 1.1;
   text-align: center;
   text-decoration: underline;
   color: var(--theme-text);
-}
-
-.heroContent {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 3rem;
+  margin: 0;
 
   @media (max-width: 768px) {
-    flex-direction: column;
+    font-size: 2rem;
   }
 }
 
-.heroImage {
-  width: 33.33%;
-  aspect-ratio: 1;
-  border-radius: 8px;
-  object-fit: cover;
+// Small accent decoration (e.g. flower) positioned to the right of the title
+.decorationImage {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
 
   @media (max-width: 768px) {
-    width: 100%;
+    width: 60px;
+    height: 60px;
   }
 }
 
-.rightText {
-  width: 66.66%;
+// ── Hero text ─────────────────────────────────────────────────────────────────
+.heroText {
   font-size: 1.25rem;
-  line-height: 1.5;
+  line-height: 1.6;
+  text-align: center;
   color: var(--theme-text);
+  max-width: 800px;
+  margin: 0 auto 2.5rem;
+}
 
-  @media (max-width: 768px) {
-    width: 100%;
-  }
+// ── Buttons ───────────────────────────────────────────────────────────────────
+.redoverride {
+  background-color: #e66454 !important;
 }
 
 .buttonGroup {
@@ -164,47 +173,60 @@
   flex-wrap: wrap;
 }
 
+// ── Big Image (16:9) ──────────────────────────────────────────────────────────
 .bigImageContainer {
   width: 100%;
-  margin: 0 auto 1rem auto;
+  margin: 0 auto 2rem;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
 .placeholderImage {
   width: 100%;
+  display: block;
   background-color: var(--theme-elevation-150);
   border-radius: 8px;
+  object-fit: cover;
 }
 
 .aspect16x9 {
-  aspect-ratio: 16/9;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
 }
 
+// ── Square images grid ────────────────────────────────────────────────────────
 .threeImages {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin-bottom: 4rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .squareImage {
   aspect-ratio: 1;
+  object-fit: cover;
 }
 
-.yellowBlockWrapper {
-  background-color: #f6b84a;
+// ── Event info block (replaces fixed venue/menu/on-the-day blocks) ────────────
+.eventBlockWrapper {
   padding: 3rem;
   margin-bottom: 4rem;
   margin-top: 2rem;
   border-radius: 8px;
+  overflow: hidden;
 
-  // Yellow blocks keep dark text for readability
+  // Ensure readable text — consumers should pick a colour with good contrast
   p,
   h2 {
     color: #000;
   }
 }
 
-.yellowBlockInner {
+.eventBlockInner {
   display: flex;
   align-items: center;
   gap: 3rem;
@@ -214,7 +236,7 @@
   }
 }
 
-.yellowBlockInner.reversed {
+.eventBlockInner.reversed {
   flex-direction: row-reverse;
 
   @media (max-width: 768px) {
@@ -224,22 +246,36 @@
 
 .blockImage {
   flex: 0 0 33.33%;
-  width: 100%;
-  aspect-ratio: 4/3;
+  // Cap max width so the image never overflows on very wide screens
+  max-width: 33.33%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+
+  @media (max-width: 768px) {
+    flex: none;
+    max-width: 100%;
+    width: 100%;
+  }
 }
 
 .blockContent {
   flex: 1;
+  min-width: 0; // prevent text overflow on narrow containers
 }
 
 .titleText {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+  }
 }
 
+// ── Centre callout ────────────────────────────────────────────────────────────
 .centerBlock {
   text-align: center;
   width: 100%;
@@ -252,6 +288,7 @@
   }
 }
 
+// ── FAQs ──────────────────────────────────────────────────────────────────────
 .faqSection {
   margin: 4rem auto;
   width: 100%;
@@ -311,6 +348,7 @@
   opacity: 0.9;
 }
 
+// ── Organisers ────────────────────────────────────────────────────────────────
 .organisersSection {
   text-align: center;
   margin: 6rem 0;
