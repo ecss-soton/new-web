@@ -6,20 +6,28 @@ const getCssVariable = (variable: string): string => {
   if (typeof window !== 'undefined') {
     return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
   }
-  return '' // Return a default value or handle the case when running on the server
+  return ''
 }
 
-export const options: ChartOptions<'bar'> = {
+export const buildOptions = (isMobile: boolean): ChartOptions<'bar'> => ({
   indexAxis: 'y',
   scales: {
     x: {
-      ticks: { precision: 0 },
+      ticks: {
+        precision: 0,
+        font: { size: isMobile ? 10 : 14 },
+      },
       grid: {
         lineWidth: 2,
         color: getCssVariable('--theme-elevation-1000'),
       },
     },
     y: {
+      ticks: {
+        font: { size: isMobile ? 10 : 14 },
+        // Give labels more room — Chart.js auto-calculates this from maxTicksLimit
+        // but we set an explicit pixel cap so labels aren't squeezed on narrow cards
+      },
       grid: {
         lineWidth: 2,
         tickWidth: 0,
@@ -27,8 +35,12 @@ export const options: ChartOptions<'bar'> = {
       },
     },
   },
-  responsive: false,
+  responsive: true,
   maintainAspectRatio: false,
+  layout: {
+    // Extra left padding so long candidate names aren't clipped
+    padding: { left: isMobile ? 0 : 0 },
+  },
   plugins: {
     tooltip: {
       callbacks: {
@@ -38,4 +50,7 @@ export const options: ChartOptions<'bar'> = {
       },
     },
   },
-}
+})
+
+// Keep the old named export so nothing else breaks if it was imported elsewhere
+export const options = buildOptions(false)

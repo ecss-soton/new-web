@@ -63,16 +63,20 @@ export const ElectionCard: React.FC<{
         </div>
         <div className={classes.datesGrid}>
           <div className={classes.dateItem}>
-            <strong>Nominations Opened:</strong> {formatDate(nominationStart)}
+            <strong>Nominations {now < Date.parse(nominationStart) ? 'Open' : 'Opened'}:</strong>{' '}
+            {formatDate(nominationStart)}
           </div>
           <div className={classes.dateItem}>
-            <strong>Nominations Ended:</strong> {formatDate(nominationEnd)}
+            <strong>Nominations {now < Date.parse(nominationEnd) ? 'Close' : 'Closed'}:</strong>{' '}
+            {formatDate(nominationEnd)}
           </div>
           <div className={classes.dateItem}>
-            <strong>Voting Started:</strong> {formatDate(votingStart)}
+            <strong>Voting {now < Date.parse(votingStart) ? 'Open' : 'Opened'}:</strong>{' '}
+            {formatDate(votingStart)}
           </div>
           <div className={classes.dateItem}>
-            <strong>Voting Ended:</strong> {formatDate(votingEnd)}
+            <strong>Voting {now < Date.parse(votingEnd) ? 'Close' : 'Closed'}:</strong>{' '}
+            {formatDate(votingEnd)}
           </div>
         </div>
       </div>
