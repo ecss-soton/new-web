@@ -89,6 +89,9 @@
   gap: 0.5rem 2rem;
   font-size: 0.9rem;
   color: var(--theme-elevation-700);
+    @include small-break {
+        grid-template-columns: 1fr;
+    }
 }
 
 .dateItem {
