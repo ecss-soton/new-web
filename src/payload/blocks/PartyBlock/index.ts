@@ -16,7 +16,7 @@ export const PartyBlock: Block = {
       relationTo: 'media',
       label: 'Background Image',
       admin: {
-        description: 'Full-page fixed background. Defaults to the wavy pattern if not set.',
+        description: 'Full-page fixed background. Defaults to empty if not set.',
       },
     },
      {
@@ -25,7 +25,7 @@ export const PartyBlock: Block = {
       relationTo: 'media',
       label: 'Floating Image',
       admin: {
-        description: 'Floating images. Defaults to the flower pattern if not set.',
+        description: 'Floating images. Defaults to none if not set.',
       },
     },
 

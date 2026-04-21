@@ -13,11 +13,11 @@ export const PartyBlock: React.FC<Props> = props => {
   const bgUrl =
     backgroundImage && typeof backgroundImage !== 'string' && backgroundImage.url
       ? backgroundImage.url
-      : '/media/wavy.png'
+      : ''
 
   const floatingUrl = floatingImage && typeof floatingImage !== 'string' && floatingImage.url
       ? floatingImage.url
-      : '/media/flower.png'
+      : ''
   return (
     <>
       {/* Fixed background */}
