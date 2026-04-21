@@ -3,7 +3,8 @@
 .header {
   padding: var(--base) 0;
   // background-color: var(--theme-elevation-0);
-  z-index: 3;
+  position: relative;
+  z-index: 20;
 }
 
 .wrap {
@@ -37,7 +38,9 @@
   span {
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 300ms ease, transform 300ms ease;
+    transition:
+      opacity 300ms ease,
+      transform 300ms ease;
   }
 
   &:hover span {
@@ -77,18 +80,18 @@
   visibility: hidden;
 
   &.open {
-    opacity: 1; 
+    opacity: 1;
     visibility: visible;
     box-shadow: 0 5px 10px -6px var(--theme-shadow);
-    transition: opacity 0.3s ease-in-out, visibility 0s ease-in-out;
+    transition:
+      opacity 0.3s ease-in-out,
+      visibility 0s ease-in-out;
   }
 
   &.open > * {
     animation: grow 0.5s ease forwards;
   }
 }
-
-
 
 .logo {
   width: 100px;
@@ -108,12 +111,8 @@
   font-weight: 400;
   line-height: normal;
   padding-left: 7%;
-  
 }
 
 .title:visited {
   text-decoration: none;
 }
-
-
-

@@ -148,56 +148,53 @@ export const MERCH_BLOCK = `
 `
 
 export const SUMMER_PARTY_BLOCK = `
-...on SummerPartyBlock {
+...on PartyBlock {
   blockType
+  backgroundImage {
+    ${MEDIA_FIELDS}
+  }
+  floatingImage {
+    ${MEDIA_FIELDS}
+  }
   heroTitle
   heroText
-  heroImage {
+  decorationImage {
     ${MEDIA_FIELDS}
   }
   buttons {
     link ${LINK_FIELDS()}
   }
-  bigImage {
-    ${MEDIA_FIELDS}
-  }
-  squareImages {
-    image {
+  sections {
+    sectionType
+    bigImage {
       ${MEDIA_FIELDS}
     }
-  }
-  venueBlock {
-    title
-    text
-    image {
-      ${MEDIA_FIELDS}
+    squareImages {
+      image {
+        ${MEDIA_FIELDS}
+      }
     }
-  }
-  menuBlock {
-    title
-    text
-    image {
-      ${MEDIA_FIELDS}
+    eventBlock {
+      title
+      text
+      imagePosition
+      backgroundColor
+      image {
+        ${MEDIA_FIELDS}
+      }
     }
-  }
-  questionsBlock {
-    text
-    link ${LINK_FIELDS()}
-  }
-  onTheDayBlock {
-    title
-    text
-    image {
-      ${MEDIA_FIELDS}
+    centreCallout {
+      text
+      link ${LINK_FIELDS()}
     }
-  }
-  faqs {
-    question
-    answer
-  }
-  organisers {
-    logo {
-      ${MEDIA_FIELDS}
+    faqs {
+      question
+      answer
+    }
+    organisers {
+      logo {
+        ${MEDIA_FIELDS}
+      }
     }
   }
 }
