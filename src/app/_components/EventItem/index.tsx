@@ -5,9 +5,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { Event, Media } from '../../../payload/payload-types'
+import { InterestedButton } from './InterestedButton'
 
 import classes from './index.module.scss'
-import { InterestedButton } from './InterestedButton'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -63,7 +63,7 @@ export const EventItem: React.FC<{
     //   endTimeParts[2] && endTimeParts[2].split(' ')[1]
     //     ? endTimeParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
     //     : null
-    concEndTime = null;
+    concEndTime = null
   }
 
   const dateString = day ? `${day} ${monthName}` : ''
@@ -98,8 +98,9 @@ export const EventItem: React.FC<{
     <div className={[classes.itemWrapper, inter.className].join(' ')}>
       <div className={classes.timelineLine} />
       <div
-        className={`${classes.timelineDot} ${isJumpstart ? classes.timelineDotJumpstart : ''} ${isNextEvent ? classes.timelineDotNext : ''
-          }`}
+        className={`${classes.timelineDot} ${isJumpstart ? classes.timelineDotJumpstart : ''} ${
+          isNextEvent ? classes.timelineDotNext : ''
+        }`}
       />
       <div
         className={[
@@ -130,10 +131,8 @@ export const EventItem: React.FC<{
             <div className={classes.titleArea}>
               <h2 className={classes.name}>{name}</h2>
               <div className={classes.detailsList}>
-
                 {dateString && (
                   <div className={classes.detailItem}>
-
                     <Image
                       src="/calendar-svgrepo-com.svg"
                       alt="calendar"
@@ -142,9 +141,9 @@ export const EventItem: React.FC<{
                       className={classes.detailIcon}
                     />
                     <span>
-                      {daysLabel && `${daysLabel} • `} {dateString} {timeString && `• ${timeString}`}
+                      {daysLabel && `${daysLabel} • `} {dateString}{' '}
+                      {timeString && `• ${timeString}`}
                     </span>
-
                   </div>
                 )}
                 {location && (
@@ -157,14 +156,18 @@ export const EventItem: React.FC<{
                       className={classes.detailIcon}
                     />
                     <span>{location}</span>
-
                   </div>
                 )}
               </div>
             </div>
 
             <div className={classes.actionsArea}>
-              {event.id && <InterestedButton eventId={event.id} initialInterestedCount={(event as any).interestedCount || 0} />}
+              {event.id && (
+                <InterestedButton
+                  eventId={event.id}
+                  initialInterestedCount={(event as any).interestedCount || 0}
+                />
+              )}
             </div>
           </div>
 
