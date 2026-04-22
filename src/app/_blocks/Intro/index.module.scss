@@ -2,40 +2,45 @@
 
 .container {
     width: 100%;
-    height: 690px;
+    min-height: 690px;
     position: relative;
     padding-left: 8%;
     padding-right: 5%;
+    padding-bottom: 50px;
 
     @include mid-break {
-        height: 70vw;
+        min-height: 70vw;
+        padding-bottom: 8vw;
     }
 }
 
 .grey {
-    height: 608px;
-    width: 617px;
-    padding: 2%;
+    min-height: 608px;
+    width: 55%;
+    padding: 4%;
     background: var(--theme-elevation-150);
-    position: absolute;
+    position: relative;
+    z-index: 1;
 
     @include mid-break {
-        width: 70%;
-        height: 59vw;
+        width: 85%;
+        min-height: 59vw;
     }
 }
 
 .red {
-    height: 560px;
+    height: 85%;
+    min-height: 560px;
     width: 55%;
     left: 35%;
-    top: 18%;
+    top: 10%;
     background: #A01B1B;
     z-index: -2;
     position: absolute;
 
     @include mid-break {
-        height: 50vw;
+        min-height: 50vw;
+        height: 85%;
     }
 }
 
@@ -47,27 +52,31 @@
     line-height: normal;
 
     @include mid-break {
-        font-size: 2.5vw;
+        font-size: clamp(16px, 3.5vw, 24px);
+
         p {
-            margin: 2vw;
+            margin: 15px 0;
         }
+
         h3 {
-            font-size: 4vw;
-            margin: 3vw;
+            font-size: clamp(20px, 4.5vw, 28px);
+            margin: 15px 0;
         }
     }
 }
 
 .image {
-    height: 545px;
+    height: 83%;
+    min-height: 545px;
     width: 55%;
     left: 33%;
-    top: 15%;
+    top: 11%;
     object-fit: cover;
     z-index: -1;
     position: absolute;
 
     @include mid-break {
-        height: 50vw;
+        min-height: 50vw;
+        height: 85%;
     }
 }
