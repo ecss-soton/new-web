@@ -28,8 +28,18 @@ export const NextEventBlock: React.FC<
 > = ({ media }) => {
   const getMonthName = (monthNumber: number): string => {
     const monthNames = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ]
     return monthNames[monthNumber - 1]
   }
@@ -64,13 +74,13 @@ export const NextEventBlock: React.FC<
         try {
           const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/events?${searchQuery}`)
           const json = await req.json()
-          
+
           clearTimeout(timer)
 
           if (json.docs && Array.isArray(json.docs)) {
             const today = new Date()
             const upcomingEvents = json.docs.filter(
-              (res: any) => typeof res === 'object' && 'date' in res && new Date(res.date) > today
+              (res: any) => typeof res === 'object' && 'date' in res && new Date(res.date) > today,
             ) as Event[]
             setDocs(upcomingEvents)
           }
@@ -121,7 +131,7 @@ export const NextEventBlock: React.FC<
     const day = dateParts[2].split(' ')[0]
     const time = dateParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
     const monthName = getMonthName(month)
-    
+
     if (endTime) {
       const endTimeParts = endTime.split('-')
       concEndTime =
