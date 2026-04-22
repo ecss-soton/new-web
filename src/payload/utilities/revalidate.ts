@@ -23,3 +23,29 @@ export const revalidate = async (args: {
     )
   }
 }
+
+export const revalidateGlobal = async (args: {
+  tag: string
+  globalLabel: string
+  payload: Payload
+}): Promise<void> => {
+  const { tag, globalLabel, payload } = args
+
+  try {
+    const res = await fetch(
+      `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/next/revalidate?secret=${process.env.REVALIDATION_KEY}&tag=${tag}`,
+    )
+
+    if (res.ok) {
+      payload.logger.info(`Revalidated global '${globalLabel}' (tag: ${tag})`)
+    } else {
+      payload.logger.error(
+        `Error revalidating global '${globalLabel}' (tag: ${tag}): ${res.status}`,
+      )
+    }
+  } catch (err: unknown) {
+    payload.logger.error(
+      `Error hitting revalidate route for global '${globalLabel}' (tag: ${tag}): ${err}`,
+    )
+  }
+}

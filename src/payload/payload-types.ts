@@ -23,10 +23,6 @@ export interface Config {
     votes: Vote;
     electionResults: ElectionResult;
     merch: Merch;
-    sales: Sale;
-    tickets: Ticket;
-    orderedTickets: OrderedTicket;
-    orders: Order;
     sponsors: Sponsor;
     societies: Society;
     committee: Committee;
@@ -715,8 +711,6 @@ export interface User {
   id: string;
   name?: string | null;
   username?: string | null;
-  quickfileClientID?: number | null;
-  stripeClientID?: string | null;
   roles?: ('admin' | 'user' | 'susu')[] | null;
   interestedEvents?: (string | Event)[] | null;
   email?: string | null;
@@ -1208,32 +1202,24 @@ export interface ElectionResult {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sales".
+ * via the `definition` "redirects".
  */
-export interface Sale {
+export interface Redirect {
   id: string;
-  name: string;
-  saleStart: string;
-  saleEnd: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tickets".
- */
-export interface Ticket {
-  id: string;
-  name: string;
-  sale: string | Sale;
-  description?:
-    | {
-        [k: string]: unknown;
-      }[]
-    | null;
-  count?: number | null;
-  price: number;
-  form?: (string | null) | Form;
+  from: string;
+  to?: {
+    type?: ('reference' | 'custom') | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: string | Post;
+        } | null);
+    url?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1373,18 +1359,6 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "orderedTickets".
- */
-export interface OrderedTicket {
-  id: string;
-  ticket: string | Ticket;
-  user: string | User;
-  form?: (string | null) | FormSubmission;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "form-submissions".
  */
 export interface FormSubmission {
@@ -1397,46 +1371,6 @@ export interface FormSubmission {
         id?: string | null;
       }[]
     | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "orders".
- */
-export interface Order {
-  id: string;
-  user: string | User;
-  tickets?: (string | OrderedTicket)[] | null;
-  price?: number | null;
-  stripeTax?: number | null;
-  quickfileID?: number | null;
-  stripeID?: string | null;
-  status: 'basket' | 'pending' | 'failed' | 'completed';
-  forceUpdate: boolean;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "redirects".
- */
-export interface Redirect {
-  id: string;
-  from: string;
-  to?: {
-    type?: ('reference' | 'custom') | null;
-    reference?:
-      | ({
-          relationTo: 'pages';
-          value: string | Page;
-        } | null)
-      | ({
-          relationTo: 'posts';
-          value: string | Post;
-        } | null);
-    url?: string | null;
-  };
   updatedAt: string;
   createdAt: string;
 }

@@ -12,6 +12,7 @@ import express from 'express'
 import payload from 'payload'
 
 import { seed } from './payload/seed'
+import restartJobs from './payload/utilities/restartJobs'
 
 const app = express()
 
@@ -30,8 +31,9 @@ const start = async (): Promise<void> => {
   await payload.init({
     secret: process.env.PAYLOAD_SECRET || '',
     express: app,
-    onInit: () => {
+    onInit: async () => {
       payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`)
+      await restartJobs(payload)
     },
   })
 

@@ -1,4 +1,12 @@
+import type { AfterChangeHook } from 'payload/dist/globals/config/types'
 import type { GlobalConfig } from 'payload/types'
+
+import { revalidateGlobal } from '../utilities/revalidate'
+
+const revalidateSettings: AfterChangeHook = ({ doc, req: { payload } }) => {
+  revalidateGlobal({ tag: 'global_settings', globalLabel: 'Settings', payload })
+  return doc
+}
 
 export const Settings: GlobalConfig = {
   slug: 'settings',
@@ -10,6 +18,9 @@ export const Settings: GlobalConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [revalidateSettings],
   },
   fields: [
     {
