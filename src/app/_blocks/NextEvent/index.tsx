@@ -1,9 +1,8 @@
 'use client'
 
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Inter } from '@next/font/google'
 import moment from 'moment-timezone'
-import { StaticImageData } from 'next/image'
 import Link from 'next/link'
 import qs from 'qs'
 
@@ -11,9 +10,6 @@ import type { Event } from '../../../payload/payload-types'
 import { Page } from '../../../payload/payload-types'
 import { Gutter } from '../../_components/Gutter'
 import { Media as MediaComp } from '../../_components/Media'
-import { Image } from '../../_components/Media/Image'
-import RichText from '../../_components/RichText'
-import { VerticalPadding } from '../../_components/VerticalPadding'
 
 import classes from './index.module.scss'
 
@@ -48,59 +44,11 @@ export const NextEventBlock: React.FC<
     return monthNames[monthNumber - 1]
   }
 
-  const eventExample = {
-    id: 'fuckme',
-    name: 'No Events',
-    date: '2024-12-02T22:00:00.000+00:00',
-    location: 'bong',
-    description: 'bing',
-    updatedAt: '2024-09-06T20:41:28.760+00:00',
-    createdAt: '2024-09-06T20:41:28.760+00:00',
-  } as Event
-
-  type Result = {
-    docs: (Event | string)[]
-    hasNextPage: boolean
-    hasPrevPage: boolean
-    nextPage: number
-    page: number
-    prevPage: number
-    totalDocs: number
-    totalPages: number
-  }
-
-  const [results, setResults] = useState<Result>({
-    docs: [eventExample],
-    hasNextPage: false,
-    hasPrevPage: false,
-    nextPage: 1,
-    page: 1,
-    prevPage: 1,
-    totalDocs: 10,
-    totalPages: 1,
-  })
-
-  const [isLoading, setIsLoading] = useState(false)
+  const [docs, setDocs] = useState<Event[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | undefined>(undefined)
-  const scrollRef = useRef<HTMLDivElement>(null)
   const hasHydrated = useRef(false)
   const isRequesting = useRef(false)
-  const [page, setPage] = useState(1)
-
-  const scrollToRef = useCallback(() => {
-    const { current } = scrollRef
-    if (current) {
-      // current.scrollIntoView({
-      //   behavior: 'smooth',
-      // })
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!isLoading && typeof results.page !== 'undefined') {
-      // scrollToRef()
-    }
-  }, [isLoading, scrollToRef, results])
 
   useEffect(() => {
     let timer: NodeJS.Timeout = null
@@ -108,9 +56,6 @@ export const NextEventBlock: React.FC<
     if (!isRequesting.current) {
       isRequesting.current = true
 
-      // hydrate the block with fresh content after first render
-      // don't show loader unless the request takes longer than x ms
-      // and don't show it during initial hydration
       timer = setTimeout(() => {
         if (hasHydrated.current) {
           setIsLoading(true)
@@ -128,18 +73,18 @@ export const NextEventBlock: React.FC<
       const makeRequest = async () => {
         try {
           const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/events?${searchQuery}`)
-
           const json = await req.json()
+
           clearTimeout(timer)
 
-          let { docs } = json as {
-            docs: Event[]
+          if (json.docs && Array.isArray(json.docs)) {
+            const today = new Date()
+            const upcomingEvents = json.docs.filter(
+              (res: any) => typeof res === 'object' && 'date' in res && new Date(res.date) > today,
+            ) as Event[]
+            setDocs(upcomingEvents)
           }
-
-          if (docs && Array.isArray(docs)) {
-            setResults(json)
-            setIsLoading(false)
-          }
+          setIsLoading(false)
         } catch (err) {
           console.warn(err) // eslint-disable-line no-console
           setIsLoading(false)
@@ -156,16 +101,24 @@ export const NextEventBlock: React.FC<
     return () => {
       if (timer) clearTimeout(timer)
     }
-  }, [page])
+  }, [])
 
-  const today = new Date()
+  if (isLoading) {
+    return (
+      <div className={classes.background}>
+        {media && <MediaComp resource={media} className={classes.backgroundMedia} />}
+        <div className={[classes.container, inter.className].join(' ')}>
+          <div className={classes.text}>
+            <h3 className={classes.nextEvent}>Next Event</h3>
+            <h1 className={classes.title}>Loading...</h1>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
-  results.docs = results.docs.filter(
-    result => typeof result === 'object' && 'date' in result && new Date(result.date) > today,
-  )
-
-  if (typeof results.docs[0] === 'object') {
-    const result = results.docs[0]
+  if (docs.length > 0 && typeof docs[0] === 'object') {
+    const result = docs[0]
 
     const date = moment.utc(result.date).tz('Europe/London').format('YYYY-MM-DD HH:mm')
     const endTime = result.endTime
@@ -174,11 +127,11 @@ export const NextEventBlock: React.FC<
     let concEndTime = null
 
     const dateParts = date.split('-')
-    const year = dateParts[0]
     const month = parseInt(dateParts[1], 10)
     const day = dateParts[2].split(' ')[0]
     const time = dateParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
     const monthName = getMonthName(month)
+
     if (endTime) {
       const endTimeParts = endTime.split('-')
       concEndTime =
@@ -190,7 +143,7 @@ export const NextEventBlock: React.FC<
     return (
       <div className={classes.background}>
         {media && <MediaComp resource={media} className={classes.backgroundMedia} />}
-        {!isLoading && error && <Gutter>{error}</Gutter>}
+        {error && <Gutter>{error}</Gutter>}
         <div className={[classes.container, inter.className].join(' ')}>
           <div className={classes.text}>
             <h3 className={classes.nextEvent}>Next Event</h3>
@@ -220,39 +173,26 @@ export const NextEventBlock: React.FC<
         </div>
       </div>
     )
-  } else {
-    return (
-      <div className={classes.background}>
-        {media && <MediaComp resource={media} className={classes.backgroundMedia} />}
-        {!isLoading && error && <Gutter>{error}</Gutter>}
-        <div className={[classes.container, inter.className].join(' ')}>
-          <div className={classes.text}>
-            <h3 className={classes.nextEvent}>Next Event</h3>
-            <h1 className={classes.title}>No Events</h1>
-          </div>
-          <div className={classes.info}>
-            <div className={classes.when}>
-              <div className={classes.date}>
-                <span className={classes.day}></span>
-                <span className={classes.month}></span>
-              </div>
-              <div className={classes.time}>
-                <div className={classes.start}>
-                  <span className={classes.startText}></span>
-                  <span className={classes.startTime}></span>
-                  <span className={classes.startText}></span>
-                  <span className={classes.startTime}></span>
-                </div>
-              </div>
-            </div>
-            <div className={classes.moreInfo}>
-              <Link href="/events" className={classes.link}>
-                see more &gt;
-              </Link>
-            </div>
+  }
+
+  // Fallback state (No Events)
+  return (
+    <div className={classes.background}>
+      {media && <MediaComp resource={media} className={classes.backgroundMedia} />}
+      {error && <Gutter>{error}</Gutter>}
+      <div className={[classes.container, inter.className].join(' ')}>
+        <div className={classes.text}>
+          <h3 className={classes.nextEvent}>Next Event</h3>
+          <h1 className={classes.title}>No Events Found</h1>
+        </div>
+        <div className={classes.info}>
+          <div className={classes.moreInfo}>
+            <Link href="/events" className={classes.link}>
+              see all events &gt;
+            </Link>
           </div>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
