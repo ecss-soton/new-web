@@ -1,10 +1,7 @@
 import path from 'path'
 import type { AfterChangeHook } from 'payload/dist/collections/config/types'
 
-import {
-  logCsvAccountCheckResult,
-  runCheckSingleUserFromCsvFile,
-} from '../../../utilities/checkCsvAccounts'
+import { runCheckSingleUserFromCsvFile } from '../../../utilities/checkCsvAccounts'
 
 const memberImportUploadDir = path.resolve(__dirname, '../../../../../media/member-imports')
 
