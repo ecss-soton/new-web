@@ -2,45 +2,19 @@
 
 .nav {
   display: flex;
-  gap: calc(var(--base) / 4) var(--base);
   align-items: center;
-  flex-wrap: wrap;
+  gap: 4px;
   opacity: 1;
   transition: opacity 100ms linear;
   visibility: visible;
+
   a {
-      color: var(--theme-elevation-1000);
-  }
-  > * {
+    color: var(--theme-elevation-1000);
     text-decoration: none;
   }
-}
 
-.redBrackets {
-  color: red;
-}
-
-.menu {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.menuContainer {
-  display: flex;
-  flex-direction: column;
-}
-
-.fadeIn {
-  span {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 300ms ease, transform 300ms ease;
-  }
-
-  &:hover span {
-    opacity: 1;
-    transform: translateY(0);
+  > * {
+    text-decoration: none;
   }
 }
 
@@ -49,30 +23,129 @@
   visibility: hidden;
 }
 
-.account {
-  font-size: 20px;
-  font-weight: 400;
+// ── Desktop nav link wrapper ──────────────────────────────────────────────────
+
+.navLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--theme-elevation-800);
   text-decoration: none;
-  > * {
-    text-decoration: none;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+
+  
+
+  &:hover {
+    color: var(--theme-elevation-1000);
+    background: rgba(220, 30, 30, 0.06);
+
+    &::after {
+      transform: scaleX(1);
+    }
+  }
+
+  &.active {
+    color: #d41c1c;
+
+    &::after {
+      transform: scaleX(1);
+    }
   }
 }
 
-.hamburger{
-  width: 2rem;
-  height: 2rem;
+// The bracket reveal effect on each link label
+.fadeIn {
+  display: inline-flex;
+  align-items: center;
+
+  span {
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  &:hover span,
+  .navLink.active & span {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.redBrackets {
+  color: #e01c1c;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1;
+}
+
+// ── Account link ──────────────────────────────────────────────────────────────
+
+.account {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--theme-elevation-800);
+  border: 1px solid rgba(220, 30, 30, 0.3);
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+
+  > * {
+    text-decoration: none;
+  }
+
+  &:hover {
+    background: rgba(220, 30, 30, 0.08);
+    border-color: rgba(220, 30, 30, 0.6);
+    color: #d41c1c;
+  }
+}
+
+// ── Hamburger / mobile ────────────────────────────────────────────────────────
+
+.menuContainer {
   display: flex;
-  justify-content: space-around;
-  flex-flow: column nowrap;
-  z-index: 10;
+  align-items: center;
 }
 
-.burger{
-  width: 2rem;
-  height: 0.15rem;
-  // border-radius: 10px;
+.hamburger {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(220, 30, 30, 0.08);
+  }
+}
+
+.burger {
+  width: 100%;
+  height: 2px;
   background-color: var(--theme-elevation-1000);
-  transform-origin: 1px;
-  transition: all 0.3s ease-in-out;
+  border-radius: 2px;
+  transform-origin: center;
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease,
+    background-color 0.2s ease;
 }
-
