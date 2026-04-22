@@ -15,33 +15,24 @@ type Props = {
 export default function MerchGridBlockItem({ items }: Props) {
   const merchItems = items.filter((item): item is Merch => typeof item !== 'string')
 
-  const [activeId, setActiveId] = useState<string | undefined>(merchItems[0]?.id ?? undefined)
-
   // Track the selected colour index for each item ID
   const [selectedColourIndices, setSelectedColourIndices] = useState<Record<string, number>>(
     merchItems.reduce((acc, item) => ({ ...acc, [item.id]: 0 }), {}),
   )
 
   const handleColourClick = (e: React.MouseEvent, itemId: string, index: number) => {
-    e.stopPropagation() // Prevent accordion toggle
     setSelectedColourIndices(prev => ({ ...prev, [itemId]: index }))
   }
 
   return (
     <div className={classes.merchGrid}>
       {merchItems.map(item => {
-        const isOpen = activeId === item.id
         const activeColourIndex = selectedColourIndices[item.id] ?? 0
         const activeColour = item.colours?.[activeColourIndex]
 
         return (
           <article key={item.id} className={classes.merchCard}>
-            <button
-              type="button"
-              className={classes.merchHeader}
-              onClick={() => setActiveId(isOpen ? null : item.id)}
-              aria-expanded={isOpen}
-            >
+            <div className={classes.merchHeader}>
               <div className={classes.merchImageWrapper}>
                 {activeColour?.image && typeof activeColour.image !== 'string' ? (
                   <MediaComponent
@@ -54,9 +45,9 @@ export default function MerchGridBlockItem({ items }: Props) {
                 )}
               </div>
               <span className={classes.merchTitle}>{item.title}</span>
-            </button>
+            </div>
 
-            <div className={`${classes.merchPanel} ${isOpen ? classes.merchPanelOpen : ''}`}>
+            <div className={`${classes.merchPanel} ${classes.merchPanelOpen}`}>
               <div className={classes.merchContent}>
                 {item.description && (
                   <div className={classes.descriptionContainer}>
