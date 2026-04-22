@@ -22,7 +22,7 @@ export const LowImpactHero: React.FC<Page['hero'] & { className?: string }> = ({
   return (
     <Gutter className={[classes.lowImpactHero, className].filter(Boolean).join(' ')}>
       <div className={classes.content}>
-        <VerticalPadding top="none" bottom="small">
+        <VerticalPadding top="none" bottom="none">
           <h1 className={[classes.title, inter.className].join(' ')}>
             {' '}
             <span className={classes.bracket}> &gt;</span> {title}

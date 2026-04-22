@@ -15,6 +15,7 @@ import { OAuthButton, oAuthPlugin } from 'payload-plugin-oauth'
 import Categories from './collections/Categories'
 import Comments from './collections/Comments'
 import Committee from './collections/Committee'
+import DiscordAnnouncements from './collections/DiscordAnnouncements'
 import { ElectionResults } from './collections/ElectionResults'
 import Elections from './collections/Elections'
 import Events from './collections/Events'
@@ -128,6 +129,7 @@ export default buildConfig({
     Categories,
     Users,
     Comments,
+    DiscordAnnouncements,
     Elections,
     Nominations,
     Positions,

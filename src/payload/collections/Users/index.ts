@@ -89,6 +89,15 @@ const Users: CollectionConfig = {
         update: admins,
       },
     },
+    {
+      name: 'interestedEvents',
+      type: 'relationship',
+      relationTo: 'events',
+      hasMany: true,
+      admin: {
+        readOnly: true,
+      },
+    },
   ],
   endpoints: [
     {
