@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Event, Media } from '../../../payload/payload-types'
 
 import classes from './index.module.scss'
+import { InterestedButton } from './InterestedButton'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -58,13 +59,14 @@ export const EventItem: React.FC<{
 
   if (localEndTime) {
     const endTimeParts = localEndTime.split('-')
-    concEndTime =
-      endTimeParts[2] && endTimeParts[2].split(' ')[1]
-        ? endTimeParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
-        : null
+    // concEndTime =
+    //   endTimeParts[2] && endTimeParts[2].split(' ')[1]
+    //     ? endTimeParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
+    //     : null
+    concEndTime = null;
   }
 
-  const dateString = day ? `${day} ${monthName} ${year}` : ''
+  const dateString = day ? `${day} ${monthName}` : ''
   const timeString = time ? `${time}${concEndTime ? ` - ${concEndTime}` : ''}` : ''
 
   // Calculate "in X days"
@@ -75,7 +77,7 @@ export const EventItem: React.FC<{
     const diff = eventDate.diff(todayStart, 'days')
     if (diff === 0) daysLabel = 'Today!'
     else if (diff === 1) daysLabel = 'Tomorrow!'
-    else if (diff > 1) daysLabel = `in ${diff} days`
+    else if (diff > 1) daysLabel = `In ${diff} days`
   }
 
   // Resolve image URL
@@ -96,9 +98,8 @@ export const EventItem: React.FC<{
     <div className={[classes.itemWrapper, inter.className].join(' ')}>
       <div className={classes.timelineLine} />
       <div
-        className={`${classes.timelineDot} ${isJumpstart ? classes.timelineDotJumpstart : ''} ${
-          isNextEvent ? classes.timelineDotNext : ''
-        }`}
+        className={`${classes.timelineDot} ${isJumpstart ? classes.timelineDotJumpstart : ''} ${isNextEvent ? classes.timelineDotNext : ''
+          }`}
       />
       <div
         className={[
@@ -129,8 +130,10 @@ export const EventItem: React.FC<{
             <div className={classes.titleArea}>
               <h2 className={classes.name}>{name}</h2>
               <div className={classes.detailsList}>
+
                 {dateString && (
                   <div className={classes.detailItem}>
+
                     <Image
                       src="/calendar-svgrepo-com.svg"
                       alt="calendar"
@@ -139,9 +142,9 @@ export const EventItem: React.FC<{
                       className={classes.detailIcon}
                     />
                     <span>
-                      {dateString} {timeString && `• ${timeString}`}
+                      {daysLabel && `${daysLabel} • `} {dateString} {timeString && `• ${timeString}`}
                     </span>
-                    {daysLabel && <span className={classes.daysLabel}>{daysLabel}</span>}
+
                   </div>
                 )}
                 {location && (
@@ -154,9 +157,14 @@ export const EventItem: React.FC<{
                       className={classes.detailIcon}
                     />
                     <span>{location}</span>
+
                   </div>
                 )}
               </div>
+            </div>
+
+            <div className={classes.actionsArea}>
+              {event.id && <InterestedButton eventId={event.id} initialInterestedCount={(event as any).interestedCount || 0} />}
             </div>
           </div>
 

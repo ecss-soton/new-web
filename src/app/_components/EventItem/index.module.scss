@@ -11,7 +11,8 @@
 .timelineLine {
   position: absolute;
   top: 0;
-  bottom: -2rem; /* connect to next item */
+  bottom: -2rem;
+  /* connect to next item */
   left: 20px;
   width: 4px;
   background-color: var(--theme-elevation-200);
@@ -68,7 +69,8 @@
   width: calc(100% - 60px);
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* so image respects border-radius */
+  overflow: hidden;
+  /* so image respects border-radius */
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
@@ -158,15 +160,44 @@
   gap: 0.5rem;
 }
 
-.titleArea {
-  flex: 1;
+.actionsArea {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.calendarBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  border: 1px solid var(--color-gray-300);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+
+  img {
+    opacity: 0.7;
+    filter: invert(0);
+    /* match theme if dark */
+  }
+
+  &:hover {
+    background-color: var(--color-gray-100);
+    border-color: var(--color-gray-400);
+  }
 }
 
 .name {
   color: var(--theme-elevation-1000);
   font-size: 30px;
   font-weight: 700;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0rem 0.5rem 0;
   line-height: 1.2;
 
   @include extra-small-break {
@@ -201,7 +232,7 @@
   display: inline-block;
   background-color: var(--theme-primary);
   color: #fff;
-  padding: 2px 8px;
+  padding: 2px 4px;
   border-radius: 8px;
   font-size: 12px;
   font-weight: 700;
