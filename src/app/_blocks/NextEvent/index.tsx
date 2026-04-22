@@ -106,7 +106,7 @@ export const NextEventBlock: React.FC<
   if (isLoading) {
     return (
       <div className={classes.background}>
-        {media && <MediaComp resource={media} className={classes.backgroundMedia} />}
+        {media && <MediaComp resource={media} className={classes.backgroundMedia} priority />}
         <div className={[classes.container, inter.className].join(' ')}>
           <div className={classes.text}>
             <h3 className={classes.nextEvent}>Next Event</h3>
@@ -142,7 +142,7 @@ export const NextEventBlock: React.FC<
 
     return (
       <div className={classes.background}>
-        {media && <MediaComp resource={media} className={classes.backgroundMedia} />}
+        {media && <MediaComp resource={media} className={classes.backgroundMedia} priority />}
         {error && <Gutter>{error}</Gutter>}
         <div className={[classes.container, inter.className].join(' ')}>
           <div className={classes.text}>
@@ -178,7 +178,7 @@ export const NextEventBlock: React.FC<
   // Fallback state (No Events)
   return (
     <div className={classes.background}>
-      {media && <MediaComp resource={media} className={classes.backgroundMedia} />}
+      {media && <MediaComp resource={media} className={classes.backgroundMedia} priority />}
       {error && <Gutter>{error}</Gutter>}
       <div className={[classes.container, inter.className].join(' ')}>
         <div className={classes.text}>
