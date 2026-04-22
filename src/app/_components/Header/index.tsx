@@ -110,12 +110,12 @@ const Header: React.FC = () => {
               const isActive = link.url === currentPath || `/${slug}` === currentPath
               const style: React.CSSProperties = isActive
                 ? {
-                  color: 'red',
-                  opacity: 1,
-                }
+                    color: 'red',
+                    opacity: 1,
+                  }
                 : {
-                  color: 'red',
-                }
+                    color: 'red',
+                  }
               const label = (
                 <div className={classes.fadeIn}>
                   <span style={style} className={classes.redBrackets}>

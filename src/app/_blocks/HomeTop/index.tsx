@@ -3,9 +3,8 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useRef, useState } from 'react'
 import { Inter } from '@next/font/google'
-import qs from 'qs'
-
 import Link from 'next/link'
+import qs from 'qs'
 
 import type { Committee, Society, Sponsor } from '../../../payload/payload-types'
 import { Page } from '../../../payload/payload-types'
@@ -116,7 +115,10 @@ export const HomeTopBlock: React.FC<
     const parts = text.split(regex)
     return parts.map((part, i) => {
       // Check if this part matches our emphasis keywords
-      if (part.toLowerCase() === 'electronics and computer science society' || part.toLowerCase() === 'ecss') {
+      if (
+        part.toLowerCase() === 'electronics and computer science society' ||
+        part.toLowerCase() === 'ecss'
+      ) {
         return (
           <strong key={i} className={classes.gradientHighlight}>
             {part}
@@ -138,7 +140,9 @@ export const HomeTopBlock: React.FC<
           </div>
           <div className={[classes.stats, inter.className].join(' ')}>
             <Link href="/societies" className={classes.stat}>
-              <span className={classes.number}>{isLoading ? '...' : `${displayedMembersCount}+`}</span>
+              <span className={classes.number}>
+                {isLoading ? '...' : `${displayedMembersCount}+`}
+              </span>
               <span className={classes.label}>members</span>
             </Link>
             <Link href="/committee" className={classes.stat}>
