@@ -1,7 +1,5 @@
 import type { PayloadHandler } from 'payload/config'
 
-import { checkRole } from '../checkRole'
-
 export const countSusuMembers: PayloadHandler = async (req, res): Promise<void> => {
   try {
     const users = await req.payload.find({
