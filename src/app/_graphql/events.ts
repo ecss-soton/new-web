@@ -3,6 +3,7 @@ export const EVENTS = `
         Events(limit: 300) {
             docs {
                 id
+                interestedCount
             }
         }
     }

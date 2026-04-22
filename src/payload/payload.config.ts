@@ -7,6 +7,7 @@ import redirects from '@payloadcms/plugin-redirects'
 import seo from '@payloadcms/plugin-seo'
 import type { GenerateTitle } from '@payloadcms/plugin-seo/types'
 import { slateEditor } from '@payloadcms/richtext-slate' // editor-import
+import MongoStore from 'connect-mongo'
 import dotenv from 'dotenv'
 import path from 'path'
 import { buildConfig } from 'payload/config'
@@ -15,6 +16,7 @@ import { OAuthButton, oAuthPlugin } from 'payload-plugin-oauth'
 import Categories from './collections/Categories'
 import Comments from './collections/Comments'
 import Committee from './collections/Committee'
+import DiscordAnnouncements from './collections/DiscordAnnouncements'
 import { ElectionResults } from './collections/ElectionResults'
 import Elections from './collections/Elections'
 import Events from './collections/Events'
@@ -22,16 +24,12 @@ import { Media } from './collections/Media'
 import { MemberImports } from './collections/MemberImports'
 import Merch from './collections/Merch'
 import Nominations from './collections/Nominations'
-import OrderedTickets from './collections/OrderedTickets'
-import Orders from './collections/Orders'
 import { Pages } from './collections/Pages'
 import Positions from './collections/Position'
 import { Posts } from './collections/Posts'
 import { Projects } from './collections/Projects'
-import Sales from './collections/Sales'
 import Societies from './collections/Societies'
 import Sponsors from './collections/Sponsors'
-import Tickets from './collections/Tickets'
 import Users from './collections/Users'
 import Votes from './collections/Votes'
 import { Footer } from './globals/Footer'
@@ -74,10 +72,6 @@ export default buildConfig({
           ),
           [path.resolve(__dirname, 'collections/Elections/hooks/checkNominations.ts')]:
             path.resolve(__dirname, './emptyModuleMock.js'),
-          [path.resolve(__dirname, 'payments/index.ts')]: path.resolve(
-            __dirname,
-            './emptyModuleMock.js',
-          ),
           express: path.resolve(__dirname, './emptyModuleMock.js'),
           'express-session': path.resolve(__dirname, './emptyModuleMock.js'),
           'connect-mongo': path.resolve(__dirname, './emptyModuleMock.js'),
@@ -128,16 +122,13 @@ export default buildConfig({
     Categories,
     Users,
     Comments,
+    DiscordAnnouncements,
     Elections,
     Nominations,
     Positions,
     Votes,
     ElectionResults,
     Merch,
-    Sales,
-    Tickets,
-    OrderedTickets,
-    Orders,
     Sponsors,
     Societies,
     Committee,
@@ -237,6 +228,17 @@ export default buildConfig({
               saveUninitialized: false,
               // PAYLOAD_SECRET existing is verified in server.ts
               secret: process.env.PAYLOAD_SECRET ?? '',
+              store:
+                process.env.DATABASE_URI &&
+                !process.env.NEXT_BUILD &&
+                !process.argv.includes('build') &&
+                !process.argv.includes('generate:types') &&
+                !process.argv.includes('generate:graphQLSchema')
+                  ? MongoStore.create({
+                      mongoUrl: process.env.DATABASE_URI,
+                      collectionName: 'sessions',
+                    })
+                  : undefined,
             },
           }),
         ]

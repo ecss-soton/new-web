@@ -2,7 +2,6 @@ import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../../access/admins'
 import { anyone } from '../../access/anyone'
-import { isAnInt } from '../../validate/isAnInt'
 import adminsAndUser from './access/adminsAndUser'
 import { checkRole } from './checkRole'
 import { countSusuMembers } from './endpoints/countSusuMembers'
@@ -41,27 +40,6 @@ const Users: CollectionConfig = {
       access: { update: admins },
     },
     {
-      name: 'quickfileClientID',
-      label: 'Quickfile Client ID',
-      type: 'number',
-      validate: isAnInt,
-      access: {
-        read: admins,
-        update: admins,
-        create: admins,
-      },
-    },
-    {
-      name: 'stripeClientID',
-      label: 'Stripe Client ID',
-      type: 'text',
-      access: {
-        read: admins,
-        update: admins,
-        create: admins,
-      },
-    },
-    {
       name: 'roles',
       type: 'select',
       hasMany: true,
@@ -87,6 +65,15 @@ const Users: CollectionConfig = {
         read: admins,
         create: admins,
         update: admins,
+      },
+    },
+    {
+      name: 'interestedEvents',
+      type: 'relationship',
+      relationTo: 'events',
+      hasMany: true,
+      admin: {
+        readOnly: true,
       },
     },
   ],

@@ -57,14 +57,13 @@ const fetchHeaderData = async () => {
     const header = await fetchHeader()
     return header
   } catch (error) {
-    // Handle the error appropriately
-    // console.error(error);
     return null
   }
 }
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const [header, setHeader] = useState<HeaderType | null>(null)
   const { user } = useAuth()
   const currentPath = usePathname()
@@ -79,16 +78,28 @@ const Header: React.FC = () => {
     getHeaderData()
   }, [])
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   const toggleMenu = (newIsOpen: boolean) => {
     setIsOpen(newIsOpen)
   }
 
   return (
     <>
-      <header className={classes.header}>
+      <header
+        className={[classes.header, isScrolled ? classes.scrolled : ''].filter(Boolean).join(' ')}
+      >
         <Gutter className={classes.wrap}>
           <Link href="/" className={classes.home}>
-            {/* Cannot use the `<picture>` element here with `srcSet`
+            {/*
+              Cannot use the `<picture>` element here with `srcSet`
               This is because the theme is able to be overridden by the user
               And so `@media (prefers-color-scheme: dark)` will not work
               Instead, we just use CSS to invert the color via `filter: invert(1)` based on `[data-theme="dark"]`
@@ -99,7 +110,6 @@ const Header: React.FC = () => {
               darksrc="/ecss-light.svg"
               alt="ECSS logo"
             />
-            {/* <span className={[classes.title, inter.className].join(' ')}>ECSS</span> */}
           </Link>
           <HeaderNav onToggleMenu={toggleMenu} header={header} onIsBreakpoint={isBreakpoint} />
         </Gutter>
@@ -108,27 +118,22 @@ const Header: React.FC = () => {
             {header?.navItems.map(({ link }, i) => {
               const slug = (link.reference?.value as Page)?.slug
               const isActive = link.url === currentPath || `/${slug}` === currentPath
-              const style: React.CSSProperties = isActive
-                ? {
-                    color: 'red',
-                    opacity: 1,
-                  }
-                : {
-                    color: 'red',
-                  }
               const label = (
                 <div className={classes.fadeIn}>
-                  <span style={style} className={classes.redBrackets}>
-                    &nbsp;[&nbsp;
-                  </span>
+                  <span className={classes.redBrackets}>&nbsp;[&nbsp;</span>
                   {link.label}
-                  <span style={style} className={classes.redBrackets}>
-                    &nbsp;]&nbsp;
-                  </span>
+                  <span className={classes.redBrackets}>&nbsp;]&nbsp;</span>
                 </div>
               )
               return <CMSLink key={i} {...link} label={label} appearance="header" />
             })}
+            {user && (
+              <Link href="/account" className={classes.menuAccountLink}>
+                <span className={classes.redBrackets}>&nbsp;[&nbsp;</span>
+                Account
+                <span className={classes.redBrackets}>&nbsp;]&nbsp;</span>
+              </Link>
+            )}
           </div>
         )}
       </header>

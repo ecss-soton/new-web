@@ -82,6 +82,43 @@ const Events: CollectionConfig = {
       label: 'Is this a Jumpstart Event?',
       type: 'checkbox',
     },
+    {
+      name: 'interestedCount',
+      label: 'Number of interested people',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'interestedUsers',
+      type: 'relationship',
+      relationTo: 'users',
+      hasMany: true,
+      admin: {
+        readOnly: true,
+      },
+      access: {
+        read: () => false,
+        update: () => false,
+      },
+    },
+  ],
+  endpoints: [
+    {
+      path: '/:id/interested',
+      method: 'post',
+      handler: async (req, res, next) => {
+        try {
+          const { toggleInterested } = await import('./Endpoints/toggleInterested')
+          return toggleInterested(req, res, next)
+        } catch (e: unknown) {
+          req.payload.logger.error(e)
+          return res.status(500).json({ error: 'Internal Server Error' })
+        }
+      },
+    },
   ],
 }
 

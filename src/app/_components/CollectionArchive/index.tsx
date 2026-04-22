@@ -24,6 +24,7 @@ import { PageRange } from '../PageRange'
 import { Pagination } from '../Pagination'
 import { SocietyItem } from '../SocietyItem'
 import { SponsorItem } from '../SponsorItem'
+import { EventsCalendarView } from './EventsCalendarView'
 
 import classes from './index.module.scss'
 
@@ -99,6 +100,9 @@ export const CollectionArchive: React.FC<Props> = props => {
   const isRequesting = useRef(false)
   const [page, setPage] = useState(1)
   const [isPopUpVisible, setIsPopUpVisible] = useState<Committee | null>(null)
+
+  // Desktop Calendar vs Timeline View for Events
+  const [useCalendarView, setUseCalendarView] = useState(false)
 
   const CommitteeClick = (newCommittee: Committee) => {
     setIsPopUpVisible(newCommittee)
@@ -232,7 +236,10 @@ export const CollectionArchive: React.FC<Props> = props => {
       <div className={classes.scrollRef} ref={scrollRef} />
       {!isLoading && error && <Gutter>{error}</Gutter>}
       <Fragment>
-        <Gutter>
+        <Gutter
+          left={relationTo === 'events' ? false : true}
+          right={relationTo === 'events' ? false : true}
+        >
           {relationTo === 'events' &&
             results.docs?.filter(result => {
               if (typeof result !== 'object' || result === null || !('date' in result)) return false
@@ -244,7 +251,25 @@ export const CollectionArchive: React.FC<Props> = props => {
               </span>
             )}
           {relationTo === 'events' ? (
-            <div className={classes.timelineGrid}>
+            <div className={classes.eventsViewWrapper}>
+              <div className={classes.viewToggleRow}>
+                <span className={classes.viewTitle}></span>
+                <div className={classes.viewButtons}>
+                  <button
+                    className={!useCalendarView ? classes.activeView : ''}
+                    onClick={() => setUseCalendarView(false)}
+                  >
+                    Timeline
+                  </button>
+                  <button
+                    className={useCalendarView ? classes.activeView : classes.desktopOnly}
+                    onClick={() => setUseCalendarView(true)}
+                  >
+                    Calendar
+                  </button>
+                </div>
+              </div>
+
               {(() => {
                 const filteredEvents = (results.docs || []).filter(result => {
                   if (typeof result !== 'object' || result === null || !('date' in result))
@@ -252,6 +277,10 @@ export const CollectionArchive: React.FC<Props> = props => {
                   if (isJumpstart) return 'isJumpstart' in result && result.isJumpstart === true
                   return new Date((result as Event).date) > today
                 }) as Event[]
+
+                if (useCalendarView) {
+                  return <EventsCalendarView events={filteredEvents} />
+                }
 
                 let lastMonthKey = ''
                 let isFirstEvent = true
@@ -284,7 +313,7 @@ export const CollectionArchive: React.FC<Props> = props => {
                   )
                 })
 
-                return nodes
+                return <div className={classes.timelineGrid}>{nodes}</div>
               })()}
             </div>
           ) : (

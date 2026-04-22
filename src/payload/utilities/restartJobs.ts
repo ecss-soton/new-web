@@ -1,9 +1,7 @@
-import { scheduleJob } from 'node-schedule'
 import type { Payload } from 'payload'
 
 import { scheduleNominationCheck } from '../collections/Elections/hooks/checkNominations'
 import { scheduleVotesCount } from '../collections/Elections/hooks/checkVotes'
-import { checkOrders } from '../collections/Orders/scheduled/checkOrders'
 import { getID } from './getID'
 
 async function restartNominationCheck(payload: Payload): Promise<void> {
@@ -42,14 +40,7 @@ async function restartVotingCount(payload: Payload): Promise<void> {
   }
 }
 
-async function startOrderCheck(payload: Payload): Promise<void> {
-  const func = checkOrders.bind(null, payload)
-  // Execute every minute.
-  scheduleJob('order-check', '*/1 * * * *', func)
-}
-
 export default async function restartJobs(payload: Payload): Promise<void> {
-  await startOrderCheck(payload)
   await restartNominationCheck(payload)
   await restartVotingCount(payload)
 }
