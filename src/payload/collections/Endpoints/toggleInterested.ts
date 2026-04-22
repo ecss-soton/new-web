@@ -20,7 +20,8 @@ export const toggleInterested: PayloadHandler = async (req, res) => {
     }
 
     const interestedUsers = (event.interestedUsers || []).map((u: any) =>
-      typeof u === 'string' ? u : u.id,)
+      typeof u === 'string' ? u : u.id,
+    )
     const isInterested = interestedUsers.includes(user.id)
 
     let updatedEvent
@@ -51,7 +52,8 @@ export const toggleInterested: PayloadHandler = async (req, res) => {
       showHiddenFields: true,
     })
     const userEvents = (userDoc.interestedEvents || []).map((e: any) =>
-      typeof e === 'string' ? e : e.id,)
+      typeof e === 'string' ? e : e.id,
+    )
 
     if (isInterested) {
       await payload.update({

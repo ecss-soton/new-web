@@ -81,8 +81,8 @@ export const CollectionArchive: React.FC<Props> = props => {
     docs: (populateBy === 'collection'
       ? populatedDocs
       : populateBy === 'selection'
-        ? selectedDocs
-        : []
+      ? selectedDocs
+      : []
     )?.map(doc => doc.value),
     hasNextPage: false,
     hasPrevPage: false,
@@ -151,24 +151,24 @@ export const CollectionArchive: React.FC<Props> = props => {
             relationTo === 'committee'
               ? 'position'
               : relationTo === 'events'
-                ? 'date'
-                : relationTo === 'societies'
-                  ? 'name'
-                  : 'level',
+              ? 'date'
+              : relationTo === 'societies'
+              ? 'name'
+              : 'level',
           where: {
             ...(categories
               ? {
-                categories: {
-                  in: categories,
-                },
-              }
+                  categories: {
+                    in: categories,
+                  },
+                }
               : {}),
             ...(relationTo === 'events' && !isJumpstart
               ? {
-                date: {
-                  greater_than_equal: today.toISOString(),
-                },
-              }
+                  date: {
+                    greater_than_equal: today.toISOString(),
+                  },
+                }
               : {}),
           },
         },
@@ -236,7 +236,7 @@ export const CollectionArchive: React.FC<Props> = props => {
       <div className={classes.scrollRef} ref={scrollRef} />
       {!isLoading && error && <Gutter>{error}</Gutter>}
       <Fragment>
-        <Gutter left={false} right={false}>
+        <Gutter left={relationTo !== 'events'} right={relationTo !== 'events'}>
           {relationTo === 'events' &&
             results.docs?.filter(result => {
               if (typeof result !== 'object' || result === null || !('date' in result)) return false
@@ -310,11 +310,7 @@ export const CollectionArchive: React.FC<Props> = props => {
                   )
                 })
 
-                return (
-                  <div className={classes.timelineGrid}>
-                    {nodes}
-                  </div>
-                )
+                return <div className={classes.timelineGrid}>{nodes}</div>
               })()}
             </div>
           ) : (
