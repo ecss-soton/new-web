@@ -159,16 +159,18 @@ export const NextEventBlock: React.FC<
                 <div className={classes.start}>
                   <span className={classes.startText}>starts</span>
                   <span className={classes.startTime}>{time}</span>
-                  <span className={classes.startText}>ends</span>
-                  <span className={classes.startTime}>{concEndTime}</span>
+                  {concEndTime && (
+                    <>
+                      <span className={classes.startText}>ends</span>
+                      <span className={classes.startTime}>{concEndTime}</span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
-            <div className={classes.moreInfo}>
-              <Link href="/events" className={classes.link}>
-                see more &gt;
-              </Link>
-            </div>
+            <Link href="/events" className={[classes.moreInfo, classes.link].join(' ')}>
+              See all events →
+            </Link>
           </div>
         </div>
       </div>
@@ -186,11 +188,9 @@ export const NextEventBlock: React.FC<
           <h1 className={classes.title}>No Events Found</h1>
         </div>
         <div className={classes.info}>
-          <div className={classes.moreInfo}>
-            <Link href="/events" className={classes.link}>
-              see all events &gt;
-            </Link>
-          </div>
+          <Link href="/events" className={[classes.moreInfo, classes.link].join(' ')}>
+            See all events →
+          </Link>
         </div>
       </div>
     </div>
