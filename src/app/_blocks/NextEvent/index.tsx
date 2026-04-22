@@ -106,7 +106,7 @@ export const NextEventBlock: React.FC<
   if (isLoading) {
     return (
       <div className={classes.background}>
-        {media && <MediaComp resource={media} className={classes.backgroundMedia} />}
+        {media && <MediaComp resource={media} className={classes.backgroundMedia} priority />}
         <div className={[classes.container, inter.className].join(' ')}>
           <div className={classes.text}>
             <h3 className={classes.nextEvent}>Next Event</h3>
@@ -142,7 +142,7 @@ export const NextEventBlock: React.FC<
 
     return (
       <div className={classes.background}>
-        {media && <MediaComp resource={media} className={classes.backgroundMedia} />}
+        {media && <MediaComp resource={media} className={classes.backgroundMedia} priority />}
         {error && <Gutter>{error}</Gutter>}
         <div className={[classes.container, inter.className].join(' ')}>
           <div className={classes.text}>
@@ -159,16 +159,18 @@ export const NextEventBlock: React.FC<
                 <div className={classes.start}>
                   <span className={classes.startText}>starts</span>
                   <span className={classes.startTime}>{time}</span>
-                  <span className={classes.startText}>ends</span>
-                  <span className={classes.startTime}>{concEndTime}</span>
+                  {concEndTime && (
+                    <>
+                      <span className={classes.startText}>ends</span>
+                      <span className={classes.startTime}>{concEndTime}</span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
-            <div className={classes.moreInfo}>
-              <Link href="/events" className={classes.link}>
-                see more &gt;
-              </Link>
-            </div>
+            <Link href="/events" className={[classes.moreInfo, classes.link].join(' ')}>
+              See all events →
+            </Link>
           </div>
         </div>
       </div>
@@ -178,7 +180,7 @@ export const NextEventBlock: React.FC<
   // Fallback state (No Events)
   return (
     <div className={classes.background}>
-      {media && <MediaComp resource={media} className={classes.backgroundMedia} />}
+      {media && <MediaComp resource={media} className={classes.backgroundMedia} priority />}
       {error && <Gutter>{error}</Gutter>}
       <div className={[classes.container, inter.className].join(' ')}>
         <div className={classes.text}>
@@ -186,11 +188,9 @@ export const NextEventBlock: React.FC<
           <h1 className={classes.title}>No Events Found</h1>
         </div>
         <div className={classes.info}>
-          <div className={classes.moreInfo}>
-            <Link href="/events" className={classes.link}>
-              see all events &gt;
-            </Link>
-          </div>
+          <Link href="/events" className={[classes.moreInfo, classes.link].join(' ')}>
+            See all events →
+          </Link>
         </div>
       </div>
     </div>

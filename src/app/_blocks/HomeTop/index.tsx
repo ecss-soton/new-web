@@ -105,7 +105,7 @@ export const HomeTopBlock: React.FC<
     }
   }, [])
 
-  const committeeCount = results.totalDocs || 0
+  const committeeCount = results.totalDocs || 16
   const displayedMembersCount = Math.max(500, Math.floor(membersCount / 10) * 10)
 
   // Dynamically highlight standard ECSS terminology within the CMS string
@@ -152,9 +152,9 @@ export const HomeTopBlock: React.FC<
           </div>
         </div>
         <div className={classes.imageContainer}>
-          <Image resource={image1} alt="Image 1" imgClassName={classes.image1} />
-          <Image resource={image2} alt="Image 2" imgClassName={classes.image2} />
-          <Image resource={image3} alt="Image 3" imgClassName={classes.image3} />
+          <Image resource={image1} alt="Image 1" imgClassName={classes.image1} priority />
+          <Image resource={image2} alt="Image 2" imgClassName={classes.image2} priority />
+          <Image resource={image3} alt="Image 3" imgClassName={classes.image3} priority />
         </div>
       </div>
     </VerticalPadding>

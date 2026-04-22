@@ -10,7 +10,7 @@ export async function fetchSettings(): Promise<Settings> {
     headers: {
       'Content-Type': 'application/json',
     },
-    cache: 'no-store',
+    next: { tags: ['global_settings'], revalidate: 300 },
     body: JSON.stringify({
       query: SETTINGS_QUERY,
     }),
@@ -35,7 +35,7 @@ export async function fetchHeader(): Promise<Header> {
     headers: {
       'Content-Type': 'application/json',
     },
-    cache: 'no-store',
+    next: { tags: ['global_header'], revalidate: 300 },
     body: JSON.stringify({
       query: HEADER_QUERY,
     }),
@@ -60,6 +60,7 @@ export async function fetchFooter(): Promise<Footer> {
     headers: {
       'Content-Type': 'application/json',
     },
+    next: { tags: ['global_footer'], revalidate: 300 },
     body: JSON.stringify({
       query: FOOTER_QUERY,
     }),

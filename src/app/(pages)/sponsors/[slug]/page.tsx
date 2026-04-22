@@ -9,7 +9,6 @@ import { SponsorPage } from '../../../_components/SponsorPage'
 
 // Force this page to be dynamic so that Next.js does not cache it
 // See the note in '../../../[slug]/page.tsx' about this
-export const dynamic = 'force-dynamic'
 
 export default async function Sponsor({ params: { slug } }) {
   let sponsor: Sponsor | null = null

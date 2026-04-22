@@ -1,10 +1,7 @@
 import path from 'path'
 import type { AfterChangeHook } from 'payload/dist/collections/config/types'
 
-import {
-  logCsvAccountCheckResult,
-  runCheckCsvAccountsFromFile,
-} from '../../../utilities/checkCsvAccounts'
+import { runCheckSingleUserFromCsvFile } from '../../../utilities/checkCsvAccounts'
 
 const memberImportUploadDir = path.resolve(__dirname, '../../../../../media/member-imports')
 
@@ -28,13 +25,12 @@ export const checkSusuRoleAfterCreate: AfterChangeHook = async ({ doc, req, oper
     const csvFilePath = path.join(memberImportUploadDir, filename)
 
     try {
-      const result = await runCheckCsvAccountsFromFile({
+      await runCheckSingleUserFromCsvFile({
         payload: req.payload,
         csvFilePath,
+        userDoc: doc,
         role: 'susu',
       })
-
-      logCsvAccountCheckResult(req.payload, result)
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error'
 
