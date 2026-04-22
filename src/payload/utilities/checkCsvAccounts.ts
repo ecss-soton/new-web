@@ -87,22 +87,34 @@ export const checkCsvAccountsFromContent = async ({
     }
 
     const columns = parseCsvRow(line)
-    const firstName = columns[1]?.trim()
-    const lastName = columns[2]?.trim()
+    // 0: User ID, 1: First Name, 2: Last Name, 3: Email, 4: Membership ID, 5: Membership Type, 6: Status
+    const emailCol = columns[3]?.toLowerCase().trim()
+    const statusCol = columns[6]?.toLowerCase().trim()
 
-    if (!firstName || !lastName) {
+    if (!emailCol) {
       stats.invalidRows++
+      continue
+    }
+
+    // Only process rows where the member is active
+    if (statusCol !== 'active') {
+      stats.totalProcessed++
+      stats.noMatch++
       continue
     }
 
     stats.totalProcessed++
 
+    // Derive username from the email's local part (e.g. ab1c23@soton.ac.uk → ab1c23)
+    const csvUsername = emailCol.split('@')[0]
+
+    // Try to find a user matching by email first, then by username
     const matchedUsers = (await payload.find({
       collection: 'users',
       where: {
-        and: [{ name: { contains: firstName } }, { name: { contains: lastName } }],
+        or: [{ email: { equals: emailCol } }, { username: { equals: csvUsername } }],
       },
-      limit: 100,
+      limit: 10,
     })) as UserFindResult
 
     if (matchedUsers.totalDocs === 0) {
@@ -153,6 +165,64 @@ export const runCheckCsvAccountsFromFile = async ({
 
   const fileContent = fs.readFileSync(csvFilePath, 'utf-8')
   return checkCsvAccountsFromContent({ payload, csvContent: fileContent, role })
+}
+
+export const runCheckSingleUserFromCsvFile = async ({
+  payload,
+  csvFilePath,
+  userDoc,
+  role = 'susu',
+}: {
+  payload: PayloadLike
+  csvFilePath: string
+  userDoc: any
+  role?: 'admin' | 'user' | 'susu'
+}): Promise<void> => {
+  if (!fs.existsSync(csvFilePath)) {
+    throw new Error(`Could not find CSV file at ${csvFilePath}`)
+  }
+
+  const fileContent = fs.readFileSync(csvFilePath, 'utf-8')
+  const lines = fileContent.split(/\r?\n/)
+
+  const userEmail = typeof userDoc.email === 'string' ? userDoc.email.toLowerCase().trim() : ''
+  const userUsername =
+    typeof userDoc.username === 'string' ? userDoc.username.toLowerCase().trim() : ''
+
+  if (!userEmail && !userUsername) return
+
+  for (let lineIndex = 1; lineIndex < lines.length; lineIndex++) {
+    const line = lines[lineIndex]
+    if (!line.trim()) continue
+
+    const columns = parseCsvRow(line)
+    // 0: User ID, 1: First Name, 2: Last Name, 3: Email, 4: Membership ID, 5: Membership Type, 6: Status
+    const emailCol = columns[3]?.toLowerCase().trim()
+    const statusCol = columns[6]?.toLowerCase().trim()
+
+    // If there is no email in the CSV, fallback to username matching via soton domain
+    const csvUsername = emailCol ? emailCol.split('@')[0] : ''
+
+    const isMatch =
+      (emailCol && emailCol === userEmail) || (csvUsername && csvUsername === userUsername)
+    const isActive = statusCol === 'active'
+
+    if (isMatch && isActive) {
+      const currentRoles = userDoc.roles || []
+      if (!currentRoles.includes(role)) {
+        await payload.update({
+          collection: 'users',
+          id: userDoc.id,
+          data: {
+            roles: [...currentRoles, role],
+          },
+          overrideAccess: true,
+        })
+        payload.logger.info(`Assigned role '${role}' to user ${userEmail || userUsername}`)
+      }
+      return
+    }
+  }
 }
 
 export const logCsvAccountCheckResult = (

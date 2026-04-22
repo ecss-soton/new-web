@@ -55,8 +55,7 @@ export const fetchDoc = async <T>(args: {
       'Content-Type': 'application/json',
       ...(token?.value && draft ? { Authorization: `JWT ${token.value}` } : {}),
     },
-    cache: 'no-store',
-    next: { tags: [`${collection}_${slug}`] },
+    next: { tags: [`${collection}_${slug}`], revalidate: 60 },
     body: JSON.stringify({
       query: queryMap[collection].query,
       variables: {
