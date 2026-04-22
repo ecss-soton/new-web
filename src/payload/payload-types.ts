@@ -16,6 +16,7 @@ export interface Config {
     categories: Category;
     users: User;
     comments: Comment;
+    'discord-announcements': DiscordAnnouncement;
     elections: Election;
     nominations: Nomination;
     positions: Position;
@@ -717,9 +718,30 @@ export interface User {
   quickfileClientID?: number | null;
   stripeClientID?: string | null;
   roles?: ('admin' | 'user' | 'susu')[] | null;
+  interestedEvents?: (string | Event)[] | null;
   email?: string | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: string;
+  name: string;
+  date: string;
+  endTime?: string | null;
+  location?: string | null;
+  description?: string | null;
+  link?: string | null;
+  image?: string | Media | null;
+  isJumpstart?: boolean | null;
+  interestedCount?: number | null;
+  interestedUsers?: (string | User)[] | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1037,24 +1059,6 @@ export interface Position {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "events".
- */
-export interface Event {
-  id: string;
-  name: string;
-  date: string;
-  endTime?: string | null;
-  location?: string | null;
-  description?: string | null;
-  link?: string | null;
-  image?: string | Media | null;
-  isJumpstart?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "merch".
  */
 export interface Merch {
@@ -1106,6 +1110,20 @@ export interface Comment {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "discord-announcements".
+ */
+export interface DiscordAnnouncement {
+  id: string;
+  discordMessageId: string;
+  content: string;
+  author: string;
+  url?: string | null;
+  authorAvatarUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -109,10 +109,10 @@ const Events: CollectionConfig = {
     {
       path: '/:id/interested',
       method: 'post',
-      handler: async (req, res) => {
+      handler: async (req, res, next) => {
         try {
           const { toggleInterested } = await import('./Endpoints/toggleInterested')
-          return toggleInterested(req, res)
+          return toggleInterested(req, res, next)
         } catch (e: unknown) {
           req.payload.logger.error(e)
           return res.status(500).json({ error: 'Internal Server Error' })
