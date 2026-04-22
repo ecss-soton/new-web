@@ -48,7 +48,7 @@ export const toggleWebhook: PayloadHandler = async (req, res) => {
     })
 
     return res.status(201).json(created)
-  } catch (err) {
+  } catch (err: unknown) {
     req.payload.logger.error(err)
     return res.status(500).json({ error: 'Internal Server Error' })
   }

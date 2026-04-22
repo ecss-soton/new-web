@@ -236,7 +236,10 @@ export const CollectionArchive: React.FC<Props> = props => {
       <div className={classes.scrollRef} ref={scrollRef} />
       {!isLoading && error && <Gutter>{error}</Gutter>}
       <Fragment>
-        <Gutter left={relationTo !== 'events'} right={relationTo !== 'events'}>
+        <Gutter
+          left={relationTo === 'events' ? false : true}
+          right={relationTo === 'events' ? false : true}
+        >
           {relationTo === 'events' &&
             results.docs?.filter(result => {
               if (typeof result !== 'object' || result === null || !('date' in result)) return false

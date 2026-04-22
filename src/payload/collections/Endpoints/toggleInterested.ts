@@ -12,6 +12,7 @@ export const toggleInterested: PayloadHandler = async (req, res) => {
     const event = await payload.findByID({
       collection: 'events',
       id: eventId,
+      depth: 0,
       showHiddenFields: true,
     })
 
@@ -19,9 +20,8 @@ export const toggleInterested: PayloadHandler = async (req, res) => {
       return res.status(404).json({ error: 'Event not found' })
     }
 
-    const interestedUsers = (event.interestedUsers || []).map((u: any) =>
-      typeof u === 'string' ? u : u.id,
-    )
+    const getUserId = (u: any): any => (typeof u === 'string' ? u : u.id)
+    const interestedUsers = (event.interestedUsers || []).map(getUserId)
     const isInterested = interestedUsers.includes(user.id)
 
     let updatedEvent
@@ -31,9 +31,10 @@ export const toggleInterested: PayloadHandler = async (req, res) => {
         collection: 'events',
         id: eventId,
         data: {
-          interestedUsers: interestedUsers.filter((id: string) => id !== user.id),
+          interestedUsers: interestedUsers.filter(id => String(id) !== String(user.id)),
           interestedCount: Math.max(0, (event.interestedCount || 0) - 1),
         },
+        overrideAccess: true,
       })
     } else {
       updatedEvent = await payload.update({
@@ -43,34 +44,36 @@ export const toggleInterested: PayloadHandler = async (req, res) => {
           interestedUsers: [...interestedUsers, user.id],
           interestedCount: (event.interestedCount || 0) + 1,
         },
+        overrideAccess: true,
       })
     }
 
     const userDoc = await payload.findByID({
       collection: 'users',
       id: user.id,
-      showHiddenFields: true,
+      depth: 0,
     })
-    const userEvents = (userDoc.interestedEvents || []).map((e: any) =>
-      typeof e === 'string' ? e : e.id,
-    )
+    const getEventId = (e: any): any => (typeof e === 'string' ? e : e.id)
+    const userEvents = (userDoc.interestedEvents || []).map(getEventId)
 
     if (isInterested) {
       await payload.update({
         collection: 'users',
         id: user.id,
         data: {
-          interestedEvents: userEvents.filter((id: string) => id !== eventId),
+          interestedEvents: userEvents.filter(id => String(id) !== String(eventId)),
         },
+        overrideAccess: true,
       })
     } else {
-      if (!userEvents.includes(eventId)) {
+      if (!userEvents.some(id => String(id) === String(eventId))) {
         await payload.update({
           collection: 'users',
           id: user.id,
           data: {
             interestedEvents: [...userEvents, eventId],
           },
+          overrideAccess: true,
         })
       }
     }
@@ -78,7 +81,7 @@ export const toggleInterested: PayloadHandler = async (req, res) => {
     return res
       .status(200)
       .json({ interestedCount: updatedEvent.interestedCount, isInterested: !isInterested })
-  } catch (err) {
+  } catch (err: unknown) {
     req.payload.logger.error(err)
     return res.status(500).json({ error: 'Internal Server Error' })
   }
