@@ -44,10 +44,10 @@ const DiscordAnnouncements: CollectionConfig = {
     {
       path: '/webhook',
       method: 'post',
-      handler: async (req, res) => {
+      handler: async (req, res, next) => {
         try {
           const { toggleWebhook } = await import('./Endpoints/discordWebhook')
-          return toggleWebhook(req, res)
+          return toggleWebhook(req, res, next)
         } catch (e: unknown) {
           req.payload.logger.error(e)
           return res.status(500).json({ error: 'Internal Server Error' })

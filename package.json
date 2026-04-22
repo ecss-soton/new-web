@@ -41,6 +41,7 @@
     "archiver": "^7.0.1",
     "async-mutex": "^0.4.1",
     "chart.js": "^4.4.2",
+    "connect-mongo": "^6.0.0",
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "escape-html": "^1.0.3",

@@ -7,6 +7,7 @@ import redirects from '@payloadcms/plugin-redirects'
 import seo from '@payloadcms/plugin-seo'
 import type { GenerateTitle } from '@payloadcms/plugin-seo/types'
 import { slateEditor } from '@payloadcms/richtext-slate' // editor-import
+import MongoStore from 'connect-mongo'
 import dotenv from 'dotenv'
 import path from 'path'
 import { buildConfig } from 'payload/config'
@@ -239,6 +240,17 @@ export default buildConfig({
               saveUninitialized: false,
               // PAYLOAD_SECRET existing is verified in server.ts
               secret: process.env.PAYLOAD_SECRET ?? '',
+              store:
+                process.env.DATABASE_URI &&
+                !process.env.NEXT_BUILD &&
+                !process.argv.includes('build') &&
+                !process.argv.includes('generate:types') &&
+                !process.argv.includes('generate:graphQLSchema')
+                  ? MongoStore.create({
+                      mongoUrl: process.env.DATABASE_URI,
+                      collectionName: 'sessions',
+                    })
+                  : undefined,
             },
           }),
         ]
