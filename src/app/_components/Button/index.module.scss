@@ -34,7 +34,7 @@
 }
 
 .appearance--primary {
-  background-color: #D91E1E;
+  background-color: #d91e1e;
   color: var(--theme-elevation-0);
   color: white;
 }
@@ -75,10 +75,10 @@
 .appearance--header {
   padding: 0;
   color: var(--theme-text);
-  font-family: Inter;
-  font-size: 20px;
+  font-family: Inter, sans-serif;
+  font-size: 15px;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   line-height: normal;
 
   &:local() {

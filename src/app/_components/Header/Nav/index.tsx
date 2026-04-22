@@ -1,7 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
-import { CssVariable } from '@next/font'
+import React, { useEffect, useState } from 'react'
 import { Inter } from '@next/font/google'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -49,16 +48,16 @@ export const HeaderNav: React.FC<HeaderNavComponentProps> = ({
   }
 
   const burger1: React.CSSProperties = {
-    transform: isOpen ? 'rotate(45deg)' : 'rotate(0)',
+    transform: isOpen ? 'rotate(45deg) translate(2px, 7px)' : 'rotate(0)',
   }
 
   const burger2: React.CSSProperties = {
-    transform: isOpen ? 'translateX(100%)' : 'translateX(0)',
+    transform: isOpen ? 'scaleX(0)' : 'scaleX(1)',
     opacity: isOpen ? 0 : 1,
   }
 
   const burger3: React.CSSProperties = {
-    transform: isOpen ? 'rotate(-45deg)' : 'rotate(0)',
+    transform: isOpen ? 'rotate(-45deg) translate(2px, -7px)' : 'rotate(0)',
   }
 
   return (
@@ -66,7 +65,6 @@ export const HeaderNav: React.FC<HeaderNavComponentProps> = ({
       className={[
         classes.nav,
         // fade the nav in on user load to avoid flash of content and layout shift
-        // Vercel also does this in their own website header, see https://vercel.com
         user === undefined && classes.hide,
       ]
         .filter(Boolean)
@@ -74,62 +72,45 @@ export const HeaderNav: React.FC<HeaderNavComponentProps> = ({
     >
       {onIsBreakpoint ? (
         <div className={classes.menuContainer}>
-          <div className={classes.hamburger} onClick={toggleMenu}>
+          <div className={classes.hamburger} onClick={toggleMenu} aria-label="Toggle menu">
             <div style={burger1} className={classes.burger} />
             <div style={burger2} className={classes.burger} />
             <div style={burger3} className={classes.burger} />
           </div>
         </div>
       ) : (
-        <div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           {navItems.map(({ link }, i) => {
             const slug = (link.reference?.value as Page)?.slug
             const isActive = link.url === currentPath || `/${slug}` === currentPath
-            const style: React.CSSProperties = isActive
-              ? {
-                  color: 'red',
-                  opacity: 1,
-                }
-              : {
-                  color: 'red',
-                }
             const label = (
               <div className={classes.fadeIn}>
-                <span style={style} className={classes.redBrackets}>
-                  &nbsp;[&nbsp;
-                </span>
+                <span className={classes.redBrackets}>&nbsp;[&nbsp;</span>
                 {link.label}
-                <span style={style} className={classes.redBrackets}>
-                  &nbsp;]&nbsp;
-                </span>
+                <span className={classes.redBrackets}>&nbsp;]&nbsp;</span>
               </div>
             )
-            return <CMSLink key={i} {...link} label={label} appearance="header" />
+            return (
+              <CMSLink
+                key={i}
+                {...link}
+                label={label}
+                appearance="header"
+                className={[classes.navLink, isActive ? classes.active : '']
+                  .filter(Boolean)
+                  .join(' ')}
+              />
+            )
           })}
           {user && (
-            <Link
-              href="/account"
-              className={[inter.className, classes.account, classes.fadeIn].join(' ')}
-            >
-              <>
-                <span className={classes.redBrackets}>&nbsp;&#91;&nbsp;</span>
-                Account
-                <span className={classes.redBrackets}>&nbsp;&#93;&nbsp;</span>
-              </>
+            <Link href="/account" className={[inter.className, classes.account].join(' ')}>
+              <span className={classes.redBrackets}>&nbsp;&#91;&nbsp;</span>
+              Account
+              <span className={classes.redBrackets}>&nbsp;&#93;&nbsp;</span>
             </Link>
           )}
         </div>
       )}
-
-      {/*
-        // Uncomment this code if you want to add a login link to the header
-        {!user && (
-          <React.Fragment>
-            <Link href="/login">Login</Link>
-            <Link href="/create-account">Create Account</Link>
-          </React.Fragment>
-        )}
-      */}
     </nav>
   )
 }

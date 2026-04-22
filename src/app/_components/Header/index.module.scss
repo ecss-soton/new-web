@@ -1,46 +1,185 @@
 @import '../../_css/common';
 
 .header {
-  padding: var(--base) 0;
-  // background-color: var(--theme-elevation-0);
-  position: relative;
-  z-index: 20;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+
+  // Thin bottom border that fades in on scroll (always visible, subtle)
+  border-bottom: 1px solid rgba(var(--theme-elevation-1000-rgb, 0, 0, 0), 0.07);
+
+  transition:
+    padding 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s ease;
+
+  padding: 0;
+
+  // Default (large) state
+  &:not(.scrolled) {
+    box-shadow: none;
+  }
+
+  // Scrolled / compact state — applied via JS
+  &.scrolled {
+    box-shadow: 0 4px 24px -6px rgba(0, 0, 0, 0.12);
+  }
+
+  [data-theme='dark'] & {
+    background: rgba(20, 20, 20, 0.8);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+  }
 }
 
 .wrap {
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: calc(var(--base) / 2) var(--base);
+  align-items: center;
+  gap: var(--base);
+  // Constrain to a sensible max-width and keep things centred
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  .scrolled & {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
 }
 
 .home {
   display: flex;
-  // flex-wrap: wrap;
-  justify-content: flex-start;
   align-items: center;
   text-decoration: none;
+  flex-shrink: 0;
+
   a {
     color: var(--theme-elevation-1000);
   }
+
   > * {
     text-decoration: none;
   }
 }
 
+.logo {
+  width: 72px;
+  height: 72px;
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  .scrolled & {
+    width: 56px;
+    height: 56px;
+  }
+
+  &:hover {
+    transform: scale(1.12) rotate(-3deg);
+  }
+}
+
+// ── Mobile dropdown menu ──────────────────────────────────────────────────────
+
+@keyframes menuReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menu {
+  position: absolute;
+  top: 100%;
+  gap: 0.5em;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: rgba(var(--theme-bg-rgb, 255, 255, 255), 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear 0.25s;
+
+  [data-theme='dark'] & {
+    background: rgba(18, 18, 18, 0.96);
+    border-bottom-color: rgba(255, 255, 255, 0.07);
+  }
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+      visibility 0s linear 0s;
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.15);
+  }
+
+  // Each child link in the mobile menu
+  > * {
+    display: block;
+    padding: 20px var(--gutter-h);
+    border-bottom: 1px solid rgba(var(--theme-elevation-1000-rgb, 0, 0, 0), 0.05);
+    font-size: 17px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--theme-elevation-1000);
+    transition:
+      background 0.15s ease,
+      padding-left 0.2s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: rgba(220, 30, 30, 0.06);
+      padding-left: calc(var(--gutter-h) + 6px);
+    }
+  }
+}
+
+.menuAccountLink {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  color: #d41c1c;
+  text-align: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .fadeIn {
+  display: flex;
+  align-items: center;
+
   @include small-break {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-right: 20px;
+    padding-top: 2px;
+    padding-bottom: 2px;
   }
 
   span {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(8px);
     transition:
-      opacity 300ms ease,
-      transform 300ms ease;
+      opacity 0.22s ease,
+      transform 0.22s ease;
   }
 
   &:hover span {
@@ -50,69 +189,16 @@
 }
 
 .redBrackets {
-  color: red;
+  color: #e01c1c;
+  font-weight: 700;
 }
 
-@keyframes grow {
-  0% {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.menu {
-  position: absolute;
-  right: 0;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: var(--theme-bg);
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  // translate: -100%;
-  padding-bottom: 10px;
-  visibility: hidden;
-
-  &.open {
-    opacity: 1;
-    visibility: visible;
-    box-shadow: 0 5px 10px -6px var(--theme-shadow);
-    transition:
-      opacity 0.3s ease-in-out,
-      visibility 0s ease-in-out;
-  }
-
-  &.open > * {
-    animation: grow 0.5s ease forwards;
-  }
-}
-
-.logo {
-  width: 100px;
-  height: 100px;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.2); // Scale the logo to 120% on hover
-  }
-}
-
+// keep the title class in case it's used elsewhere
 .title {
   color: var(--theme-elevation-1000);
-  font-family: Inter;
-  font-size: 32px;
-  font-style: normal;
+  font-family: Inter, sans-serif;
+  font-size: 28px;
   font-weight: 400;
   line-height: normal;
-  padding-left: 7%;
-}
-
-.title:visited {
-  text-decoration: none;
+  padding-left: 10px;
 }
