@@ -113,7 +113,7 @@ const Events: CollectionConfig = {
         try {
           const { toggleInterested } = await import('./Endpoints/toggleInterested')
           return toggleInterested(req, res)
-        } catch (e) {
+        } catch (e: unknown) {
           req.payload.logger.error(e)
           return res.status(500).json({ error: 'Internal Server Error' })
         }

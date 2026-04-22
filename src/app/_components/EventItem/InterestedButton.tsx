@@ -19,9 +19,8 @@ export const InterestedButton: React.FC<{
   // Initialize from user object
   useEffect(() => {
     if (user && !localInit) {
-      const userInterested = (user as any).interestedEvents?.some((e: any) =>
-        typeof e === 'string' ? e === eventId : e?.id === eventId,
-      )
+      const checkEventId = (e: any) => (typeof e === 'string' ? e === eventId : e?.id === eventId)
+      const userInterested = (user as any).interestedEvents?.some(checkEventId)
       setIsInterested(!!userInterested)
       setLocalInit(true)
     }
@@ -76,7 +75,7 @@ export const InterestedButton: React.FC<{
         setIsInterested(data.isInterested)
       }
     } catch (err) {
-      console.error(err)
+      // console.error(err)
       setIsInterested(isInterested)
       setCount(prev => (willBeInterested ? Math.max(0, prev - 1) : prev + 1))
     } finally {
