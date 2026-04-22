@@ -5,11 +5,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Inter } from '@next/font/google'
 import qs from 'qs'
 
+import Link from 'next/link'
+
 import type { Committee, Society, Sponsor } from '../../../payload/payload-types'
 import { Page } from '../../../payload/payload-types'
-import { Button } from '../../_components/Button'
-import { Gutter } from '../../_components/Gutter'
-import { Media as MediaComp } from '../../_components/Media'
 import { Image } from '../../_components/Media/Image'
 import { VerticalPadding } from '../../_components/VerticalPadding'
 
@@ -23,6 +22,7 @@ const inter = Inter({
 
 type Result = {
   docs: (Sponsor | Committee | Society | string)[]
+  totalDocs?: number
 }
 
 type Props = Extract<Page['layout'][0], { blockType: 'homeTop' }>
@@ -33,20 +33,13 @@ export const HomeTopBlock: React.FC<
   }
 > = ({ heading, image1, image2, image3 }) => {
   const [results, setResults] = useState<Result>({
-    docs: []?.map(doc => doc.value),
-    // hasNextPage: false,
-    // hasPrevPage: false,
-    // nextPage: 1,
-    // page: 1,
-    // prevPage: 1,
-    // totalDocs: typeof populatedDocsTotal === 'number' ? populatedDocsTotal : 0,
-    // totalPages: 1,
+    docs: [],
+    totalDocs: 0,
   })
 
-  const [membersCount, setMembersCount] = useState<number>(508)
+  const [membersCount, setMembersCount] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | undefined>(undefined)
-  const scrollRef = useRef<HTMLDivElement>(null)
   const hasHydrated = useRef(false)
   const isRequesting = useRef(false)
 
@@ -56,9 +49,6 @@ export const HomeTopBlock: React.FC<
     if (!isRequesting.current) {
       isRequesting.current = true
 
-      // hydrate the block with fresh content after first render
-      // don't show loader unless the request takes longer than x ms
-      // and don't show it during initial hydration
       timer = setTimeout(() => {
         if (hasHydrated.current) {
           setIsLoading(true)
@@ -68,7 +58,8 @@ export const HomeTopBlock: React.FC<
       const searchQuery = qs.stringify(
         {
           depth: 1,
-          limit: 20,
+          limit: 0, // We only need the totalDocs count
+          where: { isCurrent: { equals: true } },
         },
         { encode: false },
       )
@@ -82,15 +73,7 @@ export const HomeTopBlock: React.FC<
           const json = await req.json()
           clearTimeout(timer)
 
-          const { docs } = json as { docs: Committee[] }
-
-          if (docs && Array.isArray(docs)) {
-            setResults(json)
-            setIsLoading(false)
-            // if (typeof onResultChange === 'function') {
-            //   onResultChange(json)
-            // }
-          }
+          setResults(json)
 
           // Fetch members count (users with susu role)
           const membersReq = await fetch(
@@ -103,10 +86,12 @@ export const HomeTopBlock: React.FC<
           if (typeof susuCount === 'number') {
             setMembersCount(susuCount)
           }
+
+          setIsLoading(false)
         } catch (err) {
           console.warn(err) // eslint-disable-line no-console
           setIsLoading(false)
-          setError(`Unable to load "sponsor archive" data at this time.`)
+          setError(`Unable to load stats data at this time.`)
         }
 
         isRequesting.current = false
@@ -120,30 +105,46 @@ export const HomeTopBlock: React.FC<
       if (timer) clearTimeout(timer)
     }
   }, [])
-  //TODO: change this back to member count, and make memebr coutn coutn the memebrs in csv, NOT the memebrs who are logged into website
-  const committeeCount =
-    results.docs?.filter(doc => (doc as Committee).isCurrent === true).length || 0
+
+  const committeeCount = results.totalDocs || 0
+  const displayedMembersCount = Math.max(500, Math.floor(membersCount / 10) * 10)
+
+  // Dynamically highlight standard ECSS terminology within the CMS string
+  const renderDynamicHeading = (text: string) => {
+    if (!text) return null
+    const regex = /(Electronics and Computer Science Society|ECSS)/gi
+    const parts = text.split(regex)
+    return parts.map((part, i) => {
+      // Check if this part matches our emphasis keywords
+      if (part.toLowerCase() === 'electronics and computer science society' || part.toLowerCase() === 'ecss') {
+        return (
+          <strong key={i} className={classes.gradientHighlight}>
+            {part}
+          </strong>
+        )
+      }
+      return <span key={i}>{part}</span>
+    })
+  }
 
   return (
     <VerticalPadding top="none" bottom="none">
       <div className={[classes.container, inter.className].join(' ')}>
         <div className={classes.intro}>
-          <h1 className={[classes.heading, inter.className].join(' ')}>{heading}</h1>
-          <Button
-            label="Meet our team"
-            appearance="primary"
-            className={classes.button}
-            href="/committee"
-          />
+          <div className={classes.heroTitles}>
+            <h1 className={[classes.heading, inter.className].join(' ')}>
+              {renderDynamicHeading(heading)}
+            </h1>
+          </div>
           <div className={[classes.stats, inter.className].join(' ')}>
-            <div className={classes.stat}>
-              <span className={classes.number}>{'500+'}</span>
+            <Link href="/societies" className={classes.stat}>
+              <span className={classes.number}>{isLoading ? '...' : `${displayedMembersCount}+`}</span>
               <span className={classes.label}>members</span>
-            </div>
-            <div className={classes.stat}>
-              <span className={classes.number}>{committeeCount}</span>
+            </Link>
+            <Link href="/committee" className={classes.stat}>
+              <span className={classes.number}>{isLoading ? '...' : committeeCount}</span>
               <span className={classes.label}>committee</span>
-            </div>
+            </Link>
           </div>
         </div>
         <div className={classes.imageContainer}>

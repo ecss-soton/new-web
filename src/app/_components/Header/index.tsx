@@ -68,7 +68,7 @@ const Header: React.FC = () => {
   const [header, setHeader] = useState<HeaderType | null>(null)
   const { user } = useAuth()
   const currentPath = usePathname()
-  const isBreakpoint = useMediaQuery(900)
+  const isBreakpoint = useMediaQuery(1100)
 
   useEffect(() => {
     const getHeaderData = async () => {
@@ -110,12 +110,12 @@ const Header: React.FC = () => {
               const isActive = link.url === currentPath || `/${slug}` === currentPath
               const style: React.CSSProperties = isActive
                 ? {
-                    color: 'red',
-                    opacity: 1,
-                  }
+                  color: 'red',
+                  opacity: 1,
+                }
                 : {
-                    color: 'red',
-                  }
+                  color: 'red',
+                }
               const label = (
                 <div className={classes.fadeIn}>
                   <span style={style} className={classes.redBrackets}>
