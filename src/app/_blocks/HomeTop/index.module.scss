@@ -1,7 +1,7 @@
 @import '../../_css/common';
 
-.container{
-    height: 800px;
+.container {
+    height: 450px;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -9,6 +9,7 @@
 
     @include mid-break {
         flex-direction: column;
+        height: auto;
     }
 
 
@@ -16,42 +17,43 @@
 
 @keyframes fadeInLeft {
     0% {
-      opacity: 0;
-      transform: translateX(-50px);
+        opacity: 0;
+        transform: translateX(-50px);
     }
-    100% {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  @keyframes fadeInRight {
-    0% {
-      opacity: 0;
-      transform: translateX(50px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  @keyframes fadeInBottom {
-    0% {
-      opacity: 0;
-      transform: translateY(50px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 
-.intro{
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    0% {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.intro {
     display: flex;
     flex-direction: column;
-    // justify-content: center;
-    // align-items: center;
     width: 40%;
     height: 100%;
     padding-top: 3%;
@@ -62,9 +64,33 @@
         height: inherit;
     }
 
-    @include small-break {
-        
+    @include small-break {}
+}
+
+.heroTitles {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+@keyframes springUp {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
     }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.gradientHighlight {
+    background: linear-gradient(135deg, #ff4b4b 0%, #A01B1B 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
 }
 
 .heading {
@@ -75,14 +101,15 @@
     font-weight: 400;
     line-height: normal;
     opacity: 0;
-    animation: fadeInLeft 1s ease-in-out forwards;
+    animation: springUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation-delay: 0.2s;
 
     @include extra-small-break {
         font-size: 23px;
     }
 }
 
-.imageContainer{
+.imageContainer {
     width: 60%;
     height: 100%;
     display: flex;
@@ -90,26 +117,22 @@
     animation: fadeInRight 1s ease-in-out forwards;
     animation-delay: 1s;
 
+    margin: 1rem 0 1rem 0;
+
     @include mid-break {
         width: 100%;
         animation-delay: 2s;
     }
 }
 
-.image1{
+.image1 {
     width: 30%;
     height: 75%;
     position: relative;
     object-fit: cover;
 }
 
-.button{
-    width: 184px;
-    position: relative;
-    left: 2%;
-    opacity: 0;
-    animation: fadeInLeft 1s ease-in-out forwards;
-}
+
 
 .image2 {
     width: 30%;
@@ -130,7 +153,7 @@
 }
 
 .stats {
-    padding-top: 30%;
+    padding-top: 5%;
     display: flex;
     flex-direction: row;
     opacity: 0;
@@ -146,9 +169,15 @@
 
 .stat {
     flex: 30%;
-    // height: 123px;
     display: flex;
     flex-direction: column;
+    text-decoration: none;
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        opacity: 0.8;
+    }
 
     @include mid-break {
         align-text: center;
@@ -164,18 +193,20 @@
     line-height: normal;
 
     @include mid-break {
-        font-size: min(48px,10vw);
+        font-size: min(48px, 10vw);
     }
 }
 
 .label {
     color: var(--theme-elevation-1000);
-    font-size: 32px;
+    font-size: 24px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
 
+    text-decoration: overline;
+
     @include mid-break {
-        font-size: min(32px,7vw);
+        font-size: min(24px, 7vw);
     }
 }

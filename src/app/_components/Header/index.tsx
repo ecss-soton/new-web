@@ -68,7 +68,7 @@ const Header: React.FC = () => {
   const [header, setHeader] = useState<HeaderType | null>(null)
   const { user } = useAuth()
   const currentPath = usePathname()
-  const isBreakpoint = useMediaQuery(900)
+  const isBreakpoint = useMediaQuery(1100)
 
   useEffect(() => {
     const getHeaderData = async () => {
