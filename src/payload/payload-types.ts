@@ -208,9 +208,10 @@ export interface Page {
       }
     | {
         heading: string;
-        image1: string | Media;
-        image2: string | Media;
-        image3: string | Media;
+        show_on_mobile?: boolean | null;
+        image1?: string | Media | null;
+        image2?: string | Media | null;
+        image3?: string | Media | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'homeTop';
