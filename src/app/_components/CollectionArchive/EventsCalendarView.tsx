@@ -5,10 +5,13 @@ import moment from 'moment-timezone'
 
 import { Event } from '../../../payload/payload-types'
 import { EventItem } from '../EventItem'
+// Import useAuth (adjust the path if necessary based on your folder structure)
+import { useAuth } from '../../_providers/Auth'
 
 import classes from './EventsCalendarView.module.scss'
 
 export const EventsCalendarView: React.FC<{ events: Event[] }> = ({ events }) => {
+  const { user } = useAuth() // Pull in the current user
   const [currentMonth, setCurrentMonth] = useState(() => moment().startOf('month'))
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
 
@@ -28,12 +31,10 @@ export const EventsCalendarView: React.FC<{ events: Event[] }> = ({ events }) =>
     return days
   }, [currentMonth])
 
-  // PERFORMANCE FIX: Group events by date string once, rather than filtering inside the grid loop
   const eventsByDate = useMemo(() => {
     const map = new Map<string, Event[]>()
     events.forEach(e => {
       if (!e.date) return
-      // Normalize to YYYY-MM-DD using your target timezone
       const dateStr = moment.utc(e.date).tz('Europe/London').format('YYYY-MM-DD')
       if (!map.has(dateStr)) {
         map.set(dateStr, [])
@@ -42,6 +43,13 @@ export const EventsCalendarView: React.FC<{ events: Event[] }> = ({ events }) =>
     })
     return map
   }, [events])
+
+  // Helper function to check if the current user is interested in a specific event
+  const isUserInterested = (eventId: string | number) => {
+    if (!user || !(user as any).interestedEvents) return false
+    const checkEventId = (e: any) => (typeof e === 'string' ? e === eventId : e?.id === eventId)
+    return (user as any).interestedEvents.some(checkEventId)
+  }
 
   return (
     <div className={classes.calendarWrap}>
@@ -55,7 +63,6 @@ export const EventsCalendarView: React.FC<{ events: Event[] }> = ({ events }) =>
         </button>
       </div>
 
-      {/* Added a wrapper for horizontal scrolling on mobile */}
       <div className={classes.gridWrapper}>
         <div className={classes.grid}>
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
@@ -69,7 +76,6 @@ export const EventsCalendarView: React.FC<{ events: Event[] }> = ({ events }) =>
             const isToday = day.isSame(moment(), 'day')
             const dateStr = day.format('YYYY-MM-DD')
             
-            // Fetch events from our pre-computed Map (O(1) lookup)
             const dayEvents = eventsByDate.get(dateStr) || []
 
             return (
@@ -81,17 +87,24 @@ export const EventsCalendarView: React.FC<{ events: Event[] }> = ({ events }) =>
               >
                 <span className={classes.dateNum}>{day.format('D')}</span>
                 <div className={classes.eventsList}>
-                  {dayEvents.map((evt, eIdx) => (
-                    <button
-                      key={eIdx}
-                      className={`${classes.eventBadge} ${
-                        evt.isJumpstart ? classes.jumpstartBg : ''
-                      }`}
-                      onClick={() => setSelectedEvent(evt)}
-                    >
-                      {evt.name}
-                    </button>
-                  ))}
+                  {dayEvents.map((evt, eIdx) => {
+                    // Check if user is interested using the event ID
+                    const interested = evt.id ? isUserInterested(evt.id) : false
+
+                    return (
+                      <button
+                        key={eIdx}
+                        className={`
+                          ${classes.eventBadge} 
+                          ${evt.isJumpstart ? classes.jumpstartBg : ''} 
+                          ${interested ? classes.interestedBg : ''}
+                        `}
+                        onClick={() => setSelectedEvent(evt)}
+                      >
+                        {evt.name}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
             )
@@ -99,7 +112,6 @@ export const EventsCalendarView: React.FC<{ events: Event[] }> = ({ events }) =>
         </div>
       </div>
 
-      {/* Background overlay for mobile */}
       {selectedEvent && (
         <div 
           className={classes.backdrop} 

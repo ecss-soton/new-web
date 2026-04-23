@@ -1,3 +1,6 @@
+@use '../../_css/queries.scss' as *;
+
+
 .calendarWrap {
   width: 100%;
   margin-top: 1rem;
@@ -52,14 +55,16 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(min-content, 1fr));
   border: 1px solid var(--theme-elevation-200);
   border-radius: 8px;
   overflow: hidden;
-  min-width: 700px; /* Forces mobile to scroll rather than squish cells */
+  min-width: 100vw; /* Forces mobile to scroll rather than squish cells */
 
   @media (min-width: 768px) {
-    min-width: auto; /* Restores standard fluid grid on desktop */
+    /* Restores perfectly equal, fluid columns on desktop */
+    grid-template-columns: repeat(7, 1fr);
+    min-width: auto;
   }
 }
 
@@ -109,6 +114,10 @@
       font-weight: bold;
     }
   }
+
+  @include small-break {
+    min-height: 50px;
+  }
 }
 
 .dateNum {
@@ -138,6 +147,9 @@
   word-break: break-word;
   cursor: pointer;
   transition: background-color 0.2s ease;
+
+
+  min-width: 60px;
 
   &:hover {
     background-color: var(--theme-elevation-1000);
@@ -209,6 +221,17 @@
     overflow-y: auto;
     /* Optional: add animation for the modal sliding up */
     animation: slideUp 0.3s ease-out forwards;
+  }
+}
+
+.interestedBg {
+  background-color: #eab308; /* A vibrant UI yellow */
+  color: #1a1a1a; /* Dark text for readability against yellow */
+  font-weight: 600; /* Optional: Make it stand out a bit more */
+
+  &:hover {
+    background-color: #ca8a04; /* Darker yellow on hover */
+    opacity: 1; 
   }
 }
 
