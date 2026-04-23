@@ -111,7 +111,7 @@ const Events: CollectionConfig = {
       path: '/ics',
       method: 'get',
       handler: async (req, res) => {
-        const { payload } = req;
+        const { payload } = req
 
         // Fetch published events (similar to your Archive logic)
         const { docs: events } = await payload.find({
@@ -121,26 +121,26 @@ const Events: CollectionConfig = {
           },
           limit: 500, // Fetch a reasonable window of events
           sort: '-date',
-        });
+        })
 
-        const calendar = ical({ 
+        const calendar = ical({
           name: 'My Society Events',
-          timezone: 'Europe/London' 
-        });
+          timezone: 'Europe/London',
+        })
 
-        events.forEach((event) => {
+        events.forEach(event => {
           // Construct the start date
-          const startDate = new Date(event.date);
-          
-          // Construct end date: 
+          const startDate = new Date(event.date)
+
+          // Construct end date:
           // If endTime exists (time-only), we attach it to the event's date.
           // Otherwise, default to 1 hour duration.
-          let endDate = new Date(startDate.getTime() + 60 * 60 * 1000); 
-          
+          let endDate = new Date(startDate.getTime() + 60 * 60 * 1000)
+
           if (event.endTime) {
-            const endT = new Date(event.endTime);
-            endDate = new Date(startDate);
-            endDate.setHours(endT.getHours(), endT.getMinutes());
+            const endT = new Date(event.endTime)
+            endDate = new Date(startDate)
+            endDate.setHours(endT.getHours(), endT.getMinutes())
           }
 
           calendar.createEvent({
@@ -151,12 +151,12 @@ const Events: CollectionConfig = {
             description: event.description || '',
             location: event.location || '',
             url: event.link || '',
-          });
-        });
+          })
+        })
 
-        res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
-        res.setHeader('Content-Disposition', 'attachment; filename="events.ics"');
-        return res.send(calendar.toString());
+        res.setHeader('Content-Type', 'text/calendar; charset=utf-8')
+        res.setHeader('Content-Disposition', 'attachment; filename="events.ics"')
+        return res.send(calendar.toString())
       },
     },
     {
