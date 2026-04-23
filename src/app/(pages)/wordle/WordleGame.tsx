@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { Button } from '../../_components/Button'
 
 import VALID_WORDS from './validWords.json'
 
@@ -218,7 +219,7 @@ export const WordleGame: React.FC = () => {
 
       {(gameStatus === 'won' || gameStatus === 'lost') && (
         <div ref={announcementRef} className={classes.announcement}>
-          {gameStatus === 'won' && <div className={classes.dateDisplay}>20/04/2026.</div>}
+          {gameStatus === 'won' &&  <Button href="/merch" label="GET OUR MERCH" appearance="primary" />}
           {gameStatus === 'lost' && (
             <>
               <p className={classes.tryAgainText}>Not quite — give it another go!</p>
