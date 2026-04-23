@@ -30,7 +30,7 @@ export const HomeTopBlock: React.FC<
   Props & {
     id?: string
   }
-> = ({ heading, image1, image2, image3 }) => {
+> = ({ heading, image1, image2, image3, show_on_mobile }) => {
   const [results, setResults] = useState<Result>({
     docs: [],
     totalDocs: 0,
@@ -151,7 +151,12 @@ export const HomeTopBlock: React.FC<
             </Link>
           </div>
         </div>
-        <div className={classes.imageContainer}>
+
+        <div
+          className={[classes.imageContainer, show_on_mobile === false ? classes.hideOnMobile : '']
+            .join(' ')
+            .trim()}
+        >
           <Image resource={image1} alt="Image 1" imgClassName={classes.image1} priority />
           <Image resource={image2} alt="Image 2" imgClassName={classes.image2} priority />
           <Image resource={image3} alt="Image 3" imgClassName={classes.image3} priority />
