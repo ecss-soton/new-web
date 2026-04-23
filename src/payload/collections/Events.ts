@@ -1,5 +1,10 @@
 import type { CollectionConfig } from 'payload/types'
 import ical from 'ical-generator'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 import { admins } from '../access/admins'
 import { adminsOrPublished } from '../access/adminsOrPublished'
@@ -112,41 +117,43 @@ const Events: CollectionConfig = {
       method: 'get',
       handler: async (req, res) => {
         const { payload } = req
-
-        // Fetch published events (similar to your Archive logic)
         const { docs: events } = await payload.find({
           collection: 'events',
-          where: {
-            _status: { equals: 'published' },
-          },
-          limit: 500, // Fetch a reasonable window of events
+          where: { _status: { equals: 'published' } },
+          limit: 500,
           sort: '-date',
         })
 
         const calendar = ical({
-          name: 'My Society Events',
+          name: 'ECSS Events',
           timezone: 'Europe/London',
         })
 
         events.forEach(event => {
-          // Construct the start date
-          const startDate = new Date(event.date)
+          // 1. Correctly shift UTC from DB to London Wall-Clock time
+          const start = dayjs(event.date).tz('Europe/London')
 
-          // Construct end date:
-          // If endTime exists (time-only), we attach it to the event's date.
-          // Otherwise, default to 1 hour duration.
-          let endDate = new Date(startDate.getTime() + 60 * 60 * 1000)
-
+          let end
           if (event.endTime) {
-            const endT = new Date(event.endTime)
-            endDate = new Date(startDate)
-            endDate.setHours(endT.getHours(), endT.getMinutes())
+            // 2. Use dayjs(value).tz() to ensure UTC-to-London conversion happens
+            const endT = dayjs(event.endTime).tz('Europe/London')
+            end = start.hour(endT.hour()).minute(endT.minute()).second(0)
+
+            // 3. If end time is the same as or before start (e.g. overnight), add a day
+            if (end.isSame(start) || end.isBefore(start)) {
+              end = end.add(1, 'hour') // Default to 1 hour if they match exactly
+            }
+          } else {
+            end = start.add(1, 'hour')
           }
 
           calendar.createEvent({
             id: event.id,
-            start: startDate,
-            end: endDate,
+            // 4. We pass a native Date, but tell the event specifically to use London.
+            // This forces the TZID=Europe/London tag into the .ics file.
+            start: start.toDate(),
+            end: end.toDate(),
+            timezone: 'Europe/London',
             summary: event.name,
             description: event.description || '',
             location: event.location || '',
