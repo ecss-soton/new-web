@@ -259,16 +259,10 @@ export const CollectionArchive: React.FC<Props> = props => {
                 <span className={classes.viewTitle}></span>
                 <div className={classes.viewButtons}>
                   <button
-                    className={!useCalendarView ? classes.activeView : ''}
-                    onClick={() => setUseCalendarView(false)}
+                    className={useCalendarView ? classes.activeView : ''}
+                    onClick={() => setUseCalendarView(!useCalendarView)}
                   >
-                    Timeline
-                  </button>
-                  <button
-                    className={useCalendarView ? classes.activeView : classes.desktopOnly}
-                    onClick={() => setUseCalendarView(true)}
-                  >
-                    Calendar
+                    View {useCalendarView ? 'Timeline' : 'Calendar'}
                   </button>
                 </div>
               </div>

@@ -10,6 +10,7 @@ import classes from './EventsCalendarView.module.scss'
 
 export const EventsCalendarView: React.FC<{ events: Event[] }> = ({ events }) => {
   const [currentMonth, setCurrentMonth] = useState(() => moment().startOf('month'))
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
 
   const nextMonth = () => setCurrentMonth(moment(currentMonth).add(1, 'month'))
   const prevMonth = () => setCurrentMonth(moment(currentMonth).subtract(1, 'month'))
@@ -27,8 +28,20 @@ export const EventsCalendarView: React.FC<{ events: Event[] }> = ({ events }) =>
     return days
   }, [currentMonth])
 
-  // state to show selected event details below the calendar
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  // PERFORMANCE FIX: Group events by date string once, rather than filtering inside the grid loop
+  const eventsByDate = useMemo(() => {
+    const map = new Map<string, Event[]>()
+    events.forEach(e => {
+      if (!e.date) return
+      // Normalize to YYYY-MM-DD using your target timezone
+      const dateStr = moment.utc(e.date).tz('Europe/London').format('YYYY-MM-DD')
+      if (!map.has(dateStr)) {
+        map.set(dateStr, [])
+      }
+      map.get(dateStr)!.push(e)
+    })
+    return map
+  }, [events])
 
   return (
     <div className={classes.calendarWrap}>
@@ -42,48 +55,57 @@ export const EventsCalendarView: React.FC<{ events: Event[] }> = ({ events }) =>
         </button>
       </div>
 
-      <div className={classes.grid}>
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-          <div key={d} className={classes.dayHeader}>
-            {d}
-          </div>
-        ))}
-
-        {calendarDays.map((day, idx) => {
-          const isSameMonth = day.isSame(currentMonth, 'month')
-          const isToday = day.isSame(moment(), 'day')
-
-          // Find events for this day
-          const dayEvents = events.filter(e => {
-            if (!e.date) return false
-            return moment.utc(e.date).tz('Europe/London').isSame(day, 'day')
-          })
-
-          return (
-            <div
-              key={idx}
-              className={`${classes.dayCell} ${!isSameMonth ? classes.disabled : ''} ${
-                isToday ? classes.today : ''
-              }`}
-            >
-              <span className={classes.dateNum}>{day.format('D')}</span>
-              <div className={classes.eventsList}>
-                {dayEvents.map((evt, eIdx) => (
-                  <button
-                    key={eIdx}
-                    className={`${classes.eventBadge} ${
-                      evt.isJumpstart ? classes.jumpstartBg : ''
-                    }`}
-                    onClick={() => setSelectedEvent(evt)}
-                  >
-                    {evt.name}
-                  </button>
-                ))}
-              </div>
+      {/* Added a wrapper for horizontal scrolling on mobile */}
+      <div className={classes.gridWrapper}>
+        <div className={classes.grid}>
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
+            <div key={d} className={classes.dayHeader}>
+              {d}
             </div>
-          )
-        })}
+          ))}
+
+          {calendarDays.map((day, idx) => {
+            const isSameMonth = day.isSame(currentMonth, 'month')
+            const isToday = day.isSame(moment(), 'day')
+            const dateStr = day.format('YYYY-MM-DD')
+            
+            // Fetch events from our pre-computed Map (O(1) lookup)
+            const dayEvents = eventsByDate.get(dateStr) || []
+
+            return (
+              <div
+                key={idx}
+                className={`${classes.dayCell} ${!isSameMonth ? classes.disabled : ''} ${
+                  isToday ? classes.today : ''
+                }`}
+              >
+                <span className={classes.dateNum}>{day.format('D')}</span>
+                <div className={classes.eventsList}>
+                  {dayEvents.map((evt, eIdx) => (
+                    <button
+                      key={eIdx}
+                      className={`${classes.eventBadge} ${
+                        evt.isJumpstart ? classes.jumpstartBg : ''
+                      }`}
+                      onClick={() => setSelectedEvent(evt)}
+                    >
+                      {evt.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
       </div>
+
+      {/* Background overlay for mobile */}
+      {selectedEvent && (
+        <div 
+          className={classes.backdrop} 
+          onClick={() => setSelectedEvent(null)} 
+        />
+      )}
 
       {selectedEvent && (
         <div className={classes.selectedEventOverlay}>

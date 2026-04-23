@@ -1,149 +1,222 @@
 .calendarWrap {
-    width: 100%;
-    margin-top: 1rem;
-    background-color: var(--theme-elevation-50);
-    border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  width: 100%;
+  margin-top: 1rem;
+  background-color: var(--theme-elevation-50);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  position: relative;
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
 .navBtn {
-    background: none;
-    border: 1px solid var(--theme-elevation-200);
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    background-color: var(--theme-bg);
-    color: var(--theme-elevation-800);
-    font-weight: 600;
+  background: none;
+  border: 1px solid var(--theme-elevation-200);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: var(--theme-bg);
+  color: var(--theme-elevation-800);
+  font-weight: 600;
+  transition: background-color 0.2s;
 
-    &:hover {
-        background-color: var(--theme-elevation-100);
-    }
+  &:hover {
+    background-color: var(--theme-elevation-100);
+  }
 }
 
 .monthLabel {
-    margin: 0;
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--theme-elevation-1000);
+  text-align: center;
+
+  @media (min-width: 768px) {
     font-size: 1.5rem;
-    color: var(--theme-elevation-1000);
+  }
+}
+
+/* MOBILE FIX: Wrap the grid to allow horizontal scrolling instead of crushing the columns */
+.gridWrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  padding-bottom: 0.5rem; /* Room for scrollbar */
 }
 
 .grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    border: 1px solid var(--theme-elevation-200);
-    border-radius: 8px;
-    overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border: 1px solid var(--theme-elevation-200);
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 700px; /* Forces mobile to scroll rather than squish cells */
+
+  @media (min-width: 768px) {
+    min-width: auto; /* Restores standard fluid grid on desktop */
+  }
 }
 
 .dayHeader {
-    background-color: var(--theme-elevation-100);
-    text-align: center;
-    padding: 0.75rem 0;
-    font-weight: 700;
-    color: var(--theme-elevation-800);
-    border-right: 1px solid var(--theme-elevation-200);
-    border-bottom: 1px solid var(--theme-elevation-200);
+  background-color: var(--theme-elevation-100);
+  text-align: center;
+  padding: 0.75rem 0;
+  font-weight: 700;
+  color: var(--theme-elevation-800);
+  border-right: 1px solid var(--theme-elevation-200);
+  border-bottom: 1px solid var(--theme-elevation-200);
 
-    &:last-child {
-        border-right: none;
-    }
+  &:last-child {
+    border-right: none;
+  }
 }
 
 .dayCell {
-    min-width: 0;
+  min-width: 0;
+  min-height: 100px;
+  padding: 0.5rem;
+  background-color: var(--theme-bg);
+  border-right: 1px solid var(--theme-elevation-200);
+  border-bottom: 1px solid var(--theme-elevation-200);
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: 768px) {
     min-height: 120px;
-    padding: 0.5rem;
-    background-color: var(--theme-bg);
-    border-right: 1px solid var(--theme-elevation-200);
-    border-bottom: 1px solid var(--theme-elevation-200);
-    display: flex;
-    flex-direction: column;
+  }
 
-    &:nth-child(7n) {
-        border-right: none;
-    }
+  &:nth-child(7n) {
+    border-right: none;
+  }
 
-    &.disabled {
-        background-color: var(--theme-elevation-50);
-        .dateNum { opacity: 0.3; }
+  &.disabled {
+    background-color: var(--theme-elevation-50);
+    .dateNum {
+      opacity: 0.3;
     }
+  }
 
-    &.today {
-        background-color: rgba(0, 120, 255, 0.05); /* or var(--theme-primary) transparent */
-        .dateNum {
-            color: var(--theme-primary);
-            font-weight: bold;
-        }
+  &.today {
+    background-color: rgba(0, 120, 255, 0.05); /* or var(--theme-primary) transparent */
+    .dateNum {
+      color: var(--theme-primary);
+      font-weight: bold;
     }
+  }
 }
 
 .dateNum {
-    align-self: flex-end;
-    font-size: 0.875rem;
-    color: var(--theme-elevation-600);
-    margin-bottom: 0.5rem;
+  align-self: flex-end;
+  font-size: 0.875rem;
+  color: var(--theme-elevation-600);
+  margin-bottom: 0.5rem;
 }
 
 .eventsList {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .eventBadge {
-    display: block;
-    width: 100%;
-    text-align: left;
-    background-color: var(--theme-elevation-800);
-    color: var(--theme-bg);
-    border: none;
-    padding: 4px 6px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    white-space: normal;
-    word-break: break-word;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+  display: block;
+  width: 100%;
+  text-align: left;
+  background-color: var(--theme-elevation-800);
+  color: var(--theme-bg);
+  border: none;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  white-space: normal;
+  word-break: break-word;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 
-    &:hover {
-        background-color: var(--theme-elevation-1000);
-    }
+  &:hover {
+    background-color: var(--theme-elevation-1000);
+  }
 }
 
 .jumpstartBg {
-    background-color: var(--theme-primary);
-    &:hover { opacity: 0.8; }
+  background-color: var(--theme-primary);
+  &:hover {
+    opacity: 0.8;
+  }
 }
 
+/* MOBILE FIX: Dim background behind the modal overlay */
+.backdrop {
+  display: none;
+
+  @media (max-width: 767px) {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 40;
+  }
+}
+
+/* MOBILE FIX: Convert the inline overlay into a fixed bottom-sheet on mobile */
 .selectedEventOverlay {
-    margin-top: 2rem;
-    padding: 1rem;
-    border: 1px solid var(--theme-elevation-200);
-    border-radius: 12px;
-    background-color: var(--theme-bg);
+  margin-top: 2rem;
+  padding: 1rem;
+  border: 1px solid var(--theme-elevation-200);
+  border-radius: 12px;
+  background-color: var(--theme-bg);
 
-    .overlayHeader {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
+  .overlayHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
 
-        h3 { margin: 0; }
-        button {
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            border-radius: 6px;
-            background-color: var(--theme-elevation-200);
-            border: none;
-            &:hover { background-color: var(--theme-elevation-300); }
-        }
+    h3 {
+      margin: 0;
     }
+    button {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 6px;
+      background-color: var(--theme-elevation-200);
+      border: none;
+      &:hover {
+        background-color: var(--theme-elevation-300);
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    margin-top: 0;
+    border-radius: 20px 20px 0 0;
+    z-index: 50;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    max-height: 85vh;
+    overflow-y: auto;
+    /* Optional: add animation for the modal sliding up */
+    animation: slideUp 0.3s ease-out forwards;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
