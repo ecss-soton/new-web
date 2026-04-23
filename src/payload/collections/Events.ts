@@ -1,10 +1,6 @@
 import type { CollectionConfig } from 'payload/types'
 import ical from 'ical-generator'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
-dayjs.extend(utc)
-dayjs.extend(timezone)
+import moment from 'moment-timezone'
 
 import { admins } from '../access/admins'
 import { adminsOrPublished } from '../access/adminsOrPublished'
@@ -46,7 +42,7 @@ const Events: CollectionConfig = {
       admin: {
         date: {
           pickerAppearance: 'dayAndTime',
-          displayFormat: 'dd-MM-yyyy hh:mm',
+          displayFormat: 'dd-MM-yyyy HH:mm',
         },
       },
     },
@@ -57,7 +53,7 @@ const Events: CollectionConfig = {
       admin: {
         date: {
           pickerAppearance: 'timeOnly',
-          displayFormat: 'hh:mm',
+          displayFormat: 'HH:mm',
         },
       },
     },
@@ -129,38 +125,39 @@ const Events: CollectionConfig = {
           timezone: 'Europe/London',
         })
 
-        events.forEach(event => {
-          // 1. Correctly shift UTC from DB to London Wall-Clock time
-          const start = dayjs(event.date).tz('Europe/London')
-
-          let end
-          if (event.endTime) {
-            // 2. Use dayjs(value).tz() to ensure UTC-to-London conversion happens
-            const endT = dayjs(event.endTime).tz('Europe/London')
-            end = start.hour(endT.hour()).minute(endT.minute()).second(0)
-
-            // 3. If end time is the same as or before start (e.g. overnight), add a day
-            if (end.isSame(start) || end.isBefore(start)) {
-              end = end.add(1, 'hour') // Default to 1 hour if they match exactly
+                
+          events.forEach(event => {
+            // 1. Convert UTC from database to London Wall-Clock time (matches your frontend)
+            const start = moment.utc(event.date).tz('Europe/London')
+            
+            let end
+            if (event.endTime) {
+              // 2. Do the same for the end time
+              const endT = moment.utc(event.endTime).tz('Europe/London')
+              
+              // 3. Take the start date and apply the hours/minutes from the end time
+              end = start.clone().hour(endT.hour()).minute(endT.minute()).second(0)
+              
+              // 4. Handle events that end after midnight
+              if (end.isSameOrBefore(start)) {
+                end.add(1, 'day')
+              }
+            } else {
+              end = start.clone().add(1, 'hour')
             }
-          } else {
-            end = start.add(1, 'hour')
-          }
 
-          calendar.createEvent({
-            id: event.id,
-            // 4. We pass a native Date, but tell the event specifically to use London.
-            // This forces the TZID=Europe/London tag into the .ics file.
-            start: start.toDate(),
-            end: end.toDate(),
-            timezone: 'Europe/London',
-            summary: event.name,
-            description: event.description || '',
-            location: event.location || '',
-            url: event.link || '',
+            calendar.createEvent({
+              id: event.id,
+              // Pass the moment objects directly
+              start: start, 
+              end: end,
+              timezone: 'Europe/London',
+              summary: event.name,
+              description: event.description || '',
+              location: event.location || '',
+              url: event.link || '',
+            })
           })
-        })
-
         res.setHeader('Content-Type', 'text/calendar; charset=utf-8')
         res.setHeader('Content-Disposition', 'attachment; filename="events.ics"')
         return res.send(calendar.toString())
