@@ -10,7 +10,8 @@ export const InterestedButton: React.FC<{
   eventId: string
   initialInterestedCount: number
 }> = ({ eventId, initialInterestedCount }) => {
-  const { user, status } = useAuth()
+  // IMPORTANT: Pull in setUser (or whatever your update function is called in your Auth context)
+  const { user, status, setUser } = useAuth()
   const [count, setCount] = useState(initialInterestedCount)
   const [isInterested, setIsInterested] = useState(false)
   const [localInit, setLocalInit] = useState(false)
@@ -41,9 +42,8 @@ export const InterestedButton: React.FC<{
 
     setLoading(true)
 
-    // Check state before applying to know bounds
+    // Optimistic UI update
     const willBeInterested = !isInterested
-
     setIsInterested(willBeInterested)
     setCount(prev => (willBeInterested ? prev + 1 : Math.max(0, prev - 1)))
 
@@ -61,7 +61,8 @@ export const InterestedButton: React.FC<{
 
       if (!res.ok) {
         if (res.status === 401) {
-          setIsInterested(isInterested)
+          // Revert optimistic update
+          setIsInterested(!willBeInterested)
           setCount(prev => (willBeInterested ? Math.max(0, prev - 1) : prev + 1))
           window.location.href = `/login?error=${encodeURIComponent(
             'You must be logged in to mark events as interested.',
@@ -73,10 +74,38 @@ export const InterestedButton: React.FC<{
         const data = await res.json()
         setCount(data.interestedCount)
         setIsInterested(data.isInterested)
+
+        // ---> THE FIX: Update the global Auth context <---
+        // This tells the calendar (and any other component) that the user's data changed
+        if (setUser && user) {
+          const currentEvents = (user as any).interestedEvents || []
+          const checkEventId = (ev: any) =>
+            typeof ev === 'string' ? ev === eventId : ev?.id === eventId
+
+          let updatedEvents
+
+          if (data.isInterested) {
+            // Add the event if they are now interested
+            if (!currentEvents.some(checkEventId)) {
+              updatedEvents = [...currentEvents, eventId]
+            } else {
+              updatedEvents = currentEvents
+            }
+          } else {
+            // Remove the event if they are no longer interested
+            updatedEvents = currentEvents.filter((ev: any) => !checkEventId(ev))
+          }
+
+          // Push the new user object into the global state
+          setUser({
+            ...user,
+            interestedEvents: updatedEvents,
+          })
+        }
       }
     } catch (err) {
-      // console.error(err)
-      setIsInterested(isInterested)
+      // Revert optimistic update on error
+      setIsInterested(!willBeInterested)
       setCount(prev => (willBeInterested ? Math.max(0, prev - 1) : prev + 1))
     } finally {
       setLoading(false)
