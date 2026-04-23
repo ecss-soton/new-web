@@ -49,6 +49,7 @@ export const HOME_TOP = `
 ...on HomeTop {
   blockType
   heading
+  show_on_mobile
   image1 {
     ${MEDIA_FIELDS}
   }
