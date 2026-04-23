@@ -11,7 +11,7 @@ export const InterestedButton: React.FC<{
   initialInterestedCount: number
 }> = ({ eventId, initialInterestedCount }) => {
   // IMPORTANT: Pull in setUser (or whatever your update function is called in your Auth context)
-  const { user, status, setUser } = useAuth() 
+  const { user, status, setUser } = useAuth()
   const [count, setCount] = useState(initialInterestedCount)
   const [isInterested, setIsInterested] = useState(false)
   const [localInit, setLocalInit] = useState(false)
@@ -79,10 +79,11 @@ export const InterestedButton: React.FC<{
         // This tells the calendar (and any other component) that the user's data changed
         if (setUser && user) {
           const currentEvents = (user as any).interestedEvents || []
-          const checkEventId = (ev: any) => (typeof ev === 'string' ? ev === eventId : ev?.id === eventId)
-          
-          let updatedEvents;
-          
+          const checkEventId = (ev: any) =>
+            typeof ev === 'string' ? ev === eventId : ev?.id === eventId
+
+          let updatedEvents
+
           if (data.isInterested) {
             // Add the event if they are now interested
             if (!currentEvents.some(checkEventId)) {
@@ -98,7 +99,7 @@ export const InterestedButton: React.FC<{
           // Push the new user object into the global state
           setUser({
             ...user,
-            interestedEvents: updatedEvents
+            interestedEvents: updatedEvents,
           })
         }
       }
