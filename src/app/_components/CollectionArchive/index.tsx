@@ -233,6 +233,10 @@ export const CollectionArchive: React.FC<Props> = props => {
 
   const isDataReady = populateBy !== 'collection' || hasHydrated.current
 
+  const icalUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/events/ics`;
+const subscribeUrl = icalUrl.replace(/^https?:\/\//, 'webcal://');
+
+
   return (
     <div className={[classes.collectionArchive, className].filter(Boolean).join(' ')}>
       <div className={classes.scrollRef} ref={scrollRef} />
@@ -264,6 +268,14 @@ export const CollectionArchive: React.FC<Props> = props => {
                   >
                     View {useCalendarView ? 'Timeline' : 'Calendar'}
                   </button>
+                    <a 
+                    href={subscribeUrl} 
+                    className={classes.subscribeButton} // Add styling in your SCSS
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                      Subscribe
+                    </a>
                 </div>
               </div>
 

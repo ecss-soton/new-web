@@ -214,7 +214,25 @@
   background-color: var(--theme-elevation-100);
   padding: 4px;
   border-radius: 8px;
+  font-size: 1rem;
 
+   .subscribeButton {
+       background-color: var(--theme-bg);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      text-decoration: none;
+      display: block;
+      background: transparent;
+        
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--theme-elevation-600);
+      transition: all 0.2s ease;
+
+    }
+    
   button {
     background: transparent;
     border: none;
@@ -225,6 +243,8 @@
     color: var(--theme-elevation-600);
     transition: all 0.2s ease;
 
+    font-size: 1rem;
+
     &:hover {
       color: var(--theme-elevation-1000);
     }
@@ -234,6 +254,7 @@
       color: var(--theme-elevation-1000);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
+   
 
     &.desktopOnly {
       @media (max-width: 768px) {
