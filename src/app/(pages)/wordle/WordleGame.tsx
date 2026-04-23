@@ -219,7 +219,9 @@ export const WordleGame: React.FC = () => {
 
       {(gameStatus === 'won' || gameStatus === 'lost') && (
         <div ref={announcementRef} className={classes.announcement}>
-          {gameStatus === 'won' &&  <Button href="/merch" label="GET OUR MERCH" appearance="primary" />}
+          {gameStatus === 'won' && (
+            <Button href="/merch" label="GET OUR MERCH" appearance="primary" />
+          )}
           {gameStatus === 'lost' && (
             <>
               <p className={classes.tryAgainText}>Not quite — give it another go!</p>

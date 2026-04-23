@@ -231,7 +231,7 @@ export const CollectionArchive: React.FC<Props> = props => {
     }
   }, [page, categories, relationTo, onResultChange, sort, limit, populateBy, isJumpstart])
 
-  const isDataReady = populateBy !== 'collection' || hasHydrated.current;
+  const isDataReady = populateBy !== 'collection' || hasHydrated.current
 
   return (
     <div className={[classes.collectionArchive, className].filter(Boolean).join(' ')}>
@@ -243,7 +243,7 @@ export const CollectionArchive: React.FC<Props> = props => {
           right={relationTo === 'events' ? false : true}
         >
           {relationTo === 'events' &&
-          isDataReady &&
+            isDataReady &&
             results.docs?.filter(result => {
               if (typeof result !== 'object' || result === null || !('date' in result)) return false
               if (isJumpstart) return 'isJumpstart' in result && result.isJumpstart === true

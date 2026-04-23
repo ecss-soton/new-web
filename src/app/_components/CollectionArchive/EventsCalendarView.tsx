@@ -75,7 +75,7 @@ export const EventsCalendarView: React.FC<{ events: Event[] }> = ({ events }) =>
             const isSameMonth = day.isSame(currentMonth, 'month')
             const isToday = day.isSame(moment(), 'day')
             const dateStr = day.format('YYYY-MM-DD')
-            
+
             const dayEvents = eventsByDate.get(dateStr) || []
 
             return (
@@ -112,12 +112,7 @@ export const EventsCalendarView: React.FC<{ events: Event[] }> = ({ events }) =>
         </div>
       </div>
 
-      {selectedEvent && (
-        <div 
-          className={classes.backdrop} 
-          onClick={() => setSelectedEvent(null)} 
-        />
-      )}
+      {selectedEvent && <div className={classes.backdrop} onClick={() => setSelectedEvent(null)} />}
 
       {selectedEvent && (
         <div className={classes.selectedEventOverlay}>
