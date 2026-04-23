@@ -43,7 +43,6 @@
     "chart.js": "^4.4.2",
     "connect-mongo": "^6.0.0",
     "cross-env": "^7.0.3",
-    "dayjs": "^1.11.20",
     "dotenv": "^8.2.0",
     "escape-html": "^1.0.3",
     "express": "^4.21.2",
