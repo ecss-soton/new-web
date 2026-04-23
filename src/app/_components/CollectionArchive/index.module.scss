@@ -199,10 +199,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  @include mid-break {
-    display: none;
-  }
+  margin-top: -6vh;
 
   .viewTitle {
     font-size: 1.5rem;
