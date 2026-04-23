@@ -125,39 +125,38 @@ const Events: CollectionConfig = {
           timezone: 'Europe/London',
         })
 
-                
-          events.forEach(event => {
-            // 1. Convert UTC from database to London Wall-Clock time (matches your frontend)
-            const start = moment.utc(event.date).tz('Europe/London')
-            
-            let end
-            if (event.endTime) {
-              // 2. Do the same for the end time
-              const endT = moment.utc(event.endTime).tz('Europe/London')
-              
-              // 3. Take the start date and apply the hours/minutes from the end time
-              end = start.clone().hour(endT.hour()).minute(endT.minute()).second(0)
-              
-              // 4. Handle events that end after midnight
-              if (end.isSameOrBefore(start)) {
-                end.add(1, 'day')
-              }
-            } else {
-              end = start.clone().add(1, 'hour')
-            }
+        events.forEach(event => {
+          // 1. Convert UTC from database to London Wall-Clock time (matches your frontend)
+          const start = moment.utc(event.date).tz('Europe/London')
 
-            calendar.createEvent({
-              id: event.id,
-              // Pass the moment objects directly
-              start: start, 
-              end: end,
-              timezone: 'Europe/London',
-              summary: event.name,
-              description: event.description || '',
-              location: event.location || '',
-              url: event.link || '',
-            })
+          let end
+          if (event.endTime) {
+            // 2. Do the same for the end time
+            const endT = moment.utc(event.endTime).tz('Europe/London')
+
+            // 3. Take the start date and apply the hours/minutes from the end time
+            end = start.clone().hour(endT.hour()).minute(endT.minute()).second(0)
+
+            // 4. Handle events that end after midnight
+            if (end.isSameOrBefore(start)) {
+              end.add(1, 'day')
+            }
+          } else {
+            end = start.clone().add(1, 'hour')
+          }
+
+          calendar.createEvent({
+            id: event.id,
+            // Pass the moment objects directly
+            start: start,
+            end: end,
+            timezone: 'Europe/London',
+            summary: event.name,
+            description: event.description || '',
+            location: event.location || '',
+            url: event.link || '',
           })
+        })
         res.setHeader('Content-Type', 'text/calendar; charset=utf-8')
         res.setHeader('Content-Disposition', 'attachment; filename="events.ics"')
         return res.send(calendar.toString())
