@@ -11,6 +11,7 @@
     flex-direction: column;
     height: auto;
   }
+  margin-bottom: 1rem;
 }
 
 @keyframes fadeInLeft {
@@ -116,14 +117,18 @@
   animation: springUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   animation-delay: 0.3s;
 
-  margin: 1rem 0 1rem 0;
+  margin: 1rem 0 0rem 0;
 
   @include mid-break {
     width: 100%;
     animation-delay: 0.3s;
   }
 }
-
+.hideOnMobile {
+  @include mid-break {
+     display: none !important;
+  }
+}
 .image1 {
   width: 30%;
   height: 75%;
