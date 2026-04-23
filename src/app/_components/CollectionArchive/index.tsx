@@ -25,6 +25,7 @@ import { Pagination } from '../Pagination'
 import { SocietyItem } from '../SocietyItem'
 import { SponsorItem } from '../SponsorItem'
 import { EventsCalendarView } from './EventsCalendarView'
+import { useAuth } from '../../_providers/Auth'
 
 import classes from './index.module.scss'
 
@@ -75,6 +76,7 @@ export const CollectionArchive: React.FC<Props> = props => {
     isJumpstart,
     sort = '-createdAt',
   } = props
+  const { user } = useAuth()
 
   const [results, setResults] = useState<Result>({
     // @ts-ignore
@@ -100,6 +102,9 @@ export const CollectionArchive: React.FC<Props> = props => {
   const isRequesting = useRef(false)
   const [page, setPage] = useState(1)
   const [isPopUpVisible, setIsPopUpVisible] = useState<Committee | null>(null)
+  const [showSubscribeModal, setShowSubscribeModal] = useState(false)
+  const [feedType, setFeedType] = useState<'all' | 'interested'>(user ? 'interested' : 'all')
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle')
 
   // Desktop Calendar vs Timeline View for Events
   const [useCalendarView, setUseCalendarView] = useState(false)
@@ -233,6 +238,33 @@ export const CollectionArchive: React.FC<Props> = props => {
 
   const isDataReady = populateBy !== 'collection' || hasHydrated.current
 
+  useEffect(() => {
+    if (showSubscribeModal) {
+      setFeedType(user ? 'interested' : 'all')
+      setCopyStatus('idle')
+    }
+  }, [showSubscribeModal, user])
+
+  const getUrls = (type: 'all' | 'interested') => {
+    const baseUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/events/ics`
+    const icalUrl = type === 'interested' && user?.id ? `${baseUrl}?user=${user.id}` : baseUrl
+    const webcalUrl = icalUrl.replace(/^https?:\/\//, 'webcal://')
+
+    return { icalUrl, webcalUrl }
+  }
+
+  const { icalUrl, webcalUrl } = getUrls(feedType)
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(icalUrl)
+      setCopyStatus('copied')
+      window.setTimeout(() => setCopyStatus('idle'), 1500)
+    } catch (error) {
+      console.warn('Unable to copy calendar link', error)
+    }
+  }
+
   return (
     <div className={[classes.collectionArchive, className].filter(Boolean).join(' ')}>
       <div className={classes.scrollRef} ref={scrollRef} />
@@ -263,6 +295,12 @@ export const CollectionArchive: React.FC<Props> = props => {
                     onClick={() => setUseCalendarView(!useCalendarView)}
                   >
                     View {useCalendarView ? 'Timeline' : 'Calendar'}
+                  </button>
+                  <button
+                    className={classes.subscribeButton}
+                    onClick={() => setShowSubscribeModal(true)}
+                  >
+                    Subscribe
                   </button>
                 </div>
               </div>
@@ -383,6 +421,70 @@ export const CollectionArchive: React.FC<Props> = props => {
           logo={isPopUpVisible.logo}
           onCommitteeClick={CommitteeClick}
         />
+      )}
+      {showSubscribeModal && (
+        <div className={classes.modalBackdrop} onClick={() => setShowSubscribeModal(false)}>
+          <div className={classes.modal} onClick={e => e.stopPropagation()}>
+            <div className={classes.modalHeader}>
+              <div>
+                <h3 className={classes.modalTitle}>Sync to Your Calendar</h3>
+                <p className={classes.modalDescription}>
+                  Choose the feed you want, then use the method that matches your calendar app.
+                </p>
+              </div>
+              <button
+                className={classes.modalCloseButton}
+                onClick={() => setShowSubscribeModal(false)}
+              >
+                Close
+              </button>
+            </div>
+
+            {user && (
+              <div className={classes.feedToggle}>
+                <button
+                  className={feedType === 'interested' ? classes.feedToggleActive : ''}
+                  onClick={() => setFeedType('interested')}
+                >
+                  My Interested Events
+                </button>
+                <button
+                  className={feedType === 'all' ? classes.feedToggleActive : ''}
+                  onClick={() => setFeedType('all')}
+                >
+                  All Events
+                </button>
+              </div>
+            )}
+
+            {!user && (
+              <p className={classes.guestNote}>
+                You are viewing all events. Log in for a personalized feed.
+              </p>
+            )}
+
+            <div className={classes.instructionSection}>
+              <h4>Apple, Mac, Outlook</h4>
+              <p>Use the calendar app subscription link below to open your calendar app.</p>
+              <a className={classes.primaryAction} href={webcalUrl}>
+                Subscribe Automatically
+              </a>
+            </div>
+
+            <div className={classes.divider} />
+
+            <div className={classes.instructionSection}>
+              <h4>Google Calendar, Android</h4>
+              <p>Copy the URL below, then use Google Calendar&apos;s Add from URL option.</p>
+              <div className={classes.copyRow}>
+                <input className={classes.copyInput} readOnly value={icalUrl} />
+                <button className={classes.copyButton} onClick={handleCopyLink}>
+                  {copyStatus === 'copied' ? 'Copied' : 'Copy Link'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
