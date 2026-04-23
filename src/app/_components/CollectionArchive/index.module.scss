@@ -199,7 +199,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: -6vh;
+  margin-top: -7vh;
 
   .viewTitle {
     font-size: 1.5rem;
@@ -214,25 +214,8 @@
   background-color: var(--theme-elevation-100);
   padding: 4px;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.9rem;
 
-   .subscribeButton {
-       background-color: var(--theme-bg);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      text-decoration: none;
-      display: block;
-      background: transparent;
-        
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      color: var(--theme-elevation-600);
-      transition: all 0.2s ease;
-
-    }
-    
   button {
     background: transparent;
     border: none;
@@ -243,7 +226,7 @@
     color: var(--theme-elevation-600);
     transition: all 0.2s ease;
 
-    font-size: 1rem;
+    font-size: 0.9rem;
 
     &:hover {
       color: var(--theme-elevation-1000);
@@ -254,7 +237,6 @@
       color: var(--theme-elevation-1000);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-   
 
     &.desktopOnly {
       @media (max-width: 768px) {
@@ -262,4 +244,138 @@
       }
     }
   }
+  
+  @include small-break {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+.subscribeButton {
+  background-color: var(--theme-bg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 80;
+  overflow: scroll;
+  padding-top: 30vh;
+}
+
+.modal {
+  width: min(640px, 100%);
+  max-height: min(90vh, 820px);
+  overflow: auto;
+  padding: 1.25rem;
+  border-radius: 16px;
+  background: var(--theme-bg);
+
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.18);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.modalTitle {
+  margin: 0;
+}
+
+.modalDescription,
+.guestNote,
+.instructionSection p {
+  color: var(--theme-elevation-600);
+}
+
+.modalCloseButton,
+.copyButton,
+.feedToggle button,
+.primaryAction {
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+}
+
+.modalCloseButton,
+.feedToggle button,
+.copyButton {
+  background: var(--theme-elevation-100);
+  color: var(--theme-elevation-900);
+}
+
+.feedToggle {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  button {
+    cursor: pointer;
+  }
+}
+
+.feedToggleActive {
+  background: var(--theme-elevation-1000) !important;
+  color: var(--theme-bg) !important;
+}
+
+.guestNote {
+  margin: 0 0 1rem;
+}
+
+.instructionSection {
+  display: grid;
+  gap: 0.75rem;
+
+  h4,
+  p {
+    margin: 0;
+  }
+}
+
+.primaryAction {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  background: var(--theme-elevation-1000);
+  color: var(--theme-bg);
+  text-decoration: none;
+}
+
+.divider {
+  height: 1px;
+  margin: 1rem 0;
+  background: var(--theme-elevation-200);
+}
+
+.copyRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+}
+
+.copyInput {
+  width: 100%;
+  border: 1px solid var(--theme-elevation-200);
+  border-radius: 8px;
+  padding: 0.75rem;
+  background: var(--theme-elevation-50);
+  color: var(--theme-elevation-900);
+}
+
+.copyButton,
+.modalCloseButton {
+  cursor: pointer;
 }
