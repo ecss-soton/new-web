@@ -4,9 +4,9 @@ import React, { useMemo, useState } from 'react'
 import moment from 'moment-timezone'
 
 import { Event } from '../../../payload/payload-types'
-import { EventItem } from '../EventItem'
 // Import useAuth (adjust the path if necessary based on your folder structure)
 import { useAuth } from '../../_providers/Auth'
+import { EventItem } from '../EventItem'
 
 import classes from './EventsCalendarView.module.scss'
 

@@ -1,6 +1,6 @@
 import type { Payload } from 'payload'
 
-type RedirectDoc = {
+interface RedirectDoc {
   from: string
   to?: {
     type?: 'reference' | 'custom' | null
@@ -15,7 +15,7 @@ type RedirectDoc = {
   } | null
 }
 
-type RedirectRule = {
+interface RedirectRule {
   source: string
   destination: string
   permanent: boolean

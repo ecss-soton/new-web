@@ -25,13 +25,13 @@ import { MemberImports } from './collections/MemberImports'
 import Merch from './collections/Merch'
 import Nominations from './collections/Nominations'
 import { Pages } from './collections/Pages'
+import Positions from './collections/Position'
+import { Posts } from './collections/Posts'
+import { Projects } from './collections/Projects'
 import {
   invalidateRedirectsAfterChange,
   invalidateRedirectsAfterDelete,
 } from './collections/Redirects/hooks/invalidateRedirects'
-import Positions from './collections/Position'
-import { Posts } from './collections/Posts'
-import { Projects } from './collections/Projects'
 import Societies from './collections/Societies'
 import Sponsors from './collections/Sponsors'
 import Users from './collections/Users'
