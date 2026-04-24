@@ -25,6 +25,10 @@ import { MemberImports } from './collections/MemberImports'
 import Merch from './collections/Merch'
 import Nominations from './collections/Nominations'
 import { Pages } from './collections/Pages'
+import {
+  invalidateRedirectsAfterChange,
+  invalidateRedirectsAfterDelete,
+} from './collections/Redirects/hooks/invalidateRedirects'
 import Positions from './collections/Position'
 import { Posts } from './collections/Posts'
 import { Projects } from './collections/Projects'
@@ -156,6 +160,12 @@ export default buildConfig({
   plugins: [
     redirects({
       collections: ['pages', 'posts'],
+      overrides: {
+        hooks: {
+          afterChange: [invalidateRedirectsAfterChange],
+          afterDelete: [invalidateRedirectsAfterDelete],
+        },
+      },
     }),
     nestedDocs({
       collections: ['categories'],
