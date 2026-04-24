@@ -1,3 +1,5 @@
+@use '../../_css/queries.scss' as *;
+
 // ── Fixed background ──────────────────────────────────────────────────────────
 .bgImage {
   position: fixed;
@@ -204,6 +206,10 @@
 
   @media (max-width: 640px) {
     grid-template-columns: 1fr;
+    
+    img {
+      max-height: 15vh;
+    }
   }
 }
 
@@ -214,8 +220,8 @@
 
 // ── Event info block (replaces fixed venue/menu/on-the-day blocks) ────────────
 .eventBlockWrapper {
-  padding: 3rem;
-  margin-bottom: 4rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
   margin-top: 2rem;
   border-radius: 8px;
   overflow: hidden;
@@ -224,6 +230,9 @@
   p,
   h2 {
     color: #000;
+  }
+  @include mid-break {
+    padding: 1rem;
   }
 }
 
@@ -234,6 +243,7 @@
 
   @media (max-width: 768px) {
     flex-direction: column;
+    gap: 0.5rem;
   }
 }
 
@@ -258,6 +268,7 @@
     flex: none;
     max-width: 100%;
     width: 100%;
+    max-height: 20vh;
   }
 }
 

@@ -12,6 +12,7 @@ import express from 'express'
 import payload from 'payload'
 
 import { seed } from './payload/seed'
+import { getRedirectRules, matchRedirectRule } from './payload/utilities/redirects'
 import restartJobs from './payload/utilities/restartJobs'
 
 const app = express()
@@ -58,6 +59,39 @@ const start = async (): Promise<void> => {
   })
 
   const nextHandler = nextApp.getRequestHandler()
+
+  app.use(async (req, res, nextMiddleware) => {
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      return nextMiddleware()
+    }
+
+    if (
+      req.path.startsWith('/_next') ||
+      req.path.startsWith('/api') ||
+      req.path === '/favicon.ico' ||
+      req.path === '/robots.txt' ||
+      req.path === '/sitemap.xml'
+    ) {
+      return nextMiddleware()
+    }
+
+    try {
+      const requestUrl = new URL(req.originalUrl || req.url, 'http://localhost:3000')
+      const redirectRules = await getRedirectRules(payload)
+      const matched = matchRedirectRule(redirectRules, requestUrl.pathname)
+
+      if (!matched) {
+        return nextMiddleware()
+      }
+
+      return res.redirect(matched.permanent ? 301 : 302, matched.destination)
+    } catch (error: unknown) {
+      // Explicitly checking if it's an Error object to access .message safely
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      payload.logger.error(`Error resolving redirects: ${message}`)
+      return nextMiddleware()
+    }
+  })
 
   app.use((req, res) => nextHandler(req, res))
 

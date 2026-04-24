@@ -134,6 +134,7 @@ export const PartyBlock: React.FC<Props> = props => {
                     key={index}
                     className={classes.eventBlockWrapper}
                     style={{ backgroundColor: bgColor }}
+                    id={eb.title.replace(' ', '-')}
                   >
                     <div
                       className={`${classes.eventBlockInner}${

@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Button } from '../../_components/Button'
 
+import { Button } from '../../_components/Button'
 import VALID_WORDS from './validWords.json'
 
 import classes from './index.module.scss'
