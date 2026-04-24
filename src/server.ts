@@ -85,8 +85,10 @@ const start = async (): Promise<void> => {
       }
 
       return res.redirect(matched.permanent ? 301 : 302, matched.destination)
-    } catch (error) {
-      payload.logger.error(`Error resolving redirects: ${error}`)
+    } catch (error: unknown) {
+      // Explicitly checking if it's an Error object to access .message safely
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      payload.logger.error(`Error resolving redirects: ${message}`)
       return nextMiddleware()
     }
   })
