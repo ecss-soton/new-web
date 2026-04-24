@@ -15,6 +15,7 @@ import type {
   Sponsor,
 } from '../../../payload/payload-types'
 import type { ArchiveBlockProps } from '../../_blocks/ArchiveBlock/types'
+import { useAuth } from '../../_providers/Auth'
 import { Card } from '../Card'
 import { CommitteeItem } from '../CommitteeItem'
 import { CommitteePopUp } from '../CommitteePopUp'
@@ -25,7 +26,6 @@ import { Pagination } from '../Pagination'
 import { SocietyItem } from '../SocietyItem'
 import { SponsorItem } from '../SponsorItem'
 import { EventsCalendarView } from './EventsCalendarView'
-import { useAuth } from '../../_providers/Auth'
 
 import classes from './index.module.scss'
 
@@ -260,9 +260,7 @@ export const CollectionArchive: React.FC<Props> = props => {
       await navigator.clipboard.writeText(icalUrl)
       setCopyStatus('copied')
       window.setTimeout(() => setCopyStatus('idle'), 1500)
-    } catch (error) {
-      console.warn('Unable to copy calendar link', error)
-    }
+    } catch (error) {}
   }
 
   return (

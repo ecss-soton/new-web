@@ -1,6 +1,6 @@
-import type { CollectionConfig } from 'payload/types'
 import ical from 'ical-generator'
 import moment from 'moment-timezone'
+import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../access/admins'
 import { adminsOrPublished } from '../access/adminsOrPublished'
