@@ -1,5 +1,5 @@
 import React from 'react'
-import { Inter } from '@next/font/google'
+import { Inter } from 'next/font/google'
 
 import { Page } from '../../../payload/payload-types'
 import { Gutter } from '../../_components/Gutter'
