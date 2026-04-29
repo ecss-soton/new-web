@@ -3,8 +3,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import type { Sponsor } from '../../../../payload/payload-types'
-import { fetchDoc } from '../../../_api/fetchDoc'
-import { fetchDocs } from '../../../_api/fetchDocs'
+import { fetchDoc, fetchDocs } from '../../../_api/fetchDoc'
 import { SponsorPage } from '../../../_components/SponsorPage'
 
 // Force this page to be dynamic so that Next.js does not cache it

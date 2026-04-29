@@ -22,7 +22,7 @@ export async function GET(
   }
 
   if (!token) {
-    new Response('You are not allowed to preview this page', { status: 403 })
+    return new Response('You are not allowed to preview this page', { status: 403 })
   }
 
   // validate the Payload token

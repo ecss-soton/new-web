@@ -1,4 +1,5 @@
 import type { Payload } from 'payload'
+import type { AfterChangeHook } from 'payload/dist/collections/config/types'
 
 export const revalidate = async (args: {
   collection: string
@@ -47,5 +48,14 @@ export const revalidateGlobal = async (args: {
     payload.logger.error(
       `Error hitting revalidate route for global '${globalLabel}' (tag: ${tag}): ${err}`,
     )
+  }
+}
+
+export const createRevalidateHook = (collection: string): AfterChangeHook => {
+  return ({ doc, req: { payload } }) => {
+    if (doc._status === 'published') {
+      revalidate({ payload, collection, slug: doc.slug })
+    }
+    return doc
   }
 }

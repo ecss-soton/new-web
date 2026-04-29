@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Inter } from '@next/font/google'
 import moment from 'moment-timezone'
+import { Inter } from 'next/font/google'
 import Image from 'next/image'
 import Link from 'next/link'
 

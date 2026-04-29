@@ -10,7 +10,7 @@ import { hero } from '../../fields/hero'
 import { slugField } from '../../fields/slug'
 import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
-import { revalidateProject } from './hooks/revalidateProject'
+import { createRevalidateHook } from '../../utilities/revalidate'
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -25,7 +25,7 @@ export const Projects: CollectionConfig = {
   },
   hooks: {
     beforeChange: [populatePublishedAt],
-    afterChange: [revalidateProject],
+    afterChange: [createRevalidateHook('projects')],
     afterRead: [populateArchiveBlock],
   },
   versions: {

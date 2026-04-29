@@ -4,6 +4,7 @@ import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../access/admins'
 import { adminsOrPublished } from '../access/adminsOrPublished'
+import { withEndpointErrorHandler } from '../utilities/endpointHandler'
 import { isHTTPS } from '../validate/isHTTPS'
 
 const Events: CollectionConfig = {
@@ -165,15 +166,10 @@ const Events: CollectionConfig = {
     {
       path: '/:id/interested',
       method: 'post',
-      handler: async (req, res, next) => {
-        try {
-          const { toggleInterested } = await import('./Endpoints/toggleInterested')
-          return toggleInterested(req, res, next)
-        } catch (e: unknown) {
-          req.payload.logger.error(e)
-          return res.status(500).json({ error: 'Internal Server Error' })
-        }
-      },
+      handler: withEndpointErrorHandler(async (req, res, next) => {
+        const { toggleInterested } = await import('./Endpoints/toggleInterested')
+        return toggleInterested(req, res, next)
+      }),
     },
   ],
 }

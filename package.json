@@ -24,10 +24,8 @@
   },
   "dependencies": {
     "@dnd-kit/sortable": "^8.0.0",
-    "@next/font": "^14.2.7",
     "@payloadcms/bundler-webpack": "^1.0.7",
     "@payloadcms/db-mongodb": "^1.7.5",
-    "@payloadcms/db-postgres": "^0.1.9",
     "@payloadcms/plugin-cloud": "^3.0.2",
     "@payloadcms/plugin-form-builder": "^1.2.0",
     "@payloadcms/plugin-nested-docs": "^1.0.8",
@@ -63,7 +61,6 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "7.45.4",
-    "react-router-dom": "5.3.4",
     "sharp": "^0.34.5",
     "uuid": "^9.0.1"
   },

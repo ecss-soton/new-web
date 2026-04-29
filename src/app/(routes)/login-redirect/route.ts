@@ -5,7 +5,7 @@ export async function GET(): Promise<Response> {
 
   let redirectUrl = process.env.NEXT_PUBLIC_SERVER_URL
 
-  if (redirect) {
+  if (redirect && redirect.value.startsWith('/')) {
     redirectUrl = new URL(redirect.value, process.env.NEXT_PUBLIC_SERVER_URL).toString()
     cookies().delete('login-redirect')
   }
