@@ -1,10 +1,10 @@
 import type { Access } from 'payload/config'
 
+import { isAdmin } from '../../../access/isAdmin'
 import type { ElectionResult } from '../../../payload-types'
-import { checkRole } from '../../Users/checkRole'
 
 export const publishedOrAdmin: Access<ElectionResult> = ({ req: { user } }) => {
-  if (user && checkRole(['admin'], user)) {
+  if (isAdmin(user)) {
     return true
   }
 

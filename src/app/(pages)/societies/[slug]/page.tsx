@@ -4,8 +4,7 @@ import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 
 import type { Society } from '../../../../payload/payload-types'
-import { fetchDoc } from '../../../_api/fetchDoc'
-import { fetchDocs } from '../../../_api/fetchDocs'
+import { fetchDoc, fetchDocs } from '../../../_api/fetchDoc'
 import { SocietyPage } from '../../../_components/SocietyPage'
 
 // Force this page to be dynamic so that Next.js does not cache it

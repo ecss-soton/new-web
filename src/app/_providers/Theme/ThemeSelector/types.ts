@@ -1,5 +1,2 @@
-export type Theme = 'light' | 'dark'
-
-export const themeLocalStorageKey = 'payload-theme'
-
-export const defaultTheme = 'light'
+export { defaultTheme, themeLocalStorageKey } from '../shared'
+export type { Theme } from '../types'

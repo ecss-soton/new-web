@@ -1,14 +1,14 @@
 import type { Access } from 'payload/config'
 
-import { checkRole } from '../collections/Users/checkRole'
 import type { User } from '../payload-types'
+import { isAdmin } from './isAdmin'
 
 export const userOrAdmin: Access<{ user: string | User }> = ({ req: { user } }) => {
   if (!user) {
     return false
   }
 
-  if (checkRole(['admin'], user)) {
+  if (isAdmin(user)) {
     return true
   }
 

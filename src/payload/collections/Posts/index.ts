@@ -10,8 +10,8 @@ import { hero } from '../../fields/hero'
 import { slugField } from '../../fields/slug'
 import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
+import { createRevalidateHook } from '../../utilities/revalidate'
 import { populateAuthors } from './hooks/populateAuthors'
-import { revalidatePost } from './hooks/revalidatePost'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -26,7 +26,7 @@ export const Posts: CollectionConfig = {
   },
   hooks: {
     beforeChange: [populatePublishedAt],
-    afterChange: [revalidatePost],
+    afterChange: [createRevalidateHook('posts')],
     afterRead: [populateArchiveBlock, populateAuthors],
   },
   versions: {

@@ -1,11 +1,11 @@
 import { relationship } from 'payload/dist/fields/validations'
 import type { Validate } from 'payload/types'
 
+import { isAdmin } from '../../../access/isAdmin'
 import { getID } from '../../../utilities/getID'
-import { checkRole } from '../../Users/checkRole'
 
 export const addOwnId: Validate = async (userList: string[], args) => {
-  if (args.user && checkRole(['admin'], args.user)) {
+  if (isAdmin(args.user)) {
     return true
   }
 

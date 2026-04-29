@@ -2,102 +2,66 @@ import type { Footer, Header, Settings } from '../../payload/payload-types'
 import { FOOTER_QUERY, HEADER_QUERY, SETTINGS_QUERY } from '../_graphql/globals'
 import { GRAPHQL_API_URL } from './shared'
 
-export async function fetchSettings(): Promise<Settings> {
-  if (!GRAPHQL_API_URL) throw new Error('NEXT_PUBLIC_SERVER_URL not found')
-
-  const settings = await fetch(`${GRAPHQL_API_URL}/api/graphql`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    next: { tags: ['global_settings'], revalidate: 300 },
-    body: JSON.stringify({
-      query: SETTINGS_QUERY,
-    }),
-  })
-    ?.then(res => {
-      if (!res.ok) throw new Error('Error fetching doc')
-      return res.json()
-    })
-    ?.then(res => {
-      if (res?.errors) throw new Error(res?.errors[0]?.message || 'Error fetching settings')
-      return res.data?.Settings
-    })
-
-  return settings
+interface GlobalConfig {
+  query: string
+  dataPath: string
+  tag: string
+  label: string
 }
 
-export async function fetchHeader(): Promise<Header> {
+async function fetchGlobal<T>(config: GlobalConfig): Promise<T> {
   if (!GRAPHQL_API_URL) throw new Error('NEXT_PUBLIC_SERVER_URL not found')
 
-  const header = await fetch(`${GRAPHQL_API_URL}/api/graphql`, {
+  const res = await fetch(`${GRAPHQL_API_URL}/api/graphql`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    next: { tags: ['global_header'], revalidate: 300 },
-    body: JSON.stringify({
-      query: HEADER_QUERY,
-    }),
+    headers: { 'Content-Type': 'application/json' },
+    next: { tags: [config.tag], revalidate: 300 },
+    body: JSON.stringify({ query: config.query }),
   })
-    ?.then(res => {
-      if (!res.ok) throw new Error('Error fetching doc')
-      return res.json()
-    })
-    ?.then(res => {
-      if (res?.errors) throw new Error(res?.errors[0]?.message || 'Error fetching header')
-      return res.data?.Header
-    })
 
-  return header
+  if (!res.ok) throw new Error(`Error fetching ${config.label}`)
+
+  const json = await res.json()
+
+  if (json?.errors) throw new Error(json?.errors[0]?.message || `Error fetching ${config.label}`)
+
+  return json.data?.[config.dataPath]
 }
 
-export async function fetchFooter(): Promise<Footer> {
-  if (!GRAPHQL_API_URL) throw new Error('NEXT_PUBLIC_SERVER_URL not found')
-
-  const footer = await fetch(`${GRAPHQL_API_URL}/api/graphql`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    next: { tags: ['global_footer'], revalidate: 300 },
-    body: JSON.stringify({
-      query: FOOTER_QUERY,
-    }),
+export const fetchSettings = (): Promise<Settings> =>
+  fetchGlobal<Settings>({
+    query: SETTINGS_QUERY,
+    dataPath: 'Settings',
+    tag: 'global_settings',
+    label: 'settings',
   })
-    .then(res => {
-      if (!res.ok) throw new Error('Error fetching doc')
-      return res.json()
-    })
-    ?.then(res => {
-      if (res?.errors) throw new Error(res?.errors[0]?.message || 'Error fetching footer')
-      return res.data?.Footer
-    })
 
-  return footer
-}
+export const fetchHeader = (): Promise<Header> =>
+  fetchGlobal<Header>({
+    query: HEADER_QUERY,
+    dataPath: 'Header',
+    tag: 'global_header',
+    label: 'header',
+  })
+
+export const fetchFooter = (): Promise<Footer> =>
+  fetchGlobal<Footer>({
+    query: FOOTER_QUERY,
+    dataPath: 'Footer',
+    tag: 'global_footer',
+    label: 'footer',
+  })
 
 export const fetchGlobals = async (): Promise<{
   settings: Settings
   header: Header
   footer: Footer
 }> => {
-  // initiate requests in parallel, then wait for them to resolve
-  // this will eagerly start to the fetch requests at the same time
-  // see https://nextjs.org/docs/app/building-your-application/data-fetching/fetching
-  const settingsData = fetchSettings()
-  const headerData = fetchHeader()
-  const footerData = fetchFooter()
-
-  const [settings, header, footer]: [Settings, Header, Footer] = await Promise.all([
-    await settingsData,
-    await headerData,
-    await footerData,
+  const [settings, header, footer] = await Promise.all([
+    fetchSettings(),
+    fetchHeader(),
+    fetchFooter(),
   ])
 
-  return {
-    settings,
-    header,
-    footer,
-  }
+  return { settings, header, footer }
 }
