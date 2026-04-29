@@ -34,8 +34,11 @@ import {
 } from './collections/Redirects/hooks/invalidateRedirects'
 import Societies from './collections/Societies'
 import Sponsors from './collections/Sponsors'
+import { Tables } from './collections/Tables'
+import { TicketHolders } from './collections/TicketHolders'
 import Users from './collections/Users'
 import Votes from './collections/Votes'
+import { Booking } from './globals/Booking'
 import { Footer } from './globals/Footer'
 import { Header } from './globals/Header'
 import { Settings } from './globals/Settings'
@@ -137,8 +140,10 @@ export default buildConfig({
     Societies,
     Committee,
     Events,
+    Tables,
+    TicketHolders,
   ],
-  globals: [Settings, Header, Footer],
+  globals: [Settings, Header, Footer, Booking],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
