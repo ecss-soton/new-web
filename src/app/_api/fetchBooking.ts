@@ -12,20 +12,25 @@ export interface BookingTable {
   seatPositions?: Array<{ seatIndex: number; name: string }> | null
 }
 
-export interface BookingSettings {
+export interface BookingEventData {
+  id: string
+  name: string
+  slug?: string | null
   isOpen?: boolean | null
   maxTables?: number | null
   seatsPerTable?: number | null
-  eventName?: string | null
 }
 
-export async function fetchBookingData(args?: { token?: string }): Promise<{
+export async function fetchBookingData(
+  eventId: string,
+  args?: { token?: string },
+): Promise<{
   yourTable: BookingTable | null
-  settings: BookingSettings
+  event: BookingEventData
   tables: BookingTable[]
   isAdmin: boolean
 }> {
-  const res = await fetch(`${API_URL}/api/tables`, {
+  const res = await fetch(`${API_URL}/api/tables?event=${eventId}`, {
     headers: {
       ...(args?.token ? { Authorization: `JWT ${args.token}` } : {}),
     },
@@ -36,11 +41,16 @@ export async function fetchBookingData(args?: { token?: string }): Promise<{
 }
 
 export async function createTable(
+  eventId: string,
   token: string,
 ): Promise<{ success: boolean; table: { id: string; joinCode: string } }> {
   const res = await fetch(`${API_URL}/api/tables/create`, {
     method: 'POST',
-    headers: { Authorization: `JWT ${token}` },
+    headers: {
+      Authorization: `JWT ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ eventId }),
     cache: 'no-store',
   })
   if (!res.ok) {
@@ -103,6 +113,7 @@ export async function fetchTableSeats(
   members: Array<{ id: string; name: string }>
   yourTable: boolean
   joinCode: string
+  eventSlug: string
 }> {
   const res = await fetch(`${API_URL}/api/tables/${joinCode}/seats`, {
     headers: { Authorization: `JWT ${token}` },

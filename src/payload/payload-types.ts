@@ -29,6 +29,7 @@ export interface Config {
     events: Event;
     tables: Table;
     'ticket-holders': TicketHolder;
+    'booking-events': BookingEvent;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -39,7 +40,6 @@ export interface Config {
     settings: Settings;
     header: Header;
     footer: Footer;
-    booking: Booking;
   };
 }
 /**
@@ -1210,6 +1210,7 @@ export interface ElectionResult {
  */
 export interface Table {
   id: string;
+  event: string | BookingEvent;
   joinCode: string;
   owner: string | User;
   locked?: boolean | null;
@@ -1231,6 +1232,7 @@ export interface Table {
  */
 export interface TicketHolder {
   id: string;
+  event: string | BookingEvent;
   sotonId: string;
   name: string;
   plusOneCount?: number | null;
@@ -1514,16 +1516,19 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "booking".
+ * via the `definition` "booking-events".
  */
-export interface Booking {
+export interface BookingEvent {
   id: string;
+  name: string;
+  slug?: string | null;
+  date?: string | null;
+  description?: string | null;
   isOpen?: boolean | null;
   maxTables?: number | null;
   seatsPerTable?: number | null;
-  eventName?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 
 

@@ -3,34 +3,63 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import type { User } from '../../../payload/payload-types'
-import type { BookingSettings, BookingTable } from '../../_api/fetchBooking'
+import type { User } from '../../../../payload/payload-types'
+import type { BookingEventData, BookingTable } from '../../../_api/fetchBooking'
 import {
   createTable,
   fetchBookingData,
   joinTable,
   leaveTable,
   toggleTableLock,
-} from '../../_api/fetchBooking'
-import { TableCard } from '../../_components/TableCard'
+} from '../../../_api/fetchBooking'
+import { TableCard } from '../../../_components/TableCard'
 
 type BookingState = {
   yourTable: BookingTable | null
-  settings: BookingSettings
+  event: BookingEventData
   tables: BookingTable[]
   isAdmin: boolean
 }
 
-export const BookingPage: React.FC<{ user: User; token: string }> = ({ user, token }) => {
+export const BookingPage: React.FC<{ user: User; token: string; eventSlug: string }> = ({
+  user,
+  token,
+  eventSlug,
+}) => {
   const router = useRouter()
   const [data, setData] = useState<BookingState | null>(null)
+  const [eventId, setEventId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
 
+  // First, resolve eventSlug to eventId via the API
+  useEffect(() => {
+    const resolveEvent = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/booking-events?where[slug][equals]=${eventSlug}&depth=0`,
+          { headers: { Authorization: `JWT ${token}` }, cache: 'no-store' },
+        )
+        const json = await res.json()
+        if (json.docs?.length > 0) {
+          setEventId(json.docs[0].id)
+        } else {
+          setError('Event not found')
+          setLoading(false)
+        }
+      } catch {
+        setError('Failed to load event')
+        setLoading(false)
+      }
+    }
+    resolveEvent()
+  }, [eventSlug, token])
+
   const loadData = useCallback(async () => {
+    if (!eventId) return
     try {
-      const result = await fetchBookingData({ token })
+      const result = await fetchBookingData(eventId, { token })
       setData(result)
       setError(null)
     } catch (err) {
@@ -38,19 +67,22 @@ export const BookingPage: React.FC<{ user: User; token: string }> = ({ user, tok
     } finally {
       setLoading(false)
     }
-  }, [token])
+  }, [eventId, token])
 
   useEffect(() => {
-    loadData()
-    const interval = setInterval(loadData, 5000)
-    return () => clearInterval(interval)
-  }, [loadData])
+    if (eventId) {
+      loadData()
+      const interval = setInterval(loadData, 5000)
+      return () => clearInterval(interval)
+    }
+  }, [eventId, loadData])
 
   const handleCreate = async () => {
+    if (!eventId) return
     setActionLoading('create')
     try {
-      const result = await createTable(token)
-      router.push(`/booking/${result.table.joinCode}`)
+      const result = await createTable(eventId, token)
+      router.push(`/booking/${eventSlug}/${result.table.joinCode}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create table')
     } finally {
@@ -102,6 +134,14 @@ export const BookingPage: React.FC<{ user: User; token: string }> = ({ user, tok
     )
   }
 
+  if (error && !data) {
+    return (
+      <div className="page-container">
+        <p style={{ color: 'var(--color-error-400)' }}>{error}</p>
+      </div>
+    )
+  }
+
   if (!data) {
     return (
       <div className="page-container">
@@ -110,18 +150,31 @@ export const BookingPage: React.FC<{ user: User; token: string }> = ({ user, tok
     )
   }
 
-  const { yourTable, settings, tables, isAdmin } = data
-  const bookingOpen = settings?.isOpen || isAdmin
+  const { yourTable, event, tables, isAdmin } = data
+  const bookingOpen = event?.isOpen || isAdmin
 
   return (
     <div className="page-container">
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '2rem 1rem' }}>
+        <div style={{ marginBottom: '1rem' }}>
+          <a
+            href="/booking"
+            style={{
+              color: 'var(--color-base-400)',
+              textDecoration: 'none',
+              fontSize: '0.9rem',
+            }}
+          >
+            &#8592; All Events
+          </a>
+        </div>
+
         <div style={{ marginBottom: '2rem' }}>
           <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-            {settings?.eventName || 'Table Booking'}
+            {event?.name || 'Table Booking'}
           </h1>
           <p style={{ color: 'var(--color-base-400)' }}>
-            {settings?.isOpen
+            {event?.isOpen
               ? 'Booking is open — create or join a table!'
               : 'Booking is currently closed.'}
           </p>
@@ -213,10 +266,11 @@ export const BookingPage: React.FC<{ user: User; token: string }> = ({ user, tok
               isOwner={table.isOwner}
               members={table.members}
               memberCount={table.memberCount}
-              seatsPerTable={settings?.seatsPerTable || 10}
+              seatsPerTable={event?.seatsPerTable || 10}
               isYourTable={yourTable?.joinCode === table.joinCode}
               isAdmin={isAdmin}
-              bookingOpen={settings?.isOpen || isAdmin}
+              bookingOpen={event?.isOpen || isAdmin}
+              eventSlug={eventSlug}
               onJoin={() => handleJoin(table.joinCode)}
               onLeave={() => handleLeave(table.joinCode)}
               onToggleLock={() => handleToggleLock(table.joinCode)}

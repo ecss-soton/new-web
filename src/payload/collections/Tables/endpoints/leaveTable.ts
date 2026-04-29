@@ -10,16 +10,30 @@ export const leaveTable: PayloadHandler = async (req, res) => {
     return res.status(401).json({ error: 'Login required' })
   }
 
-  const bookingSettings = await payload.findGlobal({ slug: 'booking' })
-
-  if (!bookingSettings.isOpen && !isAdmin(user)) {
-    return res.status(403).json({ error: 'Table booking is currently closed' })
-  }
-
   const table = await getTableByJoinCode(payload, req.params.id)
 
   if (!table) {
     return res.status(404).json({ error: 'Table not found' })
+  }
+
+  const eventId = typeof table.event === 'string' ? table.event : table.event?.id
+  if (!eventId) {
+    return res.status(500).json({ error: 'Table has no event' })
+  }
+
+  let event
+  try {
+    event = await payload.findByID({
+      collection: 'booking-events',
+      id: eventId,
+      depth: 0,
+    })
+  } catch {
+    return res.status(500).json({ error: 'Event not found' })
+  }
+
+  if (!event.isOpen && !isAdmin(user)) {
+    return res.status(403).json({ error: 'Table booking is currently closed' })
   }
 
   const members = (Array.isArray(table.members) ? [...table.members] : []) as string[]
@@ -37,6 +51,7 @@ export const leaveTable: PayloadHandler = async (req, res) => {
     collection: 'ticket-holders',
     where: {
       sotonId: { equals: user.username },
+      event: { equals: eventId },
     },
     limit: 1,
     depth: 0,

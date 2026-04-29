@@ -2,31 +2,32 @@
 
 import React, { useCallback, useEffect, useState } from 'react'
 
-import type { User } from '../../../../payload/payload-types'
-import { fetchTableSeats, updateSeats } from '../../../_api/fetchBooking'
-import { SeatLayout } from '../../../_components/SeatLayout'
+import type { User } from '../../../../../payload/payload-types'
+import { fetchTableSeats, updateSeats } from '../../../../_api/fetchBooking'
+import { SeatLayout } from '../../../../_components/SeatLayout'
 
 type SeatData = Awaited<ReturnType<typeof fetchTableSeats>>
 
-export const SeatPage: React.FC<{ code: string; user: User; token: string }> = ({
-  code,
-  user,
-  token,
-}) => {
+export const SeatPage: React.FC<{
+  joinCode: string
+  eventSlug: string
+  user: User
+  token: string
+}> = ({ joinCode, eventSlug, user, token }) => {
   const [data, setData] = useState<SeatData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   const loadSeats = useCallback(async () => {
     try {
-      const result = await fetchTableSeats(code, token)
+      const result = await fetchTableSeats(joinCode, token)
       setData(result)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load seats')
     } finally {
       setLoading(false)
     }
-  }, [code, token])
+  }, [joinCode, token])
 
   useEffect(() => {
     loadSeats()
@@ -34,8 +35,8 @@ export const SeatPage: React.FC<{ code: string; user: User; token: string }> = (
     return () => clearInterval(interval)
   }, [loadSeats])
 
-  const handleSave = async (seatPositions: { seatIndex: number; name: string }[]) => {
-    await updateSeats(code, seatPositions, token)
+  const handleSave = async (seatPositions: Array<{ seatIndex: number; name: string }>) => {
+    await updateSeats(joinCode, seatPositions, token)
     await loadSeats()
   }
 
@@ -70,6 +71,7 @@ export const SeatPage: React.FC<{ code: string; user: User; token: string }> = (
         members={data.members}
         yourTable={data.yourTable}
         joinCode={data.joinCode}
+        eventSlug={eventSlug}
         onSave={handleSave}
       />
     </div>
