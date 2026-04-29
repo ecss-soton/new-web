@@ -1,12 +1,8 @@
 import type { Access, FieldAccess } from 'payload/types'
 
-import { checkRole } from '../../Users/checkRole'
+import { isAdmin } from '../../../access/isAdmin'
 
 export const nominee: FieldAccess = ({ req: { user }, data }) => {
-  // if (user && checkRole(['admin'], user)) {
-  //   return true
-  // }
-
   if (user?.id && data?.nominees) {
     return data.nominees.includes(user.id)
   }
@@ -15,7 +11,7 @@ export const nominee: FieldAccess = ({ req: { user }, data }) => {
 }
 
 export const adminOrNominee: Access = async ({ req: { user } }) => {
-  if (user && checkRole(['admin'], user)) {
+  if (isAdmin(user)) {
     return true
   }
 

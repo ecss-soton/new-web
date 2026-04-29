@@ -26,22 +26,6 @@ export const ArchiveBlock: React.FC<
     categories,
   } = props
 
-  // const isPosts = (doc: any): doc is (Post | string) => relationTo === 'posts'
-  // const isProjects = (doc: any): doc is (Project | string) => relationTo === 'projects'
-  //
-  // const gg = isPosts(populatedDocs[0].value) ? populatedDocs[0].value : null
-  //
-  // .map((doc) => {
-  //   isPosts(doc.value) || isProjects(doc.value)
-  //
-  //   if (isPosts(doc.value)) {
-  //     return {relationTo: "posts", value: doc.value}
-  //   } else if (isProjects(doc.value)) {
-  //     return {relationTo: "projects", value: doc.value}
-  //   }
-  //   return null
-  // })
-
   const allPopulatedDocs: (
     | { relationTo: 'posts'; value: string | Post }
     | { relationTo: 'projects'; value: string | Project }
@@ -65,9 +49,6 @@ export const ArchiveBlock: React.FC<
           <RichText content={introContent} />
         </Gutter>
       )}
-      {/* {relationTo === 'societies' && <SocietyArchive limit={limit} />}
-      {relationTo === 'committee' && <CommitteeArchive />}
-      {relationTo === 'sponsors' && <SponsorArchive />} */}
       {
         <CollectionArchive
           populateBy={populateBy}

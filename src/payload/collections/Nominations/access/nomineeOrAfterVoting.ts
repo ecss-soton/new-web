@@ -1,12 +1,12 @@
 import type { Access } from 'payload/types'
 
+import { isAdmin } from '../../../access/isAdmin'
 import type { Nomination } from '../../../payload-types'
-import { checkRole } from '../../Users/checkRole'
 
 export const nomineeOrAfterVoting: Access<Nomination> = async ({ req: { user, payload } }) => {
   if (!user) return false
 
-  if (checkRole(['admin'], user)) {
+  if (isAdmin(user)) {
     return true
   }
 

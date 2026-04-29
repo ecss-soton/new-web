@@ -16,7 +16,7 @@ import { hero } from '../../fields/hero'
 import { slugField } from '../../fields/slug'
 import { populateArchiveBlock } from '../../hooks/populateArchiveBlock'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
-import { revalidatePage } from './hooks/revalidatePage'
+import { createRevalidateHook } from '../../utilities/revalidate'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -31,7 +31,7 @@ export const Pages: CollectionConfig = {
   },
   hooks: {
     beforeChange: [populatePublishedAt],
-    afterChange: [revalidatePage],
+    afterChange: [createRevalidateHook('pages')],
     afterRead: [populateArchiveBlock],
   },
   versions: {

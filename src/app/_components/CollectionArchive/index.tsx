@@ -1,8 +1,8 @@
 'use client'
 
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
-import { Inter } from 'next/font/google'
 import moment from 'moment-timezone'
+import { Inter } from 'next/font/google'
 import qs from 'qs'
 
 import type {
@@ -21,7 +21,6 @@ import { CommitteeItem } from '../CommitteeItem'
 import { CommitteePopUp } from '../CommitteePopUp'
 import { EventItem } from '../EventItem'
 import { Gutter } from '../Gutter'
-import { PageRange } from '../PageRange'
 import { Pagination } from '../Pagination'
 import { SocietyItem } from '../SocietyItem'
 import { SponsorItem } from '../SponsorItem'
@@ -56,7 +55,6 @@ export type Props = {
   populatedDocsTotal?: ArchiveBlockProps['populatedDocsTotal']
   relationTo?: 'posts' | 'projects' | 'committee' | 'sponsors' | 'societies' | 'events'
   selectedDocs?: ArchiveBlockProps['selectedDocs']
-  showPageRange?: boolean
   sort?: string
   isJumpstart?: boolean | null
 }
@@ -72,7 +70,6 @@ export const CollectionArchive: React.FC<Props> = props => {
     populatedDocsTotal,
     relationTo,
     selectedDocs,
-    showPageRange,
     isJumpstart,
     sort = '-createdAt',
   } = props
