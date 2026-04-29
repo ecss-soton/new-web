@@ -20,8 +20,6 @@ export const ElectionCard: React.FC<{
   election: Omit<Election, 'positions'> & { positions: Position[] }
   user: User
 }> = ({ election, user }) => {
-  const [isExpanded, setIsExpanded] = useState(false)
-
   const { id, name, nominationStart, nominationEnd, votingStart, votingEnd, positions } = election
   const now = new Date().getTime()
   const canCreateNomination = now >= Date.parse(nominationStart) && now <= Date.parse(nominationEnd)
@@ -36,6 +34,9 @@ export const ElectionCard: React.FC<{
       : now <= Date.parse(votingEnd)
       ? 'Voting Open'
       : 'Finished'
+
+  const isActive = status !== 'Upcoming' && status !== 'Finished'
+  const [isExpanded, setIsExpanded] = useState(isActive)
 
   return (
     <div className={classes.electionCard}>
