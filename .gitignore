@@ -5,6 +5,7 @@ media
 backups/
 backup-db-*.tar.gz
 backup-env-*.tar.gz
+TABLE\ BOOKING\ FOR\ REFERENCE/
 
 # IDE configs
 .idea
