@@ -200,3 +200,44 @@ export const SUMMER_PARTY_BLOCK = `
   }
 }
 `
+
+export const HERO_FIELDS = `
+hero {
+  type
+  richText
+  links {
+    link ${LINK_FIELDS()}
+  }
+  ${MEDIA}
+}
+`
+
+export const CONTENT_LAYOUT_BLOCKS = `
+${CONTENT}
+${CALL_TO_ACTION}
+${CONTENT}
+${MEDIA_BLOCK}
+${ARCHIVE_BLOCK}
+`
+
+export const ENTITY_BASE = `
+id
+slug
+name
+description
+logo {
+  ${MEDIA_FIELDS}
+}
+`
+
+export const ENTITY_LINKS = `
+links {
+  link ${LINK_FIELDS()}
+}
+`
+
+export const ENTITY_META = `
+${ENTITY_LINKS}
+updatedAt
+createdAt
+`

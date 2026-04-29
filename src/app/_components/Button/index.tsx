@@ -1,7 +1,7 @@
 'use client'
 
 import React, { ElementType } from 'react'
-import { Inter } from '@next/font/google'
+import { Inter } from 'next/font/google'
 import Link from 'next/link'
 
 import classes from './index.module.scss'

@@ -1,16 +1,16 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../access/admins'
+import { isAdmin } from '../access/isAdmin'
 import linkGroup from '../fields/linkGroup'
 import { slugField } from '../fields/slug'
 import { isHTTPS } from '../validate/isHTTPS'
-import { checkRole } from './Users/checkRole'
 
 const Sponsors: CollectionConfig = {
   slug: 'sponsors',
   access: {
     read: ({ req: { user } }) => {
-      if (checkRole(['admin'], user)) {
+      if (isAdmin(user)) {
         return true
       } else {
         return { level: { exists: true } }

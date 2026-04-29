@@ -1,5 +1,4 @@
-import { LINK_FIELDS } from './link'
-import { MEDIA_FIELDS } from './media'
+import { ENTITY_BASE, ENTITY_META } from './blocks'
 
 export const SPONSORS = `
   query Sponsors {
@@ -15,20 +14,10 @@ export const SPONSOR = `
   query Sponsor($slug: String) {
     Sponsors(where: { slug: { equals: $slug }}, limit: 1) {
       docs {
-        id
-        slug
-        name
+        ${ENTITY_BASE}
         level
-        description
-        logo {
-          ${MEDIA_FIELDS}
-        }
         websiteUrl
-        links {
-          link ${LINK_FIELDS()}
-        }
-        updatedAt
-        createdAt
+        ${ENTITY_META}
       }
     }
   }

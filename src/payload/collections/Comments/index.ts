@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload/types'
 
+import { isAdmin } from '../../access/isAdmin'
 import type { Comment } from '../../payload-types'
-import { checkRole } from '../Users/checkRole'
 import { populateUser } from './hooks/populateUser'
 import { revalidatePost } from './hooks/revalidatePost'
 
@@ -25,7 +25,7 @@ const Comments: CollectionConfig = {
     read: ({ data, req: { user } }) => {
       return Boolean(
         data?.status === 'published' ||
-          checkRole(['admin'], user) ||
+          isAdmin(user) ||
           (typeof data?.user === 'string' ? data?.user : data?.user?.id) === user?.id,
       )
     },
@@ -34,7 +34,7 @@ const Comments: CollectionConfig = {
     // Admins should have full control
     create: ({ data, req: { user } }) => {
       return Boolean(
-        checkRole(['admin'], user) ||
+        isAdmin(user) ||
           (data?.status === 'draft' &&
             (typeof data?.user === 'string' ? data?.user : data?.user?.id) === user?.id),
       )
@@ -44,13 +44,13 @@ const Comments: CollectionConfig = {
     // Admins should have full control
     update: ({ data, req: { user } }) => {
       return Boolean(
-        checkRole(['admin'], user) ||
+        isAdmin(user) ||
           (data?.status === 'draft' &&
             (typeof data?.user === 'string' ? data?.user : data?.user?.id) === user?.id),
       )
     },
     // Only admins can delete comments
-    delete: ({ req: { user } }) => checkRole(['admin'], user),
+    delete: ({ req: { user } }) => isAdmin(user),
   },
   versions: {
     drafts: true,

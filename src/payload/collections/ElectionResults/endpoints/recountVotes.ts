@@ -1,13 +1,13 @@
 import type { PayloadHandler } from 'payload/config'
 
+import { isAdmin } from '../../../access/isAdmin'
 import { getID } from '../../../utilities/getID'
 import { countVotesForPosition } from '../../Elections/hooks/checkVotes'
-import { checkRole } from '../../Users/checkRole'
 
 export const recountVotes: PayloadHandler = async (req, res): Promise<void> => {
   const { user, payload } = req
 
-  if (!user || !checkRole(['admin'], user)) {
+  if (!isAdmin(user)) {
     res.status(401).json({ error: 'Unauthorized' })
     return
   }

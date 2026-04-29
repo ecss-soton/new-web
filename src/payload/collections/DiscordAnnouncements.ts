@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { adminsOrPublished } from '../access/adminsOrPublished'
+import { withEndpointErrorHandler } from '../utilities/endpointHandler'
 
 const DiscordAnnouncements: CollectionConfig = {
   slug: 'discord-announcements',
@@ -44,15 +45,10 @@ const DiscordAnnouncements: CollectionConfig = {
     {
       path: '/webhook',
       method: 'post',
-      handler: async (req, res, next) => {
-        try {
-          const { toggleWebhook } = await import('./Endpoints/discordWebhook')
-          return toggleWebhook(req, res, next)
-        } catch (e: unknown) {
-          req.payload.logger.error(e)
-          return res.status(500).json({ error: 'Internal Server Error' })
-        }
-      },
+      handler: withEndpointErrorHandler(async (req, res, next) => {
+        const { toggleWebhook } = await import('./Endpoints/discordWebhook')
+        return toggleWebhook(req, res, next)
+      }),
     },
   ],
 }
