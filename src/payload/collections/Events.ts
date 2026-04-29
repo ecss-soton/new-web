@@ -22,6 +22,29 @@ const Events: CollectionConfig = {
   versions: {
     drafts: true,
   },
+  hooks: {
+    beforeChange: [
+      ({ data }) => {
+        // If both date and endTime exist, stitch them together before saving
+        if (data.date && data.endTime) {
+          const startDate = new Date(data.date)
+          const rawEndDate = new Date(data.endTime)
+
+          const actualEndDate = new Date(data.date)
+          actualEndDate.setHours(rawEndDate.getHours(), rawEndDate.getMinutes(), 0, 0)
+
+          // Handle midnight crossover
+          if (actualEndDate <= startDate) {
+            actualEndDate.setDate(actualEndDate.getDate() + 1)
+          }
+
+          // Override the garbage Payload date with the mathematically correct date
+          data.endTime = actualEndDate.toISOString()
+        }
+        return data
+      },
+    ],
+  },
   fields: [
     {
       name: 'id',
@@ -53,8 +76,8 @@ const Events: CollectionConfig = {
       type: 'date',
       admin: {
         date: {
-          pickerAppearance: 'timeOnly',
-          displayFormat: 'HH:mm',
+          pickerAppearance: 'dayAndTime',
+          displayFormat: 'dd-MM-yyyy HH:mm',
         },
       },
     },

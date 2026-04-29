@@ -10,6 +10,7 @@ import { joinTable } from './endpoints/joinTable'
 import { leaveTable } from './endpoints/leaveTable'
 import { manageSeats } from './endpoints/manageSeats'
 import { toggleLock } from './endpoints/toggleLock'
+import { randomInt} from 'crypto'
 
 const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 
@@ -17,7 +18,8 @@ const generateJoinCode = (): string => {
   const bytes = randomBytes(8)
   let result = ''
   for (let i = 0; i < 8; i++) {
-    result += CHARS[bytes[i] % CHARS.length]
+    const index = randomInt(0, CHARS.length);
+    result += CHARS[index];
   }
   return result
 }
