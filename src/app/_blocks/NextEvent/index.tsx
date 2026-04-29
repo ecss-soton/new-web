@@ -62,10 +62,19 @@ export const NextEventBlock: React.FC<
         }
       }, 500)
 
+      const todayStart = new Date()
+      todayStart.setHours(0, 0, 0, 0)
+
       const searchQuery = qs.stringify(
         {
           depth: 1,
+          limit: 50,
           sort: 'date',
+          where: {
+            date: {
+              greater_than_equal: todayStart.toISOString(),
+            },
+          },
         },
         { encode: false },
       )
@@ -78,10 +87,12 @@ export const NextEventBlock: React.FC<
           clearTimeout(timer)
 
           if (json.docs && Array.isArray(json.docs)) {
-            const today = new Date()
-            const upcomingEvents = json.docs.filter(
-              (res: any) => typeof res === 'object' && 'date' in res && new Date(res.date) > today,
-            ) as Event[]
+            const now = new Date()
+            const upcomingEvents = json.docs.filter((res: any) => {
+              if (typeof res !== 'object' || !('date' in res)) return false
+              if (res.endTime && new Date(res.endTime) <= now) return false
+              return true
+            }) as Event[]
             setDocs(upcomingEvents)
           }
           setIsLoading(false)
