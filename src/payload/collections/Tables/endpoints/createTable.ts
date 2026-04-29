@@ -9,9 +9,24 @@ export const createTable: PayloadHandler = async (req, res) => {
     return res.status(401).json({ error: 'Login required' })
   }
 
-  const bookingSettings = await payload.findGlobal({ slug: 'booking' })
+  const { eventId } = (req.body as { eventId?: string }) || {}
 
-  if (!bookingSettings.isOpen && !isAdmin(user)) {
+  if (!eventId) {
+    return res.status(400).json({ error: 'Missing eventId' })
+  }
+
+  let event
+  try {
+    event = await payload.findByID({
+      collection: 'booking-events',
+      id: eventId,
+      depth: 0,
+    })
+  } catch {
+    return res.status(400).json({ error: 'Event not found' })
+  }
+
+  if (!event.isOpen && !isAdmin(user)) {
     return res.status(403).json({ error: 'Table booking is currently closed' })
   }
 
@@ -19,6 +34,7 @@ export const createTable: PayloadHandler = async (req, res) => {
     collection: 'tables',
     where: {
       members: { contains: user.id },
+      event: { equals: eventId },
     },
     pagination: false,
     depth: 0,
@@ -35,6 +51,7 @@ export const createTable: PayloadHandler = async (req, res) => {
     collection: 'ticket-holders',
     where: {
       sotonId: { equals: user.username },
+      event: { equals: eventId },
     },
     limit: 1,
     depth: 0,
@@ -50,6 +67,7 @@ export const createTable: PayloadHandler = async (req, res) => {
 
   const tableCount = await payload.find({
     collection: 'tables',
+    where: { event: { equals: eventId } },
     pagination: false,
     depth: 0,
   })
@@ -58,7 +76,7 @@ export const createTable: PayloadHandler = async (req, res) => {
     t => Array.isArray(t.members) && t.members.length > 0,
   ).length
 
-  const maxTables = bookingSettings.maxTables || 17
+  const maxTables = event.maxTables || 17
 
   if (activeTables >= maxTables && !isAdmin(user)) {
     return res.status(400).json({
@@ -72,6 +90,7 @@ export const createTable: PayloadHandler = async (req, res) => {
     collection: 'tables',
     data: {
       joinCode: '', // filled by beforeChange hook
+      event: eventId,
       owner: user.id,
       locked: false,
       members: [user.id],

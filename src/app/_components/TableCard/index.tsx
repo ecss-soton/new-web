@@ -16,6 +16,7 @@ type TableCardProps = {
   isYourTable: boolean
   isAdmin: boolean
   bookingOpen: boolean
+  eventSlug?: string
   onJoin?: () => void
   onLeave?: () => void
   onToggleLock?: () => void
@@ -33,6 +34,7 @@ export const TableCard: React.FC<TableCardProps> = ({
   isYourTable,
   isAdmin,
   bookingOpen,
+  eventSlug,
   onJoin,
   onLeave,
   onToggleLock,
@@ -45,7 +47,7 @@ export const TableCard: React.FC<TableCardProps> = ({
   const full = currentSeats >= capacity
   const canJoin = !full && !locked && (bookingOpen || isAdmin)
 
-  const shareLink = `${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${joinCode}`
+  const shareLink = `${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${eventSlug || ''}/${joinCode}`
 
   const handleCopyLink = async () => {
     try {
@@ -88,7 +90,7 @@ export const TableCard: React.FC<TableCardProps> = ({
       <div className={classes.actions}>
         {isYourTable ? (
           <>
-            <Link href={`/booking/${joinCode}`} className={classes.button}>
+            <Link href={`/booking/${eventSlug || ''}/${joinCode}`} className={classes.button}>
               Seat Plan
             </Link>
             <button

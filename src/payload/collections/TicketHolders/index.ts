@@ -23,6 +23,16 @@ export const TicketHolders: CollectionConfig = {
   },
   fields: [
     {
+      name: 'event',
+      type: 'relationship',
+      relationTo: 'booking-events',
+      required: true,
+      admin: {
+        position: 'sidebar',
+        description: 'The event this ticket is for.',
+      },
+    },
+    {
       name: 'sotonId',
       type: 'text',
       label: 'University Username',
@@ -82,10 +92,25 @@ export const TicketHolders: CollectionConfig = {
           return res.status(401).json({ error: 'Admin access required' })
         }
 
-        const { csv } = req.body as { csv?: string }
+        const { csv, eventId } = req.body as { csv?: string; eventId?: string }
 
         if (!csv || typeof csv !== 'string') {
           return res.status(400).json({ error: 'Missing "csv" field with CSV text' })
+        }
+
+        if (!eventId) {
+          return res.status(400).json({ error: 'Missing "eventId" field' })
+        }
+
+        // Verify event exists
+        try {
+          await payload.findByID({
+            collection: 'booking-events',
+            id: eventId,
+            depth: 0,
+          })
+        } catch {
+          return res.status(400).json({ error: 'Event not found' })
         }
 
         const lines = csv
@@ -136,7 +161,9 @@ export const TicketHolders: CollectionConfig = {
           try {
             const existing = await payload.find({
               collection: 'ticket-holders',
-              where: { sotonId: { equals: sotonId } },
+              where: {
+                and: [{ sotonId: { equals: sotonId } }, { event: { equals: eventId } }],
+              },
               limit: 1,
               depth: 0,
             })
@@ -146,6 +173,7 @@ export const TicketHolders: CollectionConfig = {
                 collection: 'ticket-holders',
                 id: existing.docs[0].id,
                 data: {
+                  event: eventId,
                   name,
                   plusOneCount,
                   plusOneNames,
@@ -157,6 +185,7 @@ export const TicketHolders: CollectionConfig = {
               await payload.create({
                 collection: 'ticket-holders',
                 data: {
+                  event: eventId,
                   sotonId,
                   name,
                   plusOneCount,

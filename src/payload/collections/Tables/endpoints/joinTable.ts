@@ -10,9 +10,29 @@ export const joinTable: PayloadHandler = async (req, res) => {
     return res.status(401).json({ error: 'Login required' })
   }
 
-  const bookingSettings = await payload.findGlobal({ slug: 'booking' })
+  const table = await getTableByJoinCode(payload, req.params.id)
 
-  if (!bookingSettings.isOpen && !isAdmin(user)) {
+  if (!table) {
+    return res.status(404).json({ error: 'Table not found' })
+  }
+
+  const eventId = typeof table.event === 'string' ? table.event : table.event?.id
+  if (!eventId) {
+    return res.status(500).json({ error: 'Table has no event' })
+  }
+
+  let event
+  try {
+    event = await payload.findByID({
+      collection: 'booking-events',
+      id: eventId,
+      depth: 0,
+    })
+  } catch {
+    return res.status(500).json({ error: 'Event not found' })
+  }
+
+  if (!event.isOpen && !isAdmin(user)) {
     return res.status(403).json({ error: 'Table booking is currently closed' })
   }
 
@@ -20,6 +40,7 @@ export const joinTable: PayloadHandler = async (req, res) => {
     collection: 'tables',
     where: {
       members: { contains: user.id },
+      event: { equals: eventId },
     },
     pagination: false,
     depth: 0,
@@ -32,12 +53,6 @@ export const joinTable: PayloadHandler = async (req, res) => {
     })
   }
 
-  const table = await getTableByJoinCode(payload, req.params.id)
-
-  if (!table) {
-    return res.status(404).json({ error: 'Table not found' })
-  }
-
   if (table.locked && !isAdmin(user)) {
     return res.status(403).json({ error: 'This table is locked' })
   }
@@ -46,6 +61,7 @@ export const joinTable: PayloadHandler = async (req, res) => {
     collection: 'ticket-holders',
     where: {
       sotonId: { equals: user.username },
+      event: { equals: eventId },
     },
     limit: 1,
     depth: 0,
@@ -59,7 +75,7 @@ export const joinTable: PayloadHandler = async (req, res) => {
 
   const plusOneCount = (ticketHolder.docs[0]?.plusOneCount as number) || 0
 
-  const seatsPerTable = bookingSettings.seatsPerTable || 10
+  const seatsPerTable = event.seatsPerTable || 10
   const newMemberUsage = 1 + plusOneCount
   const currentUsage = (table.memberCount as number) || 0
 

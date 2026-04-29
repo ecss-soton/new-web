@@ -9,6 +9,7 @@ type SeatLayoutProps = {
   members: { id: string; name: string }[]
   yourTable: boolean
   joinCode: string
+  eventSlug: string
   onSave: (seats: { seatIndex: number; name: string }[]) => Promise<void>
 }
 
@@ -20,6 +21,7 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
   members,
   yourTable,
   joinCode,
+  eventSlug,
   onSave,
 }) => {
   const [editingSeat, setEditingSeat] = useState<number | null>(null)
@@ -88,7 +90,7 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
   return (
     <div className={classes.container}>
       <div className={classes.topBar}>
-        <a href="/booking" className={classes.backBtn}>
+        <a href={`/booking/${eventSlug}`} className={classes.backBtn}>
           &#8592; Back to Tables
         </a>
       </div>

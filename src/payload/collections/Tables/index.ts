@@ -51,6 +51,16 @@ export const Tables: CollectionConfig = {
   },
   fields: [
     {
+      name: 'event',
+      type: 'relationship',
+      relationTo: 'booking-events',
+      required: true,
+      admin: {
+        position: 'sidebar',
+        description: 'The event this table belongs to.',
+      },
+    },
+    {
       name: 'joinCode',
       type: 'text',
       label: 'Join Code',
@@ -132,10 +142,24 @@ export const Tables: CollectionConfig = {
           return res.status(401).json({ error: 'Login required' })
         }
 
-        const bookingSettings = await payload.findGlobal({ slug: 'booking' })
+        const eventId = (req.query.event as string) || ''
+
+        let event
+        try {
+          event = await payload.findByID({
+            collection: 'booking-events',
+            id: eventId,
+            depth: 0,
+          })
+        } catch {
+          return res.status(400).json({ error: 'Invalid event ID' })
+        }
 
         const tables = await payload.find({
           collection: 'tables',
+          where: {
+            event: { equals: eventId },
+          },
           depth: 1,
           sort: 'createdAt',
           pagination: false,
@@ -146,9 +170,7 @@ export const Tables: CollectionConfig = {
         })
 
         const formattedTables = tables.docs
-          .filter(
-            t => (t.members as unknown[]).length > 0 || (isAdmin(user) && bookingSettings.isOpen),
-          )
+          .filter(t => (t.members as unknown[]).length > 0 || (isAdmin(user) && event.isOpen))
           .map(t => ({
             id: t.id,
             joinCode: t.joinCode,
@@ -180,11 +202,13 @@ export const Tables: CollectionConfig = {
                 memberCount: yourTable.memberCount,
               }
             : null,
-          settings: {
-            isOpen: bookingSettings.isOpen,
-            maxTables: bookingSettings.maxTables,
-            seatsPerTable: bookingSettings.seatsPerTable,
-            eventName: bookingSettings.eventName,
+          event: {
+            id: event.id,
+            name: event.name,
+            slug: event.slug,
+            isOpen: event.isOpen,
+            maxTables: event.maxTables,
+            seatsPerTable: event.seatsPerTable,
           },
           tables: formattedTables,
           isAdmin: isAdmin(user),
@@ -227,8 +251,23 @@ export const Tables: CollectionConfig = {
           return res.status(404).json({ error: 'Table not found' })
         }
 
-        const bookingSettings = await payload.findGlobal({ slug: 'booking' })
-        const seatCount = bookingSettings.seatsPerTable || 10
+        const eventId = typeof table.event === 'string' ? table.event : table.event?.id
+        if (!eventId) {
+          return res.status(500).json({ error: 'Table has no event' })
+        }
+
+        let event
+        try {
+          event = await payload.findByID({
+            collection: 'booking-events',
+            id: eventId,
+            depth: 0,
+          })
+        } catch {
+          return res.status(500).json({ error: 'Event not found' })
+        }
+
+        const seatCount = event.seatsPerTable || 10
 
         const filledSeats: Array<string | null> = Array(seatCount).fill(null)
         const seatPositions = table.seatPositions as
@@ -242,7 +281,6 @@ export const Tables: CollectionConfig = {
           }
         }
 
-        // members are ObjectId strings at depth 0, need to fetch their names
         const memberIds = (Array.isArray(table.members) ? table.members : []) as string[]
         const members: Array<{ id: string; name: string }> = []
 
@@ -267,6 +305,7 @@ export const Tables: CollectionConfig = {
           members,
           yourTable: memberIds.some(id => id === user.id),
           joinCode: table.joinCode,
+          eventSlug: event.slug,
         })
       },
     },

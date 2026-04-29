@@ -13,6 +13,7 @@ import path from 'path'
 import { buildConfig } from 'payload/config'
 import { OAuthButton, oAuthPlugin } from 'payload-plugin-oauth'
 
+import { BookingEvents } from './collections/BookingEvents'
 import Categories from './collections/Categories'
 import Comments from './collections/Comments'
 import Committee from './collections/Committee'
@@ -38,7 +39,6 @@ import { Tables } from './collections/Tables'
 import { TicketHolders } from './collections/TicketHolders'
 import Users from './collections/Users'
 import Votes from './collections/Votes'
-import { Booking } from './globals/Booking'
 import { Footer } from './globals/Footer'
 import { Header } from './globals/Header'
 import { Settings } from './globals/Settings'
@@ -140,10 +140,11 @@ export default buildConfig({
     Societies,
     Committee,
     Events,
+    BookingEvents,
     Tables,
     TicketHolders,
   ],
-  globals: [Settings, Header, Footer, Booking],
+  globals: [Settings, Header, Footer],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
