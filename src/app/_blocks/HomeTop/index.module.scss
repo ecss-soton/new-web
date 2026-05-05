@@ -1,78 +1,5 @@
 @import '../../_css/common';
 
-.container {
-  height: 450px;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  padding-left: var(--gutter-h);
-
-  @include mid-break {
-    flex-direction: column;
-    height: auto;
-  }
-  margin-bottom: 1rem;
-}
-
-@keyframes fadeInLeft {
-  0% {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeInRight {
-  0% {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeInBottom {
-  0% {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.intro {
-  display: flex;
-  flex-direction: column;
-  width: 40%;
-  height: 100%;
-  padding-top: 3%;
-  padding-right: 50px;
-
-  @include mid-break {
-    width: 100%;
-    height: inherit;
-  }
-
-  @include small-break {
-  }
-}
-
-.heroTitles {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-}
-
 @keyframes springUp {
   0% {
     opacity: 0;
@@ -85,8 +12,147 @@
   }
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.background {
+  position: relative;
+  height: 480px;
+  overflow: hidden;
+
+  @include large-break {
+    height: auto;
+    min-height: 420px;
+  }
+
+  @include mid-break {
+    min-height: 360px;
+  }
+  @include small-break { 
+    min-height: 20vh;
+  }
+}
+
+.backgroundMedia {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* You may want to increase this brightness now that the gradient is doing the heavy darkening */
+    filter: brightness(0.8) saturate(1.1); 
+    transition: transform 8s ease-out;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    
+    /* Stacking multiple gradients separated by commas */
+    background: 
+      /* 1. Top and Bottom Fades */
+      linear-gradient(
+        to bottom, 
+        rgba(20, 20, 20, 1) 0%,     /* Solid black at the very top */
+        rgba(0, 0, 0, 0) 25%,    /* Fades to transparent 25% down */
+        rgba(0, 0, 0, 0) 75%,    /* Stays transparent until 75% down */
+        rgba(20, 20, 20, 1) 100%    /* Fades to solid black at the bottom */
+      ),
+      /* 2. Left to Right Fade */
+      linear-gradient(
+        to right, 
+        rgba(0, 0, 0, 1) 0%,     /* Solid black on the left (0% brightness) */
+        rgba(0, 0, 0, 0.4) 100%  /* 80% black on the right (leaves ~20% brightness) */
+      );
+  }
+
+  @include small-break {
+    &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    
+    /* Stacking multiple gradients separated by commas */
+    background: 
+      /* 1. Top and Bottom Fades */
+      linear-gradient(
+        to bottom, 
+        rgba(0, 0, 0, 1) 0%,     /* Solid black at the very bottom */
+        rgba(0, 0, 0, 0.8) 75%,    /* Fades to transparent 75% up */
+        rgba(0, 0, 0, 1) 100%,
+      ),
+     
+    }
+  }
+}
+
+.container {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  padding-left: var(--gutter-h);
+  padding-right: var(--gutter-h);
+  padding-top: 48px;
+  padding-bottom: 48px;
+  gap: 48px;
+
+  @include large-break {
+    gap: 32px;
+  }
+
+  @include mid-break {
+    flex-direction: column;
+    gap: 24px;
+    padding-top: 36px;
+    padding-bottom: 26px;
+  }
+
+}
+
+.intro {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  animation: springUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation-delay: 0.15s;
+}
+
 .gradientHighlight {
-  background: linear-gradient(135deg, #ff4b4b 0%, #a01b1b 100%);
+  background: linear-gradient(135deg, #ff6f6f 0%, #f32929 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -94,122 +160,82 @@
 }
 
 .heading {
-  color: var(--theme-elevation-1000);
-  font-size: 32px;
+  color: #ffffff;
+  font-size: clamp(36px, 5vw, 64px);
   font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  opacity: 0;
-  animation: springUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-  animation-delay: 0.2s;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0 0 28px 0;
 
-  @include extra-small-break {
-    font-size: 23px;
+  @include small-break {
+    font-size: clamp(24px, 4vw, 42px);
   }
 }
 
-.imageContainer {
-  width: 60%;
-  height: 100%;
-  display: flex;
-  opacity: 0;
-  animation: springUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-  animation-delay: 0.3s;
-
-  margin: 1rem 0 0rem 0;
-
-  @include mid-break {
-    width: 100%;
-    animation-delay: 0.3s;
-  }
-}
-.hideOnMobile {
-  @include mid-break {
-     display: none !important;
-  }
-}
-.image1 {
-  width: 30%;
-  height: 75%;
-  position: relative;
-  object-fit: cover;
-}
-
-.image2 {
-  width: 30%;
-  height: 75%;
-  object-fit: cover;
-  position: relative;
-  left: 5%;
-  top: 15%;
-}
-
-.image3 {
-  width: 30%;
-  height: 75%;
-  object-fit: cover;
-  position: relative;
-  left: 10%;
-  top: 0;
-}
-
-.stats {
-  padding-top: 5%;
-  display: flex;
-  flex-direction: row;
-  opacity: 0;
-  animation: springUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-  animation-delay: 0.4s;
-
-  @include mid-break {
-    width: 100%;
-    padding-top: 5%;
-    animation-delay: 0.4s;
-  }
-}
-
-.stat {
-  flex: 30%;
+.heroTitles {
   display: flex;
   flex-direction: column;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  opacity: 0;
+  animation: slideInRight 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation-delay: 0.3s;
+
+  @include mid-break {
+    flex-direction: column;
+    animation-delay: 0.35s;
+    gap: 6px;
+  }
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 26px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0 0 12px 12px;
+  cursor: pointer;
   text-decoration: none;
+  color: white;
   transition:
-    transform 0.2s ease-in-out,
-    opacity 0.2s ease;
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    color 0.2s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    opacity: 0.8;
+    background: rgba(180, 20, 20, 0.35);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fca5a5;
   }
 
-  @include mid-break {
-    align-text: center;
-    align-items: center;
-  }
-}
-
-.number {
-  color: #ed1717;
-  font-size: 48px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-
-  @include mid-break {
-    font-size: min(48px, 10vw);
+  @include small-break {
+    flex: 1;
+    justify-content: center;
+    padding: 7px 12px;
   }
 }
 
-.label {
-  color: var(--theme-elevation-1000);
+
+
+.buttonNumber {
+  color: #f87171;
   font-size: 24px;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 700;
   line-height: normal;
+}
 
-  text-decoration: overline;
-
-  @include mid-break {
-    font-size: min(24px, 7vw);
-  }
+.buttonLabel {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 }
