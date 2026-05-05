@@ -120,11 +120,7 @@ export const HomeTopBlock: React.FC<
   }
 
   return (
-    <div
-      className={[classes.background]
-        .join(' ')
-        .trim()}
-    >
+    <div className={[classes.background].join(' ').trim()}>
       {image1 && <Media resource={image1} className={classes.backgroundMedia} priority />}
       {error && <p>{error}</p>}
       <div className={[classes.container, inter.className].join(' ')}>
@@ -142,9 +138,7 @@ export const HomeTopBlock: React.FC<
               <span className={classes.buttonLabel}>members</span>
             </Link>
             <Link href="/committee" className={classes.button}>
-              <span className={classes.buttonNumber}>
-                {isLoading ? '...' : committeeCount}
-              </span>
+              <span className={classes.buttonNumber}>{isLoading ? '...' : committeeCount}</span>
               <span className={classes.buttonLabel}>committee</span>
             </Link>
           </div>
