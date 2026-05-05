@@ -1,15 +1,9 @@
 import React from 'react'
-import { Inter } from 'next/font/google'
 
+import { inter } from '../../_utilities/font'
 import serialize from './serialize'
 
 import classes from './index.module.scss'
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal'],
-})
 
 const RichText: React.FC<{ className?: string; content: any }> = ({ className, content }) => {
   if (!content) {

@@ -1,16 +1,11 @@
 'use client'
 
 import React, { ElementType } from 'react'
-import { Inter } from 'next/font/google'
 import Link from 'next/link'
 
-import classes from './index.module.scss'
+import { inter } from '../../_utilities/font'
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal'],
-})
+import classes from './index.module.scss'
 
 export type Props = {
   label?: string | JSX.Element

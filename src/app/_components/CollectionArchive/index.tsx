@@ -1,8 +1,7 @@
 'use client'
 
-import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import moment from 'moment-timezone'
-import { Inter } from 'next/font/google'
 import qs from 'qs'
 
 import type {
@@ -16,6 +15,7 @@ import type {
 } from '../../../payload/payload-types'
 import type { ArchiveBlockProps } from '../../_blocks/ArchiveBlock/types'
 import { useAuth } from '../../_providers/Auth'
+import { inter } from '../../_utilities/font'
 import { Card } from '../Card'
 import { CommitteeItem } from '../CommitteeItem'
 import { CommitteePopUp } from '../CommitteePopUp'
@@ -27,12 +27,6 @@ import { SponsorItem } from '../SponsorItem'
 import { EventsCalendarView } from './EventsCalendarView'
 
 import classes from './index.module.scss'
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal'],
-})
 
 type Result = {
   docs: (Post | Project | Sponsor | Society | Committee | Event | string)[]
@@ -113,21 +107,6 @@ export const CollectionArchive: React.FC<Props> = props => {
   const categories = (catsFromProps || [])
     .map(cat => (typeof cat === 'object' ? cat.id : cat))
     .join(',')
-
-  const scrollToRef = useCallback(() => {
-    const { current } = scrollRef
-    if (current) {
-      // current.scrollIntoView({
-      //   behavior: 'smooth',
-      // })
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!isLoading && typeof results.page !== 'undefined') {
-      // scrollToRef()
-    }
-  }, [isLoading, scrollToRef, results])
 
   const today = new Date()
   today.setHours(0, 0, 0, 0)
