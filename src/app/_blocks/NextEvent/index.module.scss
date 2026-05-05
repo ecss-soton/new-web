@@ -190,7 +190,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  width: max(380px, 30vw);
+  width: max(280px, 30vw);
   flex-shrink: 0;
   opacity: 0;
   animation: slideInRight 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -257,6 +257,28 @@
   letter-spacing: -0.02em;
 }
 
+.dayLabel {
+  font-size: clamp(28px, 4vw, 46px);
+  letter-spacing: -0.01em;
+}
+
+.dayNow {
+  font-size: clamp(36px, 6vw, 64px);
+  letter-spacing: -0.02em;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
 .month {
   color: rgba(255, 255, 255, 0.8);
   font-size: clamp(14px, 2vw, 20px);
@@ -307,6 +329,17 @@
   @include mid-break {
     font-size: 10px;
   }
+}
+
+.startNow {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .startTime {
