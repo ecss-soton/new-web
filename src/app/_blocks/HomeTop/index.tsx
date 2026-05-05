@@ -7,8 +7,7 @@ import qs from 'qs'
 
 import type { Committee, Society, Sponsor } from '../../../payload/payload-types'
 import { Page } from '../../../payload/payload-types'
-import { Image } from '../../_components/Media/Image'
-import { VerticalPadding } from '../../_components/VerticalPadding'
+import { Media } from '../../_components/Media'
 import { inter } from '../../_utilities/font'
 
 import classes from './index.module.scss'
@@ -24,7 +23,7 @@ export const HomeTopBlock: React.FC<
   Props & {
     id?: string
   }
-> = ({ heading, image1, image2, image3, show_on_mobile }) => {
+> = ({ heading, image1, show_on_mobile }) => {
   const [results, setResults] = useState<Result>({
     docs: [],
     totalDocs: 0,
@@ -51,7 +50,7 @@ export const HomeTopBlock: React.FC<
       const searchQuery = qs.stringify(
         {
           depth: 1,
-          limit: 0, // We only need the totalDocs count
+          limit: 0,
           where: { isCurrent: { equals: true } },
         },
         { encode: false },
@@ -68,7 +67,6 @@ export const HomeTopBlock: React.FC<
 
           setResults(json)
 
-          // Fetch members count (users with susu role)
           const membersReq = await fetch(
             `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/count-susu-members`,
           )
@@ -102,13 +100,11 @@ export const HomeTopBlock: React.FC<
   const committeeCount = results.totalDocs || 16
   const displayedMembersCount = Math.max(500, Math.floor(membersCount / 10) * 10)
 
-  // Dynamically highlight standard ECSS terminology within the CMS string
   const renderDynamicHeading = (text: string) => {
     if (!text) return null
     const regex = /(Electronics and Computer Science Society|ECSS)/gi
     const parts = text.split(regex)
     return parts.map((part, i) => {
-      // Check if this part matches our emphasis keywords
       if (
         part.toLowerCase() === 'electronics and computer science society' ||
         part.toLowerCase() === 'ecss'
@@ -124,7 +120,13 @@ export const HomeTopBlock: React.FC<
   }
 
   return (
-    <VerticalPadding top="none" bottom="none">
+    <div
+      className={[classes.background]
+        .join(' ')
+        .trim()}
+    >
+      {image1 && <Media resource={image1} className={classes.backgroundMedia} priority />}
+      {error && <p>{error}</p>}
       <div className={[classes.container, inter.className].join(' ')}>
         <div className={classes.intro}>
           <div className={classes.heroTitles}>
@@ -132,30 +134,22 @@ export const HomeTopBlock: React.FC<
               {renderDynamicHeading(heading)}
             </h1>
           </div>
-          <div className={[classes.stats, inter.className].join(' ')}>
-            <Link href="/societies" className={classes.stat}>
-              <span className={classes.number}>
+          <div className={[classes.buttons, inter.className].join(' ')}>
+            <Link href="/societies" className={classes.button}>
+              <span className={classes.buttonNumber}>
                 {isLoading ? '...' : `${displayedMembersCount}+`}
               </span>
-              <span className={classes.label}>members</span>
+              <span className={classes.buttonLabel}>members</span>
             </Link>
-            <Link href="/committee" className={classes.stat}>
-              <span className={classes.number}>{isLoading ? '...' : committeeCount}</span>
-              <span className={classes.label}>committee</span>
+            <Link href="/committee" className={classes.button}>
+              <span className={classes.buttonNumber}>
+                {isLoading ? '...' : committeeCount}
+              </span>
+              <span className={classes.buttonLabel}>committee</span>
             </Link>
           </div>
         </div>
-
-        <div
-          className={[classes.imageContainer, show_on_mobile === false ? classes.hideOnMobile : '']
-            .join(' ')
-            .trim()}
-        >
-          <Image resource={image1} alt="Image 1" imgClassName={classes.image1} priority />
-          <Image resource={image2} alt="Image 2" imgClassName={classes.image2} priority />
-          <Image resource={image3} alt="Image 3" imgClassName={classes.image3} priority />
-        </div>
       </div>
-    </VerticalPadding>
+    </div>
   )
 }
