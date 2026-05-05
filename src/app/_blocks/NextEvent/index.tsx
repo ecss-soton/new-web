@@ -107,8 +107,7 @@ export const NextEventBlock: React.FC<
 
   if (docs.length > 0 && typeof docs[0] === 'object') {
     const result = docs[0]
-    const eventImage =
-      result.image && typeof result.image !== 'string' ? result.image : undefined
+    const eventImage = result.image && typeof result.image !== 'string' ? result.image : undefined
 
     const date = moment.utc(result.date).tz('Europe/London').format('YYYY-MM-DD HH:mm')
     const endTime = result.endTime
