@@ -190,7 +190,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  width: 280px;
+  width: max(380px, 30vw);
   flex-shrink: 0;
   opacity: 0;
   animation: slideInRight 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;

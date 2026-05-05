@@ -107,6 +107,8 @@ export const NextEventBlock: React.FC<
 
   if (docs.length > 0 && typeof docs[0] === 'object') {
     const result = docs[0]
+    const eventImage =
+      result.image && typeof result.image !== 'string' ? result.image : undefined
 
     const date = moment.utc(result.date).tz('Europe/London').format('YYYY-MM-DD HH:mm')
     const endTime = result.endTime
@@ -128,9 +130,13 @@ export const NextEventBlock: React.FC<
           : null
     }
 
+    const bgResource = eventImage || media
+
     return (
       <div className={classes.background}>
-        {media && <MediaComp resource={media} className={classes.backgroundMedia} priority />}
+        {bgResource && (
+          <MediaComp resource={bgResource} className={classes.backgroundMedia} priority />
+        )}
         {error && <Gutter>{error}</Gutter>}
         <div className={[classes.container, inter.className].join(' ')}>
           <div className={classes.text}>

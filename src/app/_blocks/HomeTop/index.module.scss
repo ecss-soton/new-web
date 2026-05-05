@@ -105,8 +105,8 @@
       /* 1. Top and Bottom Fades */
       linear-gradient(
         to bottom, 
-        rgba(0, 0, 0, 1) 0%,     /* Solid black at the very bottom */
-        rgba(0, 0, 0, 0.8) 75%,    /* Fades to transparent 75% up */
+        rgba(20, 20, 20, 1) 0%,     /* Solid black at the very top */
+        rgba(20, 20, 20, 0.8) 75%,    /* Fades to transparent 75% up */
         rgba(0, 0, 0, 1) 100%,
       ),
      
