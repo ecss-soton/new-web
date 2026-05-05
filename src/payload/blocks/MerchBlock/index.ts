@@ -23,7 +23,6 @@ export const MerchBlock: Block = {
       type: 'relationship',
       relationTo: 'merch',
       hasMany: true,
-      required: true,
     },
     {
       name: 'notices',

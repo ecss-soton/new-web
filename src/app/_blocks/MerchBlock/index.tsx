@@ -13,6 +13,8 @@ type Props = Extract<Page['layout'][0], { blockType: 'merchBlock' }>
 export const MerchBlock: React.FC<Props> = props => {
   const { heroTitle, heroContent, merchItems, notices } = props
 
+  const hasMerch = merchItems && merchItems.length > 0
+
   return (
     <div className={classes.pageContainer}>
       <h1 className={classes.heroTitle}>{heroTitle}</h1>
@@ -21,7 +23,13 @@ export const MerchBlock: React.FC<Props> = props => {
         <RichText content={heroContent} />
       </div>
 
-      <MerchGridBlockItem items={merchItems} />
+      {hasMerch ? (
+        <MerchGridBlockItem items={merchItems} />
+      ) : (
+        <div className={classes.emptyState}>
+          
+        </div>
+      )}
 
       {notices && (
         <div className={classes.alertBox}>
