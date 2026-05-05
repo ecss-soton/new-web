@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import moment from 'moment-timezone'
-import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import qs from 'qs'
 
@@ -10,14 +9,10 @@ import type { Event } from '../../../payload/payload-types'
 import { Page } from '../../../payload/payload-types'
 import { Gutter } from '../../_components/Gutter'
 import { Media as MediaComp } from '../../_components/Media'
+import { inter } from '../../_utilities/font'
+import { getMonthName } from '../../_utilities/getMonthName'
 
 import classes from './index.module.scss'
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal'],
-})
 
 type Props = Extract<Page['layout'][0], { blockType: 'nextEvent' }>
 
@@ -26,24 +21,6 @@ export const NextEventBlock: React.FC<
     id?: string
   }
 > = ({ media }) => {
-  const getMonthName = (monthNumber: number): string => {
-    const monthNames = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ]
-    return monthNames[monthNumber - 1]
-  }
-
   const [docs, setDocs] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | undefined>(undefined)
@@ -130,6 +107,7 @@ export const NextEventBlock: React.FC<
 
   if (docs.length > 0 && typeof docs[0] === 'object') {
     const result = docs[0]
+    const eventImage = result.image && typeof result.image !== 'string' ? result.image : undefined
 
     const date = moment.utc(result.date).tz('Europe/London').format('YYYY-MM-DD HH:mm')
     const endTime = result.endTime
@@ -151,9 +129,47 @@ export const NextEventBlock: React.FC<
           : null
     }
 
+    // Calculate today/tomorrow/now labels
+    let dayLabel = day
+    let monthLabel = monthName
+    let isNow = false
+    let isSpecialDay = false
+
+    if (result.date) {
+      const eventDate = moment.utc(result.date).tz('Europe/London').startOf('day')
+      const todayStart = moment().tz('Europe/London').startOf('day')
+      const diff = eventDate.diff(todayStart, 'days')
+
+      // Check if event is happening right now
+      const nowMoment = moment().tz('Europe/London')
+      const startMoment = moment.utc(result.date).tz('Europe/London')
+      const endMoment = result.endTime
+        ? moment.utc(result.endTime).tz('Europe/London')
+        : startMoment.clone().add(1, 'hour')
+
+      if (nowMoment.isSameOrAfter(startMoment) && nowMoment.isBefore(endMoment)) {
+        isNow = true
+        dayLabel = 'Now'
+        monthLabel = `${day} ${monthName}`
+        isSpecialDay = true
+      } else if (diff === 0) {
+        dayLabel = 'Today'
+        monthLabel = `${day} ${monthName}`
+        isSpecialDay = true
+      } else if (diff === 1) {
+        dayLabel = 'Tomorrow'
+        monthLabel = `${day} ${monthName}`
+        isSpecialDay = true
+      }
+    }
+
+    const bgResource = eventImage || media
+
     return (
       <div className={classes.background}>
-        {media && <MediaComp resource={media} className={classes.backgroundMedia} priority />}
+        {bgResource && (
+          <MediaComp resource={bgResource} className={classes.backgroundMedia} priority />
+        )}
         {error && <Gutter>{error}</Gutter>}
         <div className={[classes.container, inter.className].join(' ')}>
           <div className={classes.text}>
@@ -163,17 +179,33 @@ export const NextEventBlock: React.FC<
           <div className={classes.info}>
             <div className={classes.when}>
               <div className={classes.date}>
-                <span className={classes.day}>{day}</span>
-                <span className={classes.month}>{monthName}</span>
+                <span
+                  className={[
+                    classes.day,
+                    isNow ? classes.dayNow : '',
+                    isSpecialDay && !isNow ? classes.dayLabel : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                >
+                  {dayLabel}
+                </span>
+                {monthLabel && <span className={classes.month}>{monthLabel}</span>}
               </div>
               <div className={classes.time}>
                 <div className={classes.start}>
-                  <span className={classes.startText}>starts</span>
-                  <span className={classes.startTime}>{time}</span>
-                  {concEndTime && (
+                  {isNow ? (
+                    <span className={classes.startNow}>Happening now</span>
+                  ) : (
                     <>
-                      <span className={classes.startText}>ends</span>
-                      <span className={classes.startTime}>{concEndTime}</span>
+                      <span className={classes.startText}>starts</span>
+                      <span className={classes.startTime}>{time}</span>
+                      {concEndTime && (
+                        <>
+                          <span className={classes.startText}>ends</span>
+                          <span className={classes.startTime}>{concEndTime}</span>
+                        </>
+                      )}
                     </>
                   )}
                 </div>

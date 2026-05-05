@@ -1,21 +1,15 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import { Header as HeaderType, Page } from '../../../../payload/payload-types'
 import { useAuth } from '../../../_providers/Auth'
+import { inter } from '../../../_utilities/font'
 import { CMSLink } from '../../Link'
 
 import classes from './index.module.scss'
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal'],
-})
 
 interface HeaderNavComponentProps {
   header: HeaderType

@@ -42,7 +42,6 @@ export const PAGE = `
         layout {
           ${CONTENT}
           ${CALL_TO_ACTION}
-          ${CONTENT}
           ${MEDIA_BLOCK}
           ${ARCHIVE_BLOCK}
           ${HOME_TOP}

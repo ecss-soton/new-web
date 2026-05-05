@@ -69,13 +69,43 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      105deg,
-      rgba(0, 0, 0, 0.75) 0%,
-      rgba(0, 0, 0, 0.4) 50%,
-      rgba(180, 20, 20, 0.2) 100%
-    );
     z-index: 1;
+    
+    /* Stacking multiple gradients separated by commas */
+    background: 
+      /* 1. Top and Bottom Fades */
+      linear-gradient(
+        to bottom, 
+        rgba(20, 20, 20, 1) 0%,     /* Solid black at the very top */
+        rgba(0, 0, 0, 0) 25%,    /* Fades to transparent 25% down */
+        rgba(0, 0, 0, 0) 75%,    /* Stays transparent until 75% down */
+        rgba(20, 20, 20, 1) 100%    /* Fades to solid black at the bottom */
+      ),
+      /* 2. Left to Right Fade */
+      linear-gradient(
+        to right, 
+        rgba(0, 0, 0, 0) 0%, 
+        rgba(0, 0, 0, 1) 100% 
+      );
+  }
+
+  @include small-break {
+    &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    
+    /* Stacking multiple gradients separated by commas */
+    background: 
+      /* 1. Top and Bottom Fades */
+      linear-gradient(
+        to bottom, 
+        rgba(0, 0, 0, 1) 0%,     /* Solid black at the very top */
+        rgba(0, 0, 0, 0) 25%,    /* Fades to transparent 25% down */
+      ),
+     
+  }
   }
 }
 
@@ -160,7 +190,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  width: 280px;
+  width: max(280px, 30vw);
   flex-shrink: 0;
   opacity: 0;
   animation: slideInRight 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -227,6 +257,28 @@
   letter-spacing: -0.02em;
 }
 
+.dayLabel {
+  font-size: clamp(28px, 4vw, 46px);
+  letter-spacing: -0.01em;
+}
+
+.dayNow {
+  font-size: clamp(36px, 6vw, 64px);
+  letter-spacing: -0.02em;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
 .month {
   color: rgba(255, 255, 255, 0.8);
   font-size: clamp(14px, 2vw, 20px);
@@ -277,6 +329,17 @@
   @include mid-break {
     font-size: 10px;
   }
+}
+
+.startNow {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .startTime {
