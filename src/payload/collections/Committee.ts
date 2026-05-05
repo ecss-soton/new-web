@@ -12,7 +12,7 @@ const Committee: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'id',
-    defaultColumns: ['id', 'type'],
+    defaultColumns: ['id', 'isCurrent'],
   },
   fields: [
     {

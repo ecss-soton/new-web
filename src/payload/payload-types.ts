@@ -27,9 +27,9 @@ export interface Config {
     societies: Society;
     committee: Committee;
     events: Event;
+    'booking-events': BookingEvent;
     tables: Table;
     'ticket-holders': TicketHolder;
-    'booking-events': BookingEvent;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -1206,6 +1206,22 @@ export interface ElectionResult {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "booking-events".
+ */
+export interface BookingEvent {
+  id: string;
+  name: string;
+  slug?: string | null;
+  date?: string | null;
+  description?: string | null;
+  isOpen?: boolean | null;
+  maxTables?: number | null;
+  seatsPerTable?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "tables".
  */
 export interface Table {
@@ -1513,22 +1529,6 @@ export interface Footer {
     | null;
   updatedAt?: string | null;
   createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "booking-events".
- */
-export interface BookingEvent {
-  id: string;
-  name: string;
-  slug?: string | null;
-  date?: string | null;
-  description?: string | null;
-  isOpen?: boolean | null;
-  maxTables?: number | null;
-  seatsPerTable?: number | null;
-  updatedAt: string;
-  createdAt: string;
 }
 
 

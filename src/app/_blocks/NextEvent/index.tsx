@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import moment from 'moment-timezone'
-import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import qs from 'qs'
 
@@ -10,14 +9,10 @@ import type { Event } from '../../../payload/payload-types'
 import { Page } from '../../../payload/payload-types'
 import { Gutter } from '../../_components/Gutter'
 import { Media as MediaComp } from '../../_components/Media'
+import { inter } from '../../_utilities/font'
+import { getMonthName } from '../../_utilities/getMonthName'
 
 import classes from './index.module.scss'
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal'],
-})
 
 type Props = Extract<Page['layout'][0], { blockType: 'nextEvent' }>
 
@@ -26,24 +21,6 @@ export const NextEventBlock: React.FC<
     id?: string
   }
 > = ({ media }) => {
-  const getMonthName = (monthNumber: number): string => {
-    const monthNames = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ]
-    return monthNames[monthNumber - 1]
-  }
-
   const [docs, setDocs] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | undefined>(undefined)

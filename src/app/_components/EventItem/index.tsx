@@ -1,73 +1,36 @@
 import React, { useState } from 'react'
 import moment from 'moment-timezone'
-import { Inter } from 'next/font/google'
 import Image from 'next/image'
 import Link from 'next/link'
 
 import { Event, Media } from '../../../payload/payload-types'
+import { inter } from '../../_utilities/font'
+import { getMonthName } from '../../_utilities/getMonthName'
 import { InterestedButton } from './InterestedButton'
 
 import classes from './index.module.scss'
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal'],
-})
 
 export const EventItem: React.FC<{
   event?: Event
   isNextEvent?: boolean
   onEventClick?: (event: Event | null) => void // Kept for backwards compatibility but not really needed
 }> = ({ event, isNextEvent = false }) => {
-  const { name, date, endTime, location, description, link, isJumpstart, image } = event || {}
+  const { name, date, location, description, link, isJumpstart, image } = event || {}
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const getMonthName = (monthNumber: number): string => {
-    const monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ]
-    return monthNames[monthNumber - 1]
-  }
-
   const localDate = date ? moment.utc(date).tz('Europe/London').format('YYYY-MM-DD HH:mm') : null
-  const localEndTime = endTime
-    ? moment.utc(endTime).tz('Europe/London').format('YYYY-MM-DD HH:mm')
-    : null
-  let concEndTime = null
 
   const dateParts = localDate ? localDate.split('-') : []
-  const year = dateParts[0] ?? ''
   const month = dateParts[1] ? parseInt(dateParts[1], 10) : 0
   const day = dateParts[2] ? dateParts[2].split(' ')[0] : ''
   const time =
     dateParts[2] && dateParts[2].split(' ')[1]
       ? dateParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
       : ''
-  const monthName = month ? getMonthName(month) : ''
-
-  if (localEndTime) {
-    const endTimeParts = localEndTime.split('-')
-    // concEndTime =
-    //   endTimeParts[2] && endTimeParts[2].split(' ')[1]
-    //     ? endTimeParts[2].split(' ')[1].split(':').slice(0, 2).join(':')
-    //     : null
-    concEndTime = null
-  }
+  const monthName = month ? getMonthName(month, true) : ''
 
   const dateString = day ? `${day} ${monthName}` : ''
-  const timeString = time ? `${time}${concEndTime ? ` - ${concEndTime}` : ''}` : ''
+  const timeString = time ? `${time}` : ''
 
   // Calculate "in X days"
   let daysLabel: string | null = null

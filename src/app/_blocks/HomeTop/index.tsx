@@ -2,7 +2,6 @@
 
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useRef, useState } from 'react'
-import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import qs from 'qs'
 
@@ -10,14 +9,9 @@ import type { Committee, Society, Sponsor } from '../../../payload/payload-types
 import { Page } from '../../../payload/payload-types'
 import { Image } from '../../_components/Media/Image'
 import { VerticalPadding } from '../../_components/VerticalPadding'
+import { inter } from '../../_utilities/font'
 
 import classes from './index.module.scss'
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal'],
-})
 
 type Result = {
   docs: (Sponsor | Committee | Society | string)[]
