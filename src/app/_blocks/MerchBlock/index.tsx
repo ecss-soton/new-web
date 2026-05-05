@@ -26,9 +26,7 @@ export const MerchBlock: React.FC<Props> = props => {
       {hasMerch ? (
         <MerchGridBlockItem items={merchItems} />
       ) : (
-        <div className={classes.emptyState}>
-          
-        </div>
+        <div className={classes.emptyState}></div>
       )}
 
       {notices && (
