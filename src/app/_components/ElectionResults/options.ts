@@ -51,6 +51,3 @@ export const buildOptions = (isMobile: boolean): ChartOptions<'bar'> => ({
     },
   },
 })
-
-// Keep the old named export so nothing else breaks if it was imported elsewhere
-export const options = buildOptions(false)

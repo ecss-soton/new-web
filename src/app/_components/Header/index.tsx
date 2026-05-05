@@ -1,11 +1,8 @@
 'use client'
 
-{
-  /* eslint-disable @next/next/no-img-element */
-}
+/* eslint-disable @next/next/no-img-element */
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -13,18 +10,13 @@ import { Header as HeaderType, Page } from '../../../payload/payload-types'
 import { fetchHeader } from '../../_api/fetchGlobals'
 import { useAuth } from '../../_providers/Auth'
 import { useTheme } from '../../_providers/Theme'
+import { inter } from '../../_utilities/font'
 import { Gutter } from '../Gutter'
 import { CMSLink } from '../Link'
 import { ThemeImage } from '../ThemeImage'
 import { HeaderNav } from './Nav'
 
 import classes from './index.module.scss'
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal'],
-})
 
 const useMediaQuery = width => {
   const [targetReached, setTargetReached] = useState(false)

@@ -1,20 +1,14 @@
 'use client'
 
 import React from 'react'
-import { Inter } from 'next/font/google'
 import Link from 'next/link'
 
 import { Committee, Media } from '../../../payload/payload-types'
 import { Image } from '../../_components/Media/Image'
+import { inter } from '../../_utilities/font'
 import RichText from '../RichText'
 
 import classes from './index.module.scss'
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal'],
-})
 
 interface PopUpProps {
   name: string

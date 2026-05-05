@@ -1,4 +1,4 @@
-import { randomBytes } from 'crypto'
+import { randomInt } from 'crypto'
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../../access/admins'
@@ -10,16 +10,14 @@ import { joinTable } from './endpoints/joinTable'
 import { leaveTable } from './endpoints/leaveTable'
 import { manageSeats } from './endpoints/manageSeats'
 import { toggleLock } from './endpoints/toggleLock'
-import { randomInt} from 'crypto'
 
 const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 
 const generateJoinCode = (): string => {
-  const bytes = randomBytes(8)
   let result = ''
   for (let i = 0; i < 8; i++) {
-    const index = randomInt(0, CHARS.length);
-    result += CHARS[index];
+    const index = randomInt(0, CHARS.length)
+    result += CHARS[index]
   }
   return result
 }
