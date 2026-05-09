@@ -30,6 +30,7 @@ export interface Config {
     'booking-events': BookingEvent;
     tables: Table;
     'ticket-holders': TicketHolder;
+    'wordle-scores': WordleScore;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -247,7 +248,7 @@ export interface Page {
         heroContent: {
           [k: string]: unknown;
         }[];
-        merchItems: (string | Merch)[];
+        merchItems?: (string | Merch)[] | null;
         notices?:
           | {
               [k: string]: unknown;
@@ -1259,6 +1260,26 @@ export interface TicketHolder {
       }[]
     | null;
   dietaryRequirements?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wordle-scores".
+ */
+export interface WordleScore {
+  id: string;
+  user: string | User;
+  displayName: string;
+  date: string;
+  solved: boolean;
+  guesses: number;
+  attempts?:
+    | {
+        guess?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
