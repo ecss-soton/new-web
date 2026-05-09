@@ -20,9 +20,7 @@ export const SocietyItem: React.FC<{
           <MediaComp imgClassName={classes.logo} resource={logo} fill />
         )}
       </div>
-      <div className={classes.content}>
-        {name && <h4 className={classes.title}>{name}</h4>}
-      </div>
+      <div className={classes.content}>{name && <h4 className={classes.title}>{name}</h4>}</div>
     </Link>
   )
 }
