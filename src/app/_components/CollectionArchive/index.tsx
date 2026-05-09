@@ -144,10 +144,10 @@ export const CollectionArchive: React.FC<Props> = props => {
                   },
                 }
               : {}),
-            ...(relationTo === 'events' && !isJumpstart
+            ...(relationTo === 'events' && isJumpstart
               ? {
-                  date: {
-                    greater_than_equal: today.toISOString(),
+                  isJumpstart: {
+                    equals: true,
                   },
                 }
               : {}),
@@ -280,15 +280,19 @@ export const CollectionArchive: React.FC<Props> = props => {
               </div>
 
               {(() => {
-                const filteredEvents = (results.docs || []).filter(result => {
+                const baseEvents = (results.docs || []).filter(result => {
                   if (typeof result !== 'object' || result === null || !('date' in result))
                     return false
                   if (isJumpstart) return 'isJumpstart' in result && result.isJumpstart === true
+                  return true
+                }) as Event[]
+
+                const filteredEvents = baseEvents.filter(result => {
                   return new Date((result as Event).date) > today
                 }) as Event[]
 
                 if (useCalendarView) {
-                  return <EventsCalendarView events={filteredEvents} />
+                  return <EventsCalendarView events={baseEvents} />
                 }
 
                 let lastMonthKey = ''
@@ -326,7 +330,7 @@ export const CollectionArchive: React.FC<Props> = props => {
               })()}
             </div>
           ) : (
-            <div className={relationTo === 'committee' ? classes.committeegrid : classes.grid}>
+            <div className={relationTo === 'committee' ? classes.committeegrid : (relationTo === "societies" ? classes.societygrid : classes.grid)}>
               {results.docs
                 ?.filter(result => {
                   if (!isJumpstart) return true
