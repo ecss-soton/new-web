@@ -9,6 +9,8 @@ import { mergeOpenGraph } from '../../../_utilities/mergeOpenGraph'
 
 import classes from './index.module.scss'
 
+export const dynamic = 'force-dynamic'
+
 interface LeaderboardEntry {
   userId: string
   displayName: string
