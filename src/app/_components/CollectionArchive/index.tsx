@@ -330,7 +330,15 @@ export const CollectionArchive: React.FC<Props> = props => {
               })()}
             </div>
           ) : (
-            <div className={relationTo === 'committee' ? classes.committeegrid : (relationTo === "societies" ? classes.societygrid : classes.grid)}>
+            <div
+              className={
+                relationTo === 'committee'
+                  ? classes.committeegrid
+                  : relationTo === 'societies'
+                  ? classes.societygrid
+                  : classes.grid
+              }
+            >
               {results.docs
                 ?.filter(result => {
                   if (!isJumpstart) return true
