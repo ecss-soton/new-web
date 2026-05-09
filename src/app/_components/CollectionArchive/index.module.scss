@@ -88,6 +88,18 @@
   }
 }
 
+.societygrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns on desktop */
+  width: 100%;
+  gap: var(--base) 40px;
+
+  @include small-break {
+    grid-template-columns: repeat(2, 1fr); /* Keep as reference, but override span below */
+  }
+}
+
+
 .committeegrid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -111,6 +123,17 @@
     grid-column-end: span 6;
   }
 }
+
+
+/* Override column spans for societygrid only */
+.societygrid .column {
+  grid-column-end: span 1; /* Takes 1 of 2 columns = 2 per row on desktop */
+  
+  @include small-break {
+    grid-column-end: span 2; /* Takes both columns = 1 per row on mobile */
+  }
+}
+
 
 .columnCommittee {
   grid-column-end: span 4;
