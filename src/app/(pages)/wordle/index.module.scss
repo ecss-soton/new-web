@@ -166,6 +166,29 @@
   gap: calc(var(--base) * 1.5);
 }
 
+.announcementActions {
+  display: flex;
+  align-items: center;
+  gap: var(--base);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.shareButton {
+  @extend %label;
+  padding: calc(var(--base) * 0.6) calc(var(--base) * 1.5);
+  background-color: #538d4e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
 .dateDisplay {
   font-size: 4rem;
   font-weight: 800;
@@ -189,6 +212,223 @@
 .tryAgainButton {
   @extend %label;
   padding: calc(var(--base) * 0.75) calc(var(--base) * 2);
+  background-color: var(--theme-elevation-1000);
+  color: var(--theme-elevation-0);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+// ─── Win / Try Again ─────────────────────────────────────────────────────────
+
+.winText {
+  @extend %body;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--theme-elevation-1000);
+  text-align: center;
+}
+
+.viewLeaderboardLink {
+  @extend %label;
+  color: var(--theme-elevation-1000);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:hover {
+    opacity: 0.75;
+  }
+}
+
+// ─── Saving ───────────────────────────────────────────────────────────────────
+
+.savingText {
+  @extend %body;
+  margin: calc(var(--base) * 1) 0 0;
+  color: var(--theme-elevation-500);
+  text-align: center;
+}
+
+// ─── Stats Panel ──────────────────────────────────────────────────────────────
+
+.statsPanel {
+  width: 100%;
+  margin-top: calc(var(--base) * 3);
+  padding-top: calc(var(--base) * 2);
+  border-top: 1px solid var(--theme-elevation-150);
+}
+
+.statsTitle {
+  @extend %h4;
+  text-align: center;
+  margin: 0;
+  color: var(--theme-elevation-1000);
+}
+
+.statsTitleRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--base);
+  margin: 0 0 calc(var(--base) * 1.5);
+  flex-wrap: wrap;
+}
+
+.editNameButton {
+  @extend %label;
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border: 1px solid var(--theme-elevation-300);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--theme-elevation-500);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+
+  &:hover {
+    border-color: var(--theme-elevation-1000);
+    color: var(--theme-elevation-1000);
+  }
+}
+
+.editNameInline {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.editNameInput {
+  padding: 2px 8px;
+  border: 2px solid var(--theme-elevation-300);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  background-color: var(--theme-elevation-0);
+  color: var(--theme-elevation-1000);
+  outline: none;
+  width: 150px;
+
+  &:focus {
+    border-color: var(--theme-elevation-1000);
+  }
+}
+
+.editNameSave,
+.editNameCancel {
+  @extend %label;
+  font-size: 0.65rem;
+  padding: 3px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.editNameSave {
+  background-color: var(--theme-elevation-1000);
+  color: var(--theme-elevation-0);
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+.editNameCancel {
+  background-color: var(--theme-elevation-100);
+  color: var(--theme-elevation-700);
+
+  &:hover {
+    background-color: var(--theme-elevation-200);
+  }
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--base);
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--theme-elevation-1000);
+  line-height: 1;
+}
+
+.statLabel {
+  @extend %label;
+  color: var(--theme-elevation-500);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// ─── Display Name Modal ───────────────────────────────────────────────────────
+
+.nameModalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.nameModal {
+  background-color: var(--theme-elevation-0);
+  border-radius: 8px;
+  padding: calc(var(--base) * 2);
+  width: 90%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.nameModalTitle {
+  @extend %h4;
+  margin: 0 0 var(--base);
+  color: var(--theme-elevation-1000);
+}
+
+.nameModalDesc {
+  @extend %body;
+  margin: 0 0 calc(var(--base) * 1.5);
+  color: var(--theme-elevation-500);
+  font-size: 0.9rem;
+}
+
+.nameModalInput {
+  width: 100%;
+  padding: calc(var(--base) * 0.6) var(--base);
+  border: 2px solid var(--theme-elevation-300);
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: var(--theme-elevation-0);
+  color: var(--theme-elevation-1000);
+  margin-bottom: calc(var(--base) * 1.5);
+  outline: none;
+  transition: border-color 0.15s;
+
+  &:focus {
+    border-color: var(--theme-elevation-1000);
+  }
+}
+
+.nameModalButton {
+  @extend %label;
+  padding: calc(var(--base) * 0.65) calc(var(--base) * 2);
   background-color: var(--theme-elevation-1000);
   color: var(--theme-elevation-0);
   border: none;
