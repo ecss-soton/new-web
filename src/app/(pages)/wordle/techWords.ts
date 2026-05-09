@@ -158,7 +158,7 @@ const TECH_WORDS = [
   'WEBGL',
   'WIRES',
   'YIELD',
-];
+]
 
 export function getDailyWord(): string {
   const today = new Date().toISOString().split('T')[0]
