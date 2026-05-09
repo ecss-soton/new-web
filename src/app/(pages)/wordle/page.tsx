@@ -8,6 +8,8 @@ import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
 import { getDailyWord, getPuzzleNumber, getTodayDate } from './techWords'
 import { WordleGame } from './WordleGame'
 
+export const dynamic = 'force-dynamic'
+
 export default async function WordlePage() {
   const { user, token } = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(

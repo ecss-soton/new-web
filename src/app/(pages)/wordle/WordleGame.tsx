@@ -140,16 +140,39 @@ export const WordleGame: React.FC<WordleGameProps> = ({
   )
 
   useEffect(() => {
-    if (todayScore) {
-      const attemptStrings = todayScore.attempts?.map((a: any) => a.guess) || []
-      setGuesses(attemptStrings)
-      setGameStatus(todayScore.solved ? 'won' : 'lost')
-      setReplayLocked(true)
-      fetchStats()
-    } else if (!existingDisplayName) {
-      setShowNameModal(true)
+    const checkToday = async () => {
+      try {
+        const req = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/wordle-scores?where[user][equals]=${user.id}&where[date][equals]=${todayDate}&depth=0`,
+          { credentials: 'include' },
+        )
+        const { docs } = await req.json()
+        if (docs && docs.length > 0) {
+          const score = docs[0]
+          setGuesses(score.attempts?.map((a: any) => a.guess) || [])
+          setGameStatus(score.solved ? 'won' : 'lost')
+          setReplayLocked(true)
+          setDisplayName(score.displayName || existingDisplayName || '')
+          fetchStats()
+          return
+        }
+      } catch {
+        // ignore, fall back to props
+      }
+
+      if (todayScore) {
+        const attemptStrings = todayScore.attempts?.map((a: any) => a.guess) || []
+        setGuesses(attemptStrings)
+        setGameStatus(todayScore.solved ? 'won' : 'lost')
+        setReplayLocked(true)
+        fetchStats()
+      } else if (!existingDisplayName) {
+        setShowNameModal(true)
+      }
     }
-  }, [todayScore, existingDisplayName, fetchStats])
+
+    checkToday()
+  }, [])
 
   const showMessage = (msg: string) => {
     setMessage(msg)
