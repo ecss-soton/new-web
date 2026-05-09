@@ -1,5 +1,6 @@
 import React from 'react'
 import { Metadata } from 'next'
+import Link from 'next/link'
 
 import { Gutter } from '../../../_components/Gutter'
 import { LowImpactHero } from '../../../_heros/LowImpact'
@@ -7,6 +8,8 @@ import { getMeUser } from '../../../_utilities/getMeUser'
 import { mergeOpenGraph } from '../../../_utilities/mergeOpenGraph'
 
 import classes from './index.module.scss'
+
+export const dynamic = 'force-dynamic'
 
 interface LeaderboardEntry {
   userId: string
@@ -78,6 +81,9 @@ export default async function LeaderboardPage() {
               </table>
             </div>
           )}
+          <Link href="/wordle" className={classes.backLink}>
+            &larr; Back to ECSSle
+          </Link>
         </div>
       </Gutter>
     </>
