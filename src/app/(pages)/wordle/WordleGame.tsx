@@ -266,6 +266,7 @@ export const WordleGame: React.FC<WordleGameProps> = ({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (showNameModal) return
       if (e.ctrlKey || e.metaKey || e.altKey) return
 
       const key = e.key.toUpperCase()
@@ -278,7 +279,7 @@ export const WordleGame: React.FC<WordleGameProps> = ({
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [onKeyPress])
+  }, [onKeyPress, showNameModal])
 
   useEffect(() => {
     if ((gameStatus === 'won' || gameStatus === 'lost') && announcementRef.current) {

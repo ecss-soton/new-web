@@ -1,5 +1,6 @@
 import React from 'react'
 import { Metadata } from 'next'
+import Link from 'next/link'
 
 import { Gutter } from '../../../_components/Gutter'
 import { LowImpactHero } from '../../../_heros/LowImpact'
@@ -78,6 +79,9 @@ export default async function LeaderboardPage() {
               </table>
             </div>
           )}
+          <Link href="/wordle" className={classes.backLink}>
+            &larr; Back to ECSSle
+          </Link>
         </div>
       </Gutter>
     </>

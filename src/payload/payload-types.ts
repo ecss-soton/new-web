@@ -30,6 +30,7 @@ export interface Config {
     'booking-events': BookingEvent;
     tables: Table;
     'ticket-holders': TicketHolder;
+    'wordle-overrides': WordleOverride;
     'wordle-scores': WordleScore;
     redirects: Redirect;
     forms: Form;
@@ -1260,6 +1261,17 @@ export interface TicketHolder {
       }[]
     | null;
   dietaryRequirements?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wordle-overrides".
+ */
+export interface WordleOverride {
+  id: string;
+  date: string;
+  word: string;
   updatedAt: string;
   createdAt: string;
 }
