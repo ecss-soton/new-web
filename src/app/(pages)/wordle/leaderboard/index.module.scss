@@ -1,0 +1,65 @@
+@import '../../../_css/common';
+
+.leaderboardWrapper {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: calc(var(--base) * 2) 0 calc(var(--base) * 4);
+}
+
+.emptyText {
+  @extend %body;
+  text-align: center;
+  color: var(--theme-elevation-500);
+  margin: calc(var(--base) * 3) 0;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+
+  th {
+    @extend %label;
+    text-align: left;
+    padding: calc(var(--base) * 0.75) var(--base);
+    border-bottom: 2px solid var(--theme-elevation-200);
+    color: var(--theme-elevation-500);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: calc(var(--base) * 0.65) var(--base);
+    border-bottom: 1px solid var(--theme-elevation-100);
+    white-space: nowrap;
+  }
+
+  tr:hover {
+    background-color: var(--theme-elevation-50);
+  }
+
+  .rankCell {
+    font-weight: 700;
+    color: var(--theme-elevation-400);
+  }
+}
+
+.highlight {
+  background-color: var(--theme-elevation-100);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .table {
+    font-size: 0.8rem;
+
+    th,
+    td {
+      padding: calc(var(--base) * 0.5) calc(var(--base) * 0.5);
+    }
+  }
+}
