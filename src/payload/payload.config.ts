@@ -39,6 +39,7 @@ import { Tables } from './collections/Tables'
 import { TicketHolders } from './collections/TicketHolders'
 import Users from './collections/Users'
 import Votes from './collections/Votes'
+import WordleOverrides from './collections/WordleOverrides'
 import WordleScores from './collections/WordleScores'
 import { Footer } from './globals/Footer'
 import { Header } from './globals/Header'
@@ -144,6 +145,7 @@ export default buildConfig({
     BookingEvents,
     Tables,
     TicketHolders,
+    WordleOverrides,
     WordleScores,
   ],
   globals: [Settings, Header, Footer],
