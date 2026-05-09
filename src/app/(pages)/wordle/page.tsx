@@ -15,9 +15,24 @@ export default async function WordlePage() {
     )}&redirect=${encodeURIComponent('/wordle')}`,
   })
 
-  const dailyWord = getDailyWord()
+  let dailyWord = getDailyWord()
   const todayDate = getTodayDate()
   const puzzleNumber = getPuzzleNumber()
+
+  try {
+    const overrideReq = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/wordle-overrides?where[date][equals]=${todayDate}&depth=0`,
+      {
+        headers: { Authorization: `JWT ${token}` },
+      },
+    )
+    const { docs: overrideDocs } = await overrideReq.json()
+    if (overrideDocs && overrideDocs.length > 0) {
+      dailyWord = overrideDocs[0].word.toUpperCase()
+    }
+  } catch (err) {
+    console.warn('Failed to fetch word override:', err) // eslint-disable-line no-console
+  }
 
   let todayScore = null
   let existingDisplayName = null
