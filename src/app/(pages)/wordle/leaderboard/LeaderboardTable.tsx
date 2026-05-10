@@ -105,10 +105,10 @@ export const LeaderboardTable: React.FC<{
             <th>#</th>
             <th>Name</th>
             {renderHeader('wins', 'Wins')}
-            {renderHeader('accuracy', 'Accuracy')}
+            {renderHeader('avg', 'Avg')}
             {renderHeader('streak', 'Streak')}
             {renderHeader('longest', 'Longest')}
-            {renderHeader('avg', 'Avg')}
+            {renderHeader('accuracy', 'Accuracy')}
           </tr>
         </thead>
         <tbody>
@@ -120,10 +120,10 @@ export const LeaderboardTable: React.FC<{
               <td className={classes.rankCell}>{i + 1}</td>
               <td>{entry.displayName}</td>
               <td>{entry.totalWins}</td>
-              <td>{entry.winRate}%</td>
+              <td>{entry.avgGuesses.toFixed(1)}</td>
               <td>{entry.currentStreak}</td>
               <td>{entry.maxStreak}</td>
-              <td>{entry.avgGuesses.toFixed(1)}</td>
+              <td>{entry.winRate}%</td>
             </tr>
           ))}
         </tbody>
