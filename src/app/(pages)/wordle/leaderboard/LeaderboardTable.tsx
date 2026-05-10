@@ -18,8 +18,8 @@ export interface LeaderboardEntry {
 type SortColumn = 'wins' | 'accuracy' | 'longest' | 'streak' | 'avg'
 type SortDirection = 'asc' | 'desc'
 
-const DEFAULT_SORT: SortColumn = 'avg'
-const DEFAULT_DIR: SortDirection = 'asc'
+const DEFAULT_SORT: SortColumn = 'wins'
+const DEFAULT_DIR: SortDirection = 'desc'
 
 const NATURAL_DIR: Record<SortColumn, SortDirection> = {
   wins: 'desc',
@@ -63,8 +63,9 @@ export const LeaderboardTable: React.FC<{
           bVal = b.avgGuesses
           break
       }
-      if (sortDir === 'asc') return aVal - bVal
-      return bVal - aVal
+      const primary = sortDir === 'asc' ? aVal - bVal : bVal - aVal
+      if (primary !== 0) return primary
+      return a.avgGuesses - b.avgGuesses
     })
     return sorted
   }, [data, sortColumn, sortDir])
