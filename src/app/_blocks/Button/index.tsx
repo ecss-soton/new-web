@@ -17,8 +17,6 @@ export const ButtonBlock: React.FC<
 > = props => {
   const { text, link, appearance } = props
 
-  //   console.log("YAMOOOOOOO")
-
   return (
     <Gutter>
       <Button appearance={appearance} label={text} href={link}></Button>

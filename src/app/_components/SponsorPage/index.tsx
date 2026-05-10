@@ -14,17 +14,7 @@ import classes from './index.module.scss'
 export const SponsorPage: React.FC<{
   sponsor?: Sponsor
 }> = props => {
-  const {
-    sponsor: { logo, description, links, level, name, websiteUrl },
-  } = props
-
-  // const { slug, title, categories, meta } = doc || {}
-  // const { description, image: metaImage } = meta || {}
-
-  // const hasCa  tegories = categories && Array.isArray(categories) && categories.length > 0
-  // const titleToUse = titleFromProps || title
-  // const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  // const href = `/${relationTo}/${slug}`
+  const { logo, description, links, level, name, websiteUrl } = props.sponsor || {}
 
   return (
     <>
