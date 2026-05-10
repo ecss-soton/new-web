@@ -1,82 +1,145 @@
 @import '../../_css/common';
 
 .container {
-    width: 100%;
-    min-height: 690px;
-    position: relative;
-    padding-left: 8%;
-    padding-right: 5%;
-    padding-bottom: 50px;
+  width: 100%;
+  min-height: 690px;
+  position: relative;
+  padding-left: 8%;
+  padding-right: 5%;
+  padding-bottom: 80px;
 
-    @include mid-break {
-        min-height: 70vw;
-        padding-bottom: 8vw;
-    }
+  @include mid-break {
+    min-height: auto;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-bottom: 12vw;
+  }
 }
 
 .grey {
-    min-height: 608px;
-    width: 55%;
-    padding: 4%;
-    background: var(--theme-elevation-150);
-    position: relative;
-    z-index: 1;
+  min-height: 608px;
+  width: 55%;
+  padding: 5% 4% 4%;
+  background: var(--theme-elevation-150);
+  position: relative;
+  z-index: 1;
+  border-radius: 4px;
 
-    @include mid-break {
-        width: 85%;
-        min-height: 59vw;
-    }
+  @include mid-break {
+    width: 90%;
+    min-height: auto;
+    padding: 8% 6% 8%;
+  }
+
+  @include small-break {
+    width: 100%;
+    padding: 10% 7% 10%;
+    border-radius: 0;
+  }
 }
 
 .red {
-    height: 85%;
-    min-height: 560px;
-    width: 55%;
-    left: 35%;
-    top: 10%;
-    background: #A01B1B;
-    z-index: -2;
-    position: absolute;
+  height: 85%;
+  min-height: 560px;
+  width: 55%;
+  left: 35%;
+  top: 10%;
+  background: #a01b1b;
+  z-index: -2;
+  position: absolute;
+  border-radius: 4px;
 
-    @include mid-break {
-        min-height: 50vw;
-        height: 85%;
-    }
+  @include mid-break {
+    min-height: 50vw;
+    height: 85%;
+    width: 65%;
+    left: 30%;
+  }
+
+  @include small-break {
+    display: none;
+  }
 }
 
 .text {
-    color: var(--theme-elevation-1000);
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
+  color: var(--theme-elevation-1000);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.2;
 
-    @include mid-break {
-        font-size: clamp(16px, 3.5vw, 24px);
+  h1,
+  h2,
+  h3 {
+    margin-top: 0;
+  }
 
-        p {
-            margin: 15px 0;
-        }
-
-        h3 {
-            font-size: clamp(20px, 4.5vw, 28px);
-            margin: 15px 0;
-        }
-    }
+  @include mid-break {
+    font-size: clamp(16px, 3.5vw, 24px);
+  }
 }
 
 .image {
-    height: 83%;
-    min-height: 545px;
-    width: 55%;
-    left: 33%;
-    top: 11%;
-    object-fit: cover;
-    z-index: -1;
-    position: absolute;
+  height: 83%;
+  min-height: 545px;
+  width: 55%;
+  left: 33%;
+  top: 11%;
+  object-fit: cover;
+  z-index: -1;
+  position: absolute;
+  border-radius: 4px;
 
-    @include mid-break {
-        min-height: 50vw;
-        height: 85%;
-    }
+  @include mid-break {
+    min-height: 50vw;
+    height: 85%;
+    width: 60%;
+    left: 28%;
+  }
+
+  @include small-break {
+    width: 80%;
+    left: 10%;
+    min-height: 40vw;
+    height: 60%;
+    top: 55%;
+  }
+}
+
+.quickLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: calc(var(--base) * 2);
+}
+
+.quickLink {
+  @extend %label;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: var(--theme-elevation-0);
+  color: var(--theme-elevation-1000);
+  border: 1px solid var(--theme-elevation-200);
+  border-radius: 0 0 10px 10px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background: rgba(160, 27, 27, 0.85);
+    border-color: rgba(160, 27, 27, 0.9);
+    color: #fca5a5;
+    transform: translateY(-2px);
+  }
+
+  @include mid-break {
+    padding: 10px 18px;
+    font-size: 0.8rem;
+  }
 }

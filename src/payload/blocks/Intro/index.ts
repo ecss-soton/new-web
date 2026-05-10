@@ -21,5 +21,30 @@ export const Intro: Block = {
       relationTo: 'media',
       required: true,
     },
+    {
+      name: 'quickLinks',
+      label: 'Quick Links',
+      type: 'array',
+      minRows: 0,
+      maxRows: 8,
+      labels: {
+        singular: 'Link',
+        plural: 'Links',
+      },
+      fields: [
+        {
+          name: 'label',
+          label: 'Label',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'url',
+          label: 'URL',
+          type: 'text',
+          required: true,
+        },
+      ],
+    },
   ],
 }
