@@ -30,6 +30,20 @@
     border-bottom: 2px solid var(--theme-elevation-200);
     color: var(--theme-elevation-500);
     white-space: nowrap;
+    user-select: none;
+  }
+
+  .sortable {
+    cursor: pointer;
+    transition: color 0.15s;
+
+    &:hover {
+      color: var(--theme-elevation-1000);
+    }
+  }
+
+  .sorted {
+    color: var(--theme-elevation-1000);
   }
 
   td {
