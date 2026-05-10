@@ -66,6 +66,10 @@ export const INTRO = `
   blockType
   content
   ${MEDIA}
+  quickLinks {
+    label
+    url
+  }
 }
 `
 

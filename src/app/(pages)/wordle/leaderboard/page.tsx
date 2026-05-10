@@ -6,21 +6,11 @@ import { Gutter } from '../../../_components/Gutter'
 import { LowImpactHero } from '../../../_heros/LowImpact'
 import { getMeUser } from '../../../_utilities/getMeUser'
 import { mergeOpenGraph } from '../../../_utilities/mergeOpenGraph'
+import { LeaderboardTable, type LeaderboardEntry } from './LeaderboardTable'
 
 import classes from './index.module.scss'
 
 export const dynamic = 'force-dynamic'
-
-interface LeaderboardEntry {
-  userId: string
-  displayName: string
-  totalGames: number
-  totalWins: number
-  winRate: number
-  currentStreak: number
-  maxStreak: number
-  avgGuesses: number
-}
 
 export default async function LeaderboardPage() {
   const { user, token } = await getMeUser({
@@ -46,41 +36,7 @@ export default async function LeaderboardPage() {
       <LowImpactHero title="ECSSle Leaderboard" type="lowImpact" />
       <Gutter>
         <div className={classes.leaderboardWrapper}>
-          {leaderboard.length === 0 ? (
-            <p className={classes.emptyText}>No games played yet. Be the first!</p>
-          ) : (
-            <div className={classes.tableWrapper}>
-              <table className={classes.table}>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Wins</th>
-                    <th>Accuracy</th>
-                    <th>Streak</th>
-                    <th>Best</th>
-                    <th>Avg</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {leaderboard.map((entry, i) => (
-                    <tr
-                      key={entry.userId}
-                      className={entry.userId === user.id ? classes.highlight : ''}
-                    >
-                      <td className={classes.rankCell}>{i + 1}</td>
-                      <td>{entry.displayName}</td>
-                      <td>{entry.totalWins}</td>
-                      <td>{entry.winRate}%</td>
-                      <td>{entry.currentStreak}</td>
-                      <td>{entry.maxStreak}</td>
-                      <td>{entry.avgGuesses}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <LeaderboardTable data={leaderboard} currentUserId={user.id} />
           <Link href="/wordle" className={classes.backLink}>
             &larr; Back to ECSSle
           </Link>
