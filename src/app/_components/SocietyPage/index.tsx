@@ -15,17 +15,8 @@ import classes from './index.module.scss'
 export const SocietyPage: React.FC<{
   society?: Society
 }> = props => {
-  const {
-    society: { logo, description, links, email, name, website, susu, github, instagram, discord },
-  } = props
-
-  // const { slug, title, categories, meta } = doc || {}
-  // const { description, image: metaImage } = meta || {}
-
-  // const hasCa  tegories = categories && Array.isArray(categories) && categories.length > 0
-  // const titleToUse = titleFromProps || title
-  // const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  // const href = `/${relationTo}/${slug}`
+  const { logo, description, links, email, name, website, susu, github, instagram, discord } =
+    props.society || {}
 
   return (
     <>
@@ -112,10 +103,6 @@ export const SocietyPage: React.FC<{
 
           <LinkList links={links.map(link => link.link)} />
         </div>
-
-        {/* <div>
-          <LinkList links={links.map(link => link.link)} />
-        </div> */}
       </Gutter>
     </>
   )

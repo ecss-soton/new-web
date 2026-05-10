@@ -95,7 +95,7 @@
   border-radius: 4px;
   cursor: pointer;
   user-select: none;
-  background-color: var(--theme-elevation-200);
+  background-color: var(--theme-elevation-400);
   color: var(--theme-elevation-1000);
   display: flex;
   justify-content: center;
@@ -130,7 +130,7 @@
 }
 
 .key.absent {
-  background-color: var(--theme-elevation-400);
+  background-color: var(--theme-elevation-200);
   color: #fff;
 }
 

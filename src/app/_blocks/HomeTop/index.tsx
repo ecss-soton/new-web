@@ -97,7 +97,7 @@ export const HomeTopBlock: React.FC<
     }
   }, [])
 
-  const committeeCount = results.totalDocs || 16
+  const committeeCount = results.totalDocs || 17
   const displayedMembersCount = Math.max(500, Math.floor(membersCount / 10) * 10)
 
   const renderDynamicHeading = (text: string) => {

@@ -22,13 +22,6 @@ export const Positions: React.FC<{
 }> = props => {
   const { user, positions, election, canCreateNominations } = props
 
-  // const { slug, title, categories, meta } = doc || {}
-  // const { description, image: metaImage } = meta || {}
-
-  // const hasCategories = categories && Array.isArray(categories) && categories.length > 0
-  // const titleToUse = titleFromProps || title
-  // const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  // const href = `/${relationTo}/${slug}`
   positions?.sort((p1, p2) => p1.importance - p2.importance)
   const hasPassedVoting = new Date().getTime() > Date.parse(election.votingEnd)
   const isBeingVoted =
