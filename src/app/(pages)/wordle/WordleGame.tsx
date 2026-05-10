@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 
+import { inter } from '../../_utilities/font'
 import VALID_WORDS from './validWords.json'
 
 import classes from './index.module.scss'
@@ -337,7 +338,7 @@ export const WordleGame: React.FC<WordleGameProps> = ({
   }
 
   return (
-    <div className={classes.wordleContainer}>
+    <div className={[classes.wordleContainer, inter.className].join(' ')}>
       {showNameModal && (
         <div className={classes.nameModalOverlay}>
           <div className={classes.nameModal}>

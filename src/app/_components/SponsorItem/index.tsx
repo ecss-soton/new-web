@@ -18,25 +18,7 @@ export const SponsorItem: React.FC<{
   name?: string
   logo?: string | Media | null
 }> = props => {
-  const {
-    // relationTo,
-    // showCategories,
-    // title: titleFromProps,
-    // doc,
-    // className,
-    // orientation = 'vertical',
-    slug,
-    name,
-    logo,
-  } = props
-
-  // const { slug, title, categories, meta } = doc || {}
-  // const { description, image: metaImage } = meta || {}
-
-  // const hasCategories = categories && Array.isArray(categories) && categories.length > 0
-  // const titleToUse = titleFromProps || title
-  // const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  // const href = `/${relationTo}/${slug}`
+  const { slug, name, logo } = props
 
   return (
     <div className={[classes.card].filter(Boolean).join(' ')}>
