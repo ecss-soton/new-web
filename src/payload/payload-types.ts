@@ -226,6 +226,13 @@ export interface Page {
           [k: string]: unknown;
         }[];
         media: string | Media;
+        quickLinks?:
+          | {
+              label: string;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'intro';

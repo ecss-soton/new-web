@@ -87,7 +87,7 @@ export const leaderboard: PayloadHandler = async (req, res): Promise<void> => {
 
     stats.sort((a, b) => {
       if (b.totalWins !== a.totalWins) return b.totalWins - a.totalWins
-      return b.winRate - a.winRate
+      return a.avgGuesses - b.avgGuesses
     })
 
     res.json({ leaderboard: stats })
