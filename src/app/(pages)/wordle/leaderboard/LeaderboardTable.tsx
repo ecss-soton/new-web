@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react'
 
+import { inter } from '../../../_utilities/font'
 import classes from './index.module.scss'
 
 export interface LeaderboardEntry {
@@ -98,7 +99,7 @@ export const LeaderboardTable: React.FC<{
   }
 
   return (
-    <div className={classes.tableWrapper}>
+    <div className={[classes.tableWrapper, inter.className].join(' ')}>
       <table className={classes.table}>
         <thead>
           <tr>
