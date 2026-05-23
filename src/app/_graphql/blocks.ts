@@ -49,15 +49,18 @@ export const HOME_TOP = `
 ...on HomeTop {
   blockType
   heading
-  show_on_mobile
-  image1 {
+  backgroundImage {
     ${MEDIA_FIELDS}
   }
-  image2 {
-    ${MEDIA_FIELDS}
-  }
-  image3 {
-    ${MEDIA_FIELDS}
+  stats {
+    membersLink {
+      url
+      label
+    }
+    committeeLink {
+      url
+      label
+    }
   }
 }
 `
@@ -77,6 +80,11 @@ export const NEXT_EVENT = `
 ...on NextEvent {
   blockType
   ${MEDIA}
+  subheading
+  fallbackTitle
+  eventsLinkText
+  eventsLinkUrl
+  timezone
 }
 `
 // adding sponsors and societies exectra breaks shit
@@ -163,6 +171,8 @@ export const SUMMER_PARTY_BLOCK = `
   }
   heroTitle
   heroText
+  faqsTitle
+  organisersTitle
   decorationImage {
     ${MEDIA_FIELDS}
   }
