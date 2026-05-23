@@ -162,11 +162,11 @@ const TECH_WORDS = [
 
 export function getDailyWord(): string {
   const today = new Date().toISOString().split('T')[0]
-  let hash = 0
+  let hash = 5381
   for (let i = 0; i < today.length; i++) {
-    hash = (hash * 31 + today.charCodeAt(i)) | 0
+    hash = ((hash << 5) + hash + today.charCodeAt(i)) | 0
   }
-  return TECH_WORDS[Math.abs(hash) % TECH_WORDS.length]
+  return TECH_WORDS[(hash >>> 0) % TECH_WORDS.length]
 }
 
 export function getTodayDate(): string {

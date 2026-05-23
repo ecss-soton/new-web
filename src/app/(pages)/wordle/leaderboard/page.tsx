@@ -6,7 +6,7 @@ import { Gutter } from '../../../_components/Gutter'
 import { LowImpactHero } from '../../../_heros/LowImpact'
 import { getMeUser } from '../../../_utilities/getMeUser'
 import { mergeOpenGraph } from '../../../_utilities/mergeOpenGraph'
-import { LeaderboardTable, type LeaderboardEntry } from './LeaderboardTable'
+import { type LeaderboardEntry, LeaderboardTable } from './LeaderboardTable'
 
 import classes from './index.module.scss'
 
