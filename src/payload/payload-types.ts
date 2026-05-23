@@ -213,10 +213,17 @@ export interface Page {
       }
     | {
         heading: string;
-        show_on_mobile?: boolean | null;
-        image1?: string | Media | null;
-        image2?: string | Media | null;
-        image3?: string | Media | null;
+        backgroundImage?: string | Media | null;
+        stats?: {
+          membersLink?: {
+            url?: string | null;
+            label?: string | null;
+          };
+          committeeLink?: {
+            url?: string | null;
+            label?: string | null;
+          };
+        };
         id?: string | null;
         blockName?: string | null;
         blockType: 'homeTop';
@@ -239,6 +246,11 @@ export interface Page {
       }
     | {
         media: string | Media;
+        subheading?: string | null;
+        fallbackTitle?: string | null;
+        eventsLinkText?: string | null;
+        eventsLinkUrl?: string | null;
+        timezone?: string | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'nextEvent';
@@ -271,6 +283,8 @@ export interface Page {
         floatingImage?: string | Media | null;
         heroTitle: string;
         heroText: string;
+        faqsTitle?: string | null;
+        organisersTitle?: string | null;
         decorationImage?: string | Media | null;
         buttons?:
           | {
@@ -1516,6 +1530,12 @@ export interface PayloadMigration {
  */
 export interface Settings {
   id: string;
+  siteName?: string | null;
+  contactEmail?: string | null;
+  emailDomain?: string | null;
+  siteLogo?: string | Media | null;
+  siteLogoDark?: string | Media | null;
+  footerLogo?: string | Media | null;
   postsPage?: (string | null) | Page;
   projectsPage?: (string | null) | Page;
   updatedAt?: string | null;

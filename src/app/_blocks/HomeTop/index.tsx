@@ -23,7 +23,7 @@ export const HomeTopBlock: React.FC<
   Props & {
     id?: string
   }
-> = ({ heading, image1, show_on_mobile }) => {
+> = ({ heading, backgroundImage, stats }) => {
   const [results, setResults] = useState<Result>({
     docs: [],
     totalDocs: 0,
@@ -100,6 +100,11 @@ export const HomeTopBlock: React.FC<
   const committeeCount = results.totalDocs || 17
   const displayedMembersCount = Math.max(500, Math.floor(membersCount / 10) * 10)
 
+  const membersUrl = stats?.membersLink?.url || '/societies'
+  const membersLabel = stats?.membersLink?.label || 'members'
+  const committeeUrl = stats?.committeeLink?.url || '/committee'
+  const committeeLabel = stats?.committeeLink?.label || 'committee'
+
   const renderDynamicHeading = (text: string) => {
     if (!text) return null
     const regex = /(Electronics and Computer Science Society|ECSS)/gi
@@ -121,7 +126,9 @@ export const HomeTopBlock: React.FC<
 
   return (
     <div className={[classes.background].join(' ').trim()}>
-      {image1 && <Media resource={image1} className={classes.backgroundMedia} priority />}
+      {backgroundImage && (
+        <Media resource={backgroundImage} className={classes.backgroundMedia} priority />
+      )}
       {error && <p>{error}</p>}
       <div className={[classes.container, inter.className].join(' ')}>
         <div className={classes.intro}>
@@ -131,15 +138,15 @@ export const HomeTopBlock: React.FC<
             </h1>
           </div>
           <div className={[classes.buttons, inter.className].join(' ')}>
-            <Link href="/societies" className={classes.button}>
+            <Link href={membersUrl} className={classes.button}>
               <span className={classes.buttonNumber}>
                 {isLoading ? '...' : `${displayedMembersCount}+`}
               </span>
-              <span className={classes.buttonLabel}>members</span>
+              <span className={classes.buttonLabel}>{membersLabel}</span>
             </Link>
-            <Link href="/committee" className={classes.button}>
+            <Link href={committeeUrl} className={classes.button}>
               <span className={classes.buttonNumber}>{isLoading ? '...' : committeeCount}</span>
-              <span className={classes.buttonLabel}>committee</span>
+              <span className={classes.buttonLabel}>{committeeLabel}</span>
             </Link>
           </div>
         </div>

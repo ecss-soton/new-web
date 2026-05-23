@@ -14,13 +14,15 @@ type Props = Extract<Page['layout'][0], { blockType: 'mediaBlock' }> & {
 }
 
 export const MediaBlock: React.FC<Props> = props => {
-  const { media, position = 'default', staticImage } = props
+  const { media, position = 'default', staticImage, invertBackground } = props
 
   let caption
   if (media && typeof media === 'object') caption = media.caption
 
   return (
-    <div className={classes.mediaBlock}>
+    <div
+      className={[classes.mediaBlock, invertBackground ? classes.invertBackground : ''].join(' ')}
+    >
       {position === 'fullscreen' && (
         <div className={classes.fullscreen}>
           <Media resource={media} src={staticImage} />

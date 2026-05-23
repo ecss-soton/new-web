@@ -42,6 +42,18 @@ export const PartyBlock: Block = {
       required: true,
     },
     {
+      name: 'faqsTitle',
+      type: 'text',
+      label: 'FAQ Section Title',
+      defaultValue: 'FAQS',
+    },
+    {
+      name: 'organisersTitle',
+      type: 'text',
+      label: 'Organisers Section Title',
+      defaultValue: 'This event is organised by',
+    },
+    {
       name: 'decorationImage',
       type: 'upload',
       relationTo: 'media',

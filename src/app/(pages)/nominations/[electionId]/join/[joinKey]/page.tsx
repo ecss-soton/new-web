@@ -8,10 +8,14 @@ import { JoinNominationForm } from './JoinNominationForm'
 
 import classes from './index.module.scss'
 
-export default async function JoinNomination({ params: { electionId: nominationId, joinKey } }) {
+export default async function JoinNomination({
+  params: { electionId: nominationId, joinKey },
+}: {
+  params: { electionId: string; joinKey: string }
+}) {
   const { user } = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
-      'You must be logged in to access your account.',
+      'You must be logged in to join a nomination.',
     )}&redirect=${encodeURIComponent(`/nominations/${nominationId}/join/${joinKey}`)}`,
   })
 
@@ -23,10 +27,10 @@ export default async function JoinNomination({ params: { electionId: nominationI
 }
 
 export const metadata: Metadata = {
-  title: 'Recover Password',
-  description: 'Enter your email address to recover your password.',
+  title: 'Join Nomination',
+  description: 'Join a joint nomination ticket.',
   openGraph: mergeOpenGraph({
-    title: 'Recover Password',
-    url: '/recover-password',
+    title: 'Join Nomination',
+    url: '/nominations',
   }),
 }

@@ -6,11 +6,9 @@ import React, { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { Header as HeaderType, Page } from '../../../payload/payload-types'
-import { fetchHeader } from '../../_api/fetchGlobals'
+import { Header as HeaderType, Page, Settings } from '../../../payload/payload-types'
+import { fetchHeader, fetchSettings } from '../../_api/fetchGlobals'
 import { useAuth } from '../../_providers/Auth'
-import { useTheme } from '../../_providers/Theme'
-import { inter } from '../../_utilities/font'
 import { Gutter } from '../Gutter'
 import { CMSLink } from '../Link'
 import { ThemeImage } from '../ThemeImage'
@@ -33,7 +31,6 @@ const useMediaQuery = width => {
     const media = window.matchMedia(`(max-width: ${width}px)`)
     media.addEventListener('change', updateTarget)
 
-    // Check on mount (callback is not called until a change occurs)
     if (media.matches) {
       setTargetReached(true)
     }
@@ -53,21 +50,32 @@ const fetchHeaderData = async () => {
   }
 }
 
+const fetchSettingsData = async () => {
+  try {
+    const settings = await fetchSettings()
+    return settings
+  } catch (error) {
+    return null
+  }
+}
+
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [header, setHeader] = useState<HeaderType | null>(null)
+  const [settings, setSettings] = useState<Settings | null>(null)
   const { user } = useAuth()
   const currentPath = usePathname()
   const isBreakpoint = useMediaQuery(1100)
 
   useEffect(() => {
-    const getHeaderData = async () => {
-      const headerData = await fetchHeaderData()
+    const getData = async () => {
+      const [headerData, settingsData] = await Promise.all([fetchHeaderData(), fetchSettingsData()])
       setHeader(headerData)
+      setSettings(settingsData)
     }
 
-    getHeaderData()
+    getData()
   }, [])
 
   useEffect(() => {
@@ -83,6 +91,23 @@ const Header: React.FC = () => {
     setIsOpen(newIsOpen)
   }
 
+  const logoSrc =
+    settings?.siteLogo && typeof settings.siteLogo !== 'string' && settings.siteLogo.url
+      ? settings.siteLogo.url
+      : '/ecss.svg'
+
+  const logoDarkSrc =
+    settings?.siteLogoDark && typeof settings.siteLogoDark !== 'string' && settings.siteLogoDark.url
+      ? settings.siteLogoDark.url
+      : settings?.siteLogo && typeof settings.siteLogo !== 'string' && settings.siteLogo.url
+      ? settings.siteLogo.url
+      : '/ecss-light.svg'
+
+  const logoAlt =
+    settings?.siteLogo && typeof settings.siteLogo !== 'string' && settings.siteLogo.alt
+      ? settings.siteLogo.alt
+      : 'ECSS logo'
+
   return (
     <>
       <header
@@ -90,17 +115,11 @@ const Header: React.FC = () => {
       >
         <Gutter className={classes.wrap}>
           <Link href="/" className={classes.home}>
-            {/*
-              Cannot use the `<picture>` element here with `srcSet`
-              This is because the theme is able to be overridden by the user
-              And so `@media (prefers-color-scheme: dark)` will not work
-              Instead, we just use CSS to invert the color via `filter: invert(1)` based on `[data-theme="dark"]`
-            */}
             <ThemeImage
               className={classes.logo}
-              src="/ecss.svg"
-              darksrc="/ecss-light.svg"
-              alt="ECSS logo"
+              src={logoSrc}
+              darksrc={logoDarkSrc}
+              alt={logoAlt}
             />
           </Link>
           <HeaderNav onToggleMenu={toggleMenu} header={header} onIsBreakpoint={isBreakpoint} />

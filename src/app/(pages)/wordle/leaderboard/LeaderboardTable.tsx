@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from 'react'
 
 import { inter } from '../../../_utilities/font'
+
 import classes from './index.module.scss'
 
 export interface LeaderboardEntry {
@@ -14,15 +15,17 @@ export interface LeaderboardEntry {
   currentStreak: number
   maxStreak: number
   avgGuesses: number
+  rating: number
 }
 
-type SortColumn = 'wins' | 'accuracy' | 'longest' | 'streak' | 'avg'
+type SortColumn = 'rating' | 'wins' | 'accuracy' | 'longest' | 'streak' | 'avg'
 type SortDirection = 'asc' | 'desc'
 
-const DEFAULT_SORT: SortColumn = 'wins'
+const DEFAULT_SORT: SortColumn = 'rating'
 const DEFAULT_DIR: SortDirection = 'desc'
 
 const NATURAL_DIR: Record<SortColumn, SortDirection> = {
+  rating: 'desc',
   wins: 'desc',
   accuracy: 'desc',
   longest: 'desc',
@@ -42,6 +45,10 @@ export const LeaderboardTable: React.FC<{
       let aVal: number
       let bVal: number
       switch (sortColumn) {
+        case 'rating':
+          aVal = a.rating
+          bVal = b.rating
+          break
         case 'wins':
           aVal = a.totalWins
           bVal = b.totalWins
@@ -105,6 +112,7 @@ export const LeaderboardTable: React.FC<{
           <tr>
             <th>#</th>
             <th>Name</th>
+            {renderHeader('rating', 'Rating')}
             {renderHeader('wins', 'Wins')}
             {renderHeader('avg', 'Avg')}
             {renderHeader('streak', 'Streak')}
@@ -120,6 +128,7 @@ export const LeaderboardTable: React.FC<{
             >
               <td className={classes.rankCell}>{i + 1}</td>
               <td>{entry.displayName}</td>
+              <td className={classes.ratingCell}>{entry.rating}</td>
               <td>{entry.totalWins}</td>
               <td>{entry.avgGuesses.toFixed(1)}</td>
               <td>{entry.currentStreak}</td>

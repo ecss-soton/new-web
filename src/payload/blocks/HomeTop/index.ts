@@ -14,31 +14,56 @@ export const HomeTop: Block = {
       required: true,
     },
     {
-      name: 'show_on_mobile',
-      label: 'Show on mobile',
-      type: 'checkbox',
-      defaultValue: true,
-    },
-    {
-      name: 'image1',
-      label: 'Image 1',
+      name: 'backgroundImage',
+      label: 'Background Image',
       type: 'upload',
       relationTo: 'media',
       required: false,
     },
     {
-      name: 'image2',
-      label: 'Image 2',
-      type: 'upload',
-      relationTo: 'media',
-      required: false,
-    },
-    {
-      name: 'image3',
-      label: 'Image 3',
-      type: 'upload',
-      relationTo: 'media',
-      required: false,
+      type: 'group',
+      name: 'stats',
+      label: 'Stats Display',
+      fields: [
+        {
+          name: 'membersLink',
+          type: 'group',
+          label: 'Members Link',
+          fields: [
+            {
+              name: 'url',
+              type: 'text',
+              label: 'URL',
+              defaultValue: '/societies',
+            },
+            {
+              name: 'label',
+              type: 'text',
+              label: 'Label',
+              defaultValue: 'members',
+            },
+          ],
+        },
+        {
+          name: 'committeeLink',
+          type: 'group',
+          label: 'Committee Link',
+          fields: [
+            {
+              name: 'url',
+              type: 'text',
+              label: 'URL',
+              defaultValue: '/committee',
+            },
+            {
+              name: 'label',
+              type: 'text',
+              label: 'Label',
+              defaultValue: 'committee',
+            },
+          ],
+        },
+      ],
     },
   ],
 }

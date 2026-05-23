@@ -139,9 +139,9 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
       <Fragment>
         {nomination &&
           nomination.populatedNominees.map(n => {
-            const email = `${n.username}@soton.ac.uk`
+            const domain = `${n.username}@soton.ac.uk`
             return (
-              <Link key={n.id} href={`mailto:${email}`}>
+              <Link key={n.id} href={`mailto:${domain}`}>
                 {n.name}
               </Link>
             )

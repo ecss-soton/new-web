@@ -16,7 +16,9 @@ export const PartyBlock: React.FC<Props> = props => {
     decorationImage,
     buttons,
     sections,
-  } = props
+    faqsTitle = 'FAQS',
+    organisersTitle = 'This event is organised by',
+  } = props as Props & { faqsTitle?: string; organisersTitle?: string }
 
   const bgUrl =
     backgroundImage && typeof backgroundImage !== 'string' && backgroundImage.url
@@ -86,7 +88,6 @@ export const PartyBlock: React.FC<Props> = props => {
         {sections &&
           sections.map((section, index) => {
             switch (section.sectionType) {
-              // ── Big Image ────────────────────────────────────────────────
               case 'bigImage': {
                 if (!section.bigImage || typeof section.bigImage === 'string') return null
                 const img = section.bigImage
@@ -101,7 +102,6 @@ export const PartyBlock: React.FC<Props> = props => {
                 )
               }
 
-              // ── Square Images Grid ────────────────────────────────────────
               case 'squareImages': {
                 if (!section.squareImages || section.squareImages.length === 0) return null
                 return (
@@ -121,14 +121,11 @@ export const PartyBlock: React.FC<Props> = props => {
                 )
               }
 
-              // ── Event Info Block ──────────────────────────────────────────
               case 'eventBlock': {
                 const eb = section.eventBlock
                 if (!eb) return null
                 const bgColor = eb.backgroundColor || '#f6b84a'
                 const reversed = eb.imagePosition === 'right'
-                // Determine whether text is readable: pick black or white based on luminance
-                // For simplicity we always set text to #000 (matches existing behaviour)
                 return (
                   <div
                     key={index}
@@ -153,7 +150,6 @@ export const PartyBlock: React.FC<Props> = props => {
                 )
               }
 
-              // ── Centre Callout ────────────────────────────────────────────
               case 'centreCallout': {
                 const cc = section.centreCallout
                 if (!cc) return null
@@ -177,12 +173,11 @@ export const PartyBlock: React.FC<Props> = props => {
                 )
               }
 
-              // ── FAQs ──────────────────────────────────────────────────────
               case 'faqs': {
                 if (!section.faqs || section.faqs.length === 0) return null
                 return (
                   <div key={index} className={classes.faqSection} id="faqs">
-                    <h2 className={classes.faqTitle}>FAQS</h2>
+                    <h2 className={classes.faqTitle}>{faqsTitle}</h2>
                     {section.faqs.map((faq, i) => (
                       <details key={i} className={classes.faqItem}>
                         <summary className={classes.faqQuestion}>{faq.question}</summary>
@@ -193,12 +188,11 @@ export const PartyBlock: React.FC<Props> = props => {
                 )
               }
 
-              // ── Organisers ────────────────────────────────────────────────
               case 'organisers': {
                 if (!section.organisers || section.organisers.length === 0) return null
                 return (
                   <div key={index} className={classes.organisersSection}>
-                    <h2>This event is organised by</h2>
+                    <h2>{organisersTitle}</h2>
                     <div className={classes.logosGrid}>
                       {section.organisers.map((org, i) => {
                         if (typeof org.logo === 'string') return null
