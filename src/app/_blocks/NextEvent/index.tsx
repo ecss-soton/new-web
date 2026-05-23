@@ -20,7 +20,14 @@ export const NextEventBlock: React.FC<
   Props & {
     id?: string
   }
-> = ({ media }) => {
+> = ({
+  media,
+  subheading = 'Next Event',
+  fallbackTitle = 'No Events Found',
+  eventsLinkText = 'See all events →',
+  eventsLinkUrl = '/events',
+  timezone = 'Europe/London',
+}) => {
   const [docs, setDocs] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | undefined>(undefined)
@@ -97,7 +104,7 @@ export const NextEventBlock: React.FC<
         {media && <MediaComp resource={media} className={classes.backgroundMedia} priority />}
         <div className={[classes.container, inter.className].join(' ')}>
           <div className={classes.text}>
-            <h3 className={classes.nextEvent}>Next Event</h3>
+            <h3 className={classes.nextEvent}>{subheading}</h3>
             <h1 className={classes.title}>Loading...</h1>
           </div>
         </div>
@@ -109,9 +116,9 @@ export const NextEventBlock: React.FC<
     const result = docs[0]
     const eventImage = result.image && typeof result.image !== 'string' ? result.image : undefined
 
-    const date = moment.utc(result.date).tz('Europe/London').format('YYYY-MM-DD HH:mm')
+    const date = moment.utc(result.date).tz(timezone).format('YYYY-MM-DD HH:mm')
     const endTime = result.endTime
-      ? moment.utc(result.endTime).tz('Europe/London').format('YYYY-MM-DD HH:mm')
+      ? moment.utc(result.endTime).tz(timezone).format('YYYY-MM-DD HH:mm')
       : null
     let concEndTime = null
 
@@ -129,22 +136,20 @@ export const NextEventBlock: React.FC<
           : null
     }
 
-    // Calculate today/tomorrow/now labels
     let dayLabel = day
     let monthLabel = monthName
     let isNow = false
     let isSpecialDay = false
 
     if (result.date) {
-      const eventDate = moment.utc(result.date).tz('Europe/London').startOf('day')
-      const todayStart = moment().tz('Europe/London').startOf('day')
+      const eventDate = moment.utc(result.date).tz(timezone).startOf('day')
+      const todayStart = moment().tz(timezone).startOf('day')
       const diff = eventDate.diff(todayStart, 'days')
 
-      // Check if event is happening right now
-      const nowMoment = moment().tz('Europe/London')
-      const startMoment = moment.utc(result.date).tz('Europe/London')
+      const nowMoment = moment().tz(timezone)
+      const startMoment = moment.utc(result.date).tz(timezone)
       const endMoment = result.endTime
-        ? moment.utc(result.endTime).tz('Europe/London')
+        ? moment.utc(result.endTime).tz(timezone)
         : startMoment.clone().add(1, 'hour')
 
       if (nowMoment.isSameOrAfter(startMoment) && nowMoment.isBefore(endMoment)) {
@@ -173,7 +178,7 @@ export const NextEventBlock: React.FC<
         {error && <Gutter>{error}</Gutter>}
         <div className={[classes.container, inter.className].join(' ')}>
           <div className={classes.text}>
-            <h3 className={classes.nextEvent}>Next Event</h3>
+            <h3 className={classes.nextEvent}>{subheading}</h3>
             <h1 className={classes.title}>{result.name}</h1>
           </div>
           <div className={classes.info}>
@@ -211,8 +216,8 @@ export const NextEventBlock: React.FC<
                 </div>
               </div>
             </div>
-            <Link href="/events" className={[classes.moreInfo, classes.link].join(' ')}>
-              See all events →
+            <Link href={eventsLinkUrl} className={[classes.moreInfo, classes.link].join(' ')}>
+              {eventsLinkText}
             </Link>
           </div>
         </div>
@@ -220,19 +225,18 @@ export const NextEventBlock: React.FC<
     )
   }
 
-  // Fallback state (No Events)
   return (
     <div className={classes.background}>
       {media && <MediaComp resource={media} className={classes.backgroundMedia} priority />}
       {error && <Gutter>{error}</Gutter>}
       <div className={[classes.container, inter.className].join(' ')}>
         <div className={classes.text}>
-          <h3 className={classes.nextEvent}>Next Event</h3>
-          <h1 className={classes.title}>No Events Found</h1>
+          <h3 className={classes.nextEvent}>{subheading}</h3>
+          <h1 className={classes.title}>{fallbackTitle}</h1>
         </div>
         <div className={classes.info}>
-          <Link href="/events" className={[classes.moreInfo, classes.link].join(' ')}>
-            See all events →
+          <Link href={eventsLinkUrl} className={[classes.moreInfo, classes.link].join(' ')}>
+            {eventsLinkText}
           </Link>
         </div>
       </div>

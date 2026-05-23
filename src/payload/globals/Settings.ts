@@ -24,16 +24,74 @@ export const Settings: GlobalConfig = {
   },
   fields: [
     {
-      name: 'postsPage',
-      type: 'relationship',
-      relationTo: 'pages',
-      label: 'Posts page',
+      name: 'siteName',
+      type: 'text',
+      label: 'Site Name',
+      defaultValue: 'ECSS',
     },
     {
-      name: 'projectsPage',
-      type: 'relationship',
-      relationTo: 'pages',
-      label: 'Projects page',
+      name: 'contactEmail',
+      type: 'email',
+      label: 'Contact Email',
+      defaultValue: 'society@ecs.soton.ac.uk',
+    },
+    {
+      name: 'emailDomain',
+      type: 'text',
+      label: 'Email Domain',
+      defaultValue: '@soton.ac.uk',
+      admin: {
+        description: 'Domain appended to usernames for constructing email addresses.',
+      },
+    },
+    {
+      name: 'siteLogo',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Site Logo (Light)',
+      admin: {
+        description: 'Logo used in the header for light mode.',
+      },
+    },
+    {
+      name: 'siteLogoDark',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Site Logo (Dark)',
+      admin: {
+        description: 'Logo used in the header for dark mode. Falls back to Site Logo if not set.',
+      },
+    },
+    {
+      name: 'footerLogo',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Footer Logo',
+      admin: {
+        description: 'Logo displayed in the footer.',
+      },
+    },
+    {
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Pages',
+          fields: [
+            {
+              name: 'postsPage',
+              type: 'relationship',
+              relationTo: 'pages',
+              label: 'Posts page',
+            },
+            {
+              name: 'projectsPage',
+              type: 'relationship',
+              relationTo: 'pages',
+              label: 'Projects page',
+            },
+          ],
+        },
+      ],
     },
   ],
 }

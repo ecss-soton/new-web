@@ -32,6 +32,12 @@ query Footer {
 
 export const SETTINGS = `
   Settings {
+    siteName
+    contactEmail
+    emailDomain
+    siteLogo { ${MEDIA_FIELDS} }
+    siteLogoDark { ${MEDIA_FIELDS} }
+    footerLogo { ${MEDIA_FIELDS} }
     postsPage {
       slug
     }

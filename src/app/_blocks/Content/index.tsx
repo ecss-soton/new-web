@@ -14,7 +14,7 @@ export const ContentBlock: React.FC<
     id?: string
   }
 > = props => {
-  const { columns } = props
+  const { columns, invertBackground } = props
 
   return (
     <Gutter className={classes.content}>
@@ -25,7 +25,16 @@ export const ContentBlock: React.FC<
             const { enableLink, richText, link, size } = col
 
             return (
-              <div key={index} className={[classes.column, classes[`column--${size}`]].join(' ')}>
+              <div
+                key={index}
+                className={[
+                  classes.column,
+                  classes[`column--${size}`],
+                  invertBackground ? classes.invertBackground : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+              >
                 <RichText content={richText} />
                 {enableLink && <CMSLink className={classes.link} {...link} />}
               </div>

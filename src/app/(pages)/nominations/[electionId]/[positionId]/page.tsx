@@ -15,7 +15,11 @@ import NominationForm from './NominationForm'
 
 import classes from './index.module.scss'
 
-export default async function CreateNomination({ params: { electionId, positionId } }) {
+export default async function CreateNomination({
+  params: { electionId, positionId },
+}: {
+  params: { electionId: string; positionId: string }
+}) {
   const { user } = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to create a nomination.',
@@ -32,10 +36,10 @@ export default async function CreateNomination({ params: { electionId, positionI
 }
 
 export const metadata: Metadata = {
-  title: 'Account',
-  description: 'Create an account or log in to your existing account.',
+  title: 'Create Nomination',
+  description: 'Create your election nomination.',
   openGraph: mergeOpenGraph({
-    title: 'Account',
-    url: '/account',
+    title: 'Create Nomination',
+    url: '/nominations',
   }),
 }
