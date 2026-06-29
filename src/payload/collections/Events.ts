@@ -89,7 +89,7 @@ const Events: CollectionConfig = {
     {
       name: 'description',
       label: 'Description',
-      type: 'text',
+      type: 'textarea',
     },
     {
       name: 'link',
