@@ -823,6 +823,9 @@ type Event {
   link: String
   image(where: Event_Image_where): Media
   isJumpstart: Boolean
+  dayLabel: Event_dayLabel
+  sortOrder: Float
+  mapsUrl: String
   interestedCount: Float
   interestedUsers: [User!]
   updatedAt: DateTime
@@ -1016,6 +1019,19 @@ input Event_Image_where_or {
   id: Event_Image_id_operator
   AND: [Event_Image_where_and]
   OR: [Event_Image_where_or]
+}
+
+enum Event_dayLabel {
+  Day1_Monday
+  Day2_Tuesday
+  Day3_Wednesday
+  Day4_Thursday
+  Day5_Friday
+  Day6_Saturday
+  Day7_Sunday
+  Day8_Monday
+  Day9_Tuesday
+  Day10_Wednesday
 }
 
 enum Event__status {
@@ -19517,6 +19533,9 @@ input Event_where {
   link: Event_link_operator
   image: Event_image_operator
   isJumpstart: Event_isJumpstart_operator
+  dayLabel: Event_dayLabel_operator
+  sortOrder: Event_sortOrder_operator
+  mapsUrl: Event_mapsUrl_operator
   interestedCount: Event_interestedCount_operator
   interestedUsers: Event_interestedUsers_operator
   updatedAt: Event_updatedAt_operator
@@ -19612,6 +19631,49 @@ input Event_isJumpstart_operator {
   exists: Boolean
 }
 
+input Event_dayLabel_operator {
+  equals: Event_dayLabel_Input
+  not_equals: Event_dayLabel_Input
+  in: [Event_dayLabel_Input]
+  not_in: [Event_dayLabel_Input]
+  all: [Event_dayLabel_Input]
+  exists: Boolean
+}
+
+enum Event_dayLabel_Input {
+  Day1_Monday
+  Day2_Tuesday
+  Day3_Wednesday
+  Day4_Thursday
+  Day5_Friday
+  Day6_Saturday
+  Day7_Sunday
+  Day8_Monday
+  Day9_Tuesday
+  Day10_Wednesday
+}
+
+input Event_sortOrder_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Event_mapsUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
 input Event_interestedCount_operator {
   equals: Float
   not_equals: Float
@@ -19677,6 +19739,9 @@ input Event_where_and {
   link: Event_link_operator
   image: Event_image_operator
   isJumpstart: Event_isJumpstart_operator
+  dayLabel: Event_dayLabel_operator
+  sortOrder: Event_sortOrder_operator
+  mapsUrl: Event_mapsUrl_operator
   interestedCount: Event_interestedCount_operator
   interestedUsers: Event_interestedUsers_operator
   updatedAt: Event_updatedAt_operator
@@ -19696,6 +19761,9 @@ input Event_where_or {
   link: Event_link_operator
   image: Event_image_operator
   isJumpstart: Event_isJumpstart_operator
+  dayLabel: Event_dayLabel_operator
+  sortOrder: Event_sortOrder_operator
+  mapsUrl: Event_mapsUrl_operator
   interestedCount: Event_interestedCount_operator
   interestedUsers: Event_interestedUsers_operator
   updatedAt: Event_updatedAt_operator
@@ -19728,6 +19796,9 @@ type EventsDocAccessFields {
   link: EventsDocAccessFields_link
   image: EventsDocAccessFields_image
   isJumpstart: EventsDocAccessFields_isJumpstart
+  dayLabel: EventsDocAccessFields_dayLabel
+  sortOrder: EventsDocAccessFields_sortOrder
+  mapsUrl: EventsDocAccessFields_mapsUrl
   interestedCount: EventsDocAccessFields_interestedCount
   interestedUsers: EventsDocAccessFields_interestedUsers
   updatedAt: EventsDocAccessFields_updatedAt
@@ -19942,6 +20013,75 @@ type EventsDocAccessFields_isJumpstart_Delete {
   permission: Boolean!
 }
 
+type EventsDocAccessFields_dayLabel {
+  create: EventsDocAccessFields_dayLabel_Create
+  read: EventsDocAccessFields_dayLabel_Read
+  update: EventsDocAccessFields_dayLabel_Update
+  delete: EventsDocAccessFields_dayLabel_Delete
+}
+
+type EventsDocAccessFields_dayLabel_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_dayLabel_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_dayLabel_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_dayLabel_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_sortOrder {
+  create: EventsDocAccessFields_sortOrder_Create
+  read: EventsDocAccessFields_sortOrder_Read
+  update: EventsDocAccessFields_sortOrder_Update
+  delete: EventsDocAccessFields_sortOrder_Delete
+}
+
+type EventsDocAccessFields_sortOrder_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_sortOrder_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_sortOrder_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_sortOrder_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_mapsUrl {
+  create: EventsDocAccessFields_mapsUrl_Create
+  read: EventsDocAccessFields_mapsUrl_Read
+  update: EventsDocAccessFields_mapsUrl_Update
+  delete: EventsDocAccessFields_mapsUrl_Delete
+}
+
+type EventsDocAccessFields_mapsUrl_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_mapsUrl_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_mapsUrl_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_mapsUrl_Delete {
+  permission: Boolean!
+}
+
 type EventsDocAccessFields_interestedCount {
   create: EventsDocAccessFields_interestedCount_Create
   read: EventsDocAccessFields_interestedCount_Read
@@ -20100,6 +20240,9 @@ type EventVersion_Version {
   link: String
   image(where: EventVersion_Version_Image_where): Media
   isJumpstart: Boolean
+  dayLabel: EventVersion_Version_dayLabel
+  sortOrder: Float
+  mapsUrl: String
   interestedCount: Float
   interestedUsers: [User!]
   updatedAt: DateTime
@@ -20295,6 +20438,19 @@ input EventVersion_Version_Image_where_or {
   OR: [EventVersion_Version_Image_where_or]
 }
 
+enum EventVersion_Version_dayLabel {
+  Day1_Monday
+  Day2_Tuesday
+  Day3_Wednesday
+  Day4_Thursday
+  Day5_Friday
+  Day6_Saturday
+  Day7_Sunday
+  Day8_Monday
+  Day9_Tuesday
+  Day10_Wednesday
+}
+
 enum EventVersion_Version__status {
   draft
   published
@@ -20324,6 +20480,9 @@ input versionsEvent_where {
   version__link: versionsEvent_version__link_operator
   version__image: versionsEvent_version__image_operator
   version__isJumpstart: versionsEvent_version__isJumpstart_operator
+  version__dayLabel: versionsEvent_version__dayLabel_operator
+  version__sortOrder: versionsEvent_version__sortOrder_operator
+  version__mapsUrl: versionsEvent_version__mapsUrl_operator
   version__interestedCount: versionsEvent_version__interestedCount_operator
   version__interestedUsers: versionsEvent_version__interestedUsers_operator
   version__updatedAt: versionsEvent_version__updatedAt_operator
@@ -20419,6 +20578,49 @@ input versionsEvent_version__image_operator {
 input versionsEvent_version__isJumpstart_operator {
   equals: Boolean
   not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsEvent_version__dayLabel_operator {
+  equals: versionsEvent_version__dayLabel_Input
+  not_equals: versionsEvent_version__dayLabel_Input
+  in: [versionsEvent_version__dayLabel_Input]
+  not_in: [versionsEvent_version__dayLabel_Input]
+  all: [versionsEvent_version__dayLabel_Input]
+  exists: Boolean
+}
+
+enum versionsEvent_version__dayLabel_Input {
+  Day1_Monday
+  Day2_Tuesday
+  Day3_Wednesday
+  Day4_Thursday
+  Day5_Friday
+  Day6_Saturday
+  Day7_Sunday
+  Day8_Monday
+  Day9_Tuesday
+  Day10_Wednesday
+}
+
+input versionsEvent_version__sortOrder_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input versionsEvent_version__mapsUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
   exists: Boolean
 }
 
@@ -20526,6 +20728,9 @@ input versionsEvent_where_and {
   version__link: versionsEvent_version__link_operator
   version__image: versionsEvent_version__image_operator
   version__isJumpstart: versionsEvent_version__isJumpstart_operator
+  version__dayLabel: versionsEvent_version__dayLabel_operator
+  version__sortOrder: versionsEvent_version__sortOrder_operator
+  version__mapsUrl: versionsEvent_version__mapsUrl_operator
   version__interestedCount: versionsEvent_version__interestedCount_operator
   version__interestedUsers: versionsEvent_version__interestedUsers_operator
   version__updatedAt: versionsEvent_version__updatedAt_operator
@@ -20549,6 +20754,9 @@ input versionsEvent_where_or {
   version__link: versionsEvent_version__link_operator
   version__image: versionsEvent_version__image_operator
   version__isJumpstart: versionsEvent_version__isJumpstart_operator
+  version__dayLabel: versionsEvent_version__dayLabel_operator
+  version__sortOrder: versionsEvent_version__sortOrder_operator
+  version__mapsUrl: versionsEvent_version__mapsUrl_operator
   version__interestedCount: versionsEvent_version__interestedCount_operator
   version__interestedUsers: versionsEvent_version__interestedUsers_operator
   version__updatedAt: versionsEvent_version__updatedAt_operator
@@ -24510,6 +24718,9 @@ type Settings {
   footerLogo(where: Settings_FooterLogo_where): Media
   postsPage(draft: Boolean): Page
   projectsPage(draft: Boolean): Page
+  jumpstartEnabled: Boolean
+  jumpstartHeading: String
+  jumpstartSubtitle: String
   updatedAt: DateTime
   createdAt: DateTime
 }
@@ -25093,6 +25304,9 @@ type SettingsDocAccessFields {
   footerLogo: SettingsDocAccessFields_footerLogo
   postsPage: SettingsDocAccessFields_postsPage
   projectsPage: SettingsDocAccessFields_projectsPage
+  jumpstartEnabled: SettingsDocAccessFields_jumpstartEnabled
+  jumpstartHeading: SettingsDocAccessFields_jumpstartHeading
+  jumpstartSubtitle: SettingsDocAccessFields_jumpstartSubtitle
   updatedAt: SettingsDocAccessFields_updatedAt
   createdAt: SettingsDocAccessFields_createdAt
 }
@@ -25278,6 +25492,75 @@ type SettingsDocAccessFields_projectsPage_Update {
 }
 
 type SettingsDocAccessFields_projectsPage_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartEnabled {
+  create: SettingsDocAccessFields_jumpstartEnabled_Create
+  read: SettingsDocAccessFields_jumpstartEnabled_Read
+  update: SettingsDocAccessFields_jumpstartEnabled_Update
+  delete: SettingsDocAccessFields_jumpstartEnabled_Delete
+}
+
+type SettingsDocAccessFields_jumpstartEnabled_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartEnabled_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartEnabled_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartEnabled_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartHeading {
+  create: SettingsDocAccessFields_jumpstartHeading_Create
+  read: SettingsDocAccessFields_jumpstartHeading_Read
+  update: SettingsDocAccessFields_jumpstartHeading_Update
+  delete: SettingsDocAccessFields_jumpstartHeading_Delete
+}
+
+type SettingsDocAccessFields_jumpstartHeading_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartHeading_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartHeading_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartHeading_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartSubtitle {
+  create: SettingsDocAccessFields_jumpstartSubtitle_Create
+  read: SettingsDocAccessFields_jumpstartSubtitle_Read
+  update: SettingsDocAccessFields_jumpstartSubtitle_Update
+  delete: SettingsDocAccessFields_jumpstartSubtitle_Delete
+}
+
+type SettingsDocAccessFields_jumpstartSubtitle_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartSubtitle_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartSubtitle_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartSubtitle_Delete {
   permission: Boolean!
 }
 
@@ -32996,6 +33279,9 @@ type EventsFields {
   link: EventsFields_link
   image: EventsFields_image
   isJumpstart: EventsFields_isJumpstart
+  dayLabel: EventsFields_dayLabel
+  sortOrder: EventsFields_sortOrder
+  mapsUrl: EventsFields_mapsUrl
   interestedCount: EventsFields_interestedCount
   interestedUsers: EventsFields_interestedUsers
   updatedAt: EventsFields_updatedAt
@@ -33207,6 +33493,75 @@ type EventsFields_isJumpstart_Update {
 }
 
 type EventsFields_isJumpstart_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_dayLabel {
+  create: EventsFields_dayLabel_Create
+  read: EventsFields_dayLabel_Read
+  update: EventsFields_dayLabel_Update
+  delete: EventsFields_dayLabel_Delete
+}
+
+type EventsFields_dayLabel_Create {
+  permission: Boolean!
+}
+
+type EventsFields_dayLabel_Read {
+  permission: Boolean!
+}
+
+type EventsFields_dayLabel_Update {
+  permission: Boolean!
+}
+
+type EventsFields_dayLabel_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_sortOrder {
+  create: EventsFields_sortOrder_Create
+  read: EventsFields_sortOrder_Read
+  update: EventsFields_sortOrder_Update
+  delete: EventsFields_sortOrder_Delete
+}
+
+type EventsFields_sortOrder_Create {
+  permission: Boolean!
+}
+
+type EventsFields_sortOrder_Read {
+  permission: Boolean!
+}
+
+type EventsFields_sortOrder_Update {
+  permission: Boolean!
+}
+
+type EventsFields_sortOrder_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_mapsUrl {
+  create: EventsFields_mapsUrl_Create
+  read: EventsFields_mapsUrl_Read
+  update: EventsFields_mapsUrl_Update
+  delete: EventsFields_mapsUrl_Delete
+}
+
+type EventsFields_mapsUrl_Create {
+  permission: Boolean!
+}
+
+type EventsFields_mapsUrl_Read {
+  permission: Boolean!
+}
+
+type EventsFields_mapsUrl_Update {
+  permission: Boolean!
+}
+
+type EventsFields_mapsUrl_Delete {
   permission: Boolean!
 }
 
@@ -35640,6 +35995,9 @@ type SettingsFields {
   footerLogo: SettingsFields_footerLogo
   postsPage: SettingsFields_postsPage
   projectsPage: SettingsFields_projectsPage
+  jumpstartEnabled: SettingsFields_jumpstartEnabled
+  jumpstartHeading: SettingsFields_jumpstartHeading
+  jumpstartSubtitle: SettingsFields_jumpstartSubtitle
   updatedAt: SettingsFields_updatedAt
   createdAt: SettingsFields_createdAt
 }
@@ -35825,6 +36183,75 @@ type SettingsFields_projectsPage_Update {
 }
 
 type SettingsFields_projectsPage_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartEnabled {
+  create: SettingsFields_jumpstartEnabled_Create
+  read: SettingsFields_jumpstartEnabled_Read
+  update: SettingsFields_jumpstartEnabled_Update
+  delete: SettingsFields_jumpstartEnabled_Delete
+}
+
+type SettingsFields_jumpstartEnabled_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartEnabled_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartEnabled_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartEnabled_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartHeading {
+  create: SettingsFields_jumpstartHeading_Create
+  read: SettingsFields_jumpstartHeading_Read
+  update: SettingsFields_jumpstartHeading_Update
+  delete: SettingsFields_jumpstartHeading_Delete
+}
+
+type SettingsFields_jumpstartHeading_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartHeading_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartHeading_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartHeading_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartSubtitle {
+  create: SettingsFields_jumpstartSubtitle_Create
+  read: SettingsFields_jumpstartSubtitle_Read
+  update: SettingsFields_jumpstartSubtitle_Update
+  delete: SettingsFields_jumpstartSubtitle_Delete
+}
+
+type SettingsFields_jumpstartSubtitle_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartSubtitle_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartSubtitle_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartSubtitle_Delete {
   permission: Boolean!
 }
 
@@ -37687,11 +38114,27 @@ input mutationEventInput {
   link: String
   image: String
   isJumpstart: Boolean
+  dayLabel: Event_dayLabel_MutationInput
+  sortOrder: Float
+  mapsUrl: String
   interestedCount: Float
   interestedUsers: [String]
   updatedAt: String
   createdAt: String
   _status: Event__status_MutationInput
+}
+
+enum Event_dayLabel_MutationInput {
+  Day1_Monday
+  Day2_Tuesday
+  Day3_Wednesday
+  Day4_Thursday
+  Day5_Friday
+  Day6_Saturday
+  Day7_Sunday
+  Day8_Monday
+  Day9_Tuesday
+  Day10_Wednesday
 }
 
 enum Event__status_MutationInput {
@@ -37708,11 +38151,27 @@ input mutationEventUpdateInput {
   link: String
   image: String
   isJumpstart: Boolean
+  dayLabel: EventUpdate_dayLabel_MutationInput
+  sortOrder: Float
+  mapsUrl: String
   interestedCount: Float
   interestedUsers: [String]
   updatedAt: String
   createdAt: String
   _status: EventUpdate__status_MutationInput
+}
+
+enum EventUpdate_dayLabel_MutationInput {
+  Day1_Monday
+  Day2_Tuesday
+  Day3_Wednesday
+  Day4_Thursday
+  Day5_Friday
+  Day6_Saturday
+  Day7_Sunday
+  Day8_Monday
+  Day9_Tuesday
+  Day10_Wednesday
 }
 
 enum EventUpdate__status_MutationInput {
@@ -38027,6 +38486,9 @@ input mutationSettingsInput {
   footerLogo: String
   postsPage: String
   projectsPage: String
+  jumpstartEnabled: Boolean
+  jumpstartHeading: String
+  jumpstartSubtitle: String
   updatedAt: String
   createdAt: String
 }

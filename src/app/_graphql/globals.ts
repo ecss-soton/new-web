@@ -44,6 +44,9 @@ export const SETTINGS = `
     projectsPage {
       slug
     }
+    jumpstartEnabled
+    jumpstartHeading
+    jumpstartSubtitle
   }
 `
 

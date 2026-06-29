@@ -1,0 +1,97 @@
+@import '../../../_css/common';
+
+.card {
+  display: flex;
+  gap: 24px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--theme-border-color);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @include small-break {
+    gap: 16px;
+    padding: 16px 0;
+  }
+}
+
+.timeColumn {
+  flex-shrink: 0;
+  width: 100px;
+  padding-top: 2px;
+
+  @include small-break {
+    width: 70px;
+  }
+}
+
+.time {
+  font-size: 15px;
+  font-weight: 600;
+  color: #e02020;
+  white-space: nowrap;
+
+  @include small-break {
+    font-size: 13px;
+  }
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  color: var(--theme-text);
+
+  @include small-break {
+    font-size: 16px;
+  }
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--theme-elevation-600);
+  margin: 0 0 6px 0;
+
+  @include small-break {
+    font-size: 13px;
+  }
+}
+
+.locationIcon {
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--theme-elevation-500);
+  margin: 0 0 10px 0;
+}
+
+.mapsButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #c41a1a 0%, #991111 100%);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
