@@ -70,7 +70,7 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--theme-bg);
+  background: var(--jumpstart-bg);
   margin-bottom: 16px;
   padding-top: 8px;
   padding-bottom: 12px;
@@ -86,10 +86,10 @@
 .dayTitle {
   font-size: 22px;
   font-weight: 700;
-  color: #c41a1a;
+  color: var(--jumpstart-accent);
   margin: 0;
   padding-bottom: 10px;
-  border-bottom: 2px solid rgba(196, 26, 26, 0.2);
+  border-bottom: 2px solid var(--jumpstart-accent-light);
 
   @include small-break {
     font-size: 18px;

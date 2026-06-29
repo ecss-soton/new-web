@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import L from 'leaflet'
 import moment from 'moment-timezone'
 
@@ -16,6 +16,14 @@ type Props = {
 
 const TIMEZONE = 'Europe/London'
 const SOUTHAMPTON: L.LatLngTuple = [50.935, -1.396]
+
+const getDateKey = (dateStr: string): string => {
+  return moment.utc(dateStr).tz(TIMEZONE).format('YYYY-MM-DD')
+}
+
+const formatDayPill = (dateKey: string): string => {
+  return moment(dateKey, 'YYYY-MM-DD').format('ddd Do MMM')
+}
 
 const createIcon = (): L.DivIcon => {
   return L.divIcon({
@@ -34,10 +42,23 @@ const formatTime = (dateStr: string): string => {
 export const JumpstartMapView: React.FC<Props> = ({ events }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
+  const [selectedDay, setSelectedDay] = useState<string | null>(null)
 
-  const eventsWithCoords = events.filter(
-    e => typeof e.latitude === 'number' && typeof e.longitude === 'number',
+  const eventsWithCoords = useMemo(
+    () => events.filter(e => typeof e.latitude === 'number' && typeof e.longitude === 'number'),
+    [events],
   )
+
+  const dayKeys = useMemo(() => {
+    const keys = new Set<string>()
+    eventsWithCoords.forEach(e => keys.add(getDateKey(e.date)))
+    return Array.from(keys).sort()
+  }, [eventsWithCoords])
+
+  const filteredEvents = useMemo(() => {
+    if (!selectedDay) return eventsWithCoords
+    return eventsWithCoords.filter(e => getDateKey(e.date) === selectedDay)
+  }, [eventsWithCoords, selectedDay])
 
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return
@@ -71,12 +92,12 @@ export const JumpstartMapView: React.FC<Props> = ({ events }) => {
       }
     })
 
-    if (eventsWithCoords.length === 0) return
+    if (filteredEvents.length === 0) return
 
     const bounds = L.latLngBounds([])
     const icon = createIcon()
 
-    eventsWithCoords.forEach(event => {
+    filteredEvents.forEach(event => {
       const lat = event.latitude as number
       const lng = event.longitude as number
       const latLng: L.LatLngTuple = [lat, lng]
@@ -105,19 +126,42 @@ export const JumpstartMapView: React.FC<Props> = ({ events }) => {
       bounds.extend(latLng)
     })
 
-    if (eventsWithCoords.length === 1) {
+    if (filteredEvents.length === 1) {
       map.setView(bounds.getCenter(), 16)
     } else {
       map.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 })
     }
-  }, [eventsWithCoords])
+  }, [filteredEvents])
 
   return (
     <div className={classes.container}>
-      {eventsWithCoords.length === 0 && (
+      {eventsWithCoords.length === 0 ? (
         <div className={classes.empty}>No events with map coordinates yet.</div>
+      ) : (
+        <>
+          <div className={classes.dayFilter}>
+            <button
+              className={[classes.dayPill, !selectedDay ? classes.dayPillActive : ''].join(' ')}
+              onClick={() => setSelectedDay(null)}
+            >
+              All Days
+            </button>
+            {dayKeys.map(dateKey => (
+              <button
+                key={dateKey}
+                className={[
+                  classes.dayPill,
+                  selectedDay === dateKey ? classes.dayPillActive : '',
+                ].join(' ')}
+                onClick={() => setSelectedDay(dateKey)}
+              >
+                {formatDayPill(dateKey)}
+              </button>
+            ))}
+          </div>
+          <div ref={mapContainerRef} className={classes.map} />
+        </>
       )}
-      <div ref={mapContainerRef} className={classes.map} />
     </div>
   )
 }

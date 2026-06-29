@@ -19,8 +19,8 @@
   font-size: 14px;
   font-weight: 600;
   border: 1px solid var(--theme-border-color);
-  background: var(--theme-elevation-50);
-  color: var(--theme-elevation-600);
+  background: var(--jumpstart-card);
+  color: var(--theme-elevation-550);
   cursor: pointer;
   transition: all 0.2s ease;
 
@@ -34,7 +34,7 @@
   }
 
   &:hover {
-    background: var(--theme-elevation-100);
+    background: var(--jumpstart-accent-light);
     color: var(--theme-text);
   }
 
@@ -50,13 +50,13 @@
 }
 
 .active {
-  background: #c41a1a;
-  border-color: #c41a1a;
-  color: white;
+  background: var(--jumpstart-accent);
+  border-color: var(--jumpstart-accent);
+  color: var(--jumpstart-accent-text);
 
   &:hover {
-    background: #a01616;
-    border-color: #a01616;
-    color: white;
+    background: var(--jumpstart-accent-hover);
+    border-color: var(--jumpstart-accent-hover);
+    color: var(--jumpstart-accent-text);
   }
 }

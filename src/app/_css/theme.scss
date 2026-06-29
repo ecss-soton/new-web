@@ -238,4 +238,15 @@
   }
 
   --theme-shadow: var(--color-spotlight);
+
+  --ecss-black: var(--color-base-0);
+  --ecss-grey: var(--color-base-300);
+  --ecss-white: var(--color-base-900);
+
+  --jumpstart-bg: var(--theme-bg);
+  --jumpstart-card: var(--theme-elevation-50);
+  --jumpstart-accent: #E89B9F;
+  --jumpstart-accent-hover: #EEB2B5;
+  --jumpstart-accent-light: rgba(232, 155, 159, 0.12);
+  --jumpstart-accent-text: #2C2C2C;
 }

@@ -42,18 +42,18 @@
   width: 24px;
   height: 24px;
   border-radius: 50% 50% 50% 0;
-  background: #c41a1a;
+  background: var(--jumpstart-accent);
   position: relative;
   transform: rotate(-45deg);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  border: 3px solid var(--jumpstart-card);
 
   &::after {
     content: '';
     position: absolute;
     width: 8px;
     height: 8px;
-    background: white;
+    background: var(--jumpstart-card);
     border-radius: 50%;
     top: 50%;
     left: 50%;
@@ -66,11 +66,16 @@
     border-radius: 10px;
     padding: 0;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    background: var(--jumpstart-card);
   }
 
   :global(.leaflet-popup-content) {
     margin: 0;
     min-width: 180px;
+  }
+
+  :global(.leaflet-popup-tip) {
+    background: var(--jumpstart-card);
   }
 }
 
@@ -85,7 +90,7 @@
 .popupTime {
   font-size: 12px;
   font-weight: 600;
-  color: #c41a1a;
+  color: var(--jumpstart-accent);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -93,7 +98,7 @@
 .popupTitle {
   font-size: 15px;
   font-weight: 700;
-  color: var(--theme-elevation-800);
+  color: var(--theme-text);
 }
 
 .popupLocation {
@@ -106,7 +111,7 @@
   margin-top: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: #c41a1a;
+  color: var(--jumpstart-accent);
   text-decoration: none;
 
   &:hover {
@@ -126,5 +131,61 @@
 
   @include mid-break {
     height: 420px;
+  }
+}
+
+.dayFilter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @include small-break {
+    padding: 0 16px;
+  }
+}
+
+.dayPill {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--theme-border-color);
+  background: var(--jumpstart-card);
+  color: var(--theme-elevation-550);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--jumpstart-accent-light);
+    color: var(--theme-text);
+    border-color: var(--jumpstart-accent);
+  }
+
+  @include small-break {
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+}
+
+.dayPillActive {
+  background: var(--jumpstart-accent);
+  border-color: var(--jumpstart-accent);
+  color: var(--jumpstart-accent-text);
+
+  &:hover {
+    background: var(--jumpstart-accent-hover);
+    border-color: var(--jumpstart-accent-hover);
+    color: var(--jumpstart-accent-text);
   }
 }

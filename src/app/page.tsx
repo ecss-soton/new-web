@@ -13,6 +13,7 @@ import PageTemplate, {
 } from './(pages)/[slug]/page'
 
 import mapPageClasses from './_components/Jumpstart/MapPage.module.scss'
+import wrapperClasses from './_components/Jumpstart/pageWrapper.module.scss'
 
 const JumpstartViewToggle = dynamic(
   () => import('./_components/Jumpstart/ViewToggle').then(mod => mod.JumpstartViewToggle),
@@ -47,7 +48,7 @@ export default async function Page({ searchParams }: { searchParams: { view?: st
 
     if (currentView === 'map') {
       return (
-        <>
+        <div className={wrapperClasses.page}>
           <JumpstartBanner />
           <div className={mapPageClasses.page}>
             <div className={mapPageClasses.header}>
@@ -61,15 +62,15 @@ export default async function Page({ searchParams }: { searchParams: { view?: st
           <div className={mapPageClasses.mapWrapper}>
             <JumpstartMapView events={jumpstartEvents} />
           </div>
-        </>
+        </div>
       )
     }
 
     return (
-      <>
+      <div className={wrapperClasses.page}>
         <JumpstartBanner />
         <JumpstartTimeline events={jumpstartEvents} heading={heading} subtitle={subtitle} />
-      </>
+      </div>
     )
   }
 

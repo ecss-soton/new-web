@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment-timezone'
 
 import type { Event } from '../../../../payload/payload-types'
 import { inter } from '../../../_utilities/font'
@@ -13,41 +14,25 @@ type Props = {
   subtitle?: string | null
 }
 
-const DAY_LABEL_ORDER = [
-  'Day1-Monday',
-  'Day2-Tuesday',
-  'Day3-Wednesday',
-  'Day4-Thursday',
-  'Day5-Friday',
-  'Day6-Saturday',
-  'Day7-Sunday',
-  'Day8-Monday',
-  'Day9-Tuesday',
-  'Day10-Wednesday',
-]
+const TIMEZONE = 'Europe/London'
 
-const DAY_DISPLAY_NAMES: Record<string, string> = {
-  'Day1-Monday': 'Day 1 — Monday',
-  'Day2-Tuesday': 'Day 2 — Tuesday',
-  'Day3-Wednesday': 'Day 3 — Wednesday',
-  'Day4-Thursday': 'Day 4 — Thursday',
-  'Day5-Friday': 'Day 5 — Friday',
-  'Day6-Saturday': 'Day 6 — Saturday',
-  'Day7-Sunday': 'Day 7 — Sunday',
-  'Day8-Monday': 'Day 8 — Monday',
-  'Day9-Tuesday': 'Day 9 — Tuesday',
-  'Day10-Wednesday': 'Day 10 — Wednesday',
+const getDateKey = (dateStr: string): string => {
+  return moment.utc(dateStr).tz(TIMEZONE).format('YYYY-MM-DD')
 }
 
-const groupByDay = (events: Event[]): Map<string, Event[]> => {
+const formatDayHeader = (dateKey: string): string => {
+  return moment(dateKey, 'YYYY-MM-DD').format('dddd Do MMMM')
+}
+
+const groupByDate = (events: Event[]): Map<string, Event[]> => {
   const groups = new Map<string, Event[]>()
 
   for (const event of events) {
-    const dayLabel = event.dayLabel || 'Other'
-    if (!groups.has(dayLabel)) {
-      groups.set(dayLabel, [])
+    const key = getDateKey(event.date)
+    if (!groups.has(key)) {
+      groups.set(key, [])
     }
-    groups.get(dayLabel)!.push(event)
+    groups.get(key)!.push(event)
   }
 
   for (const [, dayEvents] of groups) {
@@ -57,21 +42,13 @@ const groupByDay = (events: Event[]): Map<string, Event[]> => {
   return groups
 }
 
-const getSortedDayLabels = (groups: Map<string, Event[]>): string[] => {
-  const labels = Array.from(groups.keys())
-  return labels.sort((a, b) => {
-    const aIndex = DAY_LABEL_ORDER.indexOf(a)
-    const bIndex = DAY_LABEL_ORDER.indexOf(b)
-    if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex
-    if (aIndex !== -1) return -1
-    if (bIndex !== -1) return 1
-    return a.localeCompare(b)
-  })
+const getSortedDateKeys = (groups: Map<string, Event[]>): string[] => {
+  return Array.from(groups.keys()).sort()
 }
 
 export const JumpstartTimeline: React.FC<Props> = ({ events, heading, subtitle }) => {
-  const groups = groupByDay(events)
-  const sortedDayLabels = getSortedDayLabels(groups)
+  const groups = groupByDate(events)
+  const sortedKeys = getSortedDateKeys(groups)
 
   return (
     <div className={[classes.container, inter.className].join(' ')}>
@@ -83,14 +60,13 @@ export const JumpstartTimeline: React.FC<Props> = ({ events, heading, subtitle }
       <JumpstartViewToggle />
 
       <div className={classes.timeline}>
-        {sortedDayLabels.map(dayLabel => {
-          const dayEvents = groups.get(dayLabel) || []
-          const displayName = DAY_DISPLAY_NAMES[dayLabel] || dayLabel
+        {sortedKeys.map(dateKey => {
+          const dayEvents = groups.get(dateKey) || []
 
           return (
-            <div key={dayLabel} className={classes.dayGroup}>
+            <div key={dateKey} className={classes.dayGroup}>
               <div className={classes.dayHeader}>
-                <h2 className={classes.dayTitle}>{displayName}</h2>
+                <h2 className={classes.dayTitle}>{formatDayHeader(dateKey)}</h2>
               </div>
               <div className={classes.dayEvents}>
                 {dayEvents.map(event => (

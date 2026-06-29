@@ -758,20 +758,6 @@ export interface Event {
   link?: string | null;
   image?: string | Media | null;
   isJumpstart?: boolean | null;
-  dayLabel?:
-    | (
-        | 'Day1-Monday'
-        | 'Day2-Tuesday'
-        | 'Day3-Wednesday'
-        | 'Day4-Thursday'
-        | 'Day5-Friday'
-        | 'Day6-Saturday'
-        | 'Day7-Sunday'
-        | 'Day8-Monday'
-        | 'Day9-Tuesday'
-        | 'Day10-Wednesday'
-      )
-    | null;
   sortOrder?: number | null;
   mapsUrl?: string | null;
   latitude?: number | null;

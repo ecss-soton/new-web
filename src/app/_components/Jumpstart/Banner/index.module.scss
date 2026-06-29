@@ -6,8 +6,8 @@
   justify-content: center;
   gap: 12px;
   padding: 14px var(--gutter-h);
-  background: linear-gradient(135deg, #c41a1a 0%, #991111 100%);
-  color: white;
+  background: var(--jumpstart-accent);
+  color: var(--jumpstart-accent-text);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -39,7 +39,7 @@
 .divider {
   width: 1px;
   height: 16px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.35);
 
   @include small-break {
     display: none;
@@ -47,15 +47,16 @@
 }
 
 .link {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--jumpstart-accent-text);
+  opacity: 0.9;
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: opacity 0.2s ease;
   white-space: nowrap;
 
   &:hover {
-    color: white;
+    opacity: 1;
   }
 }
 
@@ -64,16 +65,17 @@
   right: 16px;
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--jumpstart-accent-text);
+  opacity: 0.7;
   cursor: pointer;
   padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.2s ease;
+  transition: opacity 0.2s ease;
 
   &:hover {
-    color: white;
+    opacity: 1;
   }
 
   @include small-break {

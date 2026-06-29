@@ -17,7 +17,7 @@ const Events: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'date', 'isJumpstart', 'dayLabel', 'sortOrder'],
+    defaultColumns: ['name', 'date', 'isJumpstart', 'sortOrder'],
   },
   versions: {
     drafts: true,
@@ -107,26 +107,6 @@ const Events: CollectionConfig = {
       name: 'isJumpstart',
       label: 'Is this a Jumpstart Event?',
       type: 'checkbox',
-    },
-    {
-      name: 'dayLabel',
-      label: 'Day Label',
-      type: 'select',
-      options: [
-        { label: 'Day 1 - Monday', value: 'Day1-Monday' },
-        { label: 'Day 2 - Tuesday', value: 'Day2-Tuesday' },
-        { label: 'Day 3 - Wednesday', value: 'Day3-Wednesday' },
-        { label: 'Day 4 - Thursday', value: 'Day4-Thursday' },
-        { label: 'Day 5 - Friday', value: 'Day5-Friday' },
-        { label: 'Day 6 - Saturday', value: 'Day6-Saturday' },
-        { label: 'Day 7 - Sunday', value: 'Day7-Sunday' },
-        { label: 'Day 8 - Monday', value: 'Day8-Monday' },
-        { label: 'Day 9 - Tuesday', value: 'Day9-Tuesday' },
-        { label: 'Day 10 - Wednesday', value: 'Day10-Wednesday' },
-      ],
-      admin: {
-        condition: (_, siblingData) => siblingData?.isJumpstart,
-      },
     },
     {
       name: 'sortOrder',
