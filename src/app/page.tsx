@@ -1,16 +1,30 @@
 import React from 'react'
 import { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 
 import type { Event, Settings } from '../payload/payload-types'
 import { fetchDocs } from './_api/fetchDoc'
 import { fetchSettings } from './_api/fetchGlobals'
 import { JumpstartBanner } from './_components/Jumpstart/Banner'
 import { JumpstartTimeline } from './_components/Jumpstart/Timeline'
+import { inter } from './_utilities/font'
 import PageTemplate, {
   generateMetadata as pageTemplateGenerateMetadata,
 } from './(pages)/[slug]/page'
 
-export default async function Page() {
+import mapPageClasses from './_components/Jumpstart/MapPage.module.scss'
+
+const JumpstartViewToggle = dynamic(
+  () => import('./_components/Jumpstart/ViewToggle').then(mod => mod.JumpstartViewToggle),
+  { ssr: false },
+)
+
+const JumpstartMapView = dynamic(
+  () => import('./_components/Jumpstart/MapView').then(mod => mod.JumpstartMapView),
+  { ssr: false },
+)
+
+export default async function Page({ searchParams }: { searchParams: { view?: string } }) {
   let settings: Settings | null = null
   try {
     settings = await fetchSettings()
@@ -27,15 +41,34 @@ export default async function Page() {
     }
 
     const jumpstartEvents = events.filter(e => e.isJumpstart)
+    const heading = settings.jumpstartHeading || 'Jumpstart'
+    const subtitle = settings.jumpstartSubtitle || undefined
+    const currentView = searchParams?.view || 'timeline'
+
+    if (currentView === 'map') {
+      return (
+        <>
+          <JumpstartBanner />
+          <div className={mapPageClasses.page}>
+            <div className={mapPageClasses.header}>
+              <h1 className={[mapPageClasses.heading, inter.className].join(' ')}>{heading}</h1>
+              {subtitle && (
+                <p className={[mapPageClasses.subtitle, inter.className].join(' ')}>{subtitle}</p>
+              )}
+            </div>
+            <JumpstartViewToggle />
+          </div>
+          <div className={mapPageClasses.mapWrapper}>
+            <JumpstartMapView events={jumpstartEvents} />
+          </div>
+        </>
+      )
+    }
 
     return (
       <>
         <JumpstartBanner />
-        <JumpstartTimeline
-          events={jumpstartEvents}
-          heading={settings.jumpstartHeading}
-          subtitle={settings.jumpstartSubtitle}
-        />
+        <JumpstartTimeline events={jumpstartEvents} heading={heading} subtitle={subtitle} />
       </>
     )
   }

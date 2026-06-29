@@ -15,6 +15,8 @@ export const EVENTS = `
                 dayLabel
                 sortOrder
                 mapsUrl
+                latitude
+                longitude
                 interestedCount
                 image {
                     ${MEDIA_FIELDS}

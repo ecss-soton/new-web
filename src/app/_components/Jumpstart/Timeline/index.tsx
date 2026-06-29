@@ -3,6 +3,7 @@ import React from 'react'
 import type { Event } from '../../../../payload/payload-types'
 import { inter } from '../../../_utilities/font'
 import { JumpstartEventCard } from '../EventCard'
+import { JumpstartViewToggle } from '../ViewToggle'
 
 import classes from './index.module.scss'
 
@@ -26,16 +27,16 @@ const DAY_LABEL_ORDER = [
 ]
 
 const DAY_DISPLAY_NAMES: Record<string, string> = {
-  'Day1-Monday': 'Day 1 - Monday',
-  'Day2-Tuesday': 'Day 2 - Tuesday',
-  'Day3-Wednesday': 'Day 3 - Wednesday',
-  'Day4-Thursday': 'Day 4 - Thursday',
-  'Day5-Friday': 'Day 5 - Friday',
-  'Day6-Saturday': 'Day 6 - Saturday',
-  'Day7-Sunday': 'Day 7 - Sunday',
-  'Day8-Monday': 'Day 8 - Monday',
-  'Day9-Tuesday': 'Day 9 - Tuesday',
-  'Day10-Wednesday': 'Day 10 - Wednesday',
+  'Day1-Monday': 'Day 1 — Monday',
+  'Day2-Tuesday': 'Day 2 — Tuesday',
+  'Day3-Wednesday': 'Day 3 — Wednesday',
+  'Day4-Thursday': 'Day 4 — Thursday',
+  'Day5-Friday': 'Day 5 — Friday',
+  'Day6-Saturday': 'Day 6 — Saturday',
+  'Day7-Sunday': 'Day 7 — Sunday',
+  'Day8-Monday': 'Day 8 — Monday',
+  'Day9-Tuesday': 'Day 9 — Tuesday',
+  'Day10-Wednesday': 'Day 10 — Wednesday',
 }
 
 const groupByDay = (events: Event[]): Map<string, Event[]> => {
@@ -78,6 +79,8 @@ export const JumpstartTimeline: React.FC<Props> = ({ events, heading, subtitle }
         <h1 className={classes.heading}>{heading || 'Jumpstart'}</h1>
         {subtitle && <p className={classes.subtitle}>{subtitle}</p>}
       </div>
+
+      <JumpstartViewToggle />
 
       <div className={classes.timeline}>
         {sortedDayLabels.map(dayLabel => {

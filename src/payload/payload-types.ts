@@ -774,6 +774,8 @@ export interface Event {
     | null;
   sortOrder?: number | null;
   mapsUrl?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   interestedCount?: number | null;
   interestedUsers?: (string | User)[] | null;
   updatedAt: string;

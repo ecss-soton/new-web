@@ -1,0 +1,59 @@
+@import '../../_css/common';
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 80px var(--gutter-h) 0;
+
+  @include mid-break {
+    padding: 60px var(--gutter-h) 0;
+  }
+
+  @include small-break {
+    padding: 40px 16px 0;
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+
+  @include small-break {
+    margin-bottom: 32px;
+  }
+}
+
+.heading {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: var(--theme-text);
+
+  @include mid-break {
+    font-size: 36px;
+  }
+
+  @include small-break {
+    font-size: 28px;
+  }
+}
+
+.subtitle {
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--theme-elevation-550);
+  margin: 0 auto;
+  max-width: 560px;
+
+  @include small-break {
+    font-size: 15px;
+  }
+}
+
+.mapWrapper {
+  padding-bottom: 80px;
+
+  @include small-break {
+    padding-bottom: 40px;
+  }
+}

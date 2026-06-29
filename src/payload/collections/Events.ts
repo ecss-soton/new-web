@@ -149,6 +149,26 @@ const Events: CollectionConfig = {
       },
     },
     {
+      name: 'latitude',
+      label: 'Latitude',
+      type: 'number',
+      admin: {
+        condition: (_, siblingData) => siblingData?.isJumpstart,
+        description: 'Latitude for map pin (e.g. 50.9350).',
+        step: 0.0001,
+      },
+    },
+    {
+      name: 'longitude',
+      label: 'Longitude',
+      type: 'number',
+      admin: {
+        condition: (_, siblingData) => siblingData?.isJumpstart,
+        description: 'Longitude for map pin (e.g. -1.3964).',
+        step: 0.0001,
+      },
+    },
+    {
       name: 'interestedCount',
       label: 'Number of interested people',
       type: 'number',

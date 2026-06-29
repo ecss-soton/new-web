@@ -2,6 +2,7 @@ import React from 'react'
 import moment from 'moment-timezone'
 
 import type { Event } from '../../../../payload/payload-types'
+import { Media } from '../../../_components/Media'
 import { inter } from '../../../_utilities/font'
 
 import classes from './index.module.scss'
@@ -24,16 +25,21 @@ const formatTimeRange = (startDate: string, endTime?: string | null): string => 
 }
 
 export const JumpstartEventCard: React.FC<Props> = ({ event }) => {
-  const { name, date, endTime, location, description, mapsUrl } = event
+  const { name, date, endTime, location, description, mapsUrl, image } = event
 
   const timeRange = formatTimeRange(date, endTime)
 
   return (
     <div className={[classes.card, inter.className].join(' ')}>
-      <div className={classes.timeColumn}>
-        <span className={classes.time}>{timeRange}</span>
-      </div>
+      {image && typeof image !== 'string' && (
+        <div className={classes.imageColumn}>
+          <Media resource={image} className={classes.image} imgClassName={classes.imageImg} />
+        </div>
+      )}
       <div className={classes.content}>
+        <div className={classes.meta}>
+          <span className={classes.time}>{timeRange}</span>
+        </div>
         <h3 className={classes.title}>{name}</h3>
         {location && (
           <p className={classes.location}>
@@ -55,16 +61,18 @@ export const JumpstartEventCard: React.FC<Props> = ({ event }) => {
           </p>
         )}
         {description && <p className={classes.description}>{description}</p>}
-        {mapsUrl && (
-          <a
-            href={mapsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={classes.mapsButton}
-          >
-            Get me there →
-          </a>
-        )}
+        <div className={classes.actions}>
+          {mapsUrl && (
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={classes.mapsButton}
+            >
+              Get me there →
+            </a>
+          )}
+        </div>
       </div>
     </div>
   )

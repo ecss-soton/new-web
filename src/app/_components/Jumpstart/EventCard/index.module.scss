@@ -2,54 +2,116 @@
 
 .card {
   display: flex;
-  gap: 24px;
-  padding: 24px 0;
-  border-bottom: 1px solid var(--theme-border-color);
+  gap: 0;
+  border-radius: 12px;
+  background: var(--theme-elevation-50);
+  border-left: 4px solid rgba(196, 26, 26, 0.8);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 
-  &:last-child {
-    border-bottom: none;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
 
   @include small-break {
-    gap: 16px;
-    padding: 16px 0;
+    flex-direction: column;
+    border-left: none;
+    border-top: 4px solid rgba(196, 26, 26, 0.8);
   }
 }
 
-.timeColumn {
+.imageColumn {
   flex-shrink: 0;
-  width: 100px;
-  padding-top: 2px;
+  width: 260px;
+  min-height: 180px;
+  position: relative;
+  overflow: hidden;
+
+  @include mid-break {
+    width: 200px;
+    min-height: 160px;
+  }
 
   @include small-break {
-    width: 70px;
+    width: 100%;
+    min-height: 160px;
+    max-height: 200px;
   }
 }
 
-.time {
-  font-size: 15px;
-  font-weight: 600;
-  color: #e02020;
-  white-space: nowrap;
+.image {
+  width: 100%;
+  height: 100%;
 
-  @include small-break {
-    font-size: 13px;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
+}
+
+.imageImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .content {
   flex: 1;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
+
+  @include mid-break {
+    padding: 20px 24px;
+  }
+
+  @include small-break {
+    padding: 16px 20px;
+  }
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.time {
+  font-size: 13px;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #c41a1a 0%, #991111 100%);
+  padding: 3px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+
+  @include small-break {
+    font-size: 12px;
+    padding: 2px 8px;
+  }
 }
 
 .title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  margin: 0 0 6px 0;
+  margin: 0 0 8px 0;
   color: var(--theme-text);
+  line-height: 1.3;
+
+  @include mid-break {
+    font-size: 18px;
+  }
 
   @include small-break {
-    font-size: 16px;
+    font-size: 17px;
   }
 }
 
@@ -58,7 +120,7 @@
   align-items: center;
   gap: 6px;
   font-size: 14px;
-  color: var(--theme-elevation-600);
+  color: var(--theme-elevation-550);
   margin: 0 0 6px 0;
 
   @include small-break {
@@ -73,25 +135,38 @@
 
 .description {
   font-size: 14px;
-  line-height: 1.5;
-  color: var(--theme-elevation-500);
-  margin: 0 0 10px 0;
+  line-height: 1.6;
+  color: var(--theme-elevation-550);
+  margin: 0 0 14px 0;
+  flex: 1;
+}
+
+.actions {
+  margin-top: auto;
 }
 
 .mapsButton {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 14px;
-  font-size: 13px;
+  gap: 6px;
+  padding: 8px 18px;
+  font-size: 14px;
   font-weight: 600;
   color: white;
   background: linear-gradient(135deg, #c41a1a 0%, #991111 100%);
-  border-radius: 6px;
+  border-radius: 8px;
   text-decoration: none;
-  transition: opacity 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 
   &:hover {
     opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  @include small-break {
+    font-size: 13px;
+    padding: 6px 14px;
   }
 }
