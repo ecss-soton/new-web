@@ -121,6 +121,15 @@ export const Settings: GlobalConfig = {
                 condition: (_, siblingData) => siblingData?.jumpstartEnabled,
               },
             },
+            {
+              name: 'jumpstartAbout',
+              type: 'textarea',
+              label: 'About Sidebar',
+              admin: {
+                condition: (_, siblingData) => siblingData?.jumpstartEnabled,
+                description: '"WHO ARE ECSS?" sidebar text on the Jumpstart page.',
+              },
+            },
           ],
         },
       ],

@@ -3,14 +3,10 @@
 .page {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 80px var(--gutter-h) 0;
-
-  @include mid-break {
-    padding: 60px var(--gutter-h) 0;
-  }
+  padding: 32px var(--gutter-h) 0;
 
   @include small-break {
-    padding: 40px 16px 0;
+    padding: 24px 16px 0;
   }
 }
 

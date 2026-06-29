@@ -12,6 +12,7 @@ export const EVENTS = `
                 description
                 link
                 isJumpstart
+                jumpstartCategory
                 sortOrder
                 mapsUrl
                 latitude

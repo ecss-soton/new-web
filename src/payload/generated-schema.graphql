@@ -823,6 +823,7 @@ type Event {
   link: String
   image(where: Event_Image_where): Media
   isJumpstart: Boolean
+  jumpstartCategory: Event_jumpstartCategory
   sortOrder: Float
   mapsUrl: String
   latitude: Float
@@ -1020,6 +1021,13 @@ input Event_Image_where_or {
   id: Event_Image_id_operator
   AND: [Event_Image_where_and]
   OR: [Event_Image_where_or]
+}
+
+enum Event_jumpstartCategory {
+  welcome
+  academic
+  social
+  competitive
 }
 
 enum Event__status {
@@ -19521,6 +19529,7 @@ input Event_where {
   link: Event_link_operator
   image: Event_image_operator
   isJumpstart: Event_isJumpstart_operator
+  jumpstartCategory: Event_jumpstartCategory_operator
   sortOrder: Event_sortOrder_operator
   mapsUrl: Event_mapsUrl_operator
   latitude: Event_latitude_operator
@@ -19618,6 +19627,22 @@ input Event_isJumpstart_operator {
   equals: Boolean
   not_equals: Boolean
   exists: Boolean
+}
+
+input Event_jumpstartCategory_operator {
+  equals: Event_jumpstartCategory_Input
+  not_equals: Event_jumpstartCategory_Input
+  in: [Event_jumpstartCategory_Input]
+  not_in: [Event_jumpstartCategory_Input]
+  all: [Event_jumpstartCategory_Input]
+  exists: Boolean
+}
+
+enum Event_jumpstartCategory_Input {
+  welcome
+  academic
+  social
+  competitive
 }
 
 input Event_sortOrder_operator {
@@ -19726,6 +19751,7 @@ input Event_where_and {
   link: Event_link_operator
   image: Event_image_operator
   isJumpstart: Event_isJumpstart_operator
+  jumpstartCategory: Event_jumpstartCategory_operator
   sortOrder: Event_sortOrder_operator
   mapsUrl: Event_mapsUrl_operator
   latitude: Event_latitude_operator
@@ -19749,6 +19775,7 @@ input Event_where_or {
   link: Event_link_operator
   image: Event_image_operator
   isJumpstart: Event_isJumpstart_operator
+  jumpstartCategory: Event_jumpstartCategory_operator
   sortOrder: Event_sortOrder_operator
   mapsUrl: Event_mapsUrl_operator
   latitude: Event_latitude_operator
@@ -19785,6 +19812,7 @@ type EventsDocAccessFields {
   link: EventsDocAccessFields_link
   image: EventsDocAccessFields_image
   isJumpstart: EventsDocAccessFields_isJumpstart
+  jumpstartCategory: EventsDocAccessFields_jumpstartCategory
   sortOrder: EventsDocAccessFields_sortOrder
   mapsUrl: EventsDocAccessFields_mapsUrl
   latitude: EventsDocAccessFields_latitude
@@ -20000,6 +20028,29 @@ type EventsDocAccessFields_isJumpstart_Update {
 }
 
 type EventsDocAccessFields_isJumpstart_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_jumpstartCategory {
+  create: EventsDocAccessFields_jumpstartCategory_Create
+  read: EventsDocAccessFields_jumpstartCategory_Read
+  update: EventsDocAccessFields_jumpstartCategory_Update
+  delete: EventsDocAccessFields_jumpstartCategory_Delete
+}
+
+type EventsDocAccessFields_jumpstartCategory_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_jumpstartCategory_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_jumpstartCategory_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_jumpstartCategory_Delete {
   permission: Boolean!
 }
 
@@ -20253,6 +20304,7 @@ type EventVersion_Version {
   link: String
   image(where: EventVersion_Version_Image_where): Media
   isJumpstart: Boolean
+  jumpstartCategory: EventVersion_Version_jumpstartCategory
   sortOrder: Float
   mapsUrl: String
   latitude: Float
@@ -20452,6 +20504,13 @@ input EventVersion_Version_Image_where_or {
   OR: [EventVersion_Version_Image_where_or]
 }
 
+enum EventVersion_Version_jumpstartCategory {
+  welcome
+  academic
+  social
+  competitive
+}
+
 enum EventVersion_Version__status {
   draft
   published
@@ -20481,6 +20540,7 @@ input versionsEvent_where {
   version__link: versionsEvent_version__link_operator
   version__image: versionsEvent_version__image_operator
   version__isJumpstart: versionsEvent_version__isJumpstart_operator
+  version__jumpstartCategory: versionsEvent_version__jumpstartCategory_operator
   version__sortOrder: versionsEvent_version__sortOrder_operator
   version__mapsUrl: versionsEvent_version__mapsUrl_operator
   version__latitude: versionsEvent_version__latitude_operator
@@ -20581,6 +20641,22 @@ input versionsEvent_version__isJumpstart_operator {
   equals: Boolean
   not_equals: Boolean
   exists: Boolean
+}
+
+input versionsEvent_version__jumpstartCategory_operator {
+  equals: versionsEvent_version__jumpstartCategory_Input
+  not_equals: versionsEvent_version__jumpstartCategory_Input
+  in: [versionsEvent_version__jumpstartCategory_Input]
+  not_in: [versionsEvent_version__jumpstartCategory_Input]
+  all: [versionsEvent_version__jumpstartCategory_Input]
+  exists: Boolean
+}
+
+enum versionsEvent_version__jumpstartCategory_Input {
+  welcome
+  academic
+  social
+  competitive
 }
 
 input versionsEvent_version__sortOrder_operator {
@@ -20728,6 +20804,7 @@ input versionsEvent_where_and {
   version__link: versionsEvent_version__link_operator
   version__image: versionsEvent_version__image_operator
   version__isJumpstart: versionsEvent_version__isJumpstart_operator
+  version__jumpstartCategory: versionsEvent_version__jumpstartCategory_operator
   version__sortOrder: versionsEvent_version__sortOrder_operator
   version__mapsUrl: versionsEvent_version__mapsUrl_operator
   version__latitude: versionsEvent_version__latitude_operator
@@ -20755,6 +20832,7 @@ input versionsEvent_where_or {
   version__link: versionsEvent_version__link_operator
   version__image: versionsEvent_version__image_operator
   version__isJumpstart: versionsEvent_version__isJumpstart_operator
+  version__jumpstartCategory: versionsEvent_version__jumpstartCategory_operator
   version__sortOrder: versionsEvent_version__sortOrder_operator
   version__mapsUrl: versionsEvent_version__mapsUrl_operator
   version__latitude: versionsEvent_version__latitude_operator
@@ -24723,6 +24801,7 @@ type Settings {
   jumpstartEnabled: Boolean
   jumpstartHeading: String
   jumpstartSubtitle: String
+  jumpstartAbout: String
   updatedAt: DateTime
   createdAt: DateTime
 }
@@ -25309,6 +25388,7 @@ type SettingsDocAccessFields {
   jumpstartEnabled: SettingsDocAccessFields_jumpstartEnabled
   jumpstartHeading: SettingsDocAccessFields_jumpstartHeading
   jumpstartSubtitle: SettingsDocAccessFields_jumpstartSubtitle
+  jumpstartAbout: SettingsDocAccessFields_jumpstartAbout
   updatedAt: SettingsDocAccessFields_updatedAt
   createdAt: SettingsDocAccessFields_createdAt
 }
@@ -25563,6 +25643,29 @@ type SettingsDocAccessFields_jumpstartSubtitle_Update {
 }
 
 type SettingsDocAccessFields_jumpstartSubtitle_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartAbout {
+  create: SettingsDocAccessFields_jumpstartAbout_Create
+  read: SettingsDocAccessFields_jumpstartAbout_Read
+  update: SettingsDocAccessFields_jumpstartAbout_Update
+  delete: SettingsDocAccessFields_jumpstartAbout_Delete
+}
+
+type SettingsDocAccessFields_jumpstartAbout_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartAbout_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartAbout_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartAbout_Delete {
   permission: Boolean!
 }
 
@@ -33281,6 +33384,7 @@ type EventsFields {
   link: EventsFields_link
   image: EventsFields_image
   isJumpstart: EventsFields_isJumpstart
+  jumpstartCategory: EventsFields_jumpstartCategory
   sortOrder: EventsFields_sortOrder
   mapsUrl: EventsFields_mapsUrl
   latitude: EventsFields_latitude
@@ -33496,6 +33600,29 @@ type EventsFields_isJumpstart_Update {
 }
 
 type EventsFields_isJumpstart_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_jumpstartCategory {
+  create: EventsFields_jumpstartCategory_Create
+  read: EventsFields_jumpstartCategory_Read
+  update: EventsFields_jumpstartCategory_Update
+  delete: EventsFields_jumpstartCategory_Delete
+}
+
+type EventsFields_jumpstartCategory_Create {
+  permission: Boolean!
+}
+
+type EventsFields_jumpstartCategory_Read {
+  permission: Boolean!
+}
+
+type EventsFields_jumpstartCategory_Update {
+  permission: Boolean!
+}
+
+type EventsFields_jumpstartCategory_Delete {
   permission: Boolean!
 }
 
@@ -36024,6 +36151,7 @@ type SettingsFields {
   jumpstartEnabled: SettingsFields_jumpstartEnabled
   jumpstartHeading: SettingsFields_jumpstartHeading
   jumpstartSubtitle: SettingsFields_jumpstartSubtitle
+  jumpstartAbout: SettingsFields_jumpstartAbout
   updatedAt: SettingsFields_updatedAt
   createdAt: SettingsFields_createdAt
 }
@@ -36278,6 +36406,29 @@ type SettingsFields_jumpstartSubtitle_Update {
 }
 
 type SettingsFields_jumpstartSubtitle_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartAbout {
+  create: SettingsFields_jumpstartAbout_Create
+  read: SettingsFields_jumpstartAbout_Read
+  update: SettingsFields_jumpstartAbout_Update
+  delete: SettingsFields_jumpstartAbout_Delete
+}
+
+type SettingsFields_jumpstartAbout_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartAbout_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartAbout_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartAbout_Delete {
   permission: Boolean!
 }
 
@@ -38140,6 +38291,7 @@ input mutationEventInput {
   link: String
   image: String
   isJumpstart: Boolean
+  jumpstartCategory: Event_jumpstartCategory_MutationInput
   sortOrder: Float
   mapsUrl: String
   latitude: Float
@@ -38149,6 +38301,13 @@ input mutationEventInput {
   updatedAt: String
   createdAt: String
   _status: Event__status_MutationInput
+}
+
+enum Event_jumpstartCategory_MutationInput {
+  welcome
+  academic
+  social
+  competitive
 }
 
 enum Event__status_MutationInput {
@@ -38165,6 +38324,7 @@ input mutationEventUpdateInput {
   link: String
   image: String
   isJumpstart: Boolean
+  jumpstartCategory: EventUpdate_jumpstartCategory_MutationInput
   sortOrder: Float
   mapsUrl: String
   latitude: Float
@@ -38174,6 +38334,13 @@ input mutationEventUpdateInput {
   updatedAt: String
   createdAt: String
   _status: EventUpdate__status_MutationInput
+}
+
+enum EventUpdate_jumpstartCategory_MutationInput {
+  welcome
+  academic
+  social
+  competitive
 }
 
 enum EventUpdate__status_MutationInput {
@@ -38491,6 +38658,7 @@ input mutationSettingsInput {
   jumpstartEnabled: Boolean
   jumpstartHeading: String
   jumpstartSubtitle: String
+  jumpstartAbout: String
   updatedAt: String
   createdAt: String
 }

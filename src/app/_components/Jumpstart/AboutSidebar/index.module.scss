@@ -1,0 +1,40 @@
+@import '../../../_css/common';
+
+.sidebar {
+  position: sticky;
+  top: 100px;
+  padding: 28px 24px;
+  border-radius: 14px;
+  background: var(--jumpstart-cat-social-light);
+
+  @include mid-break {
+    top: 80px;
+    padding: 24px 20px;
+  }
+
+  @include small-break {
+    position: static;
+    padding: 20px 16px;
+  }
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--jumpstart-cat-welcome);
+  margin: 0 0 14px 0;
+  line-height: 1.1;
+
+  @include small-break {
+    font-size: 24px;
+  }
+}
+
+.text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--theme-elevation-650);
+  margin: 0;
+  white-space: pre-line;
+}

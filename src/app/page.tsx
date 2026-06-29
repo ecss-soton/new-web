@@ -1,13 +1,14 @@
 import React from 'react'
+import moment from 'moment-timezone'
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 
-import type { Event, Settings } from '../payload/payload-types'
+import type { Event, Media, Settings } from '../payload/payload-types'
 import { fetchDocs } from './_api/fetchDoc'
 import { fetchSettings } from './_api/fetchGlobals'
 import { JumpstartBanner } from './_components/Jumpstart/Banner'
+import { JumpstartHero } from './_components/Jumpstart/JumpstartHero'
 import { JumpstartTimeline } from './_components/Jumpstart/Timeline'
-import { inter } from './_utilities/font'
 import PageTemplate, {
   generateMetadata as pageTemplateGenerateMetadata,
 } from './(pages)/[slug]/page'
@@ -25,6 +26,41 @@ const JumpstartMapView = dynamic(
   { ssr: false },
 )
 
+const TIMEZONE = 'Europe/London'
+
+const formatDate = (dateStr: string): string => {
+  return moment.utc(dateStr).tz(TIMEZONE).format('Do MMMM YYYY')
+}
+
+const getLogoUrl = (logo: string | Media | null | undefined): string | null => {
+  if (!logo) return null
+  if (typeof logo === 'string') return null
+  return logo.url || null
+}
+
+const computeDateRange = (events: Event[]): string | null => {
+  const dates = events
+    .map(e => {
+      try {
+        return moment.utc(e.date).tz(TIMEZONE)
+      } catch {
+        return null
+      }
+    })
+    .filter((d): d is moment.Moment => d !== null)
+    .sort((a, b) => a.valueOf() - b.valueOf())
+
+  if (dates.length === 0) return null
+
+  const first = dates[0]
+  const last = dates[dates.length - 1]
+
+  const firstFormatted = first.format('Do')
+  const lastFormatted = last.format('Do MMMM YYYY')
+
+  return `${firstFormatted} – ${lastFormatted}`
+}
+
 export default async function Page({ searchParams }: { searchParams: { view?: string } }) {
   let settings: Settings | null = null
   try {
@@ -38,25 +74,25 @@ export default async function Page({ searchParams }: { searchParams: { view?: st
     try {
       events = await fetchDocs<Event>('events')
     } catch (_error) {
-      // swallow — render timeline with empty events
+      // swallow
     }
 
     const jumpstartEvents = events.filter(e => e.isJumpstart)
     const heading = settings.jumpstartHeading || 'Jumpstart'
     const subtitle = settings.jumpstartSubtitle || undefined
+    const aboutText = settings.jumpstartAbout || undefined
+    const dateRange = computeDateRange(jumpstartEvents) || undefined
     const currentView = searchParams?.view || 'timeline'
+
+    const logoUrl = getLogoUrl(settings.siteLogo)
+    const logoDarkUrl = getLogoUrl(settings.siteLogoDark)
 
     if (currentView === 'map') {
       return (
         <div className={wrapperClasses.page}>
           <JumpstartBanner />
+          <JumpstartHero dateRange={dateRange || ''} logoUrl={logoUrl} logoDarkUrl={logoDarkUrl} />
           <div className={mapPageClasses.page}>
-            <div className={mapPageClasses.header}>
-              <h1 className={[mapPageClasses.heading, inter.className].join(' ')}>{heading}</h1>
-              {subtitle && (
-                <p className={[mapPageClasses.subtitle, inter.className].join(' ')}>{subtitle}</p>
-              )}
-            </div>
             <JumpstartViewToggle />
           </div>
           <div className={mapPageClasses.mapWrapper}>
@@ -69,7 +105,13 @@ export default async function Page({ searchParams }: { searchParams: { view?: st
     return (
       <div className={wrapperClasses.page}>
         <JumpstartBanner />
-        <JumpstartTimeline events={jumpstartEvents} heading={heading} subtitle={subtitle} />
+        <JumpstartHero dateRange={dateRange || ''} logoUrl={logoUrl} logoDarkUrl={logoDarkUrl} />
+        <JumpstartTimeline
+          events={jumpstartEvents}
+          heading={heading}
+          subtitle={subtitle}
+          aboutText={aboutText}
+        />
       </div>
     )
   }

@@ -3,6 +3,7 @@ import moment from 'moment-timezone'
 
 import type { Event } from '../../../../payload/payload-types'
 import { inter } from '../../../_utilities/font'
+import { AboutSidebar } from '../AboutSidebar'
 import { JumpstartEventCard } from '../EventCard'
 import { JumpstartViewToggle } from '../ViewToggle'
 
@@ -12,6 +13,7 @@ type Props = {
   events: Event[]
   heading?: string | null
   subtitle?: string | null
+  aboutText?: string | null
 }
 
 const TIMEZONE = 'Europe/London'
@@ -46,7 +48,7 @@ const getSortedDateKeys = (groups: Map<string, Event[]>): string[] => {
   return Array.from(groups.keys()).sort()
 }
 
-export const JumpstartTimeline: React.FC<Props> = ({ events, heading, subtitle }) => {
+export const JumpstartTimeline: React.FC<Props> = ({ events, heading, subtitle, aboutText }) => {
   const groups = groupByDate(events)
   const sortedKeys = getSortedDateKeys(groups)
 
@@ -59,23 +61,27 @@ export const JumpstartTimeline: React.FC<Props> = ({ events, heading, subtitle }
 
       <JumpstartViewToggle />
 
-      <div className={classes.timeline}>
-        {sortedKeys.map(dateKey => {
-          const dayEvents = groups.get(dateKey) || []
+      <div className={classes.grid}>
+        <AboutSidebar aboutText={aboutText} />
 
-          return (
-            <div key={dateKey} className={classes.dayGroup}>
-              <div className={classes.dayHeader}>
-                <h2 className={classes.dayTitle}>{formatDayHeader(dateKey)}</h2>
+        <div className={classes.timeline}>
+          {sortedKeys.map(dateKey => {
+            const dayEvents = groups.get(dateKey) || []
+
+            return (
+              <div key={dateKey} className={classes.dayGroup}>
+                <div className={classes.dayHeader}>
+                  <h2 className={classes.dayTitle}>{formatDayHeader(dateKey)}</h2>
+                </div>
+                <div className={classes.dayEvents}>
+                  {dayEvents.map(event => (
+                    <JumpstartEventCard key={event.id} event={event} />
+                  ))}
+                </div>
               </div>
-              <div className={classes.dayEvents}>
-                {dayEvents.map(event => (
-                  <JumpstartEventCard key={event.id} event={event} />
-                ))}
-              </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
     </div>
   )

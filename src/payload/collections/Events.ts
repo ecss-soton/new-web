@@ -109,6 +109,21 @@ const Events: CollectionConfig = {
       type: 'checkbox',
     },
     {
+      name: 'jumpstartCategory',
+      label: 'Event Category',
+      type: 'select',
+      options: [
+        { label: 'Welcome / General', value: 'welcome' },
+        { label: 'Academic', value: 'academic' },
+        { label: 'Social', value: 'social' },
+        { label: 'Competitive / Track', value: 'competitive' },
+      ],
+      admin: {
+        condition: (_, siblingData) => siblingData?.isJumpstart,
+        description: 'Controls the color accent on the event card.',
+      },
+    },
+    {
       name: 'sortOrder',
       label: 'Sort Order',
       type: 'number',

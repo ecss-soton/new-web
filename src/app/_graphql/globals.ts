@@ -47,6 +47,7 @@ export const SETTINGS = `
     jumpstartEnabled
     jumpstartHeading
     jumpstartSubtitle
+    jumpstartAbout
   }
 `
 
