@@ -1,7 +1,7 @@
 import React from 'react'
 import moment from 'moment-timezone'
 import { Metadata } from 'next'
-import dynamic from 'next/dynamic'
+import nextDynamic from 'next/dynamic'
 
 import type { Event, Settings } from '../payload/payload-types'
 import { fetchDocs } from './_api/fetchDoc'
@@ -16,15 +16,17 @@ import PageTemplate, {
 import mapPageClasses from './_components/Jumpstart/MapPage.module.scss'
 import wrapperClasses from './_components/Jumpstart/pageWrapper.module.scss'
 
-const JumpstartViewToggle = dynamic(
+const JumpstartViewToggle = nextDynamic(
   () => import('./_components/Jumpstart/ViewToggle').then(mod => mod.JumpstartViewToggle),
   { ssr: false },
 )
 
-const JumpstartMapView = dynamic(
+const JumpstartMapView = nextDynamic(
   () => import('./_components/Jumpstart/MapView').then(mod => mod.JumpstartMapView),
   { ssr: false },
 )
+
+export const dynamic = 'force-dynamic'
 
 const TIMEZONE = 'Europe/London'
 
