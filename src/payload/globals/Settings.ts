@@ -91,6 +91,47 @@ export const Settings: GlobalConfig = {
             },
           ],
         },
+        {
+          label: 'Jumpstart',
+          fields: [
+            {
+              name: 'jumpstartEnabled',
+              type: 'checkbox',
+              label: 'Enable Jumpstart Mode',
+              defaultValue: false,
+              admin: {
+                description:
+                  'When enabled, the homepage displays the Jumpstart timeline instead of the regular homepage.',
+              },
+            },
+            {
+              name: 'jumpstartHeading',
+              type: 'text',
+              label: 'Jumpstart Heading',
+              defaultValue: 'Jumpstart 2025',
+              admin: {
+                condition: (_, siblingData) => siblingData?.jumpstartEnabled,
+              },
+            },
+            {
+              name: 'jumpstartSubtitle',
+              type: 'textarea',
+              label: 'Jumpstart Subtitle',
+              admin: {
+                condition: (_, siblingData) => siblingData?.jumpstartEnabled,
+              },
+            },
+            {
+              name: 'jumpstartAbout',
+              type: 'textarea',
+              label: 'About Sidebar',
+              admin: {
+                condition: (_, siblingData) => siblingData?.jumpstartEnabled,
+                description: '"WHO ARE ECSS?" sidebar text on the Jumpstart page.',
+              },
+            },
+          ],
+        },
       ],
     },
   ],

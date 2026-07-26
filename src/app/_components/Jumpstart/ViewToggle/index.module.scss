@@ -1,0 +1,63 @@
+@import '../../../_css/common';
+
+.toggle {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 44px;
+  gap: 0;
+
+  @include small-break {
+    margin-bottom: 32px;
+  }
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 2px solid var(--jumpstart-card-border);
+  background: var(--jumpstart-card);
+  color: var(--jumpstart-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:first-child {
+    border-radius: 8px 0 0 8px;
+  }
+
+  &:last-child {
+    border-radius: 0 8px 8px 0;
+    border-left: none;
+  }
+
+  &:hover {
+    background: var(--jumpstart-card-border);
+    color: var(--jumpstart-text);
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  @include small-break {
+    padding: 8px 16px;
+    font-size: 13px;
+    gap: 6px;
+  }
+}
+
+.active {
+  background: var(--jumpstart-neon-magenta);
+  border-color: var(--jumpstart-neon-magenta);
+  color: #000;
+  box-shadow: 3px 3px 0 #000;
+
+  &:hover {
+    background: var(--jumpstart-neon-magenta);
+    border-color: var(--jumpstart-neon-magenta);
+    color: #000;
+  }
+}

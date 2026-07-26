@@ -11,6 +11,9 @@ TABLE\ BOOKING\ FOR\ REFERENCE/
 .idea
 .vscode
 
+members.csv
+AGENTS.md
+
 # Logs
 logs
 *.log

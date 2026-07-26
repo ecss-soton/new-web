@@ -16,8 +16,8 @@ const Events: CollectionConfig = {
     delete: admins,
   },
   admin: {
-    useAsTitle: 'id',
-    defaultColumns: ['id', 'name', 'date'],
+    useAsTitle: 'name',
+    defaultColumns: ['name', 'date', 'isJumpstart', 'sortOrder'],
   },
   versions: {
     drafts: true,
@@ -89,7 +89,7 @@ const Events: CollectionConfig = {
     {
       name: 'description',
       label: 'Description',
-      type: 'text',
+      type: 'textarea',
     },
     {
       name: 'link',
@@ -107,6 +107,61 @@ const Events: CollectionConfig = {
       name: 'isJumpstart',
       label: 'Is this a Jumpstart Event?',
       type: 'checkbox',
+    },
+    {
+      name: 'jumpstartCategory',
+      label: 'Event Category',
+      type: 'select',
+      options: [
+        { label: 'Welcome / General', value: 'welcome' },
+        { label: 'Academic', value: 'academic' },
+        { label: 'Social', value: 'social' },
+        { label: 'Competitive / Track', value: 'competitive' },
+      ],
+      admin: {
+        condition: (_, siblingData) => siblingData?.isJumpstart,
+        description: 'Controls the color accent on the event card.',
+      },
+    },
+    {
+      name: 'sortOrder',
+      label: 'Sort Order',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        condition: (_, siblingData) => siblingData?.isJumpstart,
+        description: 'Order within the day. Lower numbers appear first.',
+      },
+    },
+    {
+      name: 'mapsUrl',
+      label: 'Google Maps URL',
+      type: 'text',
+      validate: isHTTPS,
+      admin: {
+        condition: (_, siblingData) => siblingData?.isJumpstart,
+        description: 'URL for "Get me there" button (e.g. Google Maps link).',
+      },
+    },
+    {
+      name: 'latitude',
+      label: 'Latitude',
+      type: 'number',
+      admin: {
+        condition: (_, siblingData) => siblingData?.isJumpstart,
+        description: 'Latitude for map pin (e.g. 50.9350).',
+        step: 0.0001,
+      },
+    },
+    {
+      name: 'longitude',
+      label: 'Longitude',
+      type: 'number',
+      admin: {
+        condition: (_, siblingData) => siblingData?.isJumpstart,
+        description: 'Longitude for map pin (e.g. -1.3964).',
+        step: 0.0001,
+      },
     },
     {
       name: 'interestedCount',

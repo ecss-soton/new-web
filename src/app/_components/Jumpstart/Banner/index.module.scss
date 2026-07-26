@@ -1,0 +1,85 @@
+@import '../../../_css/common';
+
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px var(--gutter-h);
+  background: var(--jumpstart-bg);
+  border-bottom: 1px solid var(--jumpstart-card-border);
+  color: var(--jumpstart-muted);
+  font-size: 13px;
+  font-weight: 600;
+
+  @include small-break {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  @include small-break {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--jumpstart-neon-lime);
+  text-shadow: 1px 1px 0 #000;
+}
+
+.divider {
+  width: 1px;
+  height: 14px;
+  background: var(--jumpstart-card-border);
+
+  @include small-break {
+    display: none;
+  }
+}
+
+.link {
+  color: var(--jumpstart-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--jumpstart-text);
+  }
+}
+
+.close {
+  position: absolute;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--jumpstart-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--jumpstart-text);
+  }
+
+  @include small-break {
+    right: 8px;
+  }
+}

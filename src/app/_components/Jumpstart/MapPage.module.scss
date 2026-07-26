@@ -1,0 +1,31 @@
+@import '../../_css/common';
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px var(--gutter-h) 0;
+
+  @include small-break {
+    padding: 28px 16px 0;
+  }
+}
+
+.header {
+  display: none;
+}
+
+.heading {
+  display: none;
+}
+
+.subtitle {
+  display: none;
+}
+
+.mapWrapper {
+  padding-bottom: 80px;
+
+  @include small-break {
+    padding-bottom: 40px;
+  }
+}

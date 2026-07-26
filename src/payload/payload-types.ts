@@ -758,6 +758,11 @@ export interface Event {
   link?: string | null;
   image?: string | Media | null;
   isJumpstart?: boolean | null;
+  jumpstartCategory?: ('welcome' | 'academic' | 'social' | 'competitive') | null;
+  sortOrder?: number | null;
+  mapsUrl?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   interestedCount?: number | null;
   interestedUsers?: (string | User)[] | null;
   updatedAt: string;
@@ -1538,6 +1543,10 @@ export interface Settings {
   footerLogo?: string | Media | null;
   postsPage?: (string | null) | Page;
   projectsPage?: (string | null) | Page;
+  jumpstartEnabled?: boolean | null;
+  jumpstartHeading?: string | null;
+  jumpstartSubtitle?: string | null;
+  jumpstartAbout?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }

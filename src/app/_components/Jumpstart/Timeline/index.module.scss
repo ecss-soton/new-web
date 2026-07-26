@@ -1,0 +1,101 @@
+@import '../../../_css/common';
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--gutter-h) 100px;
+
+  @include mid-break {
+    padding: 0 var(--gutter-h) 70px;
+  }
+
+  @include small-break {
+    padding: 0 16px 50px;
+  }
+}
+
+.header {
+  display: none;
+}
+
+.heading {
+  display: none;
+}
+
+.subtitle {
+  display: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 48px;
+  align-items: start;
+
+  @include mid-break {
+    grid-template-columns: 200px 1fr;
+    gap: 36px;
+  }
+
+  @include small-break {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  min-width: 0;
+
+  @include small-break {
+    gap: 32px;
+  }
+}
+
+.dayGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.dayHeader {
+  position: sticky;
+  top: 56px;
+  z-index: 10;
+  background: var(--jumpstart-bg);
+  margin: 0 0 18px -10px;
+  padding: 8px 0 12px 10px;
+
+  @include small-break {
+    position: static;
+    padding-top: 0;
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+  }
+}
+
+.dayTitle {
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--jumpstart-neon-cyan);
+  margin: 0;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+
+  @include small-break {
+    font-size: 16px;
+  }
+}
+
+.dayEvents {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0;
+
+  @include small-break {
+    gap: 16px;
+  }
+}

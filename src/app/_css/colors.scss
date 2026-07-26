@@ -24,6 +24,39 @@
   --color-base-950: rgb(7, 7, 7);
   --color-base-1000: rgb(0, 0, 0);
 
+  --ecss-red: #E60012;
+  --ecss-red-dark: #B8000E;
+  --ecss-red-light: rgba(230, 0, 18, 0.2);
+  --ecss-white: #FFFFFF;
+  --ecss-grey: #666666;
+  --ecss-black: #1A1A1A;
+
+  --jumpstart-bg: #121214;
+  --jumpstart-card: #1E1F23;
+  --jumpstart-text: #FFFFFF;
+  --jumpstart-muted: #888890;
+
+  --jumpstart-neon-cyan: #00E5FF;
+  --jumpstart-neon-lime: #D4FF00;
+  --jumpstart-neon-magenta: #FF007A;
+  --jumpstart-neon-orange: #FF5500;
+  --jumpstart-neon-purple: #8A2BE2;
+
+  --jumpstart-cat-welcome: var(--jumpstart-neon-orange);
+  --jumpstart-cat-welcome-light: rgba(255, 85, 0, 0.10);
+  --jumpstart-cat-academic: var(--jumpstart-neon-cyan);
+  --jumpstart-cat-academic-light: rgba(0, 229, 255, 0.10);
+  --jumpstart-cat-social: var(--jumpstart-neon-lime);
+  --jumpstart-cat-social-light: rgba(212, 255, 0, 0.10);
+  --jumpstart-cat-competitive: var(--jumpstart-neon-magenta);
+  --jumpstart-cat-competitive-light: rgba(255, 0, 122, 0.10);
+
+  --jumpstart-accent: var(--jumpstart-neon-magenta);
+  --jumpstart-accent-hover: var(--jumpstart-neon-purple);
+  --jumpstart-accent-light: rgba(255, 0, 122, 0.15);
+  --jumpstart-accent-text: var(--jumpstart-text);
+  --jumpstart-card-border: rgba(255, 255, 255, 0.12);
+
   --color-success-50: rgb(247, 255, 251);
   --color-success-100: rgb(240, 255, 247);
   --color-success-150: rgb(232, 255, 243);
