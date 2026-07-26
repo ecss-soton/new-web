@@ -255,9 +255,12 @@ export const CollectionArchive: React.FC<Props> = props => {
               if (isJumpstart) return 'isJumpstart' in result && result.isJumpstart === true
               return new Date((result as Event).date) > today
             }).length === 0 && (
-              <span className={[classes.heading, inter.className].join(' ')}>
-                No Events are planned at the moment, come back soon!
-              </span>
+              <div className={classes.emptyState}>
+                <p className={[classes.emptyHeading, inter.className].join(' ')}>
+                  No events planned
+                </p>
+                <p className={classes.emptySubtext}>Check back soon for upcoming events.</p>
+              </div>
             )}
           {relationTo === 'events' ? (
             <div className={classes.eventsViewWrapper}>
