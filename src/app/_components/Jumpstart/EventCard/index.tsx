@@ -3,7 +3,7 @@ import moment from 'moment-timezone'
 
 import type { Event } from '../../../../payload/payload-types'
 import { Media } from '../../../_components/Media'
-import { bebasNeue, inter } from '../../../_utilities/font'
+import { bungee, inter } from '../../../_utilities/font'
 
 import classes from './index.module.scss'
 
@@ -14,15 +14,11 @@ const CATEGORY_COLORS: Record<string, string> = {
   competitive: 'var(--jumpstart-cat-competitive)',
 }
 
-const CATEGORY_TINTS: Record<string, string> = {
-  welcome: 'var(--jumpstart-cat-welcome-light)',
-  academic: 'var(--jumpstart-cat-academic-light)',
-  social: 'var(--jumpstart-cat-social-light)',
-  competitive: 'var(--jumpstart-cat-competitive-light)',
-}
+const ROTATIONS = [-1, 0.8, -0.5, 1.2, -0.8, 0.3, -1.1, 0.7]
 
 type Props = {
   event: Event
+  index: number
 }
 
 const TIMEZONE = 'Europe/London'
@@ -34,13 +30,12 @@ const formatTimeRange = (startDate: string, endTime?: string | null): string => 
   return `${start} – ${end}`
 }
 
-export const JumpstartEventCard: React.FC<Props> = ({ event }) => {
+export const JumpstartEventCard: React.FC<Props> = ({ event, index }) => {
   const { name, date, endTime, location, description, mapsUrl, image, jumpstartCategory } = event
 
   const catKey = jumpstartCategory && CATEGORY_COLORS[jumpstartCategory] ? jumpstartCategory : null
-  const catColor = catKey ? CATEGORY_COLORS[catKey] : 'var(--jumpstart-accent)'
-  const catTint = catKey ? CATEGORY_TINTS[catKey] : 'var(--jumpstart-accent-light)'
-
+  const catColor = catKey ? CATEGORY_COLORS[catKey] : 'var(--jumpstart-neon-magenta)'
+  const rotation = ROTATIONS[index % ROTATIONS.length]
   const timeRange = formatTimeRange(date, endTime)
 
   return (
@@ -49,7 +44,7 @@ export const JumpstartEventCard: React.FC<Props> = ({ event }) => {
       style={
         {
           '--card-cat': catColor,
-          '--card-cat-tint': catTint,
+          '--card-rotation': `${rotation}deg`,
         } as React.CSSProperties
       }
     >
@@ -59,42 +54,20 @@ export const JumpstartEventCard: React.FC<Props> = ({ event }) => {
         </div>
       )}
       <div className={classes.content}>
-        <div className={classes.meta}>
-          <span className={classes.time}>{timeRange}</span>
-        </div>
-        <h3 className={[classes.title, bebasNeue.className].join(' ')}>{name}</h3>
-        {location && (
-          <p className={classes.location}>
-            <svg
-              className={classes.locationIcon}
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-            {location}
-          </p>
-        )}
+        <span className={classes.time}>{timeRange}</span>
+        <h3 className={[classes.title, bungee.className].join(' ')}>{name}</h3>
+        {location && <p className={classes.location}>{location}</p>}
         {description && <p className={classes.description}>{description}</p>}
-        <div className={classes.actions}>
-          {mapsUrl && (
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={classes.mapsButton}
-            >
-              Get me there →
-            </a>
-          )}
-        </div>
+        {mapsUrl && (
+          <a
+            href={mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={[classes.mapsButton, bungee.className].join(' ')}
+          >
+            GET ME THERE
+          </a>
+        )}
       </div>
     </div>
   )

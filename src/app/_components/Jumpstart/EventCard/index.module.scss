@@ -1,47 +1,52 @@
 @import '../../../_css/common';
 
 .card {
-  --card-cat: var(--jumpstart-accent);
-  --card-cat-tint: var(--jumpstart-accent-light);
+  --card-cat: var(--jumpstart-neon-magenta);
+  --card-rotation: 0deg;
 
   display: flex;
   gap: 0;
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--jumpstart-card);
+  border: 2px solid var(--jumpstart-card-border);
   overflow: hidden;
   position: relative;
+  transform: rotate(var(--card-rotation));
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.4);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--card-cat-tint);
-    pointer-events: none;
-    z-index: 0;
+  &:hover {
+    transform: rotate(var(--card-rotation)) translateY(-4px);
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
+    border-color: var(--card-cat);
   }
 
   @include small-break {
     flex-direction: column;
+    transform: rotate(var(--card-rotation));
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
   }
 }
 
 .imageColumn {
   flex-shrink: 0;
-  width: 240px;
-  min-height: 170px;
+  width: 220px;
+  min-height: 160px;
   position: relative;
   overflow: hidden;
-  z-index: 1;
 
   @include mid-break {
-    width: 180px;
-    min-height: 150px;
+    width: 170px;
+    min-height: 140px;
   }
 
   @include small-break {
     width: 100%;
-    min-height: 150px;
-    max-height: 180px;
+    min-height: 140px;
+    max-height: 170px;
   }
 }
 
@@ -64,61 +69,57 @@
 
 .content {
   flex: 1;
-  padding: 22px 26px;
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  position: relative;
-  z-index: 1;
 
   @include mid-break {
-    padding: 18px 22px;
+    padding: 16px 20px;
   }
 
   @include small-break {
-    padding: 14px 18px;
+    padding: 14px 16px;
   }
 }
 
-.meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
 .time {
+  display: inline-block;
+  align-self: flex-start;
   font-size: 12px;
   font-weight: 700;
-  color: var(--card-cat);
-  background: var(--jumpstart-card);
-  border: 2px solid var(--card-cat);
-  padding: 3px 10px;
-  border-radius: 6px;
-  letter-spacing: 0.04em;
+  color: #000;
+  background: var(--card-cat);
+  padding: 4px 12px;
+  margin-bottom: 10px;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  letter-spacing: 0.06em;
   white-space: nowrap;
 
   @include small-break {
     font-size: 11px;
-    padding: 3px 8px;
+    padding: 3px 10px;
+    box-shadow: 2px 2px 0 #000;
   }
 }
 
 .title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 400;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   margin: 0 0 10px 0;
-  color: var(--theme-text);
-  line-height: 1.15;
+  color: var(--jumpstart-text);
+  line-height: 1.2;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
 
   @include mid-break {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   @include small-break {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 
@@ -127,7 +128,7 @@
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: var(--theme-elevation-550);
+  color: var(--jumpstart-muted);
   margin: 0 0 6px 0;
 
   @include small-break {
@@ -135,46 +136,40 @@
   }
 }
 
-.locationIcon {
-  flex-shrink: 0;
-  opacity: 0.45;
-}
-
 .description {
   font-size: 13px;
-  line-height: 1.6;
-  color: var(--theme-elevation-500);
-  margin: 0 0 12px 0;
+  line-height: 1.5;
+  color: var(--jumpstart-muted);
+  margin: 0 0 14px 0;
   flex: 1;
 }
 
-.actions {
-  margin-top: auto;
-}
-
 .mapsButton {
+  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 16px;
+  padding: 8px 18px;
   font-size: 13px;
-  font-weight: 700;
-  color: var(--card-cat);
-  background: var(--jumpstart-card);
-  border: 2px solid var(--card-cat);
-  border-radius: 8px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: #000;
+  background: var(--card-cat);
+  border: 2px solid #000;
+  box-shadow: 4px 4px 0 #000;
   text-decoration: none;
   transition:
-    background 0.2s ease,
-    color 0.2s ease;
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 
   &:hover {
-    background: var(--card-cat);
-    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 6px 6px 0 #000;
   }
 
   @include small-break {
     font-size: 12px;
     padding: 6px 14px;
+    box-shadow: 3px 3px 0 #000;
   }
 }

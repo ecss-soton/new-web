@@ -4,8 +4,11 @@
   position: sticky;
   top: 100px;
   padding: 28px 24px;
-  border-radius: 14px;
-  background: var(--jumpstart-cat-social-light);
+  border-radius: 12px;
+  background: var(--jumpstart-card);
+  border: 2px solid var(--jumpstart-card-border);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.4);
+  transform: rotate(-0.8deg);
 
   @include mid-break {
     top: 80px;
@@ -14,27 +17,30 @@
 
   @include small-break {
     position: static;
+    transform: none;
     padding: 20px 16px;
   }
 }
 
 .title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 400;
-  letter-spacing: 0.04em;
-  color: var(--jumpstart-cat-welcome);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--jumpstart-neon-orange);
   margin: 0 0 14px 0;
-  line-height: 1.1;
+  line-height: 1.2;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
 
   @include small-break {
-    font-size: 24px;
+    font-size: 20px;
   }
 }
 
 .text {
   font-size: 14px;
   line-height: 1.6;
-  color: var(--theme-elevation-650);
+  color: var(--jumpstart-muted);
   margin: 0;
   white-space: pre-line;
 }

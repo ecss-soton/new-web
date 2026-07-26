@@ -3,127 +3,78 @@
 .hero {
   position: relative;
   background: var(--jumpstart-bg);
-  padding: 48px var(--gutter-h) 0;
+  padding: 40px var(--gutter-h) 60px;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   @include mid-break {
-    padding: 36px var(--gutter-h) 0;
+    padding: 32px var(--gutter-h) 48px;
   }
 
   @include small-break {
-    padding: 28px 16px 0;
+    padding: 28px 20px 40px;
   }
+}
+
+.splatter {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.splatterSvg {
+  width: 100%;
+  height: 100%;
+  opacity: 0.7;
 }
 
 .content {
   position: relative;
   z-index: 2;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding-bottom: 60px;
-
-  @include mid-break {
-    padding-bottom: 48px;
-  }
-
-  @include small-break {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-    padding-bottom: 40px;
-  }
-}
-
-.left {
-  flex: 0 0 auto;
-}
-
-.logo {
-  height: 48px;
-  width: auto;
-  display: block;
-
-  @include small-break {
-    height: 36px;
-  }
-}
-
-.center {
-  display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .brand {
-  font-size: 72px;
+  font-size: 100px;
   font-weight: 400;
   line-height: 0.9;
-  letter-spacing: 0.02em;
-  text-transform: lowercase;
-  color: var(--theme-text);
+  color: var(--jumpstart-text);
+  text-shadow:
+    4px 4px 0 #000,
+    -2px -2px 0 var(--jumpstart-neon-magenta),
+    2px -2px 0 var(--jumpstart-neon-cyan);
+  letter-spacing: 0.04em;
+  margin: 0;
+  transform: rotate(-1.5deg);
 
   @include mid-break {
-    font-size: 56px;
+    font-size: 64px;
+    text-shadow: 3px 3px 0 #000, -1px -1px 0 var(--jumpstart-neon-magenta);
   }
 
   @include small-break {
     font-size: 42px;
+    transform: rotate(-1deg);
+    text-shadow: 2px 2px 0 #000;
   }
 }
 
 .dateRange {
   font-size: 16px;
-  font-weight: 500;
-  color: var(--theme-elevation-550);
-  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: var(--jumpstart-neon-lime);
+  text-shadow: 1px 1px 0 #000;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 
   @include small-break {
     font-size: 13px;
   }
-}
-
-.right {
-  flex: 0 0 auto;
-}
-
-.cog {
-  height: 40px;
-  width: auto;
-  display: block;
-  opacity: 0.6;
-
-  @include small-break {
-    display: none;
-  }
-}
-
-.wave {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 120px;
-  z-index: 1;
-
-  @include mid-break {
-    height: 90px;
-  }
-
-  @include small-break {
-    height: 60px;
-  }
-}
-
-.waveSvg {
-  width: 100%;
-  height: 100%;
-}
-
-.wavePath {
-  opacity: 0.15;
 }

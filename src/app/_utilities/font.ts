@@ -1,4 +1,4 @@
-import { Bebas_Neue, Inter } from 'next/font/google'
+import { Bungee, Inter, Permanent_Marker, Rubik_Mono_One } from 'next/font/google'
 
 export const inter = Inter({
   subsets: ['latin'],
@@ -6,7 +6,17 @@ export const inter = Inter({
   style: ['normal'],
 })
 
-export const bebasNeue = Bebas_Neue({
+export const permanentMarker = Permanent_Marker({
+  subsets: ['latin'],
+  weight: '400',
+})
+
+export const bungee = Bungee({
+  subsets: ['latin'],
+  weight: '400',
+})
+
+export const rubikMono = Rubik_Mono_One({
   subsets: ['latin'],
   weight: '400',
 })

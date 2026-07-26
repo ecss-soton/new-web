@@ -3,11 +3,11 @@
 .toggle {
   display: flex;
   justify-content: center;
-  margin-bottom: 40px;
+  margin-bottom: 44px;
   gap: 0;
 
   @include small-break {
-    margin-bottom: 28px;
+    margin-bottom: 32px;
   }
 }
 
@@ -15,14 +15,14 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 22px;
+  padding: 10px 24px;
   font-size: 14px;
-  font-weight: 600;
-  border: 1px solid var(--theme-border-color);
+  font-weight: 700;
+  border: 2px solid var(--jumpstart-card-border);
   background: var(--jumpstart-card);
-  color: var(--theme-elevation-550);
+  color: var(--jumpstart-muted);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 
   &:first-child {
     border-radius: 8px 0 0 8px;
@@ -34,8 +34,8 @@
   }
 
   &:hover {
-    background: var(--jumpstart-accent-light);
-    color: var(--theme-text);
+    background: var(--jumpstart-card-border);
+    color: var(--jumpstart-text);
   }
 
   svg {
@@ -50,13 +50,14 @@
 }
 
 .active {
-  background: var(--jumpstart-accent);
-  border-color: var(--jumpstart-accent);
-  color: var(--jumpstart-accent-text);
+  background: var(--jumpstart-neon-magenta);
+  border-color: var(--jumpstart-neon-magenta);
+  color: #000;
+  box-shadow: 3px 3px 0 #000;
 
   &:hover {
-    background: var(--jumpstart-accent-hover);
-    border-color: var(--jumpstart-accent-hover);
-    color: var(--jumpstart-accent-text);
+    background: var(--jumpstart-neon-magenta);
+    border-color: var(--jumpstart-neon-magenta);
+    color: #000;
   }
 }

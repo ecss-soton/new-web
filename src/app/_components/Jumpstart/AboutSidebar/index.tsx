@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { bebasNeue, inter } from '../../../_utilities/font'
+import { rubikMono } from '../../../_utilities/font'
 
 import classes from './index.module.scss'
 
@@ -13,8 +13,8 @@ export const AboutSidebar: React.FC<Props> = ({ aboutText }) => {
 
   return (
     <aside className={classes.sidebar}>
-      <h3 className={[classes.title, bebasNeue.className].join(' ')}>Who Are ECSS?</h3>
-      <p className={[classes.text, inter.className].join(' ')}>{aboutText}</p>
+      <h3 className={[classes.title, rubikMono.className].join(' ')}>WHO ARE ECSS?</h3>
+      <p className={classes.text}>{aboutText}</p>
     </aside>
   )
 }

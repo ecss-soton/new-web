@@ -17,19 +17,22 @@
   border-radius: 12px;
   overflow: hidden;
   z-index: 1;
+  border: 2px solid var(--jumpstart-card-border);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.4);
 
   :global(.leaflet-container) {
-    background: var(--theme-elevation-100);
+    background: var(--jumpstart-bg);
   }
 
   @include mid-break {
     height: 420px;
-    border-radius: 8px;
   }
 
   @include small-break {
     height: 350px;
     border-radius: 0;
+    border: none;
+    box-shadow: none;
   }
 }
 
@@ -39,21 +42,21 @@
 }
 
 .markerInner {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border-radius: 50% 50% 50% 0;
-  background: var(--jumpstart-accent);
+  background: var(--jumpstart-neon-magenta);
   position: relative;
   transform: rotate(-45deg);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  border: 3px solid var(--jumpstart-card);
+  box-shadow: 0 0 10px var(--jumpstart-neon-magenta), 3px 3px 0 #000;
+  border: 2px solid #000;
 
   &::after {
     content: '';
     position: absolute;
     width: 8px;
     height: 8px;
-    background: var(--jumpstart-card);
+    background: #000;
     border-radius: 50%;
     top: 50%;
     left: 50%;
@@ -63,9 +66,10 @@
 
 .popupContainer {
   :global(.leaflet-popup-content-wrapper) {
-    border-radius: 10px;
+    border-radius: 8px;
     padding: 0;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+    border: 2px solid #000;
     background: var(--jumpstart-card);
   }
 
@@ -89,30 +93,35 @@
 
 .popupTime {
   font-size: 12px;
-  font-weight: 600;
-  color: var(--jumpstart-accent);
-  text-transform: uppercase;
+  font-weight: 700;
+  color: #000;
+  background: var(--jumpstart-neon-lime);
+  display: inline-block;
+  align-self: flex-start;
+  padding: 2px 8px;
+  border: 1px solid #000;
   letter-spacing: 0.06em;
 }
 
 .popupTitle {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--theme-text);
+  color: var(--jumpstart-text);
 }
 
 .popupLocation {
-  font-size: 13px;
-  color: var(--theme-elevation-550);
+  font-size: 12px;
+  color: var(--jumpstart-muted);
 }
 
 .popupLink {
   display: inline-block;
   margin-top: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--jumpstart-accent);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--jumpstart-neon-cyan);
   text-decoration: none;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
 
   &:hover {
     text-decoration: underline;
@@ -125,8 +134,8 @@
   justify-content: center;
   height: 550px;
   font-size: 15px;
-  color: var(--theme-elevation-500);
-  border: 2px dashed var(--theme-border-color);
+  color: var(--jumpstart-muted);
+  border: 2px dashed var(--jumpstart-card-border);
   border-radius: 12px;
 
   @include mid-break {
@@ -155,21 +164,20 @@
 
 .dayPill {
   flex-shrink: 0;
-  padding: 6px 14px;
+  padding: 6px 16px;
   font-size: 13px;
-  font-weight: 600;
-  border: 1px solid var(--theme-border-color);
+  font-weight: 700;
+  border: 2px solid var(--jumpstart-card-border);
   background: var(--jumpstart-card);
-  color: var(--theme-elevation-550);
+  color: var(--jumpstart-muted);
   border-radius: 20px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   white-space: nowrap;
 
   &:hover {
-    background: var(--jumpstart-accent-light);
-    color: var(--theme-text);
-    border-color: var(--jumpstart-accent);
+    border-color: var(--jumpstart-neon-cyan);
+    color: var(--jumpstart-neon-cyan);
   }
 
   @include small-break {
@@ -179,13 +187,14 @@
 }
 
 .dayPillActive {
-  background: var(--jumpstart-accent);
-  border-color: var(--jumpstart-accent);
-  color: var(--jumpstart-accent-text);
+  background: var(--jumpstart-neon-cyan);
+  border-color: var(--jumpstart-neon-cyan);
+  color: #000;
+  box-shadow: 3px 3px 0 #000;
 
   &:hover {
-    background: var(--jumpstart-accent-hover);
-    border-color: var(--jumpstart-accent-hover);
-    color: var(--jumpstart-accent-text);
+    background: var(--jumpstart-neon-cyan);
+    border-color: var(--jumpstart-neon-cyan);
+    color: #000;
   }
 }

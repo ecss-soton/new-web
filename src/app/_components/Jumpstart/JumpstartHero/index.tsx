@@ -1,61 +1,57 @@
 import React from 'react'
 
-import { bebasNeue } from '../../../_utilities/font'
+import { permanentMarker } from '../../../_utilities/font'
 
 import classes from './index.module.scss'
 
 type Props = {
   dateRange: string
-  logoUrl?: string | null
-  logoDarkUrl?: string | null
 }
 
-export const JumpstartHero: React.FC<Props> = ({ dateRange, logoUrl, logoDarkUrl }) => {
-  const logoSrc = logoUrl || '/ecss.svg'
-
+export const JumpstartHero: React.FC<Props> = ({ dateRange }) => {
   return (
     <div className={classes.hero}>
-      <div className={classes.wave}>
+      <div className={classes.splatter} aria-hidden="true">
         <svg
-          viewBox="0 0 1440 200"
-          preserveAspectRatio="none"
+          viewBox="0 0 800 400"
           xmlns="http://www.w3.org/2000/svg"
-          className={classes.waveSvg}
+          className={classes.splatterSvg}
         >
           <defs>
-            <linearGradient id="js-wave-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="var(--jumpstart-cat-welcome)" />
-              <stop offset="50%" stopColor="var(--jumpstart-cat-social)" />
-              <stop offset="100%" stopColor="var(--jumpstart-cat-academic)" />
-            </linearGradient>
+            <radialGradient id="splatter-1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="var(--jumpstart-neon-magenta)" stopOpacity="0.35" />
+              <stop offset="100%" stopColor="var(--jumpstart-neon-magenta)" stopOpacity="0" />
+            </radialGradient>
+            <radialGradient id="splatter-2" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="var(--jumpstart-neon-cyan)" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="var(--jumpstart-neon-cyan)" stopOpacity="0" />
+            </radialGradient>
+            <radialGradient id="splatter-3" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="var(--jumpstart-neon-orange)" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="var(--jumpstart-neon-orange)" stopOpacity="0" />
+            </radialGradient>
+            <radialGradient id="splatter-4" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="var(--jumpstart-neon-lime)" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="var(--jumpstart-neon-lime)" stopOpacity="0" />
+            </radialGradient>
           </defs>
-          <path
-            d="M0 100 C360 0, 720 200, 1080 120 S1440 40, 1440 40 L1440 200 L0 200 Z"
-            fill="url(#js-wave-gradient)"
-            className={classes.wavePath}
-          />
+          <ellipse cx="120" cy="200" rx="180" ry="160" fill="url(#splatter-1)" />
+          <ellipse cx="680" cy="100" rx="200" ry="140" fill="url(#splatter-2)" />
+          <ellipse cx="400" cy="340" rx="250" ry="100" fill="url(#splatter-3)" />
+          <ellipse cx="700" cy="280" rx="140" ry="90" fill="url(#splatter-4)" />
+          <circle cx="60" cy="60" r="3" fill="var(--jumpstart-neon-cyan)" opacity="0.6" />
+          <circle cx="200" cy="40" r="2" fill="var(--jumpstart-neon-magenta)" opacity="0.7" />
+          <circle cx="500" cy="30" r="2.5" fill="var(--jumpstart-neon-lime)" opacity="0.6" />
+          <circle cx="750" cy="50" r="1.5" fill="var(--jumpstart-neon-orange)" opacity="0.5" />
+          <circle cx="340" cy="80" r="2" fill="var(--jumpstart-neon-cyan)" opacity="0.5" />
+          <circle cx="620" cy="350" r="2" fill="var(--jumpstart-neon-magenta)" opacity="0.5" />
+          <circle cx="100" cy="340" r="1.5" fill="var(--jumpstart-neon-lime)" opacity="0.4" />
         </svg>
       </div>
 
       <div className={classes.content}>
-        <div className={classes.left}>
-          <img
-            src={logoSrc}
-            alt="ECSS logo"
-            className={classes.logo}
-            data-theme-light-src={logoUrl || '/ecss.svg'}
-            data-theme-dark-src={logoDarkUrl || logoUrl || '/ecss-light.svg'}
-          />
-        </div>
-
-        <div className={classes.center}>
-          <span className={[classes.brand, bebasNeue.className].join(' ')}>jumpstart</span>
-          <span className={classes.dateRange}>{dateRange}</span>
-        </div>
-
-        <div className={classes.right}>
-          <img src="/ECSS_cog.svg" alt="" className={classes.cog} />
-        </div>
+        <h1 className={[classes.brand, permanentMarker.className].join(' ')}>jumpstart</h1>
+        <span className={classes.dateRange}>{dateRange}</span>
       </div>
     </div>
   )

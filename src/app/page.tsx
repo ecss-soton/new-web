@@ -3,7 +3,7 @@ import moment from 'moment-timezone'
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 
-import type { Event, Media, Settings } from '../payload/payload-types'
+import type { Event, Settings } from '../payload/payload-types'
 import { fetchDocs } from './_api/fetchDoc'
 import { fetchSettings } from './_api/fetchGlobals'
 import { JumpstartBanner } from './_components/Jumpstart/Banner'
@@ -27,16 +27,6 @@ const JumpstartMapView = dynamic(
 )
 
 const TIMEZONE = 'Europe/London'
-
-const formatDate = (dateStr: string): string => {
-  return moment.utc(dateStr).tz(TIMEZONE).format('Do MMMM YYYY')
-}
-
-const getLogoUrl = (logo: string | Media | null | undefined): string | null => {
-  if (!logo) return null
-  if (typeof logo === 'string') return null
-  return logo.url || null
-}
 
 const computeDateRange = (events: Event[]): string | null => {
   const dates = events
@@ -84,14 +74,11 @@ export default async function Page({ searchParams }: { searchParams: { view?: st
     const dateRange = computeDateRange(jumpstartEvents) || undefined
     const currentView = searchParams?.view || 'timeline'
 
-    const logoUrl = getLogoUrl(settings.siteLogo)
-    const logoDarkUrl = getLogoUrl(settings.siteLogoDark)
-
     if (currentView === 'map') {
       return (
         <div className={wrapperClasses.page}>
           <JumpstartBanner />
-          <JumpstartHero dateRange={dateRange || ''} logoUrl={logoUrl} logoDarkUrl={logoDarkUrl} />
+          <JumpstartHero dateRange={dateRange || ''} />
           <div className={mapPageClasses.page}>
             <JumpstartViewToggle />
           </div>
@@ -105,7 +92,7 @@ export default async function Page({ searchParams }: { searchParams: { view?: st
     return (
       <div className={wrapperClasses.page}>
         <JumpstartBanner />
-        <JumpstartHero dateRange={dateRange || ''} logoUrl={logoUrl} logoDarkUrl={logoDarkUrl} />
+        <JumpstartHero dateRange={dateRange || ''} />
         <JumpstartTimeline
           events={jumpstartEvents}
           heading={heading}

@@ -3,14 +3,14 @@
 .container {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 0 var(--gutter-h) 80px;
+  padding: 0 var(--gutter-h) 100px;
 
   @include mid-break {
-    padding: 0 var(--gutter-h) 60px;
+    padding: 0 var(--gutter-h) 70px;
   }
 
   @include small-break {
-    padding: 0 16px 40px;
+    padding: 0 16px 50px;
   }
 }
 
@@ -46,11 +46,11 @@
 .timeline {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 48px;
   min-width: 0;
 
   @include small-break {
-    gap: 28px;
+    gap: 32px;
   }
 }
 
@@ -64,38 +64,38 @@
   top: 56px;
   z-index: 10;
   background: var(--jumpstart-bg);
-  margin-bottom: 14px;
-  padding-top: 8px;
-  padding-bottom: 10px;
+  margin: 0 0 18px -10px;
+  padding: 8px 0 12px 10px;
 
   @include small-break {
     position: static;
     padding-top: 0;
     padding-bottom: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
   }
 }
 
 .dayTitle {
   font-size: 20px;
-  font-weight: 700;
-  color: var(--jumpstart-accent);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--jumpstart-neon-cyan);
   margin: 0;
-  padding-bottom: 8px;
-  border-bottom: 2px solid var(--jumpstart-accent-light);
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
 
   @include small-break {
-    font-size: 17px;
+    font-size: 16px;
   }
 }
 
 .dayEvents {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 20px;
   padding: 0;
 
   @include small-break {
-    gap: 10px;
+    gap: 16px;
   }
 }
