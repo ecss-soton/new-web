@@ -13,7 +13,7 @@ export const AboutSidebar: React.FC<Props> = ({ aboutText }) => {
 
   return (
     <aside className={classes.sidebar}>
-      <h3 className={[classes.title, rubikMono.className].join(' ')}>WHO ARE ECSS?</h3>
+      <h3 className={[classes.title, rubikMono.className].join(' ')}>WHAT IS JUMPSTART?</h3>
       <p className={classes.text}>{aboutText}</p>
     </aside>
   )

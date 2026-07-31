@@ -42,26 +42,27 @@
 }
 
 .markerInner {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50% 50% 50% 0;
-  background: var(--jumpstart-neon-magenta);
+  background: var(--marker-color);
   position: relative;
   transform: rotate(-45deg);
-  box-shadow: 0 0 10px var(--jumpstart-neon-magenta), 3px 3px 0 #000;
+  box-shadow: 0 0 10px var(--marker-color), 3px 3px 0 #000;
   border: 2px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  &::after {
-    content: '';
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    background: #000;
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
+.markerNumber {
+  transform: rotate(45deg);
+  color: #000;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.85);
 }
 
 .popupContainer {
@@ -112,6 +113,15 @@
 .popupLocation {
   font-size: 12px;
   color: var(--jumpstart-muted);
+}
+
+.popupCategory {
+  align-self: flex-start;
+  padding: 2px 6px;
+  border: 1px solid var(--jumpstart-card-border);
+  color: var(--jumpstart-muted);
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .popupLink {

@@ -124,10 +124,11 @@ export const Settings: GlobalConfig = {
             {
               name: 'jumpstartAbout',
               type: 'textarea',
-              label: 'About Sidebar',
+              label: 'What is Jumpstart?',
               admin: {
                 condition: (_, siblingData) => siblingData?.jumpstartEnabled,
-                description: '"WHO ARE ECSS?" sidebar text on the Jumpstart page.',
+                description:
+                  'Short introduction displayed beside the Jumpstart timeline while Jumpstart Mode is enabled.',
               },
             },
           ],

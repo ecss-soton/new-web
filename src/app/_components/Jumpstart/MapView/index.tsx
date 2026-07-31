@@ -17,6 +17,20 @@ type Props = {
 const TIMEZONE = 'Europe/London'
 const SOUTHAMPTON: L.LatLngTuple = [50.935, -1.396]
 
+const CATEGORY_COLORS: Record<NonNullable<Event['jumpstartCategory']>, string> = {
+  welcome: 'var(--jumpstart-cat-welcome)',
+  academic: 'var(--jumpstart-cat-academic)',
+  social: 'var(--jumpstart-cat-social)',
+  competitive: 'var(--jumpstart-cat-competitive)',
+}
+
+const CATEGORY_LABELS: Record<NonNullable<Event['jumpstartCategory']>, string> = {
+  welcome: 'Welcome / General',
+  academic: 'Academic',
+  social: 'Social',
+  competitive: 'Competitive / Track',
+}
+
 const getDateKey = (dateStr: string): string => {
   return moment.utc(dateStr).tz(TIMEZONE).format('YYYY-MM-DD')
 }
@@ -25,12 +39,20 @@ const formatDayPill = (dateKey: string): string => {
   return moment(dateKey, 'YYYY-MM-DD').format('ddd Do MMM')
 }
 
-const createIcon = (): L.DivIcon => {
+const getCategory = (event: Event): NonNullable<Event['jumpstartCategory']> | null => {
+  const category = event.jumpstartCategory
+  return category && category in CATEGORY_COLORS ? category : null
+}
+
+const createIcon = (event: Event, sequence: number): L.DivIcon => {
+  const category = getCategory(event)
+  const markerColor = category ? CATEGORY_COLORS[category] : 'var(--jumpstart-neon-purple)'
+
   return L.divIcon({
     className: classes.marker,
-    html: `<div class="${classes.markerInner}"></div>`,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
+    html: `<div class="${classes.markerInner}" style="--marker-color: ${markerColor}"><span class="${classes.markerNumber}">${sequence}</span></div>`,
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
     popupAnchor: [0, -16],
   })
 }
@@ -59,6 +81,23 @@ export const JumpstartMapView: React.FC<Props> = ({ events }) => {
     if (!selectedDay) return eventsWithCoords
     return eventsWithCoords.filter(e => getDateKey(e.date) === selectedDay)
   }, [eventsWithCoords, selectedDay])
+
+  const sortedEvents = useMemo(
+    () =>
+      [...filteredEvents].sort((a, b) => {
+        const dayCompare = getDateKey(a.date).localeCompare(getDateKey(b.date))
+        if (dayCompare !== 0) return dayCompare
+
+        const orderCompare = (a.sortOrder || 0) - (b.sortOrder || 0)
+        if (orderCompare !== 0) return orderCompare
+
+        const timeCompare = a.date.localeCompare(b.date)
+        if (timeCompare !== 0) return timeCompare
+
+        return a.name.localeCompare(b.name)
+      }),
+    [filteredEvents],
+  )
 
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return
@@ -92,15 +131,17 @@ export const JumpstartMapView: React.FC<Props> = ({ events }) => {
       }
     })
 
-    if (filteredEvents.length === 0) return
+    if (sortedEvents.length === 0) return
 
     const bounds = L.latLngBounds([])
-    const icon = createIcon()
 
-    filteredEvents.forEach(event => {
+    sortedEvents.forEach((event, index) => {
       const lat = event.latitude as number
       const lng = event.longitude as number
       const latLng: L.LatLngTuple = [lat, lng]
+      const sequence = index + 1
+      const category = getCategory(event)
+      const categoryLabel = category ? CATEGORY_LABELS[category] : 'Uncategorised'
 
       const startTime = formatTime(event.date)
       const endStr = event.endTime ? ` – ${formatTime(event.endTime)}` : ''
@@ -108,8 +149,9 @@ export const JumpstartMapView: React.FC<Props> = ({ events }) => {
 
       const popupContent = `
         <div class="${classes.popup}">
-          <span class="${classes.popupTime}">${timeStr}</span>
+          <span class="${classes.popupTime}">${sequence}. ${timeStr}</span>
           <strong class="${classes.popupTitle}">${event.name}</strong>
+          <span class="${classes.popupCategory}">${categoryLabel}</span>
           ${event.location ? `<span class="${classes.popupLocation}">${event.location}</span>` : ''}
           ${
             event.mapsUrl
@@ -119,19 +161,22 @@ export const JumpstartMapView: React.FC<Props> = ({ events }) => {
         </div>
       `
 
-      const marker = L.marker(latLng, { icon })
+      const marker = L.marker(latLng, {
+        icon: createIcon(event, sequence),
+        title: `${sequence}. ${event.name} — ${categoryLabel}`,
+      })
         .addTo(map)
         .bindPopup(popupContent, { className: classes.popupContainer })
 
       bounds.extend(latLng)
     })
 
-    if (filteredEvents.length === 1) {
+    if (sortedEvents.length === 1) {
       map.setView(bounds.getCenter(), 16)
     } else {
       map.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 })
     }
-  }, [filteredEvents])
+  }, [sortedEvents])
 
   return (
     <div className={classes.container}>
