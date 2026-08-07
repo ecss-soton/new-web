@@ -1066,6 +1066,10 @@ export interface Committee {
         [k: string]: unknown;
       }[]
     | null;
+  /**
+   * Optional HTTPS URL. Used when Bio is empty: clicking the card opens this link in a new tab.
+   */
+  link?: string | null;
   logo?: string | Media | null;
   isCurrent: boolean;
   updatedAt: string;

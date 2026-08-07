@@ -2436,6 +2436,7 @@ type Committee {
   position: Committee_position
   positionRef: Position!
   bio(depth: Int): JSON
+  link: String
   logo(where: Committee_Logo_where): Media
   isCurrent: Boolean!
   updatedAt: DateTime
@@ -19086,6 +19087,7 @@ input Committee_where {
   position: Committee_position_operator
   positionRef: Committee_positionRef_operator
   bio: Committee_bio_operator
+  link: Committee_link_operator
   logo: Committee_logo_operator
   isCurrent: Committee_isCurrent_operator
   updatedAt: Committee_updatedAt_operator
@@ -19177,6 +19179,17 @@ input Committee_bio_operator {
   exists: Boolean
 }
 
+input Committee_link_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
 input Committee_logo_operator {
   equals: String
   not_equals: String
@@ -19217,6 +19230,7 @@ input Committee_where_and {
   position: Committee_position_operator
   positionRef: Committee_positionRef_operator
   bio: Committee_bio_operator
+  link: Committee_link_operator
   logo: Committee_logo_operator
   isCurrent: Committee_isCurrent_operator
   updatedAt: Committee_updatedAt_operator
@@ -19232,6 +19246,7 @@ input Committee_where_or {
   position: Committee_position_operator
   positionRef: Committee_positionRef_operator
   bio: Committee_bio_operator
+  link: Committee_link_operator
   logo: Committee_logo_operator
   isCurrent: Committee_isCurrent_operator
   updatedAt: Committee_updatedAt_operator
@@ -38211,6 +38226,7 @@ input mutationCommitteeInput {
   position: Committee_position_MutationInput
   positionRef: String
   bio: JSON
+  link: String
   logo: String
   isCurrent: Boolean
   updatedAt: String
@@ -38251,6 +38267,7 @@ input mutationCommitteeUpdateInput {
   position: CommitteeUpdate_position_MutationInput
   positionRef: String
   bio: JSON
+  link: String
   logo: String
   isCurrent: Boolean
   updatedAt: String
