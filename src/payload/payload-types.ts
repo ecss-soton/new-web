@@ -1212,6 +1212,7 @@ export interface Vote {
  */
 export interface ElectionResult {
   id: string;
+  showOnMainPage?: boolean | null;
   election: string | Election;
   position: string | Position;
   electedNominee?: (string | null) | Nomination;

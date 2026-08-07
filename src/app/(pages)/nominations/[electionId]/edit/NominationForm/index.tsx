@@ -36,7 +36,7 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isLoading },
+    formState: { errors, isSubmitting },
     reset,
     watch,
   } = useForm<FormData>()
@@ -60,33 +60,40 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
   }
 
   useEffect(() => {
+    let cancelled = false
+
     const findNomination = async () => {
-      if (!nomination) {
-        try {
-          const req = await fetch(
-            `${process.env.NEXT_PUBLIC_SERVER_URL}/api/nominations/${nominationId}`,
-          )
+      try {
+        const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/nominations/${nominationId}`)
+        if (!req.ok) throw new Error('Nomination not found')
 
-          const json = await req.json()
-
-          setNomination(json as Nomination)
-        } catch (err) {
-          console.warn(err) // eslint-disable-line no-console
+        const json = (await req.json()) as Nomination
+        if (!cancelled) {
+          setNomination(json)
+        }
+      } catch {
+        if (!cancelled) {
+          setError('This nomination could not be loaded.')
         }
       }
     }
 
-    findNomination().then(() => {
-      if (nomination) {
-        setCurrentPicture(nomination.image as MediaType)
-        reset({
-          nickname: nomination.nickname,
-          manifesto: nomination.manifesto,
-          droppedOut: nomination.droppedOut,
-        })
-      }
+    findNomination()
+    return () => {
+      cancelled = true
+    }
+  }, [nominationId])
+
+  useEffect(() => {
+    if (!nomination) return
+
+    setCurrentPicture(nomination.image as MediaType)
+    reset({
+      nickname: nomination.nickname,
+      manifesto: nomination.manifesto,
+      droppedOut: nomination.droppedOut,
     })
-  }, [nomination, nominationId, reset])
+  }, [nomination, reset])
 
   const onSubmit = useCallback(
     async (data: FormData) => {
@@ -183,8 +190,8 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
       </Fragment>
       <Button
         type="submit"
-        label={isLoading ? 'Processing' : 'Update Nomination'}
-        disabled={isLoading}
+        label={isSubmitting ? 'Processing' : 'Update Nomination'}
+        disabled={isSubmitting}
         appearance="primary"
         className={classes.submit}
       />

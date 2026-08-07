@@ -38,32 +38,37 @@ export const ResetPasswordForm: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset,
   } = useForm<FormData>()
 
   const onSubmit = useCallback(
     async (data: FormData) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/reset-password`,
-        {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: {
-            'Content-Type': 'application/json',
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/reset-password`,
+          {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+              'Content-Type': 'application/json',
+            },
           },
-        },
-      )
+        )
 
-      if (response.ok) {
-        const json = await response.json()
+        if (response.ok) {
+          const json = await response.json()
 
-        // Automatically log the user in after they successfully reset password
-        await login({ email: json.user.email, password: data.password })
+          // Automatically log the user in after they successfully reset password
+          await login({ email: json.user.email, password: data.password })
 
-        // Redirect them to `/account` with success message in URL
-        router.push('/account?success=Password reset successfully.')
-      } else {
+          // Redirect them to `/account` with success message in URL
+          router.push('/account?success=Password reset successfully.')
+          return
+        }
+
+        setError('There was a problem while resetting your password. Please try again later.')
+      } catch {
         setError('There was a problem while resetting your password. Please try again later.')
       }
     },
@@ -87,7 +92,8 @@ export const ResetPasswordForm: React.FC = () => {
       <Button
         type="submit"
         appearance="primary"
-        label="Reset Password"
+        label={isSubmitting ? 'Resetting...' : 'Reset Password'}
+        disabled={isSubmitting}
         className={classes.submit}
       />
     </form>

@@ -15994,6 +15994,7 @@ type VotesDeleteDocAccess {
 
 type ElectionResult {
   id: String
+  showOnMainPage: Boolean
   election(draft: Boolean): Election
   position: Position
   electedNominee: Nomination
@@ -16050,6 +16051,7 @@ type ElectionResults {
 }
 
 input ElectionResult_where {
+  showOnMainPage: ElectionResult_showOnMainPage_operator
   election: ElectionResult_election_operator
   position: ElectionResult_position_operator
   electedNominee: ElectionResult_electedNominee_operator
@@ -16068,6 +16070,12 @@ input ElectionResult_where {
   id: ElectionResult_id_operator
   AND: [ElectionResult_where_and]
   OR: [ElectionResult_where_or]
+}
+
+input ElectionResult_showOnMainPage_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
 }
 
 input ElectionResult_election_operator {
@@ -16233,6 +16241,7 @@ input ElectionResult_id_operator {
 }
 
 input ElectionResult_where_and {
+  showOnMainPage: ElectionResult_showOnMainPage_operator
   election: ElectionResult_election_operator
   position: ElectionResult_position_operator
   electedNominee: ElectionResult_electedNominee_operator
@@ -16254,6 +16263,7 @@ input ElectionResult_where_and {
 }
 
 input ElectionResult_where_or {
+  showOnMainPage: ElectionResult_showOnMainPage_operator
   election: ElectionResult_election_operator
   position: ElectionResult_position_operator
   electedNominee: ElectionResult_electedNominee_operator

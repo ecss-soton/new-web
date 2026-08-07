@@ -129,13 +129,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (res.ok) {
           const { user: meUser } = await res.json()
           setUser(meUser || null)
-          setStatus(meUser ? 'loggedIn' : undefined)
+          setStatus(meUser ? 'loggedIn' : 'loggedOut')
         } else {
           throw new Error('An error occurred while fetching your account.')
         }
       } catch (e) {
         setUser(null)
-        throw new Error('An error occurred while fetching your account.')
+        setStatus('loggedOut')
       }
     }
 

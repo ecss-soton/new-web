@@ -24,6 +24,8 @@ export const JumpstartViewToggle: React.FC = () => {
   return (
     <div className={classes.toggle}>
       <button
+        type="button"
+        aria-pressed={currentView === 'timeline'}
         className={[classes.option, currentView === 'timeline' ? classes.active : ''].join(' ')}
         onClick={() => setView('timeline')}
       >
@@ -47,6 +49,8 @@ export const JumpstartViewToggle: React.FC = () => {
         Timeline
       </button>
       <button
+        type="button"
+        aria-pressed={currentView === 'map'}
         className={[classes.option, currentView === 'map' ? classes.active : ''].join(' ')}
         onClick={() => setView('map')}
       >

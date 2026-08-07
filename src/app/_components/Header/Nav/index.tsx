@@ -66,11 +66,17 @@ export const HeaderNav: React.FC<HeaderNavComponentProps> = ({
     >
       {onIsBreakpoint ? (
         <div className={classes.menuContainer}>
-          <div className={classes.hamburger} onClick={toggleMenu} aria-label="Toggle menu">
+          <button
+            type="button"
+            className={classes.hamburger}
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+            aria-expanded={isOpen}
+          >
             <div style={burger1} className={classes.burger} />
             <div style={burger2} className={classes.burger} />
             <div style={burger3} className={classes.burger} />
-          </div>
+          </button>
         </div>
       ) : (
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>

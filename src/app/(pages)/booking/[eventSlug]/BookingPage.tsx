@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 import type { User } from '../../../../payload/payload-types'
@@ -32,6 +32,7 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const bookingRequestRef = useRef(0)
 
   // First, resolve eventSlug to eventId via the API
   useEffect(() => {
@@ -58,14 +59,19 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
 
   const loadData = useCallback(async () => {
     if (!eventId) return
+    const requestId = ++bookingRequestRef.current
     try {
       const result = await fetchBookingData(eventId, { token })
+      if (requestId !== bookingRequestRef.current) return
       setData(result)
       setError(null)
     } catch (err) {
+      if (requestId !== bookingRequestRef.current) return
       setError(err instanceof Error ? err.message : 'Failed to load booking data')
     } finally {
-      setLoading(false)
+      if (requestId === bookingRequestRef.current) {
+        setLoading(false)
+      }
     }
   }, [eventId, token])
 

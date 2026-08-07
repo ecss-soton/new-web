@@ -30,7 +30,7 @@ const NominationForm: React.FC<{ electionId?: string; positionId?: string }> = p
   const {
     register,
     handleSubmit,
-    formState: { errors, isLoading },
+    formState: { errors, isSubmitting },
     reset,
     watch,
   } = useForm<FormData>()
@@ -129,8 +129,8 @@ const NominationForm: React.FC<{ electionId?: string; positionId?: string }> = p
       </Fragment>
       <Button
         type="submit"
-        label={isLoading ? 'Processing' : 'Create Nomination'}
-        disabled={isLoading}
+        label={isSubmitting ? 'Processing' : 'Create Nomination'}
+        disabled={isSubmitting}
         appearance="primary"
         className={classes.submit}
       />

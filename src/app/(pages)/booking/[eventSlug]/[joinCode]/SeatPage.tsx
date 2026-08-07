@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { User } from '../../../../../payload/payload-types'
 import { fetchTableSeats, updateSeats } from '../../../../_api/fetchBooking'
@@ -17,15 +17,21 @@ export const SeatPage: React.FC<{
   const [data, setData] = useState<SeatData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const seatRequestRef = useRef(0)
 
   const loadSeats = useCallback(async () => {
+    const requestId = ++seatRequestRef.current
     try {
       const result = await fetchTableSeats(joinCode, token)
+      if (requestId !== seatRequestRef.current) return
       setData(result)
     } catch (err) {
+      if (requestId !== seatRequestRef.current) return
       setError(err instanceof Error ? err.message : 'Failed to load seats')
     } finally {
-      setLoading(false)
+      if (requestId === seatRequestRef.current) {
+        setLoading(false)
+      }
     }
   }, [joinCode, token])
 

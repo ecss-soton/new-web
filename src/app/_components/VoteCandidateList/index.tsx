@@ -41,37 +41,42 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
   const router = useRouter()
 
   const submitVotes = async () => {
+    if (loading) return
+
     if (ranking.ranked.length === 0) {
       setVoteText('Please rank at least one candidate before submitting your vote.')
       return
     }
 
     setLoading(true)
-    const ronPos = ranking.ranked.findIndex(candidate => candidate.id === 'RON')
-    const res = await fetch('/api/votes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        election: electionId,
-        position: position.id,
-        RONPosition: ronPos === -1 ? null : ronPos,
-        preference: ranking.ranked.map(candidate => candidate.id).filter(id => id !== 'RON'),
-      }),
-    })
-    setLoading(false)
+    try {
+      const ronPos = ranking.ranked.findIndex(candidate => candidate.id === 'RON')
+      const res = await fetch('/api/votes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          election: electionId,
+          position: position.id,
+          RONPosition: ronPos === -1 ? null : ronPos,
+          preference: ranking.ranked.map(candidate => candidate.id).filter(id => id !== 'RON'),
+        }),
+      })
+      const data = await res.json()
 
-    const data = await res.json()
+      if (!res.ok || data.errors) {
+        setVoteText(data.errors?.[0]?.message || 'Your vote could not be submitted. Please try again.')
+        return
+      }
 
-    if (data.errors) {
-      setVoteText(data.errors[0].message)
-      return
+      setVoteText('Submitted')
+      router.push('/elections')
+    } catch {
+      setVoteText('Your vote could not be submitted. Please try again.')
+    } finally {
+      setLoading(false)
     }
-
-    router.push('/elections')
-
-    setVoteText('Submitted')
   }
 
   const swapElements = (array, index1, index2) => {
@@ -177,7 +182,7 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
         onClick={submitVotes}
         label={voteText}
         appearance="primary"
-        // disabled={ranking.ranked.length === 0}
+        disabled={loading}
       />
     </div>
   )

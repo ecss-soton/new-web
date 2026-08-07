@@ -22,6 +22,17 @@ export type CMSLinkType = {
   onClick?: () => void
 }
 
+const getSafeHref = (href: string | undefined): string | undefined => {
+  if (!href) return undefined
+  if (href.startsWith('/') && !href.startsWith('//')) return href
+
+  try {
+    return new URL(href).protocol === 'https:' ? href : undefined
+  } catch {
+    return undefined
+  }
+}
+
 export const CMSLink: React.FC<CMSLinkType> = ({
   type,
   url,
@@ -34,21 +45,22 @@ export const CMSLink: React.FC<CMSLinkType> = ({
   invert,
   onClick,
 }) => {
-  const href =
+  const href = getSafeHref(
     type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
       ? `${reference?.relationTo !== 'pages' ? `/${reference?.relationTo}` : ''}/${
           reference.value.slug
         }`
-      : url
+      : url,
+  )
 
   if (!href) return null
 
   if (!appearance) {
     const newTabProps = newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {}
 
-    if (href || url) {
+    if (href) {
       return (
-        <Link {...newTabProps} href={href || url} className={className}>
+        <Link {...newTabProps} href={href} className={className}>
           {label && label}
           {children && children}
         </Link>

@@ -108,15 +108,16 @@ ol {
 a {
   color: currentColor;
 
-  &:focus {
+  &:focus-visible {
     opacity: .8;
-    outline: none;
+    outline: 2px solid var(--theme-elevation-1000);
+    outline-offset: 2px;
   }
+}
 
-  &:active {
-    opacity: .7;
-    outline: none;
-  }
+:focus-visible {
+  outline: 2px solid var(--theme-elevation-1000);
+  outline-offset: 2px;
 }
 
 svg {

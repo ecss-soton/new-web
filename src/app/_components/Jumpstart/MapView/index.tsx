@@ -61,13 +61,75 @@ const formatTime = (dateStr: string): string => {
   return moment.utc(dateStr).tz(TIMEZONE).format('HH:mm')
 }
 
+const createPopupContent = (
+  event: Event,
+  sequence: number,
+  time: string,
+  categoryLabel: string,
+): HTMLDivElement => {
+  const popup = document.createElement('div')
+  popup.className = classes.popup
+
+  const popupTime = document.createElement('span')
+  popupTime.className = classes.popupTime
+  popupTime.textContent = `${sequence}. ${time}`
+  popup.append(popupTime)
+
+  const title = document.createElement('strong')
+  title.className = classes.popupTitle
+  title.textContent = event.name
+  popup.append(title)
+
+  const category = document.createElement('span')
+  category.className = classes.popupCategory
+  category.textContent = categoryLabel
+  popup.append(category)
+
+  if (event.location) {
+    const location = document.createElement('span')
+    location.className = classes.popupLocation
+    location.textContent = event.location
+    popup.append(location)
+  }
+
+  if (event.mapsUrl) {
+    try {
+      const mapsUrl = new URL(event.mapsUrl)
+      if (mapsUrl.protocol === 'https:') {
+        const link = document.createElement('a')
+        link.className = classes.popupLink
+        link.href = mapsUrl.toString()
+        link.target = '_blank'
+        link.rel = 'noopener noreferrer'
+        link.textContent = 'Get me there →'
+        popup.append(link)
+      }
+    } catch {
+      // The CMS validator prevents invalid URLs; ignore legacy invalid data.
+    }
+  }
+
+  return popup
+}
+
 export const JumpstartMapView: React.FC<Props> = ({ events }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
   const [selectedDay, setSelectedDay] = useState<string | null>(null)
 
   const eventsWithCoords = useMemo(
-    () => events.filter(e => typeof e.latitude === 'number' && typeof e.longitude === 'number'),
+    () =>
+      events.filter(
+        e =>
+          typeof e.latitude === 'number' &&
+          Number.isFinite(e.latitude) &&
+          e.latitude >= -90 &&
+          e.latitude <= 90 &&
+          typeof e.longitude === 'number' &&
+          Number.isFinite(e.longitude) &&
+          e.longitude >= -180 &&
+          e.longitude <= 180,
+      ),
     [events],
   )
 
@@ -147,26 +209,14 @@ export const JumpstartMapView: React.FC<Props> = ({ events }) => {
       const endStr = event.endTime ? ` – ${formatTime(event.endTime)}` : ''
       const timeStr = `${startTime}${endStr}`
 
-      const popupContent = `
-        <div class="${classes.popup}">
-          <span class="${classes.popupTime}">${sequence}. ${timeStr}</span>
-          <strong class="${classes.popupTitle}">${event.name}</strong>
-          <span class="${classes.popupCategory}">${categoryLabel}</span>
-          ${event.location ? `<span class="${classes.popupLocation}">${event.location}</span>` : ''}
-          ${
-            event.mapsUrl
-              ? `<a href="${event.mapsUrl}" target="_blank" rel="noopener noreferrer" class="${classes.popupLink}">Get me there →</a>`
-              : ''
-          }
-        </div>
-      `
-
       const marker = L.marker(latLng, {
         icon: createIcon(event, sequence),
         title: `${sequence}. ${event.name} — ${categoryLabel}`,
       })
         .addTo(map)
-        .bindPopup(popupContent, { className: classes.popupContainer })
+        .bindPopup(createPopupContent(event, sequence, timeStr, categoryLabel), {
+          className: classes.popupContainer,
+        })
 
       bounds.extend(latLng)
     })
@@ -186,6 +236,8 @@ export const JumpstartMapView: React.FC<Props> = ({ events }) => {
         <>
           <div className={classes.dayFilter}>
             <button
+              type="button"
+              aria-pressed={!selectedDay}
               className={[classes.dayPill, !selectedDay ? classes.dayPillActive : ''].join(' ')}
               onClick={() => setSelectedDay(null)}
             >
@@ -193,6 +245,8 @@ export const JumpstartMapView: React.FC<Props> = ({ events }) => {
             </button>
             {dayKeys.map(dateKey => (
               <button
+                type="button"
+                aria-pressed={selectedDay === dateKey}
                 key={dateKey}
                 className={[
                   classes.dayPill,
