@@ -1,9 +1,9 @@
 @import '../../_css/common';
 
 .page {
-  max-width: 1100px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 40px var(--gutter-h) 0;
+  padding: 0 var(--gutter-h) 0;
 
   @include small-break {
     padding: 28px 16px 0;

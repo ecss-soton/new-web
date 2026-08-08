@@ -58,21 +58,23 @@ const createIcon = (event: Event, sequence: number): L.DivIcon => {
 }
 
 const formatTime = (dateStr: string): string => {
-  return moment.utc(dateStr).tz(TIMEZONE).format('HH:mm')
+  return moment.utc(dateStr).tz(TIMEZONE).format('ddd Do MMM, HH:mm')
 }
 
-const createPopupContent = (
-  event: Event,
-  sequence: number,
-  time: string,
-  categoryLabel: string,
-): HTMLDivElement => {
+const formatPopupTime = (startDate: string, endTime?: string | null): string => {
+  const start = formatTime(startDate)
+  if (!endTime) return start
+  const end = moment.utc(endTime).tz(TIMEZONE).format('HH:mm')
+  return `${start} – ${end}`
+}
+
+const createPopupContent = (event: Event, time: string, categoryLabel: string): HTMLDivElement => {
   const popup = document.createElement('div')
   popup.className = classes.popup
 
   const popupTime = document.createElement('span')
   popupTime.className = classes.popupTime
-  popupTime.textContent = `${sequence}. ${time}`
+  popupTime.textContent = time
   popup.append(popupTime)
 
   const title = document.createElement('strong')
@@ -205,16 +207,15 @@ export const JumpstartMapView: React.FC<Props> = ({ events }) => {
       const category = getCategory(event)
       const categoryLabel = category ? CATEGORY_LABELS[category] : 'Uncategorised'
 
-      const startTime = formatTime(event.date)
-      const endStr = event.endTime ? ` – ${formatTime(event.endTime)}` : ''
-      const timeStr = `${startTime}${endStr}`
+      const startTime = formatPopupTime(event.date, event.endTime)
+      const timeStr = startTime
 
       const marker = L.marker(latLng, {
         icon: createIcon(event, sequence),
         title: `${sequence}. ${event.name} — ${categoryLabel}`,
       })
         .addTo(map)
-        .bindPopup(createPopupContent(event, sequence, timeStr, categoryLabel), {
+        .bindPopup(createPopupContent(event, timeStr, categoryLabel), {
           className: classes.popupContainer,
         })
 

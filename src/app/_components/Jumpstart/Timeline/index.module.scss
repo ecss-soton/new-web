@@ -1,7 +1,7 @@
 @import '../../../_css/common';
 
 .container {
-  max-width: 1180px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 var(--gutter-h) 100px;
 
@@ -28,12 +28,11 @@
 
 .grid {
   display: grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: 300px 1fr;
   gap: 48px;
-  align-items: start;
 
   @include mid-break {
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 220px 1fr;
     gap: 36px;
   }
 

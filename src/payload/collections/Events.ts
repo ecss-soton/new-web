@@ -7,13 +7,20 @@ import { adminsOrPublished } from '../access/adminsOrPublished'
 import { withEndpointErrorHandler } from '../utilities/endpointHandler'
 import { isHTTPS } from '../validate/isHTTPS'
 
-const validateCoordinate = (minimum: number, maximum: number, label: string): Validate => value => {
-  if (value === undefined || value === null) return true
-  if (typeof value !== 'number' || !Number.isFinite(value) || value < minimum || value > maximum) {
-    return `${label} must be between ${minimum} and ${maximum}`
+const validateCoordinate =
+  (minimum: number, maximum: number, label: string): Validate =>
+  value => {
+    if (value === undefined || value === null) return true
+    if (
+      typeof value !== 'number' ||
+      !Number.isFinite(value) ||
+      value < minimum ||
+      value > maximum
+    ) {
+      return `${label} must be between ${minimum} and ${maximum}`
+    }
+    return true
   }
-  return true
-}
 
 const Events: CollectionConfig = {
   slug: 'events',

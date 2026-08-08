@@ -32,6 +32,7 @@ export interface Config {
     'ticket-holders': TicketHolder;
     'wordle-overrides': WordleOverride;
     'wordle-scores': WordleScore;
+    'city-challenge-locations': CityChallengeLocation;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -1066,9 +1067,6 @@ export interface Committee {
         [k: string]: unknown;
       }[]
     | null;
-  /**
-   * Optional HTTPS URL. Used when Bio is empty: clicking the card opens this link in a new tab.
-   */
   link?: string | null;
   logo?: string | Media | null;
   isCurrent: boolean;
@@ -1328,6 +1326,21 @@ export interface WordleScore {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "city-challenge-locations".
+ */
+export interface CityChallengeLocation {
+  id: string;
+  name: string;
+  description?: string | null;
+  latitude: number;
+  longitude: number;
+  discoveryRadius?: number | null;
+  sortOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1549,8 +1562,10 @@ export interface Settings {
   postsPage?: (string | null) | Page;
   projectsPage?: (string | null) | Page;
   jumpstartEnabled?: boolean | null;
+  jumpstartLogo?: string | Media | null;
   jumpstartHeading?: string | null;
   jumpstartSubtitle?: string | null;
+  jumpstartAboutTitle?: string | null;
   jumpstartAbout?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;

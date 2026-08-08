@@ -105,6 +105,17 @@ export const Settings: GlobalConfig = {
               },
             },
             {
+              name: 'jumpstartLogo',
+              type: 'upload',
+              relationTo: 'media',
+              label: 'Jumpstart Logo',
+              admin: {
+                condition: (_, siblingData) => siblingData?.jumpstartEnabled,
+                description:
+                  'Replaces the text-based "jumpstart" brand in the hero. Falls back to a default logo if not set.',
+              },
+            },
+            {
               name: 'jumpstartHeading',
               type: 'text',
               label: 'Jumpstart Heading',
@@ -119,6 +130,16 @@ export const Settings: GlobalConfig = {
               label: 'Jumpstart Subtitle',
               admin: {
                 condition: (_, siblingData) => siblingData?.jumpstartEnabled,
+              },
+            },
+            {
+              name: 'jumpstartAboutTitle',
+              type: 'text',
+              label: 'About Sidebar Heading',
+              defaultValue: 'WHAT IS JUMPSTART?',
+              admin: {
+                condition: (_, siblingData) => siblingData?.jumpstartEnabled,
+                description: 'Title displayed above the sidebar description.',
               },
             },
             {

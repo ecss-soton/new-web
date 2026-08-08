@@ -1,12 +1,26 @@
 const policies = {
   'default-src': ["'self'"],
-  'script-src': ["'self'", "'unsafe-inline'", 'https://maps.googleapis.com'],
+  'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https://maps.googleapis.com'],
   'child-src': ["'self'"],
   'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-  'img-src': ["'self'", 'https://raw.githubusercontent.com', 'blob:', 'https://*.tile.openstreetmap.org'],
+  'img-src': [
+    "'self'",
+    'https://raw.githubusercontent.com',
+    'blob:',
+    'data:',
+    'https://*.tile.openstreetmap.org',
+    'https://*.basemaps.cartocdn.com',
+    'https://*.cartocdn.com',
+  ],
   'font-src': ["'self'"],
   'frame-src': ["'self'"],
-  'connect-src': ["'self'", 'https://maps.googleapis.com', 'https://*.tile.openstreetmap.org'],
+  'connect-src': [
+    "'self'",
+    'https://maps.googleapis.com',
+    'https://*.tile.openstreetmap.org',
+    'https://*.basemaps.cartocdn.com',
+    'https://*.cartocdn.com',
+  ],
 }
 
 module.exports = Object.entries(policies)

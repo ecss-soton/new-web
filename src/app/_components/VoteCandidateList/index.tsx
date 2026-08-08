@@ -66,7 +66,9 @@ export const VoteCandidateList: React.FC<Props> = ({ candidates, electionId, pos
       const data = await res.json()
 
       if (!res.ok || data.errors) {
-        setVoteText(data.errors?.[0]?.message || 'Your vote could not be submitted. Please try again.')
+        setVoteText(
+          data.errors?.[0]?.message || 'Your vote could not be submitted. Please try again.',
+        )
         return
       }
 

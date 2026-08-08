@@ -45,8 +45,10 @@ export const SETTINGS = `
       slug
     }
     jumpstartEnabled
+    jumpstartLogo { ${MEDIA_FIELDS} }
     jumpstartHeading
     jumpstartSubtitle
+    jumpstartAboutTitle
     jumpstartAbout
   }
 `

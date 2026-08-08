@@ -64,7 +64,9 @@ const NominationForm: React.FC<{ nominationId?: string }> = props => {
 
     const findNomination = async () => {
       try {
-        const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/nominations/${nominationId}`)
+        const req = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/nominations/${nominationId}`,
+        )
         if (!req.ok) throw new Error('Nomination not found')
 
         const json = (await req.json()) as Nomination

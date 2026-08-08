@@ -69,9 +69,9 @@ export const manageSeats: PayloadHandler = async (req, res) => {
       !s.name.trim() ||
       s.name.length > 100
     ) {
-      return res
-        .status(400)
-        .json({ error: 'Each seat must have a unique valid index and a name of up to 100 characters' })
+      return res.status(400).json({
+        error: 'Each seat must have a unique valid index and a name of up to 100 characters',
+      })
     }
     if (assignedSeats.has(s.seatIndex)) {
       return res.status(400).json({ error: 'A seat can only be assigned once' })
