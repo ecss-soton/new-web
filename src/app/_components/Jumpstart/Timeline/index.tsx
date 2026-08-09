@@ -13,6 +13,7 @@ type Props = {
   events: Event[]
   heading?: string | null
   subtitle?: string | null
+  aboutTitle?: string | null
   aboutText?: string | null
 }
 
@@ -43,7 +44,13 @@ const getSortedDateKeys = (groups: Map<string, Event[]>): string[] => {
   return Array.from(groups.keys()).sort()
 }
 
-export const JumpstartTimeline: React.FC<Props> = ({ events, heading, subtitle, aboutText }) => {
+export const JumpstartTimeline: React.FC<Props> = ({
+  events,
+  heading,
+  subtitle,
+  aboutTitle,
+  aboutText,
+}) => {
   const groups = groupByDate(events)
   const sortedKeys = getSortedDateKeys(groups)
 
@@ -57,7 +64,7 @@ export const JumpstartTimeline: React.FC<Props> = ({ events, heading, subtitle, 
       <JumpstartViewToggle />
 
       <div className={classes.grid}>
-        <AboutSidebar aboutText={aboutText} />
+        <AboutSidebar title={aboutTitle} aboutText={aboutText} />
 
         <div className={classes.timeline}>
           {sortedKeys.map(dateKey => {

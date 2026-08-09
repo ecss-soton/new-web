@@ -1,11 +1,26 @@
 import ical from 'ical-generator'
 import moment from 'moment-timezone'
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig, Validate } from 'payload/types'
 
 import { admins } from '../access/admins'
 import { adminsOrPublished } from '../access/adminsOrPublished'
 import { withEndpointErrorHandler } from '../utilities/endpointHandler'
 import { isHTTPS } from '../validate/isHTTPS'
+
+const validateCoordinate =
+  (minimum: number, maximum: number, label: string): Validate =>
+  value => {
+    if (value === undefined || value === null) return true
+    if (
+      typeof value !== 'number' ||
+      !Number.isFinite(value) ||
+      value < minimum ||
+      value > maximum
+    ) {
+      return `${label} must be between ${minimum} and ${maximum}`
+    }
+    return true
+  }
 
 const Events: CollectionConfig = {
   slug: 'events',
@@ -147,6 +162,7 @@ const Events: CollectionConfig = {
       name: 'latitude',
       label: 'Latitude',
       type: 'number',
+      validate: validateCoordinate(-90, 90, 'Latitude'),
       admin: {
         condition: (_, siblingData) => siblingData?.isJumpstart,
         description: 'Latitude for map pin (e.g. 50.9350).',
@@ -157,6 +173,7 @@ const Events: CollectionConfig = {
       name: 'longitude',
       label: 'Longitude',
       type: 'number',
+      validate: validateCoordinate(-180, 180, 'Longitude'),
       admin: {
         condition: (_, siblingData) => siblingData?.isJumpstart,
         description: 'Longitude for map pin (e.g. -1.3964).',

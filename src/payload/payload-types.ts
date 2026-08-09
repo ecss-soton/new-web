@@ -32,6 +32,7 @@ export interface Config {
     'ticket-holders': TicketHolder;
     'wordle-overrides': WordleOverride;
     'wordle-scores': WordleScore;
+    'city-challenge-locations': CityChallengeLocation;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -1066,6 +1067,7 @@ export interface Committee {
         [k: string]: unknown;
       }[]
     | null;
+  link?: string | null;
   logo?: string | Media | null;
   isCurrent: boolean;
   updatedAt: string;
@@ -1212,6 +1214,7 @@ export interface Vote {
  */
 export interface ElectionResult {
   id: string;
+  showOnMainPage?: boolean | null;
   election: string | Election;
   position: string | Position;
   electedNominee?: (string | null) | Nomination;
@@ -1318,6 +1321,21 @@ export interface WordleScore {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "city-challenge-locations".
+ */
+export interface CityChallengeLocation {
+  id: string;
+  name: string;
+  description?: string | null;
+  latitude: number;
+  longitude: number;
+  discoveryRadius?: number | null;
+  sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1544,8 +1562,10 @@ export interface Settings {
   postsPage?: (string | null) | Page;
   projectsPage?: (string | null) | Page;
   jumpstartEnabled?: boolean | null;
+  jumpstartLogo?: string | Media | null;
   jumpstartHeading?: string | null;
   jumpstartSubtitle?: string | null;
+  jumpstartAboutTitle?: string | null;
   jumpstartAbout?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;

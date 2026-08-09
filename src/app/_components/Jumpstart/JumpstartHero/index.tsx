@@ -1,14 +1,21 @@
 import React from 'react'
 
-import { permanentMarker } from '../../../_utilities/font'
+import { bungee } from '../../../_utilities/font'
 
 import classes from './index.module.scss'
 
 type Props = {
   dateRange: string
+  logo?: {
+    url?: string | null
+    alt?: string | null
+  } | null
 }
 
-export const JumpstartHero: React.FC<Props> = ({ dateRange }) => {
+export const JumpstartHero: React.FC<Props> = ({ dateRange, logo }) => {
+  const logoSrc = logo?.url || '/jumpstart/logo.png'
+  const logoAlt = logo?.alt || 'Jumpstart'
+
   return (
     <div className={classes.hero}>
       <div className={classes.splatter} aria-hidden="true">
@@ -50,8 +57,9 @@ export const JumpstartHero: React.FC<Props> = ({ dateRange }) => {
       </div>
 
       <div className={classes.content}>
-        <h1 className={[classes.brand, permanentMarker.className].join(' ')}>jumpstart</h1>
-        <span className={classes.dateRange}>{dateRange}</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={logoSrc} alt={logoAlt} className={classes.brandLogo} />
+        <span className={[classes.dateRange, bungee.className].join(' ')}>{dateRange}</span>
       </div>
     </div>
   )

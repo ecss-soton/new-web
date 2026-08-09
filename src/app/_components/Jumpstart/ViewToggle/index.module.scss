@@ -3,39 +3,75 @@
 .toggle {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-bottom: 44px;
   gap: 0;
+  position: relative;
 
   @include small-break {
     margin-bottom: 32px;
   }
 }
 
+.toggle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-2deg);
+  width: 120%;
+  height: 120%;
+  background:
+    radial-gradient(circle at 30% 20%, var(--jumpstart-neon-magenta) 1px, transparent 1px),
+    radial-gradient(circle at 70% 60%, var(--jumpstart-neon-cyan) 1px, transparent 1px),
+    radial-gradient(circle at 45% 70%, var(--jumpstart-neon-lime) 1px, transparent 1px),
+    radial-gradient(circle at 85% 30%, var(--jumpstart-neon-orange) 1px, transparent 1px);
+  background-size: 60px 60px, 80px 80px, 70px 70px, 50px 50px;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .option {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 24px;
-  font-size: 14px;
+  padding: 12px 28px;
+  font-size: 15px;
   font-weight: 700;
   border: 2px solid var(--jumpstart-card-border);
   background: var(--jumpstart-card);
   color: var(--jumpstart-muted);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 
   &:first-child {
-    border-radius: 8px 0 0 8px;
+    border-radius: 40px 6px 6px 40px;
+    transform: rotate(-1.5deg);
+    margin-right: -1px;
   }
 
   &:last-child {
-    border-radius: 0 8px 8px 0;
-    border-left: none;
+    border-radius: 6px 40px 40px 6px;
+    transform: rotate(1.5deg);
   }
 
-  &:hover {
-    background: var(--jumpstart-card-border);
-    color: var(--jumpstart-text);
+  &:hover:not(.active) {
+    border-color: var(--jumpstart-neon-cyan);
+    color: var(--jumpstart-neon-cyan);
+    transform: rotate(var(--hover-rot));
+  }
+
+  &:first-child:not(.active) {
+    --hover-rot: -2.5deg;
+  }
+
+  &:last-child:not(.active) {
+    --hover-rot: 2.5deg;
   }
 
   svg {
@@ -43,7 +79,7 @@
   }
 
   @include small-break {
-    padding: 8px 16px;
+    padding: 10px 20px;
     font-size: 13px;
     gap: 6px;
   }
@@ -53,11 +89,26 @@
   background: var(--jumpstart-neon-magenta);
   border-color: var(--jumpstart-neon-magenta);
   color: #000;
-  box-shadow: 3px 3px 0 #000;
+  box-shadow:
+    0 0 12px var(--jumpstart-neon-magenta),
+    4px 4px 0 #000;
+  z-index: 2;
+
+  &:first-child {
+    transform: rotate(-2.5deg) scale(1.05);
+  }
+
+  &:last-child {
+    transform: rotate(2.5deg) scale(1.05);
+  }
 
   &:hover {
     background: var(--jumpstart-neon-magenta);
     border-color: var(--jumpstart-neon-magenta);
     color: #000;
+  }
+
+  svg {
+    filter: drop-shadow(1px 1px 0 rgba(255, 255, 255, 0.3));
   }
 }

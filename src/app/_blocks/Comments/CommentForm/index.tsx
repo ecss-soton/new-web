@@ -27,7 +27,7 @@ export const CommentForm: React.FC<{
   const {
     register,
     handleSubmit,
-    formState: { errors, isLoading },
+    formState: { errors, isSubmitting },
     reset,
   } = useForm<FormData>()
 
@@ -107,15 +107,15 @@ export const CommentForm: React.FC<{
           href={`/login?redirect=${encodeURIComponent(pathname)}`}
           appearance="primary"
           label="Login to comment"
-          disabled={isLoading}
+          disabled={isSubmitting}
           className={classes.submit}
         />
       ) : (
         <Button
           type="submit"
           appearance="primary"
-          label={isLoading ? 'Processing' : 'Comment'}
-          disabled={isLoading}
+          label={isSubmitting ? 'Processing' : 'Comment'}
+          disabled={isSubmitting}
           className={classes.submit}
         />
       )}

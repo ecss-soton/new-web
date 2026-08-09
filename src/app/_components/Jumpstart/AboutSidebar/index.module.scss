@@ -3,22 +3,21 @@
 .sidebar {
   position: sticky;
   top: 100px;
-  padding: 28px 24px;
+  align-self: start;
+  padding: 20px 24px;
   border-radius: 12px;
   background: var(--jumpstart-card);
   border: 2px solid var(--jumpstart-card-border);
   box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.4);
-  transform: rotate(-0.8deg);
 
   @include mid-break {
     top: 80px;
-    padding: 24px 20px;
+    padding: 18px 20px;
   }
 
   @include small-break {
     position: static;
-    transform: none;
-    padding: 20px 16px;
+    padding: 18px 16px;
   }
 }
 

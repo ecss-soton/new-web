@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../access/admins'
+import { isHTTPS } from '../validate/isHTTPS'
 
 const Committee: CollectionConfig = {
   slug: 'committee',
@@ -81,6 +82,20 @@ const Committee: CollectionConfig = {
       name: 'bio',
       label: 'Bio',
       type: 'richText',
+      admin: {
+        description:
+          'Shown in a popup when the card is clicked. If set, this takes priority over the Link field.',
+      },
+    },
+    {
+      name: 'link',
+      label: 'Link',
+      type: 'text',
+      validate: isHTTPS,
+      admin: {
+        description:
+          'Optional HTTPS URL. Used when Bio is empty: clicking the card opens this link in a new tab.',
+      },
     },
     {
       name: 'logo',

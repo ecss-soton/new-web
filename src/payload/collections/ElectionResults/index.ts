@@ -21,6 +21,7 @@ export const ElectionResults: CollectionConfig = {
   },
   admin: {
     group: Groups.Elections,
+    defaultColumns: ['election', 'position', 'showOnMainPage', 'updatedAt'],
   },
   versions: {
     drafts: true,
@@ -45,6 +46,16 @@ export const ElectionResults: CollectionConfig = {
         components: {
           Field: RecountVotesLink,
         },
+      },
+    },
+    {
+      name: 'showOnMainPage',
+      type: 'checkbox',
+      label: 'Show on main election page',
+      defaultValue: false,
+      admin: {
+        description:
+          'When enabled, this result is visible on the public election page after voting has ended.',
       },
     },
     {

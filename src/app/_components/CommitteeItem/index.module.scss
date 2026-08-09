@@ -5,14 +5,26 @@
   align-items: center;
   gap: 14px;
   padding: 14px;
+  border: none;
   border-radius: 14px;
   background: var(--theme-elevation-50);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
   cursor: pointer;
   transition: transform 0.2s ease;
   height: 100%;
+  width: 100%;
+  box-sizing: border-box;
 
   &:hover {
     transform: scale(1.03);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--theme-elevation-1000);
+    outline-offset: 2px;
   }
 
   @include small-break {

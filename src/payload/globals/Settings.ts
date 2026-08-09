@@ -105,6 +105,17 @@ export const Settings: GlobalConfig = {
               },
             },
             {
+              name: 'jumpstartLogo',
+              type: 'upload',
+              relationTo: 'media',
+              label: 'Jumpstart Logo',
+              admin: {
+                condition: (_, siblingData) => siblingData?.jumpstartEnabled,
+                description:
+                  'Replaces the text-based "jumpstart" brand in the hero. Falls back to a default logo if not set.',
+              },
+            },
+            {
               name: 'jumpstartHeading',
               type: 'text',
               label: 'Jumpstart Heading',
@@ -122,12 +133,23 @@ export const Settings: GlobalConfig = {
               },
             },
             {
-              name: 'jumpstartAbout',
-              type: 'textarea',
-              label: 'About Sidebar',
+              name: 'jumpstartAboutTitle',
+              type: 'text',
+              label: 'About Sidebar Heading',
+              defaultValue: 'WHAT IS JUMPSTART?',
               admin: {
                 condition: (_, siblingData) => siblingData?.jumpstartEnabled,
-                description: '"WHO ARE ECSS?" sidebar text on the Jumpstart page.',
+                description: 'Title displayed above the sidebar description.',
+              },
+            },
+            {
+              name: 'jumpstartAbout',
+              type: 'textarea',
+              label: 'What is Jumpstart?',
+              admin: {
+                condition: (_, siblingData) => siblingData?.jumpstartEnabled,
+                description:
+                  'Short introduction displayed beside the Jumpstart timeline while Jumpstart Mode is enabled.',
               },
             },
           ],

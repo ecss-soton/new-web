@@ -83,7 +83,11 @@ export const ElectionResults: React.FC<{
           depth: 2,
           limit: 1,
           where: {
-            and: [{ election: { equals: election.id } }, { position: { equals: positionId } }],
+            and: [
+              { election: { equals: election.id } },
+              { position: { equals: positionId } },
+              { showOnMainPage: { equals: true } },
+            ],
           },
         },
         { encode: false },

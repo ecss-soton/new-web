@@ -72,15 +72,24 @@ export default async function Page({ searchParams }: { searchParams: { view?: st
     const jumpstartEvents = events.filter(e => e.isJumpstart)
     const heading = settings.jumpstartHeading || 'Jumpstart'
     const subtitle = settings.jumpstartSubtitle || undefined
+    const aboutTitle = settings.jumpstartAboutTitle || undefined
     const aboutText = settings.jumpstartAbout || undefined
     const dateRange = computeDateRange(jumpstartEvents) || undefined
     const currentView = searchParams?.view || 'timeline'
+
+    const logo =
+      settings.jumpstartLogo && typeof settings.jumpstartLogo !== 'string'
+        ? {
+            url: settings.jumpstartLogo.url,
+            alt: settings.jumpstartLogo.alt,
+          }
+        : null
 
     if (currentView === 'map') {
       return (
         <div className={wrapperClasses.page}>
           <JumpstartBanner />
-          <JumpstartHero dateRange={dateRange || ''} />
+          <JumpstartHero dateRange={dateRange || ''} logo={logo} />
           <div className={mapPageClasses.page}>
             <JumpstartViewToggle />
           </div>
@@ -94,11 +103,12 @@ export default async function Page({ searchParams }: { searchParams: { view?: st
     return (
       <div className={wrapperClasses.page}>
         <JumpstartBanner />
-        <JumpstartHero dateRange={dateRange || ''} />
+        <JumpstartHero dateRange={dateRange || ''} logo={logo} />
         <JumpstartTimeline
           events={jumpstartEvents}
           heading={heading}
           subtitle={subtitle}
+          aboutTitle={aboutTitle}
           aboutText={aboutText}
         />
       </div>

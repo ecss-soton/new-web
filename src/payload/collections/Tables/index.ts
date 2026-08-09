@@ -34,7 +34,7 @@ export const Tables: CollectionConfig = {
     defaultColumns: ['joinCode', 'owner', 'memberCount', 'locked', 'createdAt'],
   },
   access: {
-    read: () => true,
+    read: () => false,
     create: admins,
     update: admins,
     delete: admins,
@@ -251,6 +251,12 @@ export const Tables: CollectionConfig = {
           return res.status(404).json({ error: 'Table not found' })
         }
 
+        const memberIds = (Array.isArray(table.members) ? table.members : []) as string[]
+        const isMember = memberIds.some(id => id === user.id)
+        if (!isMember && !isAdmin(user)) {
+          return res.status(403).json({ error: 'Only table members can view seating' })
+        }
+
         const eventId = typeof table.event === 'string' ? table.event : table.event?.id
         if (!eventId) {
           return res.status(500).json({ error: 'Table has no event' })
@@ -281,7 +287,6 @@ export const Tables: CollectionConfig = {
           }
         }
 
-        const memberIds = (Array.isArray(table.members) ? table.members : []) as string[]
         const members: Array<{ id: string; name: string }> = []
 
         if (memberIds.length > 0) {
@@ -303,7 +308,7 @@ export const Tables: CollectionConfig = {
         return res.json({
           seats: filledSeats,
           members,
-          yourTable: memberIds.some(id => id === user.id),
+          yourTable: isMember,
           joinCode: table.joinCode,
           eventSlug: event.slug,
         })

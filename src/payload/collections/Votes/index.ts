@@ -8,6 +8,7 @@ import { isSusuMember } from './endpoints/isSusuMember'
 import { validateCorrectElectionTime } from './validate/validateCorrectElectionTime'
 import { validatePreferences } from './validate/validatePreferences'
 import { validateRONPosition } from './validate/validateRONPosition'
+import { validateVoteIntegrity } from './validate/validateVoteIntegrity'
 import { voteIsUnique } from './validate/voteIsUnique'
 
 const Votes: CollectionConfig = {
@@ -57,7 +58,11 @@ const Votes: CollectionConfig = {
       required: true,
       relationTo: 'elections',
       hasMany: false,
-      validate: validateCorrectElectionTime,
+      validate: async (value, args) => {
+        const timeValidation = await validateCorrectElectionTime(value, args)
+        if (timeValidation !== true) return timeValidation
+        return validateVoteIntegrity(value, args)
+      },
       filterOptions: ({ data }) => ({
         positions: {
           contains: data.position,

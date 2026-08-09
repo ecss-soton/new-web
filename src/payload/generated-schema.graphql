@@ -111,6 +111,10 @@ type Query {
   WordleScores(where: WordleScore_where, limit: Int, page: Int, sort: String): WordleScores
   countWordleScores(where: WordleScore_where): countWordleScores
   docAccessWordleScore(id: String!): wordle_scoresDocAccess
+  CityChallengeLocation(id: String!): CityChallengeLocation
+  CityChallengeLocations(where: CityChallengeLocation_where, limit: Int, page: Int, sort: String): CityChallengeLocations
+  countCityChallengeLocations(where: CityChallengeLocation_where): countCityChallengeLocations
+  docAccessCityChallengeLocation(id: String!): city_challenge_locationsDocAccess
   Redirect(id: String!): Redirect
   Redirects(where: Redirect_where, limit: Int, page: Int, sort: String): Redirects
   countRedirects(where: Redirect_where): countRedirects
@@ -2436,6 +2440,7 @@ type Committee {
   position: Committee_position
   positionRef: Position!
   bio(depth: Int): JSON
+  link: String
   logo(where: Committee_Logo_where): Media
   isCurrent: Boolean!
   updatedAt: DateTime
@@ -15994,6 +15999,7 @@ type VotesDeleteDocAccess {
 
 type ElectionResult {
   id: String
+  showOnMainPage: Boolean
   election(draft: Boolean): Election
   position: Position
   electedNominee: Nomination
@@ -16050,6 +16056,7 @@ type ElectionResults {
 }
 
 input ElectionResult_where {
+  showOnMainPage: ElectionResult_showOnMainPage_operator
   election: ElectionResult_election_operator
   position: ElectionResult_position_operator
   electedNominee: ElectionResult_electedNominee_operator
@@ -16068,6 +16075,12 @@ input ElectionResult_where {
   id: ElectionResult_id_operator
   AND: [ElectionResult_where_and]
   OR: [ElectionResult_where_or]
+}
+
+input ElectionResult_showOnMainPage_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
 }
 
 input ElectionResult_election_operator {
@@ -16233,6 +16246,7 @@ input ElectionResult_id_operator {
 }
 
 input ElectionResult_where_and {
+  showOnMainPage: ElectionResult_showOnMainPage_operator
   election: ElectionResult_election_operator
   position: ElectionResult_position_operator
   electedNominee: ElectionResult_electedNominee_operator
@@ -16254,6 +16268,7 @@ input ElectionResult_where_and {
 }
 
 input ElectionResult_where_or {
+  showOnMainPage: ElectionResult_showOnMainPage_operator
   election: ElectionResult_election_operator
   position: ElectionResult_position_operator
   electedNominee: ElectionResult_electedNominee_operator
@@ -16288,6 +16303,7 @@ type electionResultsDocAccess {
 }
 
 type ElectionResultsDocAccessFields {
+  showOnMainPage: ElectionResultsDocAccessFields_showOnMainPage
   election: ElectionResultsDocAccessFields_election
   position: ElectionResultsDocAccessFields_position
   electedNominee: ElectionResultsDocAccessFields_electedNominee
@@ -16297,6 +16313,29 @@ type ElectionResultsDocAccessFields {
   updatedAt: ElectionResultsDocAccessFields_updatedAt
   createdAt: ElectionResultsDocAccessFields_createdAt
   _status: ElectionResultsDocAccessFields__status
+}
+
+type ElectionResultsDocAccessFields_showOnMainPage {
+  create: ElectionResultsDocAccessFields_showOnMainPage_Create
+  read: ElectionResultsDocAccessFields_showOnMainPage_Read
+  update: ElectionResultsDocAccessFields_showOnMainPage_Update
+  delete: ElectionResultsDocAccessFields_showOnMainPage_Delete
+}
+
+type ElectionResultsDocAccessFields_showOnMainPage_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_showOnMainPage_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_showOnMainPage_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsDocAccessFields_showOnMainPage_Delete {
+  permission: Boolean!
 }
 
 type ElectionResultsDocAccessFields_election {
@@ -16741,6 +16780,7 @@ type ElectionResultVersion {
 }
 
 type ElectionResultVersion_Version {
+  showOnMainPage: Boolean
   election(draft: Boolean): Election
   position: Position
   electedNominee: Nomination
@@ -16798,6 +16838,7 @@ type versionsElectionResults {
 
 input versionsElectionResult_where {
   parent: versionsElectionResult_parent_operator
+  version__showOnMainPage: versionsElectionResult_version__showOnMainPage_operator
   version__election: versionsElectionResult_version__election_operator
   version__position: versionsElectionResult_version__position_operator
   version__electedNominee: versionsElectionResult_version__electedNominee_operator
@@ -16827,6 +16868,12 @@ input versionsElectionResult_parent_operator {
   in: [JSON]
   not_in: [JSON]
   all: [JSON]
+  exists: Boolean
+}
+
+input versionsElectionResult_version__showOnMainPage_operator {
+  equals: Boolean
+  not_equals: Boolean
   exists: Boolean
 }
 
@@ -17022,6 +17069,7 @@ input versionsElectionResult_id_operator {
 
 input versionsElectionResult_where_and {
   parent: versionsElectionResult_parent_operator
+  version__showOnMainPage: versionsElectionResult_version__showOnMainPage_operator
   version__election: versionsElectionResult_version__election_operator
   version__position: versionsElectionResult_version__position_operator
   version__electedNominee: versionsElectionResult_version__electedNominee_operator
@@ -17047,6 +17095,7 @@ input versionsElectionResult_where_and {
 
 input versionsElectionResult_where_or {
   parent: versionsElectionResult_parent_operator
+  version__showOnMainPage: versionsElectionResult_version__showOnMainPage_operator
   version__election: versionsElectionResult_version__election_operator
   version__position: versionsElectionResult_version__position_operator
   version__electedNominee: versionsElectionResult_version__electedNominee_operator
@@ -19076,6 +19125,7 @@ input Committee_where {
   position: Committee_position_operator
   positionRef: Committee_positionRef_operator
   bio: Committee_bio_operator
+  link: Committee_link_operator
   logo: Committee_logo_operator
   isCurrent: Committee_isCurrent_operator
   updatedAt: Committee_updatedAt_operator
@@ -19167,6 +19217,17 @@ input Committee_bio_operator {
   exists: Boolean
 }
 
+input Committee_link_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
 input Committee_logo_operator {
   equals: String
   not_equals: String
@@ -19207,6 +19268,7 @@ input Committee_where_and {
   position: Committee_position_operator
   positionRef: Committee_positionRef_operator
   bio: Committee_bio_operator
+  link: Committee_link_operator
   logo: Committee_logo_operator
   isCurrent: Committee_isCurrent_operator
   updatedAt: Committee_updatedAt_operator
@@ -19222,6 +19284,7 @@ input Committee_where_or {
   position: Committee_position_operator
   positionRef: Committee_positionRef_operator
   bio: Committee_bio_operator
+  link: Committee_link_operator
   logo: Committee_logo_operator
   isCurrent: Committee_isCurrent_operator
   updatedAt: Committee_updatedAt_operator
@@ -19249,6 +19312,7 @@ type CommitteeDocAccessFields {
   position: CommitteeDocAccessFields_position
   positionRef: CommitteeDocAccessFields_positionRef
   bio: CommitteeDocAccessFields_bio
+  link: CommitteeDocAccessFields_link
   logo: CommitteeDocAccessFields_logo
   isCurrent: CommitteeDocAccessFields_isCurrent
   updatedAt: CommitteeDocAccessFields_updatedAt
@@ -19390,6 +19454,29 @@ type CommitteeDocAccessFields_bio_Update {
 }
 
 type CommitteeDocAccessFields_bio_Delete {
+  permission: Boolean!
+}
+
+type CommitteeDocAccessFields_link {
+  create: CommitteeDocAccessFields_link_Create
+  read: CommitteeDocAccessFields_link_Read
+  update: CommitteeDocAccessFields_link_Update
+  delete: CommitteeDocAccessFields_link_Delete
+}
+
+type CommitteeDocAccessFields_link_Create {
+  permission: Boolean!
+}
+
+type CommitteeDocAccessFields_link_Read {
+  permission: Boolean!
+}
+
+type CommitteeDocAccessFields_link_Update {
+  permission: Boolean!
+}
+
+type CommitteeDocAccessFields_link_Delete {
   permission: Boolean!
 }
 
@@ -22937,6 +23024,390 @@ type WordleScoresDeleteDocAccess {
   where: JSONObject
 }
 
+type CityChallengeLocation {
+  id: String
+  name: String!
+  description: String
+  latitude: Float!
+  longitude: Float!
+  discoveryRadius: Float
+  sortOrder: Float
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+type CityChallengeLocations {
+  docs: [CityChallengeLocation]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input CityChallengeLocation_where {
+  name: CityChallengeLocation_name_operator
+  description: CityChallengeLocation_description_operator
+  latitude: CityChallengeLocation_latitude_operator
+  longitude: CityChallengeLocation_longitude_operator
+  discoveryRadius: CityChallengeLocation_discoveryRadius_operator
+  sortOrder: CityChallengeLocation_sortOrder_operator
+  updatedAt: CityChallengeLocation_updatedAt_operator
+  createdAt: CityChallengeLocation_createdAt_operator
+  id: CityChallengeLocation_id_operator
+  AND: [CityChallengeLocation_where_and]
+  OR: [CityChallengeLocation_where_or]
+}
+
+input CityChallengeLocation_name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input CityChallengeLocation_description_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  exists: Boolean
+}
+
+input CityChallengeLocation_latitude_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+}
+
+input CityChallengeLocation_longitude_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+}
+
+input CityChallengeLocation_discoveryRadius_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input CityChallengeLocation_sortOrder_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input CityChallengeLocation_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input CityChallengeLocation_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input CityChallengeLocation_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input CityChallengeLocation_where_and {
+  name: CityChallengeLocation_name_operator
+  description: CityChallengeLocation_description_operator
+  latitude: CityChallengeLocation_latitude_operator
+  longitude: CityChallengeLocation_longitude_operator
+  discoveryRadius: CityChallengeLocation_discoveryRadius_operator
+  sortOrder: CityChallengeLocation_sortOrder_operator
+  updatedAt: CityChallengeLocation_updatedAt_operator
+  createdAt: CityChallengeLocation_createdAt_operator
+  id: CityChallengeLocation_id_operator
+  AND: [CityChallengeLocation_where_and]
+  OR: [CityChallengeLocation_where_or]
+}
+
+input CityChallengeLocation_where_or {
+  name: CityChallengeLocation_name_operator
+  description: CityChallengeLocation_description_operator
+  latitude: CityChallengeLocation_latitude_operator
+  longitude: CityChallengeLocation_longitude_operator
+  discoveryRadius: CityChallengeLocation_discoveryRadius_operator
+  sortOrder: CityChallengeLocation_sortOrder_operator
+  updatedAt: CityChallengeLocation_updatedAt_operator
+  createdAt: CityChallengeLocation_createdAt_operator
+  id: CityChallengeLocation_id_operator
+  AND: [CityChallengeLocation_where_and]
+  OR: [CityChallengeLocation_where_or]
+}
+
+type countCityChallengeLocations {
+  totalDocs: Int
+}
+
+type city_challenge_locationsDocAccess {
+  fields: CityChallengeLocationsDocAccessFields
+  create: CityChallengeLocationsCreateDocAccess
+  read: CityChallengeLocationsReadDocAccess
+  update: CityChallengeLocationsUpdateDocAccess
+  delete: CityChallengeLocationsDeleteDocAccess
+}
+
+type CityChallengeLocationsDocAccessFields {
+  name: CityChallengeLocationsDocAccessFields_name
+  description: CityChallengeLocationsDocAccessFields_description
+  latitude: CityChallengeLocationsDocAccessFields_latitude
+  longitude: CityChallengeLocationsDocAccessFields_longitude
+  discoveryRadius: CityChallengeLocationsDocAccessFields_discoveryRadius
+  sortOrder: CityChallengeLocationsDocAccessFields_sortOrder
+  updatedAt: CityChallengeLocationsDocAccessFields_updatedAt
+  createdAt: CityChallengeLocationsDocAccessFields_createdAt
+}
+
+type CityChallengeLocationsDocAccessFields_name {
+  create: CityChallengeLocationsDocAccessFields_name_Create
+  read: CityChallengeLocationsDocAccessFields_name_Read
+  update: CityChallengeLocationsDocAccessFields_name_Update
+  delete: CityChallengeLocationsDocAccessFields_name_Delete
+}
+
+type CityChallengeLocationsDocAccessFields_name_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_name_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_name_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_name_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_description {
+  create: CityChallengeLocationsDocAccessFields_description_Create
+  read: CityChallengeLocationsDocAccessFields_description_Read
+  update: CityChallengeLocationsDocAccessFields_description_Update
+  delete: CityChallengeLocationsDocAccessFields_description_Delete
+}
+
+type CityChallengeLocationsDocAccessFields_description_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_description_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_description_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_description_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_latitude {
+  create: CityChallengeLocationsDocAccessFields_latitude_Create
+  read: CityChallengeLocationsDocAccessFields_latitude_Read
+  update: CityChallengeLocationsDocAccessFields_latitude_Update
+  delete: CityChallengeLocationsDocAccessFields_latitude_Delete
+}
+
+type CityChallengeLocationsDocAccessFields_latitude_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_latitude_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_latitude_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_latitude_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_longitude {
+  create: CityChallengeLocationsDocAccessFields_longitude_Create
+  read: CityChallengeLocationsDocAccessFields_longitude_Read
+  update: CityChallengeLocationsDocAccessFields_longitude_Update
+  delete: CityChallengeLocationsDocAccessFields_longitude_Delete
+}
+
+type CityChallengeLocationsDocAccessFields_longitude_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_longitude_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_longitude_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_longitude_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_discoveryRadius {
+  create: CityChallengeLocationsDocAccessFields_discoveryRadius_Create
+  read: CityChallengeLocationsDocAccessFields_discoveryRadius_Read
+  update: CityChallengeLocationsDocAccessFields_discoveryRadius_Update
+  delete: CityChallengeLocationsDocAccessFields_discoveryRadius_Delete
+}
+
+type CityChallengeLocationsDocAccessFields_discoveryRadius_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_discoveryRadius_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_discoveryRadius_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_discoveryRadius_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_sortOrder {
+  create: CityChallengeLocationsDocAccessFields_sortOrder_Create
+  read: CityChallengeLocationsDocAccessFields_sortOrder_Read
+  update: CityChallengeLocationsDocAccessFields_sortOrder_Update
+  delete: CityChallengeLocationsDocAccessFields_sortOrder_Delete
+}
+
+type CityChallengeLocationsDocAccessFields_sortOrder_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_sortOrder_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_sortOrder_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_sortOrder_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_updatedAt {
+  create: CityChallengeLocationsDocAccessFields_updatedAt_Create
+  read: CityChallengeLocationsDocAccessFields_updatedAt_Read
+  update: CityChallengeLocationsDocAccessFields_updatedAt_Update
+  delete: CityChallengeLocationsDocAccessFields_updatedAt_Delete
+}
+
+type CityChallengeLocationsDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_createdAt {
+  create: CityChallengeLocationsDocAccessFields_createdAt_Create
+  read: CityChallengeLocationsDocAccessFields_createdAt_Read
+  update: CityChallengeLocationsDocAccessFields_createdAt_Update
+  delete: CityChallengeLocationsDocAccessFields_createdAt_Delete
+}
+
+type CityChallengeLocationsDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CityChallengeLocationsReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CityChallengeLocationsUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CityChallengeLocationsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type Redirect {
   id: String
   from: String!
@@ -24793,8 +25264,10 @@ type Settings {
   postsPage(draft: Boolean): Page
   projectsPage(draft: Boolean): Page
   jumpstartEnabled: Boolean
+  jumpstartLogo(where: Settings_JumpstartLogo_where): Media
   jumpstartHeading: String
   jumpstartSubtitle: String
+  jumpstartAboutTitle: String
   jumpstartAbout: String
   updatedAt: DateTime
   createdAt: DateTime
@@ -25364,6 +25837,194 @@ input Settings_FooterLogo_where_or {
   OR: [Settings_FooterLogo_where_or]
 }
 
+input Settings_JumpstartLogo_where {
+  alt: Settings_JumpstartLogo_alt_operator
+  caption: Settings_JumpstartLogo_caption_operator
+  updatedAt: Settings_JumpstartLogo_updatedAt_operator
+  createdAt: Settings_JumpstartLogo_createdAt_operator
+  url: Settings_JumpstartLogo_url_operator
+  filename: Settings_JumpstartLogo_filename_operator
+  mimeType: Settings_JumpstartLogo_mimeType_operator
+  filesize: Settings_JumpstartLogo_filesize_operator
+  width: Settings_JumpstartLogo_width_operator
+  height: Settings_JumpstartLogo_height_operator
+  focalX: Settings_JumpstartLogo_focalX_operator
+  focalY: Settings_JumpstartLogo_focalY_operator
+  id: Settings_JumpstartLogo_id_operator
+  AND: [Settings_JumpstartLogo_where_and]
+  OR: [Settings_JumpstartLogo_where_or]
+}
+
+input Settings_JumpstartLogo_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Settings_JumpstartLogo_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Settings_JumpstartLogo_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Settings_JumpstartLogo_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Settings_JumpstartLogo_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Settings_JumpstartLogo_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Settings_JumpstartLogo_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Settings_JumpstartLogo_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Settings_JumpstartLogo_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Settings_JumpstartLogo_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Settings_JumpstartLogo_focalX_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Settings_JumpstartLogo_focalY_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Settings_JumpstartLogo_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Settings_JumpstartLogo_where_and {
+  alt: Settings_JumpstartLogo_alt_operator
+  caption: Settings_JumpstartLogo_caption_operator
+  updatedAt: Settings_JumpstartLogo_updatedAt_operator
+  createdAt: Settings_JumpstartLogo_createdAt_operator
+  url: Settings_JumpstartLogo_url_operator
+  filename: Settings_JumpstartLogo_filename_operator
+  mimeType: Settings_JumpstartLogo_mimeType_operator
+  filesize: Settings_JumpstartLogo_filesize_operator
+  width: Settings_JumpstartLogo_width_operator
+  height: Settings_JumpstartLogo_height_operator
+  focalX: Settings_JumpstartLogo_focalX_operator
+  focalY: Settings_JumpstartLogo_focalY_operator
+  id: Settings_JumpstartLogo_id_operator
+  AND: [Settings_JumpstartLogo_where_and]
+  OR: [Settings_JumpstartLogo_where_or]
+}
+
+input Settings_JumpstartLogo_where_or {
+  alt: Settings_JumpstartLogo_alt_operator
+  caption: Settings_JumpstartLogo_caption_operator
+  updatedAt: Settings_JumpstartLogo_updatedAt_operator
+  createdAt: Settings_JumpstartLogo_createdAt_operator
+  url: Settings_JumpstartLogo_url_operator
+  filename: Settings_JumpstartLogo_filename_operator
+  mimeType: Settings_JumpstartLogo_mimeType_operator
+  filesize: Settings_JumpstartLogo_filesize_operator
+  width: Settings_JumpstartLogo_width_operator
+  height: Settings_JumpstartLogo_height_operator
+  focalX: Settings_JumpstartLogo_focalX_operator
+  focalY: Settings_JumpstartLogo_focalY_operator
+  id: Settings_JumpstartLogo_id_operator
+  AND: [Settings_JumpstartLogo_where_and]
+  OR: [Settings_JumpstartLogo_where_or]
+}
+
 type settingsDocAccess {
   fields: SettingsDocAccessFields
   read: SettingsReadDocAccess
@@ -25380,8 +26041,10 @@ type SettingsDocAccessFields {
   postsPage: SettingsDocAccessFields_postsPage
   projectsPage: SettingsDocAccessFields_projectsPage
   jumpstartEnabled: SettingsDocAccessFields_jumpstartEnabled
+  jumpstartLogo: SettingsDocAccessFields_jumpstartLogo
   jumpstartHeading: SettingsDocAccessFields_jumpstartHeading
   jumpstartSubtitle: SettingsDocAccessFields_jumpstartSubtitle
+  jumpstartAboutTitle: SettingsDocAccessFields_jumpstartAboutTitle
   jumpstartAbout: SettingsDocAccessFields_jumpstartAbout
   updatedAt: SettingsDocAccessFields_updatedAt
   createdAt: SettingsDocAccessFields_createdAt
@@ -25594,6 +26257,29 @@ type SettingsDocAccessFields_jumpstartEnabled_Delete {
   permission: Boolean!
 }
 
+type SettingsDocAccessFields_jumpstartLogo {
+  create: SettingsDocAccessFields_jumpstartLogo_Create
+  read: SettingsDocAccessFields_jumpstartLogo_Read
+  update: SettingsDocAccessFields_jumpstartLogo_Update
+  delete: SettingsDocAccessFields_jumpstartLogo_Delete
+}
+
+type SettingsDocAccessFields_jumpstartLogo_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartLogo_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartLogo_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartLogo_Delete {
+  permission: Boolean!
+}
+
 type SettingsDocAccessFields_jumpstartHeading {
   create: SettingsDocAccessFields_jumpstartHeading_Create
   read: SettingsDocAccessFields_jumpstartHeading_Read
@@ -25637,6 +26323,29 @@ type SettingsDocAccessFields_jumpstartSubtitle_Update {
 }
 
 type SettingsDocAccessFields_jumpstartSubtitle_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartAboutTitle {
+  create: SettingsDocAccessFields_jumpstartAboutTitle_Create
+  read: SettingsDocAccessFields_jumpstartAboutTitle_Read
+  update: SettingsDocAccessFields_jumpstartAboutTitle_Update
+  delete: SettingsDocAccessFields_jumpstartAboutTitle_Delete
+}
+
+type SettingsDocAccessFields_jumpstartAboutTitle_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartAboutTitle_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartAboutTitle_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartAboutTitle_Delete {
   permission: Boolean!
 }
 
@@ -26562,6 +27271,7 @@ type Access {
   ticket_holders: ticket_holdersAccess
   wordle_overrides: wordle_overridesAccess
   wordle_scores: wordle_scoresAccess
+  city_challenge_locations: city_challenge_locationsAccess
   redirects: redirectsAccess
   forms: formsAccess
   form_submissions: form_submissionsAccess
@@ -31356,6 +32066,7 @@ type electionResultsAccess {
 }
 
 type ElectionResultsFields {
+  showOnMainPage: ElectionResultsFields_showOnMainPage
   election: ElectionResultsFields_election
   position: ElectionResultsFields_position
   electedNominee: ElectionResultsFields_electedNominee
@@ -31365,6 +32076,29 @@ type ElectionResultsFields {
   updatedAt: ElectionResultsFields_updatedAt
   createdAt: ElectionResultsFields_createdAt
   _status: ElectionResultsFields__status
+}
+
+type ElectionResultsFields_showOnMainPage {
+  create: ElectionResultsFields_showOnMainPage_Create
+  read: ElectionResultsFields_showOnMainPage_Read
+  update: ElectionResultsFields_showOnMainPage_Update
+  delete: ElectionResultsFields_showOnMainPage_Delete
+}
+
+type ElectionResultsFields_showOnMainPage_Create {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_showOnMainPage_Read {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_showOnMainPage_Update {
+  permission: Boolean!
+}
+
+type ElectionResultsFields_showOnMainPage_Delete {
+  permission: Boolean!
 }
 
 type ElectionResultsFields_election {
@@ -33103,6 +33837,7 @@ type CommitteeFields {
   position: CommitteeFields_position
   positionRef: CommitteeFields_positionRef
   bio: CommitteeFields_bio
+  link: CommitteeFields_link
   logo: CommitteeFields_logo
   isCurrent: CommitteeFields_isCurrent
   updatedAt: CommitteeFields_updatedAt
@@ -33244,6 +33979,29 @@ type CommitteeFields_bio_Update {
 }
 
 type CommitteeFields_bio_Delete {
+  permission: Boolean!
+}
+
+type CommitteeFields_link {
+  create: CommitteeFields_link_Create
+  read: CommitteeFields_link_Read
+  update: CommitteeFields_link_Update
+  delete: CommitteeFields_link_Delete
+}
+
+type CommitteeFields_link_Create {
+  permission: Boolean!
+}
+
+type CommitteeFields_link_Read {
+  permission: Boolean!
+}
+
+type CommitteeFields_link_Update {
+  permission: Boolean!
+}
+
+type CommitteeFields_link_Delete {
   permission: Boolean!
 }
 
@@ -35099,6 +35857,229 @@ type WordleScoresDeleteAccess {
   where: JSONObject
 }
 
+type city_challenge_locationsAccess {
+  fields: CityChallengeLocationsFields
+  create: CityChallengeLocationsCreateAccess
+  read: CityChallengeLocationsReadAccess
+  update: CityChallengeLocationsUpdateAccess
+  delete: CityChallengeLocationsDeleteAccess
+}
+
+type CityChallengeLocationsFields {
+  name: CityChallengeLocationsFields_name
+  description: CityChallengeLocationsFields_description
+  latitude: CityChallengeLocationsFields_latitude
+  longitude: CityChallengeLocationsFields_longitude
+  discoveryRadius: CityChallengeLocationsFields_discoveryRadius
+  sortOrder: CityChallengeLocationsFields_sortOrder
+  updatedAt: CityChallengeLocationsFields_updatedAt
+  createdAt: CityChallengeLocationsFields_createdAt
+}
+
+type CityChallengeLocationsFields_name {
+  create: CityChallengeLocationsFields_name_Create
+  read: CityChallengeLocationsFields_name_Read
+  update: CityChallengeLocationsFields_name_Update
+  delete: CityChallengeLocationsFields_name_Delete
+}
+
+type CityChallengeLocationsFields_name_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_name_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_name_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_name_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_description {
+  create: CityChallengeLocationsFields_description_Create
+  read: CityChallengeLocationsFields_description_Read
+  update: CityChallengeLocationsFields_description_Update
+  delete: CityChallengeLocationsFields_description_Delete
+}
+
+type CityChallengeLocationsFields_description_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_description_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_description_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_description_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_latitude {
+  create: CityChallengeLocationsFields_latitude_Create
+  read: CityChallengeLocationsFields_latitude_Read
+  update: CityChallengeLocationsFields_latitude_Update
+  delete: CityChallengeLocationsFields_latitude_Delete
+}
+
+type CityChallengeLocationsFields_latitude_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_latitude_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_latitude_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_latitude_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_longitude {
+  create: CityChallengeLocationsFields_longitude_Create
+  read: CityChallengeLocationsFields_longitude_Read
+  update: CityChallengeLocationsFields_longitude_Update
+  delete: CityChallengeLocationsFields_longitude_Delete
+}
+
+type CityChallengeLocationsFields_longitude_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_longitude_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_longitude_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_longitude_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_discoveryRadius {
+  create: CityChallengeLocationsFields_discoveryRadius_Create
+  read: CityChallengeLocationsFields_discoveryRadius_Read
+  update: CityChallengeLocationsFields_discoveryRadius_Update
+  delete: CityChallengeLocationsFields_discoveryRadius_Delete
+}
+
+type CityChallengeLocationsFields_discoveryRadius_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_discoveryRadius_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_discoveryRadius_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_discoveryRadius_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_sortOrder {
+  create: CityChallengeLocationsFields_sortOrder_Create
+  read: CityChallengeLocationsFields_sortOrder_Read
+  update: CityChallengeLocationsFields_sortOrder_Update
+  delete: CityChallengeLocationsFields_sortOrder_Delete
+}
+
+type CityChallengeLocationsFields_sortOrder_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_sortOrder_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_sortOrder_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_sortOrder_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_updatedAt {
+  create: CityChallengeLocationsFields_updatedAt_Create
+  read: CityChallengeLocationsFields_updatedAt_Read
+  update: CityChallengeLocationsFields_updatedAt_Update
+  delete: CityChallengeLocationsFields_updatedAt_Delete
+}
+
+type CityChallengeLocationsFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_createdAt {
+  create: CityChallengeLocationsFields_createdAt_Create
+  read: CityChallengeLocationsFields_createdAt_Read
+  update: CityChallengeLocationsFields_createdAt_Update
+  delete: CityChallengeLocationsFields_createdAt_Delete
+}
+
+type CityChallengeLocationsFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CityChallengeLocationsReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CityChallengeLocationsUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CityChallengeLocationsDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type redirectsAccess {
   fields: RedirectsFields
   create: RedirectsCreateAccess
@@ -36143,8 +37124,10 @@ type SettingsFields {
   postsPage: SettingsFields_postsPage
   projectsPage: SettingsFields_projectsPage
   jumpstartEnabled: SettingsFields_jumpstartEnabled
+  jumpstartLogo: SettingsFields_jumpstartLogo
   jumpstartHeading: SettingsFields_jumpstartHeading
   jumpstartSubtitle: SettingsFields_jumpstartSubtitle
+  jumpstartAboutTitle: SettingsFields_jumpstartAboutTitle
   jumpstartAbout: SettingsFields_jumpstartAbout
   updatedAt: SettingsFields_updatedAt
   createdAt: SettingsFields_createdAt
@@ -36357,6 +37340,29 @@ type SettingsFields_jumpstartEnabled_Delete {
   permission: Boolean!
 }
 
+type SettingsFields_jumpstartLogo {
+  create: SettingsFields_jumpstartLogo_Create
+  read: SettingsFields_jumpstartLogo_Read
+  update: SettingsFields_jumpstartLogo_Update
+  delete: SettingsFields_jumpstartLogo_Delete
+}
+
+type SettingsFields_jumpstartLogo_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartLogo_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartLogo_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartLogo_Delete {
+  permission: Boolean!
+}
+
 type SettingsFields_jumpstartHeading {
   create: SettingsFields_jumpstartHeading_Create
   read: SettingsFields_jumpstartHeading_Read
@@ -36400,6 +37406,29 @@ type SettingsFields_jumpstartSubtitle_Update {
 }
 
 type SettingsFields_jumpstartSubtitle_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartAboutTitle {
+  create: SettingsFields_jumpstartAboutTitle_Create
+  read: SettingsFields_jumpstartAboutTitle_Read
+  update: SettingsFields_jumpstartAboutTitle_Update
+  delete: SettingsFields_jumpstartAboutTitle_Delete
+}
+
+type SettingsFields_jumpstartAboutTitle_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartAboutTitle_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartAboutTitle_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartAboutTitle_Delete {
   permission: Boolean!
 }
 
@@ -37122,6 +38151,9 @@ type Mutation {
   createWordleScore(data: mutationWordleScoreInput!): WordleScore
   updateWordleScore(id: String!, autosave: Boolean, data: mutationWordleScoreUpdateInput!): WordleScore
   deleteWordleScore(id: String!): WordleScore
+  createCityChallengeLocation(data: mutationCityChallengeLocationInput!): CityChallengeLocation
+  updateCityChallengeLocation(id: String!, autosave: Boolean, data: mutationCityChallengeLocationUpdateInput!): CityChallengeLocation
+  deleteCityChallengeLocation(id: String!): CityChallengeLocation
   createRedirect(data: mutationRedirectInput!): Redirect
   updateRedirect(id: String!, autosave: Boolean, data: mutationRedirectUpdateInput!): Redirect
   deleteRedirect(id: String!): Redirect
@@ -37889,6 +38921,7 @@ input mutationVoteUpdateInput {
 }
 
 input mutationElectionResultInput {
+  showOnMainPage: Boolean
   election: String
   position: String
   electedNominee: String
@@ -37931,6 +38964,7 @@ enum ElectionResult__status_MutationInput {
 }
 
 input mutationElectionResultUpdateInput {
+  showOnMainPage: Boolean
   election: String
   position: String
   electedNominee: String
@@ -38201,6 +39235,7 @@ input mutationCommitteeInput {
   position: Committee_position_MutationInput
   positionRef: String
   bio: JSON
+  link: String
   logo: String
   isCurrent: Boolean
   updatedAt: String
@@ -38241,6 +39276,7 @@ input mutationCommitteeUpdateInput {
   position: CommitteeUpdate_position_MutationInput
   positionRef: String
   bio: JSON
+  link: String
   logo: String
   isCurrent: Boolean
   updatedAt: String
@@ -38480,6 +39516,28 @@ input mutationWordleScoreUpdate_AttemptsInput {
   id: String
 }
 
+input mutationCityChallengeLocationInput {
+  name: String!
+  description: String
+  latitude: Float!
+  longitude: Float!
+  discoveryRadius: Float
+  sortOrder: Float
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationCityChallengeLocationUpdateInput {
+  name: String
+  description: String
+  latitude: Float
+  longitude: Float
+  discoveryRadius: Float
+  sortOrder: Float
+  updatedAt: String
+  createdAt: String
+}
+
 input mutationRedirectInput {
   from: String!
   to: mutationRedirect_ToInput!
@@ -38650,8 +39708,10 @@ input mutationSettingsInput {
   postsPage: String
   projectsPage: String
   jumpstartEnabled: Boolean
+  jumpstartLogo: String
   jumpstartHeading: String
   jumpstartSubtitle: String
+  jumpstartAboutTitle: String
   jumpstartAbout: String
   updatedAt: String
   createdAt: String

@@ -21,25 +21,32 @@ export const RecoverPasswordForm: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>()
 
   const onSubmit = useCallback(async (data: FormData) => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/forgot-password`,
-      {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/forgot-password`,
+        {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      },
-    )
+      )
 
-    if (response.ok) {
-      setSuccess(true)
-      setError('')
-    } else {
+      if (response.ok) {
+        setSuccess(true)
+        setError('')
+        return
+      }
+
+      setError(
+        'There was a problem while attempting to send you a password reset email. Please try again.',
+      )
+    } catch {
       setError(
         'There was a problem while attempting to send you a password reset email. Please try again.',
       )
@@ -71,7 +78,8 @@ export const RecoverPasswordForm: React.FC = () => {
               <Button
                 type="submit"
                 appearance="primary"
-                label="Recover Password"
+                label={isSubmitting ? 'Sending...' : 'Recover Password'}
+                disabled={isSubmitting}
                 className={classes.submit}
               />
             </form>
