@@ -31,7 +31,8 @@ const formatTimeRange = (startDate: string, endTime?: string | null): string => 
 }
 
 export const JumpstartEventCard: React.FC<Props> = ({ event, index }) => {
-  const { name, date, endTime, location, description, mapsUrl, image, jumpstartCategory } = event
+  const { name, date, endTime, location, description, mapsUrl, link, image, jumpstartCategory } =
+    event
 
   const catKey = jumpstartCategory && CATEGORY_COLORS[jumpstartCategory] ? jumpstartCategory : null
   const catColor = catKey ? CATEGORY_COLORS[catKey] : 'var(--jumpstart-neon-magenta)'
@@ -54,20 +55,34 @@ export const JumpstartEventCard: React.FC<Props> = ({ event, index }) => {
         </div>
       )}
       <div className={classes.content}>
-        <span className={classes.time}>{timeRange}</span>
-        <h3 className={[classes.title, bungee.className].join(' ')}>{name}</h3>
+        <div className={classes.titleRow}>
+          <h3 className={[classes.title, bungee.className].join(' ')}>{name}</h3>
+          <span className={classes.time}>{timeRange}</span>
+        </div>
         {location && <p className={classes.location}>{location}</p>}
         {description && <p className={classes.description}>{description}</p>}
-        {mapsUrl && (
-          <a
-            href={mapsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={[classes.mapsButton, bungee.className].join(' ')}
-          >
-            GET ME THERE
-          </a>
-        )}
+        <div className={classes.actions}>
+          {mapsUrl && (
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={[classes.mapsButton, bungee.className].join(' ')}
+            >
+              GET ME THERE
+            </a>
+          )}
+          {link && link.startsWith('https://') && (
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={[classes.linkButton, bungee.className].join(' ')}
+            >
+              EVENT LINK
+            </a>
+          )}
+        </div>
       </div>
     </div>
   )
