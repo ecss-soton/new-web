@@ -1350,7 +1350,15 @@ export interface CityChallengeTeam {
   teamLead: string | User;
   members?: (string | User)[] | null;
   completedChallenges?: (string | CityChallengeLocation)[] | null;
-  discoveredAreas?: { lat: number; lng: number }[] | null;
+  discoveredAreas?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
