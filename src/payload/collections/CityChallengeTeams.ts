@@ -2,6 +2,7 @@ import type { CollectionConfig, PayloadRequest } from 'payload/types'
 
 import { admins } from '../access/admins'
 import { user } from '../access/user'
+import type { CityChallengeTeam } from '../payload-types'
 
 interface DiscoveredPoint {
   lat: number
@@ -22,7 +23,7 @@ function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
   return R * c
 }
 
-function isTeamMember(team: Record<string, unknown>, userId: string): boolean {
+function isTeamMember(team: CityChallengeTeam, userId: string): boolean {
   const leadId =
     typeof team.teamLead === 'object' && team.teamLead !== null
       ? (team.teamLead as { id: string }).id
@@ -39,7 +40,7 @@ function isTeamMember(team: Record<string, unknown>, userId: string): boolean {
   })
 }
 
-function isTeamLead(team: Record<string, unknown>, userId: string): boolean {
+function isTeamLead(team: CityChallengeTeam, userId: string): boolean {
   const leadId =
     typeof team.teamLead === 'object' && team.teamLead !== null
       ? (team.teamLead as { id: string }).id
