@@ -115,6 +115,10 @@ type Query {
   CityChallengeLocations(where: CityChallengeLocation_where, limit: Int, page: Int, sort: String): CityChallengeLocations
   countCityChallengeLocations(where: CityChallengeLocation_where): countCityChallengeLocations
   docAccessCityChallengeLocation(id: String!): city_challenge_locationsDocAccess
+  CityChallengeTeam(id: String!): CityChallengeTeam
+  CityChallengeTeams(where: CityChallengeTeam_where, limit: Int, page: Int, sort: String): CityChallengeTeams
+  countCityChallengeTeams(where: CityChallengeTeam_where): countCityChallengeTeams
+  docAccessCityChallengeTeam(id: String!): city_challenge_teamsDocAccess
   Redirect(id: String!): Redirect
   Redirects(where: Redirect_where, limit: Int, page: Int, sort: String): Redirects
   countRedirects(where: Redirect_where): countRedirects
@@ -23408,6 +23412,352 @@ type CityChallengeLocationsDeleteDocAccess {
   where: JSONObject
 }
 
+type CityChallengeTeam {
+  id: String
+  name: String!
+  teamLead: User!
+  members: [User!]
+  completedChallenges: [CityChallengeLocation!]
+  discoveredAreas: JSON
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+type CityChallengeTeams {
+  docs: [CityChallengeTeam]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input CityChallengeTeam_where {
+  name: CityChallengeTeam_name_operator
+  teamLead: CityChallengeTeam_teamLead_operator
+  members: CityChallengeTeam_members_operator
+  completedChallenges: CityChallengeTeam_completedChallenges_operator
+  discoveredAreas: CityChallengeTeam_discoveredAreas_operator
+  updatedAt: CityChallengeTeam_updatedAt_operator
+  createdAt: CityChallengeTeam_createdAt_operator
+  id: CityChallengeTeam_id_operator
+  AND: [CityChallengeTeam_where_and]
+  OR: [CityChallengeTeam_where_or]
+}
+
+input CityChallengeTeam_name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input CityChallengeTeam_teamLead_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+}
+
+input CityChallengeTeam_members_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input CityChallengeTeam_completedChallenges_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input CityChallengeTeam_discoveredAreas_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  within: JSON
+  intersects: JSON
+  exists: Boolean
+}
+
+input CityChallengeTeam_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input CityChallengeTeam_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input CityChallengeTeam_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input CityChallengeTeam_where_and {
+  name: CityChallengeTeam_name_operator
+  teamLead: CityChallengeTeam_teamLead_operator
+  members: CityChallengeTeam_members_operator
+  completedChallenges: CityChallengeTeam_completedChallenges_operator
+  discoveredAreas: CityChallengeTeam_discoveredAreas_operator
+  updatedAt: CityChallengeTeam_updatedAt_operator
+  createdAt: CityChallengeTeam_createdAt_operator
+  id: CityChallengeTeam_id_operator
+  AND: [CityChallengeTeam_where_and]
+  OR: [CityChallengeTeam_where_or]
+}
+
+input CityChallengeTeam_where_or {
+  name: CityChallengeTeam_name_operator
+  teamLead: CityChallengeTeam_teamLead_operator
+  members: CityChallengeTeam_members_operator
+  completedChallenges: CityChallengeTeam_completedChallenges_operator
+  discoveredAreas: CityChallengeTeam_discoveredAreas_operator
+  updatedAt: CityChallengeTeam_updatedAt_operator
+  createdAt: CityChallengeTeam_createdAt_operator
+  id: CityChallengeTeam_id_operator
+  AND: [CityChallengeTeam_where_and]
+  OR: [CityChallengeTeam_where_or]
+}
+
+type countCityChallengeTeams {
+  totalDocs: Int
+}
+
+type city_challenge_teamsDocAccess {
+  fields: CityChallengeTeamsDocAccessFields
+  create: CityChallengeTeamsCreateDocAccess
+  read: CityChallengeTeamsReadDocAccess
+  update: CityChallengeTeamsUpdateDocAccess
+  delete: CityChallengeTeamsDeleteDocAccess
+}
+
+type CityChallengeTeamsDocAccessFields {
+  name: CityChallengeTeamsDocAccessFields_name
+  teamLead: CityChallengeTeamsDocAccessFields_teamLead
+  members: CityChallengeTeamsDocAccessFields_members
+  completedChallenges: CityChallengeTeamsDocAccessFields_completedChallenges
+  discoveredAreas: CityChallengeTeamsDocAccessFields_discoveredAreas
+  updatedAt: CityChallengeTeamsDocAccessFields_updatedAt
+  createdAt: CityChallengeTeamsDocAccessFields_createdAt
+}
+
+type CityChallengeTeamsDocAccessFields_name {
+  create: CityChallengeTeamsDocAccessFields_name_Create
+  read: CityChallengeTeamsDocAccessFields_name_Read
+  update: CityChallengeTeamsDocAccessFields_name_Update
+  delete: CityChallengeTeamsDocAccessFields_name_Delete
+}
+
+type CityChallengeTeamsDocAccessFields_name_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_name_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_name_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_name_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_teamLead {
+  create: CityChallengeTeamsDocAccessFields_teamLead_Create
+  read: CityChallengeTeamsDocAccessFields_teamLead_Read
+  update: CityChallengeTeamsDocAccessFields_teamLead_Update
+  delete: CityChallengeTeamsDocAccessFields_teamLead_Delete
+}
+
+type CityChallengeTeamsDocAccessFields_teamLead_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_teamLead_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_teamLead_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_teamLead_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_members {
+  create: CityChallengeTeamsDocAccessFields_members_Create
+  read: CityChallengeTeamsDocAccessFields_members_Read
+  update: CityChallengeTeamsDocAccessFields_members_Update
+  delete: CityChallengeTeamsDocAccessFields_members_Delete
+}
+
+type CityChallengeTeamsDocAccessFields_members_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_members_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_members_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_members_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_completedChallenges {
+  create: CityChallengeTeamsDocAccessFields_completedChallenges_Create
+  read: CityChallengeTeamsDocAccessFields_completedChallenges_Read
+  update: CityChallengeTeamsDocAccessFields_completedChallenges_Update
+  delete: CityChallengeTeamsDocAccessFields_completedChallenges_Delete
+}
+
+type CityChallengeTeamsDocAccessFields_completedChallenges_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_completedChallenges_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_completedChallenges_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_completedChallenges_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_discoveredAreas {
+  create: CityChallengeTeamsDocAccessFields_discoveredAreas_Create
+  read: CityChallengeTeamsDocAccessFields_discoveredAreas_Read
+  update: CityChallengeTeamsDocAccessFields_discoveredAreas_Update
+  delete: CityChallengeTeamsDocAccessFields_discoveredAreas_Delete
+}
+
+type CityChallengeTeamsDocAccessFields_discoveredAreas_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_discoveredAreas_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_discoveredAreas_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_discoveredAreas_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_updatedAt {
+  create: CityChallengeTeamsDocAccessFields_updatedAt_Create
+  read: CityChallengeTeamsDocAccessFields_updatedAt_Read
+  update: CityChallengeTeamsDocAccessFields_updatedAt_Update
+  delete: CityChallengeTeamsDocAccessFields_updatedAt_Delete
+}
+
+type CityChallengeTeamsDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_createdAt {
+  create: CityChallengeTeamsDocAccessFields_createdAt_Create
+  read: CityChallengeTeamsDocAccessFields_createdAt_Read
+  update: CityChallengeTeamsDocAccessFields_createdAt_Update
+  delete: CityChallengeTeamsDocAccessFields_createdAt_Delete
+}
+
+type CityChallengeTeamsDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CityChallengeTeamsReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CityChallengeTeamsUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CityChallengeTeamsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type Redirect {
   id: String
   from: String!
@@ -27272,6 +27622,7 @@ type Access {
   wordle_overrides: wordle_overridesAccess
   wordle_scores: wordle_scoresAccess
   city_challenge_locations: city_challenge_locationsAccess
+  city_challenge_teams: city_challenge_teamsAccess
   redirects: redirectsAccess
   forms: formsAccess
   form_submissions: form_submissionsAccess
@@ -36080,6 +36431,205 @@ type CityChallengeLocationsDeleteAccess {
   where: JSONObject
 }
 
+type city_challenge_teamsAccess {
+  fields: CityChallengeTeamsFields
+  create: CityChallengeTeamsCreateAccess
+  read: CityChallengeTeamsReadAccess
+  update: CityChallengeTeamsUpdateAccess
+  delete: CityChallengeTeamsDeleteAccess
+}
+
+type CityChallengeTeamsFields {
+  name: CityChallengeTeamsFields_name
+  teamLead: CityChallengeTeamsFields_teamLead
+  members: CityChallengeTeamsFields_members
+  completedChallenges: CityChallengeTeamsFields_completedChallenges
+  discoveredAreas: CityChallengeTeamsFields_discoveredAreas
+  updatedAt: CityChallengeTeamsFields_updatedAt
+  createdAt: CityChallengeTeamsFields_createdAt
+}
+
+type CityChallengeTeamsFields_name {
+  create: CityChallengeTeamsFields_name_Create
+  read: CityChallengeTeamsFields_name_Read
+  update: CityChallengeTeamsFields_name_Update
+  delete: CityChallengeTeamsFields_name_Delete
+}
+
+type CityChallengeTeamsFields_name_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_name_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_name_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_name_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_teamLead {
+  create: CityChallengeTeamsFields_teamLead_Create
+  read: CityChallengeTeamsFields_teamLead_Read
+  update: CityChallengeTeamsFields_teamLead_Update
+  delete: CityChallengeTeamsFields_teamLead_Delete
+}
+
+type CityChallengeTeamsFields_teamLead_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_teamLead_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_teamLead_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_teamLead_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_members {
+  create: CityChallengeTeamsFields_members_Create
+  read: CityChallengeTeamsFields_members_Read
+  update: CityChallengeTeamsFields_members_Update
+  delete: CityChallengeTeamsFields_members_Delete
+}
+
+type CityChallengeTeamsFields_members_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_members_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_members_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_members_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_completedChallenges {
+  create: CityChallengeTeamsFields_completedChallenges_Create
+  read: CityChallengeTeamsFields_completedChallenges_Read
+  update: CityChallengeTeamsFields_completedChallenges_Update
+  delete: CityChallengeTeamsFields_completedChallenges_Delete
+}
+
+type CityChallengeTeamsFields_completedChallenges_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_completedChallenges_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_completedChallenges_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_completedChallenges_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_discoveredAreas {
+  create: CityChallengeTeamsFields_discoveredAreas_Create
+  read: CityChallengeTeamsFields_discoveredAreas_Read
+  update: CityChallengeTeamsFields_discoveredAreas_Update
+  delete: CityChallengeTeamsFields_discoveredAreas_Delete
+}
+
+type CityChallengeTeamsFields_discoveredAreas_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_discoveredAreas_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_discoveredAreas_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_discoveredAreas_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_updatedAt {
+  create: CityChallengeTeamsFields_updatedAt_Create
+  read: CityChallengeTeamsFields_updatedAt_Read
+  update: CityChallengeTeamsFields_updatedAt_Update
+  delete: CityChallengeTeamsFields_updatedAt_Delete
+}
+
+type CityChallengeTeamsFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_createdAt {
+  create: CityChallengeTeamsFields_createdAt_Create
+  read: CityChallengeTeamsFields_createdAt_Read
+  update: CityChallengeTeamsFields_createdAt_Update
+  delete: CityChallengeTeamsFields_createdAt_Delete
+}
+
+type CityChallengeTeamsFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CityChallengeTeamsReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CityChallengeTeamsUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type CityChallengeTeamsDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type redirectsAccess {
   fields: RedirectsFields
   create: RedirectsCreateAccess
@@ -38154,6 +38704,9 @@ type Mutation {
   createCityChallengeLocation(data: mutationCityChallengeLocationInput!): CityChallengeLocation
   updateCityChallengeLocation(id: String!, autosave: Boolean, data: mutationCityChallengeLocationUpdateInput!): CityChallengeLocation
   deleteCityChallengeLocation(id: String!): CityChallengeLocation
+  createCityChallengeTeam(data: mutationCityChallengeTeamInput!): CityChallengeTeam
+  updateCityChallengeTeam(id: String!, autosave: Boolean, data: mutationCityChallengeTeamUpdateInput!): CityChallengeTeam
+  deleteCityChallengeTeam(id: String!): CityChallengeTeam
   createRedirect(data: mutationRedirectInput!): Redirect
   updateRedirect(id: String!, autosave: Boolean, data: mutationRedirectUpdateInput!): Redirect
   deleteRedirect(id: String!): Redirect
@@ -39534,6 +40087,26 @@ input mutationCityChallengeLocationUpdateInput {
   longitude: Float
   discoveryRadius: Float
   sortOrder: Float
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationCityChallengeTeamInput {
+  name: String!
+  teamLead: String
+  members: [String]
+  completedChallenges: [String]
+  discoveredAreas: JSON
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationCityChallengeTeamUpdateInput {
+  name: String
+  teamLead: String
+  members: [String]
+  completedChallenges: [String]
+  discoveredAreas: JSON
   updatedAt: String
   createdAt: String
 }

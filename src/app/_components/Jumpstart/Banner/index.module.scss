@@ -5,16 +5,16 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 12px var(--gutter-h);
+  padding: 6px var(--gutter-h);
   background: var(--jumpstart-bg);
   border-bottom: 1px solid var(--jumpstart-card-border);
   color: var(--jumpstart-muted);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 400;
 
   @include small-break {
-    padding: 10px 16px;
-    font-size: 12px;
+    padding: 5px 16px;
+    font-size: 11px;
   }
 }
 
@@ -51,8 +51,8 @@
 
 .link {
   color: var(--jumpstart-muted);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 400;
   text-decoration: none;
   transition: color 0.2s ease;
   white-space: nowrap;

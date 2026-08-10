@@ -46,7 +46,7 @@
 }
 
 .timelineDotJumpstart {
-  background-color: var(--theme-primary);
+  background-color: var(--ecss-red);
 }
 
 .timelineDotNext {
@@ -88,18 +88,18 @@
 }
 
 .contentCardJumpstart {
-  border: 2px solid var(--theme-primary);
+  border: 2px solid var(--ecss-red);
 }
 
 .contentCardNext {
-  border: 2px solid var(--theme-primary);
+  border: 2px solid var(--ecss-red);
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 /* Badge row — badges are inside cardBody so they sit above text */
 .nextEventBadge {
   display: inline-block;
-  background-color: var(--theme-primary);
+  background-color: var(--ecss-red);
   color: #fff;
   padding: 4px 12px;
   border-radius: 12px;
@@ -112,8 +112,8 @@
 
 .jumpstartBadge {
   display: inline-block;
-  background-color: var(--theme-primary);
-  color: var(--theme-bg);
+  background-color: var(--ecss-red);
+  color: #fff;
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 11px;
@@ -229,7 +229,7 @@
 
 .daysLabel {
   display: inline-block;
-  background-color: var(--theme-primary);
+  background-color: var(--ecss-red);
   color: #fff;
   padding: 2px 4px;
   border-radius: 8px;

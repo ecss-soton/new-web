@@ -15,10 +15,8 @@ export const JumpstartBanner: React.FC = () => {
   return (
     <div className={[classes.banner, inter.className].join(' ')}>
       <div className={classes.content}>
-        <span className={classes.label}>Jumpstart Week</span>
-        <span className={classes.divider} />
         <Link href="/home" className={classes.link}>
-          View the regular site →
+          View regular site →
         </Link>
       </div>
       <button

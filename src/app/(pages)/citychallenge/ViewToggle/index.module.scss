@@ -1,0 +1,70 @@
+@import '../../../_css/common';
+
+.toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32px;
+  gap: 0;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 700;
+  border: 2px solid var(--jumpstart-card-border);
+  background: var(--jumpstart-card);
+  color: var(--jumpstart-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+
+  &:first-child {
+    border-radius: 40px 6px 6px 40px;
+    margin-right: -1px;
+  }
+
+  &:last-child {
+    border-radius: 6px 40px 40px 6px;
+  }
+
+  &:hover:not(.active) {
+    border-color: var(--jumpstart-neon-cyan);
+    color: var(--jumpstart-neon-cyan);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--jumpstart-neon-cyan);
+    outline-offset: 2px;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  @include small-break {
+    padding: 10px 20px;
+    font-size: 13px;
+    gap: 6px;
+  }
+}
+
+.active {
+  background: var(--jumpstart-neon-magenta);
+  border-color: var(--jumpstart-neon-magenta);
+  color: #000;
+  box-shadow:
+    0 0 12px var(--jumpstart-neon-magenta),
+    4px 4px 0 #000;
+  z-index: 2;
+
+  &:hover {
+    background: var(--jumpstart-neon-magenta);
+    border-color: var(--jumpstart-neon-magenta);
+    color: #000;
+  }
+}

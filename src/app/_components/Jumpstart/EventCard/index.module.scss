@@ -83,24 +83,28 @@
   }
 }
 
-.time {
-  display: inline-block;
-  align-self: flex-start;
-  font-size: 12px;
-  font-weight: 700;
-  color: #000;
-  background: var(--card-cat);
-  padding: 4px 12px;
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
   margin-bottom: 10px;
-  border: 2px solid #000;
-  box-shadow: 3px 3px 0 #000;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
 
   @include small-break {
-    font-size: 11px;
-    padding: 3px 10px;
-    box-shadow: 2px 2px 0 #000;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+.time {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--jumpstart-muted);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  @include small-break {
+    font-size: 12px;
   }
 }
 
@@ -109,7 +113,7 @@
   font-weight: 400;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  margin: 0 0 10px 0;
+  margin: 0;
   color: var(--jumpstart-text);
   line-height: 1.2;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
@@ -144,6 +148,13 @@
   flex: 1;
 }
 
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .mapsButton {
   align-self: flex-start;
   display: inline-flex;
@@ -165,6 +176,37 @@
   &:hover {
     transform: translateY(-2px);
     box-shadow: 6px 6px 0 #000;
+  }
+
+  @include small-break {
+    font-size: 12px;
+    padding: 6px 14px;
+    box-shadow: 3px 3px 0 #000;
+  }
+}
+
+.linkButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: var(--jumpstart-text);
+  background: transparent;
+  border: 2px solid var(--jumpstart-card-border);
+  box-shadow: 4px 4px 0 #000;
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 6px 6px 0 #000;
+    border-color: var(--card-cat);
   }
 
   @include small-break {
