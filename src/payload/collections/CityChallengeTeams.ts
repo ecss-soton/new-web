@@ -30,7 +30,7 @@ function isTeamMember(team: Record<string, unknown>, userId: string): boolean {
 
   if (leadId === userId) return true
 
-  const members = team.members as (string | { id: string })[] | undefined
+  const members = team.members as Array<string | { id: string }> | undefined
   if (!members) return false
 
   return members.some(m => {
@@ -171,7 +171,7 @@ const CityChallengeTeams: CollectionConfig = {
           })
 
           return res.status(200).json({ discoveredAreas: updated, added: true })
-        } catch (err) {
+        } catch (err: unknown) {
           return res.status(500).json({ error: 'Internal server error' })
         }
       },
@@ -208,10 +208,9 @@ const CityChallengeTeams: CollectionConfig = {
             return res.status(400).json({ error: 'Missing locationId' })
           }
 
-          const current: string[] = Array.isArray(team.completedChallenges)
-            ? team.completedChallenges.map((c: string | { id: string }) =>
-                typeof c === 'object' ? c.id : c,
-              )
+          const raw = team.completedChallenges as Array<string | { id: string }>
+          const current: string[] = Array.isArray(raw)
+            ? raw.map(c => (typeof c === 'object' ? c.id : c))
             : []
 
           let updated: string[]
@@ -229,7 +228,7 @@ const CityChallengeTeams: CollectionConfig = {
           })
 
           return res.status(200).json({ completedChallenges: updated })
-        } catch (err) {
+        } catch (err: unknown) {
           return res.status(500).json({ error: 'Internal server error' })
         }
       },
@@ -323,7 +322,7 @@ const CityChallengeTeams: CollectionConfig = {
           })
 
           return res.status(200).json({ members: updated })
-        } catch (err) {
+        } catch (err: unknown) {
           return res.status(500).json({ error: 'Internal server error' })
         }
       },

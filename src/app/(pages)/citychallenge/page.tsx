@@ -5,11 +5,11 @@ import nextDynamic from 'next/dynamic'
 import type { CityChallengeLocation, CityChallengeTeam, User } from '../../../payload/payload-types'
 import { getMeUser } from '../../_utilities/getMeUser'
 import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
+import { ChallengeList } from './ChallengeList'
+import { NoTeamMessage } from './NoTeamMessage'
+import { TeamPanel } from './TeamPanel'
 
 import wrapperClasses from '../../_components/Jumpstart/pageWrapper.module.scss'
-import { NoTeamMessage } from './NoTeamMessage'
-import { ChallengeList } from './ChallengeList'
-import { TeamPanel } from './TeamPanel'
 
 const CityChallengeViewToggle = nextDynamic(
   () => import('./ViewToggle').then(mod => mod.CityChallengeViewToggle),

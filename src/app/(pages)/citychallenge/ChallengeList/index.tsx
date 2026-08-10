@@ -92,7 +92,9 @@ export const ChallengeList: React.FC<Props> = ({
                       ].join(' ')}
                       onClick={() => toggleComplete(location.id)}
                       disabled={isLoading}
-                      aria-label={`Mark "${location.name}" as ${isCompleted ? 'incomplete' : 'complete'}`}
+                      aria-label={`Mark "${location.name}" as ${
+                        isCompleted ? 'incomplete' : 'complete'
+                      }`}
                     >
                       {isCompleted && (
                         <svg
