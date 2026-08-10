@@ -33,6 +33,7 @@ export interface Config {
     'wordle-overrides': WordleOverride;
     'wordle-scores': WordleScore;
     'city-challenge-locations': CityChallengeLocation;
+    'city-challenge-teams': CityChallengeTeam;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -1336,6 +1337,20 @@ export interface CityChallengeLocation {
   longitude: number;
   discoveryRadius?: number | null;
   sortOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "city-challenge-teams".
+ */
+export interface CityChallengeTeam {
+  id: string;
+  name: string;
+  teamLead: string | User;
+  members?: (string | User)[] | null;
+  completedChallenges?: (string | CityChallengeLocation)[] | null;
+  discoveredAreas?: { lat: number; lng: number }[] | null;
   updatedAt: string;
   createdAt: string;
 }

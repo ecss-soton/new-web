@@ -16,6 +16,7 @@ import { OAuthButton, oAuthPlugin } from 'payload-plugin-oauth'
 import { BookingEvents } from './collections/BookingEvents'
 import Categories from './collections/Categories'
 import CityChallengeLocations from './collections/CityChallengeLocations'
+import CityChallengeTeams from './collections/CityChallengeTeams'
 import Comments from './collections/Comments'
 import Committee from './collections/Committee'
 import DiscordAnnouncements from './collections/DiscordAnnouncements'
@@ -149,6 +150,7 @@ export default buildConfig({
     WordleOverrides,
     WordleScores,
     CityChallengeLocations,
+    CityChallengeTeams,
   ],
   globals: [Settings, Header, Footer],
   typescript: {

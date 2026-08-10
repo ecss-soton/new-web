@@ -1,0 +1,203 @@
+@import '../../../_css/common';
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.progress {
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  @include small-break {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+}
+
+.progressText {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--jumpstart-neon-lime);
+  white-space: nowrap;
+}
+
+.progressBar {
+  flex: 1;
+  height: 8px;
+  background: var(--jumpstart-card);
+  border-radius: 4px;
+  border: 1px solid var(--jumpstart-card-border);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--jumpstart-neon-lime);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 8px var(--jumpstart-neon-lime);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  background: var(--jumpstart-card);
+  border: 2px solid var(--jumpstart-card-border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: var(--jumpstart-neon-cyan);
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+  }
+}
+
+.cardCompleted {
+  border-color: var(--jumpstart-neon-lime);
+  opacity: 0.75;
+
+  &:hover {
+    border-color: var(--jumpstart-neon-lime);
+  }
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.checkbox {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--jumpstart-card-border);
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  color: #000;
+  padding: 0;
+
+  &:hover {
+    border-color: var(--jumpstart-neon-lime);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--jumpstart-neon-cyan);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.checkboxChecked {
+  background: var(--jumpstart-neon-lime);
+  border-color: var(--jumpstart-neon-lime);
+}
+
+.statusDot {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--jumpstart-card-border);
+  border: 2px solid var(--jumpstart-card-border);
+}
+
+.statusDotComplete {
+  background: var(--jumpstart-neon-lime);
+  border-color: var(--jumpstart-neon-lime);
+  box-shadow: 0 0 6px var(--jumpstart-neon-lime);
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--jumpstart-text);
+  margin: 0;
+
+  @include small-break {
+    font-size: 14px;
+  }
+}
+
+.cardDescription {
+  font-size: 14px;
+  color: var(--jumpstart-muted);
+  line-height: 1.5;
+  margin: 0;
+  padding-left: 36px;
+
+  @include small-break {
+    padding-left: 24px;
+    font-size: 13px;
+  }
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-left: 36px;
+
+  @include small-break {
+    padding-left: 24px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+
+.coords {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--jumpstart-muted);
+  opacity: 0.7;
+}
+
+.mapsLink {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--jumpstart-neon-cyan);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--jumpstart-neon-cyan);
+    outline-offset: 2px;
+  }
+}
+
+.empty {
+  text-align: center;
+  font-size: 15px;
+  color: var(--jumpstart-muted);
+  padding: 60px 0;
+}

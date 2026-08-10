@@ -10,7 +10,13 @@ import 'leaflet/dist/leaflet.css'
 import classes from './index.module.scss'
 
 const SOUTHAMPTON: L.LatLngTuple = [50.935, -1.396]
-const STORAGE_KEY = 'citychallenge-discovered'
+const DISCOVERY_RADIUS = 50
+const THROTTLE_MS = 10000
+
+interface DiscoveredPoint {
+  lat: number
+  lng: number
+}
 
 function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371000
@@ -26,39 +32,29 @@ function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
   return R * c
 }
 
-function loadDiscoveredIds(): Set<string> {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) {
-      const parsed = JSON.parse(raw)
-      if (Array.isArray(parsed)) return new Set(parsed)
-    }
-  } catch {
-    // corrupt localStorage — start fresh
-  }
-  return new Set()
+function isNovelPoint(point: DiscoveredPoint, existing: DiscoveredPoint[]): boolean {
+  return !existing.some(
+    p => haversineDistance(point.lat, point.lng, p.lat, p.lng) < DISCOVERY_RADIUS,
+  )
 }
 
-function saveDiscoveredIds(ids: Set<string>): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([...ids]))
-  } catch {
-    // quota exceeded or unavailable
-  }
-}
-
-function createMarkerIcon(location: CityChallengeLocation, index: number): L.DivIcon {
+function createMarkerIcon(
+  location: CityChallengeLocation,
+  index: number,
+  isCompleted: boolean,
+): L.DivIcon {
   const n = index + 1
+  const completedClass = isCompleted ? classes.markerCompleted : ''
   return L.divIcon({
     className: classes.marker,
-    html: `<div class="${classes.markerInner}"><span class="${classes.markerNumber}">${n}</span></div>`,
+    html: `<div class="${classes.markerInner} ${completedClass}"><span class="${classes.markerNumber}">${n}</span></div>`,
     iconSize: [36, 36],
     iconAnchor: [18, 36],
     popupAnchor: [0, -18],
   })
 }
 
-function createPopupContent(location: CityChallengeLocation): HTMLDivElement {
+function createPopupContent(location: CityChallengeLocation, isCompleted: boolean): HTMLDivElement {
   const popup = document.createElement('div')
   popup.className = classes.popup
 
@@ -66,6 +62,13 @@ function createPopupContent(location: CityChallengeLocation): HTMLDivElement {
   title.className = classes.popupTitle
   title.textContent = location.name
   popup.append(title)
+
+  if (isCompleted) {
+    const badge = document.createElement('span')
+    badge.className = classes.popupBadge
+    badge.textContent = 'Completed'
+    popup.append(badge)
+  }
 
   if (location.description) {
     const desc = document.createElement('span')
@@ -80,29 +83,37 @@ function createPopupContent(location: CityChallengeLocation): HTMLDivElement {
 type Props = {
   locations: CityChallengeLocation[]
   isAdmin?: boolean
+  teamId: string
+  token: string
+  discoveredAreas: DiscoveredPoint[]
+  completedChallenges: string[]
 }
 
-export const CityChallengeMap: React.FC<Props> = ({ locations, isAdmin }) => {
+export const CityChallengeMap: React.FC<Props> = ({
+  locations,
+  isAdmin,
+  teamId,
+  token,
+  discoveredAreas: initialDiscovered,
+  completedChallenges,
+}) => {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const markersRef = useRef<Map<string, L.Marker>>(new Map())
+  const lastPostRef = useRef<number>(0)
 
   const [userPosition, setUserPosition] = useState<GeolocationPosition | null>(null)
   const [geoError, setGeoError] = useState<string | null>(null)
-  const [discoveredIds, setDiscoveredIds] = useState<Set<string>>(() => loadDiscoveredIds())
+  const [discoveredAreas, setDiscoveredAreas] = useState<DiscoveredPoint[]>(initialDiscovered)
   const [copied, setCopied] = useState(false)
   const [mockLat, setMockLat] = useState('50.935')
   const [mockLng, setMockLng] = useState('-1.396')
   const [mockEnabled, setMockEnabled] = useState(false)
   const [showMockPanel, setShowMockPanel] = useState(false)
 
-  const discoveredSorted = useMemo(() => {
-    return locations.filter(l => l.id && discoveredIds.has(l.id))
-  }, [locations, discoveredIds])
-
-  const discoveredSortedRef = useRef(discoveredSorted)
-  discoveredSortedRef.current = discoveredSorted
+  const discoveredAreasRef = useRef(discoveredAreas)
+  discoveredAreasRef.current = discoveredAreas
 
   const drawCanvas = useCallback(() => {
     const map = mapRef.current
@@ -148,38 +159,55 @@ export const CityChallengeMap: React.FC<Props> = ({ locations, isAdmin }) => {
     ctx.textAlign = 'center'
     ctx.fillText('Move around to reveal hidden locations', canvas.width / 2, canvas.height - 24)
 
-    const discovered = discoveredSortedRef.current
-    discovered.forEach(location => {
-      if (!location.latitude || !location.longitude) return
-      const point = map.latLngToContainerPoint([location.latitude, location.longitude])
+    const areas = discoveredAreasRef.current
+    areas.forEach(point => {
+      const latlng = map.latLngToContainerPoint([point.lat, point.lng])
       const radius = 80
       ctx.save()
       ctx.globalCompositeOperation = 'destination-out'
       ctx.beginPath()
-      ctx.arc(point.x, point.y, radius, 0, Math.PI * 2)
+      ctx.arc(latlng.x, latlng.y, radius, 0, Math.PI * 2)
       ctx.fill()
       ctx.restore()
-
-      ctx.beginPath()
-      ctx.arc(point.x, point.y, 4, 0, Math.PI * 2)
-      ctx.fillStyle = 'var(--jumpstart-neon-lime)'
-      ctx.fill()
     })
   }, [])
 
   const drawCanvasRef = useRef(drawCanvas)
   drawCanvasRef.current = drawCanvas
 
-  const discoverLocation = useCallback((locationId: string) => {
-    setDiscoveredIds(prev => {
-      if (prev.has(locationId)) return prev
-      const next = new Set(prev)
-      next.add(locationId)
-      saveDiscoveredIds(next)
-      return next
-    })
-  }, [])
+  const postDiscovery = useCallback(
+    async (lat: number, lng: number) => {
+      const now = Date.now()
+      if (now - lastPostRef.current < THROTTLE_MS) return
+      lastPostRef.current = now
 
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/city-challenge-teams/${teamId}/discover`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `JWT ${token}`,
+            },
+            body: JSON.stringify({ lat, lng }),
+          },
+        )
+
+        if (res.ok) {
+          const data = await res.json()
+          if (data.added && data.discoveredAreas) {
+            setDiscoveredAreas(data.discoveredAreas)
+          }
+        }
+      } catch {
+        // network error — silent
+      }
+    },
+    [teamId, token],
+  )
+
+  // Initialize map
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return
 
@@ -217,6 +245,7 @@ export const CityChallengeMap: React.FC<Props> = ({ locations, isAdmin }) => {
     }
   }, [])
 
+  // Render markers for all locations
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
@@ -224,16 +253,19 @@ export const CityChallengeMap: React.FC<Props> = ({ locations, isAdmin }) => {
     markersRef.current.forEach(marker => map.removeLayer(marker))
     markersRef.current.clear()
 
-    discoveredSorted.forEach((location, index) => {
+    const sorted = [...locations].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+
+    sorted.forEach((location, index) => {
       if (!location.id || !location.latitude || !location.longitude) return
 
+      const isCompleted = completedChallenges.includes(location.id)
       const latLng: L.LatLngTuple = [location.latitude, location.longitude]
       const marker = L.marker(latLng, {
-        icon: createMarkerIcon(location, index),
+        icon: createMarkerIcon(location, index, isCompleted),
         title: `${index + 1}. ${location.name}`,
       })
         .addTo(map)
-        .bindPopup(createPopupContent(location), {
+        .bindPopup(createPopupContent(location, isCompleted), {
           className: classes.popupContainer,
         })
 
@@ -241,8 +273,14 @@ export const CityChallengeMap: React.FC<Props> = ({ locations, isAdmin }) => {
     })
 
     drawCanvasRef.current()
-  }, [discoveredSorted])
+  }, [locations, completedChallenges])
 
+  // Redraw canvas when discovered areas change
+  useEffect(() => {
+    drawCanvasRef.current()
+  }, [discoveredAreas])
+
+  // Geolocation watching
   useEffect(() => {
     let watchId: number | null = null
 
@@ -272,6 +310,7 @@ export const CityChallengeMap: React.FC<Props> = ({ locations, isAdmin }) => {
     }
   }, [mockEnabled])
 
+  // Mock location
   useEffect(() => {
     if (mockEnabled) {
       const parsedLat = parseFloat(mockLat)
@@ -288,29 +327,24 @@ export const CityChallengeMap: React.FC<Props> = ({ locations, isAdmin }) => {
             speed: null,
           },
           timestamp: Date.now(),
-        })
+        } as GeolocationPosition)
         setGeoError(null)
       }
     }
   }, [mockEnabled, mockLat, mockLng])
 
+  // Discovery logic — event-driven with client-side dedup
   useEffect(() => {
     if (!userPosition) return
 
     const { latitude, longitude } = userPosition.coords
+    const point: DiscoveredPoint = { lat: latitude, lng: longitude }
 
-    locations.forEach(location => {
-      if (!location.id || discoveredIds.has(location.id)) return
-      if (!location.latitude || !location.longitude) return
-
-      const distance = haversineDistance(latitude, longitude, location.latitude, location.longitude)
-      const radius = location.discoveryRadius ?? 50
-
-      if (distance <= radius) {
-        discoverLocation(location.id)
-      }
-    })
-  }, [userPosition, locations, discoveredIds, discoverLocation])
+    if (isNovelPoint(point, discoveredAreasRef.current)) {
+      setDiscoveredAreas(prev => [...prev, point])
+      postDiscovery(latitude, longitude)
+    }
+  }, [userPosition, postDiscovery])
 
   const copyLink = async () => {
     try {
@@ -322,6 +356,17 @@ export const CityChallengeMap: React.FC<Props> = ({ locations, isAdmin }) => {
     }
   }
 
+  const discoveredCount = useMemo(() => {
+    return locations.filter(loc => {
+      if (!loc.latitude || !loc.longitude) return false
+      return discoveredAreas.some(
+        p =>
+          haversineDistance(p.lat, p.lng, loc.latitude, loc.longitude) <=
+          (loc.discoveryRadius ?? 50),
+      )
+    }).length
+  }, [locations, discoveredAreas])
+
   const totalCount = locations.length
 
   return (
@@ -330,7 +375,7 @@ export const CityChallengeMap: React.FC<Props> = ({ locations, isAdmin }) => {
         <h1 className={classes.title}>City Challenge</h1>
         <div className={classes.stats}>
           <span className={classes.stat}>
-            Discovered: {discoveredIds.size} / {totalCount}
+            Discovered: {discoveredCount} / {totalCount}
           </span>
         </div>
         <div className={classes.actions}>
@@ -355,7 +400,7 @@ export const CityChallengeMap: React.FC<Props> = ({ locations, isAdmin }) => {
       </header>
       <p className={classes.intro}>
         Explore Southampton to uncover hidden locations. Move around in the real world to reveal
-        parts of the map.
+        parts of the map — your whole team shares the discoveries!
       </p>
       <div className={classes.mapContainer}>
         {locations.length === 0 ? (
