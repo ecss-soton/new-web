@@ -12,10 +12,9 @@ import classes from './index.module.scss'
 
 export const EventItem: React.FC<{
   event?: Event
-  isNextEvent?: boolean
   onEventClick?: (event: Event | null) => void // Kept for backwards compatibility but not really needed
-}> = ({ event, isNextEvent = false }) => {
-  const { name, date, location, description, link, isJumpstart, image } = event || {}
+}> = ({ event }) => {
+  const { name, date, location, description, link, image } = event || {}
   const [isExpanded, setIsExpanded] = useState(false)
 
   const localDate = date ? moment.utc(date).tz('Europe/London').format('YYYY-MM-DD HH:mm') : null
@@ -60,23 +59,8 @@ export const EventItem: React.FC<{
   return (
     <div className={[classes.itemWrapper, inter.className].join(' ')}>
       <div className={classes.timelineLine} />
-      <div
-        className={`${classes.timelineDot} ${isJumpstart ? classes.timelineDotJumpstart : ''} ${
-          isNextEvent ? classes.timelineDotNext : ''
-        }`}
-      />
-      <div
-        className={[
-          classes.contentCard,
-          isJumpstart ? classes.contentCardJumpstart : '',
-          isNextEvent ? classes.contentCardNext : '',
-        ]
-          .filter(Boolean)
-          .join(' ')}
-      >
-        {isNextEvent && <span className={classes.nextEventBadge}>Next Event</span>}
-        {isJumpstart && <span className={classes.jumpstartBadge}>Jumpstart Event</span>}
-
+      <div className={classes.timelineDot} />
+      <div className={classes.contentCard}>
         {imageUrl && (
           <div className={classes.imageWrapper}>
             <Image

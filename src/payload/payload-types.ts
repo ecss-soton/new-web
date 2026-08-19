@@ -1068,7 +1068,6 @@ export interface Committee {
         [k: string]: unknown;
       }[]
     | null;
-  link?: string | null;
   logo?: string | Media | null;
   isCurrent: boolean;
   updatedAt: string;
@@ -1590,6 +1589,14 @@ export interface Settings {
   jumpstartSubtitle?: string | null;
   jumpstartAboutTitle?: string | null;
   jumpstartAbout?: string | null;
+  jumpstartFaqTitle?: string | null;
+  jumpstartFaqs?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }

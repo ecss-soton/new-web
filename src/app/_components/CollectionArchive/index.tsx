@@ -299,7 +299,6 @@ export const CollectionArchive: React.FC<Props> = props => {
                 }
 
                 let lastMonthKey = ''
-                let isFirstEvent = true
                 const nodes: React.ReactNode[] = []
 
                 filteredEvents.forEach((result, index) => {
@@ -316,15 +315,12 @@ export const CollectionArchive: React.FC<Props> = props => {
                     )
                   }
 
-                  const isNext = isFirstEvent && !isJumpstart
-                  if (isFirstEvent) isFirstEvent = false
-
                   nodes.push(
                     <div
                       className={[classes.columnTimeline, classes.fadeIn].join(' ')}
                       key={`event-${index}`}
                     >
-                      <EventItem event={result} isNextEvent={isNext} />
+                      <EventItem event={result} />
                     </div>,
                   )
                 })

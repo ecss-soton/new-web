@@ -14,32 +14,14 @@ const poppins = Poppins({
   style: ['normal'],
 })
 
-const richTextHasContent = (bio: Committee['bio']): boolean => {
-  if (!bio || !Array.isArray(bio) || bio.length === 0) return false
-
-  const walk = (nodes: unknown[]): boolean =>
-    nodes.some(node => {
-      if (!node || typeof node !== 'object') return false
-      const n = node as { text?: unknown; children?: unknown[] }
-      if (typeof n.text === 'string' && n.text.trim().length > 0) return true
-      if (Array.isArray(n.children)) return walk(n.children)
-      return false
-    })
-
-  return walk(bio)
-}
-
 export const CommitteeItem: React.FC<{
   committee?: Committee
   onCommitteeClick: (committee: Committee | null) => void
 }> = ({ committee, onCommitteeClick }) => {
-  const { firstName, lastName, positionRef, position, logo, bio, link } = committee || {}
+  const { firstName, lastName, positionRef, position, logo } = committee || {}
 
   const positionThing = positionRef as Position
   const roleName = positionThing?.name || position
-  const hasBio = richTextHasContent(bio)
-  const externalLink =
-    !hasBio && typeof link === 'string' && /^https:\/\//i.test(link) ? link : null
 
   const content = (
     <>
@@ -59,20 +41,6 @@ export const CommitteeItem: React.FC<{
       </div>
     </>
   )
-
-  if (externalLink) {
-    return (
-      <a
-        className={classes.card}
-        href={externalLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`${firstName} ${lastName}${roleName ? `, ${roleName}` : ''}`}
-      >
-        {content}
-      </a>
-    )
-  }
 
   return (
     <button

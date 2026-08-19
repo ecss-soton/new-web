@@ -50,6 +50,11 @@ export const SETTINGS = `
     jumpstartSubtitle
     jumpstartAboutTitle
     jumpstartAbout
+    jumpstartFaqTitle
+    jumpstartFaqs {
+      question
+      answer
+    }
   }
 `
 

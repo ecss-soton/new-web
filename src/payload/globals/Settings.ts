@@ -152,6 +152,29 @@ export const Settings: GlobalConfig = {
                   'Short introduction displayed beside the Jumpstart timeline while Jumpstart Mode is enabled.',
               },
             },
+            {
+              name: 'jumpstartFaqTitle',
+              type: 'text',
+              label: 'FAQ Section Title',
+              defaultValue: 'FAQS',
+              admin: {
+                condition: (_, siblingData) => siblingData?.jumpstartEnabled,
+              },
+            },
+            {
+              name: 'jumpstartFaqs',
+              type: 'array',
+              label: 'FAQs',
+              admin: {
+                condition: (_, siblingData) => siblingData?.jumpstartEnabled,
+                description:
+                  'Frequently asked questions shown at the bottom of the Jumpstart page.',
+              },
+              fields: [
+                { name: 'question', type: 'text', required: true },
+                { name: 'answer', type: 'textarea', required: true },
+              ],
+            },
           ],
         },
       ],

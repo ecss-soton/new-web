@@ -156,13 +156,6 @@
   }
 }
 
-.jumpstartBg {
-  background-color: var(--theme-primary);
-  &:hover {
-    opacity: 0.8;
-  }
-}
-
 /* MOBILE FIX: Dim background behind the modal overlay */
 .backdrop {
   display: none;
