@@ -1068,7 +1068,6 @@ export interface Committee {
         [k: string]: unknown;
       }[]
     | null;
-  link?: string | null;
   logo?: string | Media | null;
   isCurrent: boolean;
   updatedAt: string;

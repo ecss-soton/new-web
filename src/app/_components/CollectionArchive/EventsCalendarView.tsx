@@ -96,7 +96,6 @@ export const EventsCalendarView: React.FC<{ events: Event[] }> = ({ events }) =>
                         key={eIdx}
                         className={`
                           ${classes.eventBadge} 
-                          ${evt.isJumpstart ? classes.jumpstartBg : ''} 
                           ${interested ? classes.interestedBg : ''}
                         `}
                         onClick={() => setSelectedEvent(evt)}

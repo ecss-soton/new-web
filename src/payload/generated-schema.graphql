@@ -2444,7 +2444,6 @@ type Committee {
   position: Committee_position
   positionRef: Position!
   bio(depth: Int): JSON
-  link: String
   logo(where: Committee_Logo_where): Media
   isCurrent: Boolean!
   updatedAt: DateTime
@@ -19129,7 +19128,6 @@ input Committee_where {
   position: Committee_position_operator
   positionRef: Committee_positionRef_operator
   bio: Committee_bio_operator
-  link: Committee_link_operator
   logo: Committee_logo_operator
   isCurrent: Committee_isCurrent_operator
   updatedAt: Committee_updatedAt_operator
@@ -19221,17 +19219,6 @@ input Committee_bio_operator {
   exists: Boolean
 }
 
-input Committee_link_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-  exists: Boolean
-}
-
 input Committee_logo_operator {
   equals: String
   not_equals: String
@@ -19272,7 +19259,6 @@ input Committee_where_and {
   position: Committee_position_operator
   positionRef: Committee_positionRef_operator
   bio: Committee_bio_operator
-  link: Committee_link_operator
   logo: Committee_logo_operator
   isCurrent: Committee_isCurrent_operator
   updatedAt: Committee_updatedAt_operator
@@ -19288,7 +19274,6 @@ input Committee_where_or {
   position: Committee_position_operator
   positionRef: Committee_positionRef_operator
   bio: Committee_bio_operator
-  link: Committee_link_operator
   logo: Committee_logo_operator
   isCurrent: Committee_isCurrent_operator
   updatedAt: Committee_updatedAt_operator
@@ -19316,7 +19301,6 @@ type CommitteeDocAccessFields {
   position: CommitteeDocAccessFields_position
   positionRef: CommitteeDocAccessFields_positionRef
   bio: CommitteeDocAccessFields_bio
-  link: CommitteeDocAccessFields_link
   logo: CommitteeDocAccessFields_logo
   isCurrent: CommitteeDocAccessFields_isCurrent
   updatedAt: CommitteeDocAccessFields_updatedAt
@@ -19458,29 +19442,6 @@ type CommitteeDocAccessFields_bio_Update {
 }
 
 type CommitteeDocAccessFields_bio_Delete {
-  permission: Boolean!
-}
-
-type CommitteeDocAccessFields_link {
-  create: CommitteeDocAccessFields_link_Create
-  read: CommitteeDocAccessFields_link_Read
-  update: CommitteeDocAccessFields_link_Update
-  delete: CommitteeDocAccessFields_link_Delete
-}
-
-type CommitteeDocAccessFields_link_Create {
-  permission: Boolean!
-}
-
-type CommitteeDocAccessFields_link_Read {
-  permission: Boolean!
-}
-
-type CommitteeDocAccessFields_link_Update {
-  permission: Boolean!
-}
-
-type CommitteeDocAccessFields_link_Delete {
   permission: Boolean!
 }
 
@@ -34320,7 +34281,6 @@ type CommitteeFields {
   position: CommitteeFields_position
   positionRef: CommitteeFields_positionRef
   bio: CommitteeFields_bio
-  link: CommitteeFields_link
   logo: CommitteeFields_logo
   isCurrent: CommitteeFields_isCurrent
   updatedAt: CommitteeFields_updatedAt
@@ -34462,29 +34422,6 @@ type CommitteeFields_bio_Update {
 }
 
 type CommitteeFields_bio_Delete {
-  permission: Boolean!
-}
-
-type CommitteeFields_link {
-  create: CommitteeFields_link_Create
-  read: CommitteeFields_link_Read
-  update: CommitteeFields_link_Update
-  delete: CommitteeFields_link_Delete
-}
-
-type CommitteeFields_link_Create {
-  permission: Boolean!
-}
-
-type CommitteeFields_link_Read {
-  permission: Boolean!
-}
-
-type CommitteeFields_link_Update {
-  permission: Boolean!
-}
-
-type CommitteeFields_link_Delete {
   permission: Boolean!
 }
 
@@ -40044,7 +39981,6 @@ input mutationCommitteeInput {
   position: Committee_position_MutationInput
   positionRef: String
   bio: JSON
-  link: String
   logo: String
   isCurrent: Boolean
   updatedAt: String
@@ -40085,7 +40021,6 @@ input mutationCommitteeUpdateInput {
   position: CommitteeUpdate_position_MutationInput
   positionRef: String
   bio: JSON
-  link: String
   logo: String
   isCurrent: Boolean
   updatedAt: String
