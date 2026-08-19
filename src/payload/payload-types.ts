@@ -1590,6 +1590,14 @@ export interface Settings {
   jumpstartSubtitle?: string | null;
   jumpstartAboutTitle?: string | null;
   jumpstartAbout?: string | null;
+  jumpstartFaqTitle?: string | null;
+  jumpstartFaqs?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }

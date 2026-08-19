@@ -7,6 +7,7 @@ import type { Event, Settings } from '../payload/payload-types'
 import { fetchDocs } from './_api/fetchDoc'
 import { fetchSettings } from './_api/fetchGlobals'
 import { JumpstartBanner } from './_components/Jumpstart/Banner'
+import { JumpstartFaq } from './_components/Jumpstart/Faq'
 import { JumpstartHero } from './_components/Jumpstart/JumpstartHero'
 import { JumpstartTimeline } from './_components/Jumpstart/Timeline'
 import PageTemplate, {
@@ -74,6 +75,8 @@ export default async function Page({ searchParams }: { searchParams: { view?: st
     const subtitle = settings.jumpstartSubtitle || undefined
     const aboutTitle = settings.jumpstartAboutTitle || undefined
     const aboutText = settings.jumpstartAbout || undefined
+    const faqTitle = settings.jumpstartFaqTitle || undefined
+    const faqs = settings.jumpstartFaqs || undefined
     const dateRange = computeDateRange(jumpstartEvents) || undefined
     const currentView = searchParams?.view || 'timeline'
 
@@ -96,6 +99,7 @@ export default async function Page({ searchParams }: { searchParams: { view?: st
           <div className={mapPageClasses.mapWrapper}>
             <JumpstartMapView events={jumpstartEvents} />
           </div>
+          <JumpstartFaq title={faqTitle} faqs={faqs} />
         </div>
       )
     }
@@ -111,6 +115,7 @@ export default async function Page({ searchParams }: { searchParams: { view?: st
           aboutTitle={aboutTitle}
           aboutText={aboutText}
         />
+        <JumpstartFaq title={faqTitle} faqs={faqs} />
       </div>
     )
   }

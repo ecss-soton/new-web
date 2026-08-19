@@ -25619,6 +25619,8 @@ type Settings {
   jumpstartSubtitle: String
   jumpstartAboutTitle: String
   jumpstartAbout: String
+  jumpstartFaqTitle: String
+  jumpstartFaqs: [Settings_JumpstartFaqs!]
   updatedAt: DateTime
   createdAt: DateTime
 }
@@ -26375,6 +26377,12 @@ input Settings_JumpstartLogo_where_or {
   OR: [Settings_JumpstartLogo_where_or]
 }
 
+type Settings_JumpstartFaqs {
+  question: String
+  answer: String
+  id: String
+}
+
 type settingsDocAccess {
   fields: SettingsDocAccessFields
   read: SettingsReadDocAccess
@@ -26396,6 +26404,8 @@ type SettingsDocAccessFields {
   jumpstartSubtitle: SettingsDocAccessFields_jumpstartSubtitle
   jumpstartAboutTitle: SettingsDocAccessFields_jumpstartAboutTitle
   jumpstartAbout: SettingsDocAccessFields_jumpstartAbout
+  jumpstartFaqTitle: SettingsDocAccessFields_jumpstartFaqTitle
+  jumpstartFaqs: SettingsDocAccessFields_jumpstartFaqs
   updatedAt: SettingsDocAccessFields_updatedAt
   createdAt: SettingsDocAccessFields_createdAt
 }
@@ -26719,6 +26729,128 @@ type SettingsDocAccessFields_jumpstartAbout_Update {
 }
 
 type SettingsDocAccessFields_jumpstartAbout_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqTitle {
+  create: SettingsDocAccessFields_jumpstartFaqTitle_Create
+  read: SettingsDocAccessFields_jumpstartFaqTitle_Read
+  update: SettingsDocAccessFields_jumpstartFaqTitle_Update
+  delete: SettingsDocAccessFields_jumpstartFaqTitle_Delete
+}
+
+type SettingsDocAccessFields_jumpstartFaqTitle_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqTitle_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqTitle_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqTitle_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs {
+  create: SettingsDocAccessFields_jumpstartFaqs_Create
+  read: SettingsDocAccessFields_jumpstartFaqs_Read
+  update: SettingsDocAccessFields_jumpstartFaqs_Update
+  delete: SettingsDocAccessFields_jumpstartFaqs_Delete
+  fields: SettingsDocAccessFields_jumpstartFaqs_Fields
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_Fields {
+  question: SettingsDocAccessFields_jumpstartFaqs_question
+  answer: SettingsDocAccessFields_jumpstartFaqs_answer
+  id: SettingsDocAccessFields_jumpstartFaqs_id
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_question {
+  create: SettingsDocAccessFields_jumpstartFaqs_question_Create
+  read: SettingsDocAccessFields_jumpstartFaqs_question_Read
+  update: SettingsDocAccessFields_jumpstartFaqs_question_Update
+  delete: SettingsDocAccessFields_jumpstartFaqs_question_Delete
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_question_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_question_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_question_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_question_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_answer {
+  create: SettingsDocAccessFields_jumpstartFaqs_answer_Create
+  read: SettingsDocAccessFields_jumpstartFaqs_answer_Read
+  update: SettingsDocAccessFields_jumpstartFaqs_answer_Update
+  delete: SettingsDocAccessFields_jumpstartFaqs_answer_Delete
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_answer_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_answer_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_answer_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_answer_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_id {
+  create: SettingsDocAccessFields_jumpstartFaqs_id_Create
+  read: SettingsDocAccessFields_jumpstartFaqs_id_Read
+  update: SettingsDocAccessFields_jumpstartFaqs_id_Update
+  delete: SettingsDocAccessFields_jumpstartFaqs_id_Delete
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_id_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_id_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_id_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqs_id_Delete {
   permission: Boolean!
 }
 
@@ -37679,6 +37811,8 @@ type SettingsFields {
   jumpstartSubtitle: SettingsFields_jumpstartSubtitle
   jumpstartAboutTitle: SettingsFields_jumpstartAboutTitle
   jumpstartAbout: SettingsFields_jumpstartAbout
+  jumpstartFaqTitle: SettingsFields_jumpstartFaqTitle
+  jumpstartFaqs: SettingsFields_jumpstartFaqs
   updatedAt: SettingsFields_updatedAt
   createdAt: SettingsFields_createdAt
 }
@@ -38002,6 +38136,128 @@ type SettingsFields_jumpstartAbout_Update {
 }
 
 type SettingsFields_jumpstartAbout_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqTitle {
+  create: SettingsFields_jumpstartFaqTitle_Create
+  read: SettingsFields_jumpstartFaqTitle_Read
+  update: SettingsFields_jumpstartFaqTitle_Update
+  delete: SettingsFields_jumpstartFaqTitle_Delete
+}
+
+type SettingsFields_jumpstartFaqTitle_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqTitle_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqTitle_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqTitle_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs {
+  create: SettingsFields_jumpstartFaqs_Create
+  read: SettingsFields_jumpstartFaqs_Read
+  update: SettingsFields_jumpstartFaqs_Update
+  delete: SettingsFields_jumpstartFaqs_Delete
+  fields: SettingsFields_jumpstartFaqs_Fields
+}
+
+type SettingsFields_jumpstartFaqs_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_Fields {
+  question: SettingsFields_jumpstartFaqs_question
+  answer: SettingsFields_jumpstartFaqs_answer
+  id: SettingsFields_jumpstartFaqs_id
+}
+
+type SettingsFields_jumpstartFaqs_question {
+  create: SettingsFields_jumpstartFaqs_question_Create
+  read: SettingsFields_jumpstartFaqs_question_Read
+  update: SettingsFields_jumpstartFaqs_question_Update
+  delete: SettingsFields_jumpstartFaqs_question_Delete
+}
+
+type SettingsFields_jumpstartFaqs_question_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_question_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_question_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_question_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_answer {
+  create: SettingsFields_jumpstartFaqs_answer_Create
+  read: SettingsFields_jumpstartFaqs_answer_Read
+  update: SettingsFields_jumpstartFaqs_answer_Update
+  delete: SettingsFields_jumpstartFaqs_answer_Delete
+}
+
+type SettingsFields_jumpstartFaqs_answer_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_answer_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_answer_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_answer_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_id {
+  create: SettingsFields_jumpstartFaqs_id_Create
+  read: SettingsFields_jumpstartFaqs_id_Read
+  update: SettingsFields_jumpstartFaqs_id_Update
+  delete: SettingsFields_jumpstartFaqs_id_Delete
+}
+
+type SettingsFields_jumpstartFaqs_id_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_id_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_id_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqs_id_Delete {
   permission: Boolean!
 }
 
@@ -40286,8 +40542,16 @@ input mutationSettingsInput {
   jumpstartSubtitle: String
   jumpstartAboutTitle: String
   jumpstartAbout: String
+  jumpstartFaqTitle: String
+  jumpstartFaqs: [mutationSettings_JumpstartFaqsInput]
   updatedAt: String
   createdAt: String
+}
+
+input mutationSettings_JumpstartFaqsInput {
+  question: String!
+  answer: String!
+  id: String
 }
 
 input mutationHeaderInput {
