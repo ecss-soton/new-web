@@ -2,8 +2,7 @@ import React from 'react'
 import moment from 'moment-timezone'
 
 import type { Event } from '../../../../payload/payload-types'
-import { rubikMono } from '../../../_utilities/font'
-import { AboutSidebar } from '../AboutSidebar'
+import { bungee, rubikMono } from '../../../_utilities/font'
 import { JumpstartEventCard } from '../EventCard'
 import { JumpstartViewToggle } from '../ViewToggle'
 
@@ -13,8 +12,7 @@ type Props = {
   events: Event[]
   heading?: string | null
   subtitle?: string | null
-  aboutTitle?: string | null
-  aboutText?: string | null
+  faqJumpLabel?: string | null
 }
 
 const TIMEZONE = 'Europe/London'
@@ -44,13 +42,7 @@ const getSortedDateKeys = (groups: Map<string, Event[]>): string[] => {
   return Array.from(groups.keys()).sort()
 }
 
-export const JumpstartTimeline: React.FC<Props> = ({
-  events,
-  heading,
-  subtitle,
-  aboutTitle,
-  aboutText,
-}) => {
+export const JumpstartTimeline: React.FC<Props> = ({ events, heading, subtitle, faqJumpLabel }) => {
   const groups = groupByDate(events)
   const sortedKeys = getSortedDateKeys(groups)
 
@@ -64,7 +56,9 @@ export const JumpstartTimeline: React.FC<Props> = ({
       <JumpstartViewToggle />
 
       <div className={classes.grid}>
-        <AboutSidebar title={aboutTitle} aboutText={aboutText} />
+        <a className={[classes.jumpToFaq, bungee.className].join(' ')} href="#faqs">
+          {faqJumpLabel || 'Questions?'}
+        </a>
 
         <div className={classes.timeline}>
           {sortedKeys.map(dateKey => {

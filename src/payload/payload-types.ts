@@ -1587,9 +1587,8 @@ export interface Settings {
   jumpstartLogo?: string | Media | null;
   jumpstartHeading?: string | null;
   jumpstartSubtitle?: string | null;
-  jumpstartAboutTitle?: string | null;
-  jumpstartAbout?: string | null;
   jumpstartFaqTitle?: string | null;
+  jumpstartFaqJumpLabel?: string | null;
   jumpstartFaqs?:
     | {
         question: string;
