@@ -25578,9 +25578,8 @@ type Settings {
   jumpstartLogo(where: Settings_JumpstartLogo_where): Media
   jumpstartHeading: String
   jumpstartSubtitle: String
-  jumpstartAboutTitle: String
-  jumpstartAbout: String
   jumpstartFaqTitle: String
+  jumpstartFaqJumpLabel: String
   jumpstartFaqs: [Settings_JumpstartFaqs!]
   updatedAt: DateTime
   createdAt: DateTime
@@ -26363,9 +26362,8 @@ type SettingsDocAccessFields {
   jumpstartLogo: SettingsDocAccessFields_jumpstartLogo
   jumpstartHeading: SettingsDocAccessFields_jumpstartHeading
   jumpstartSubtitle: SettingsDocAccessFields_jumpstartSubtitle
-  jumpstartAboutTitle: SettingsDocAccessFields_jumpstartAboutTitle
-  jumpstartAbout: SettingsDocAccessFields_jumpstartAbout
   jumpstartFaqTitle: SettingsDocAccessFields_jumpstartFaqTitle
+  jumpstartFaqJumpLabel: SettingsDocAccessFields_jumpstartFaqJumpLabel
   jumpstartFaqs: SettingsDocAccessFields_jumpstartFaqs
   updatedAt: SettingsDocAccessFields_updatedAt
   createdAt: SettingsDocAccessFields_createdAt
@@ -26647,52 +26645,6 @@ type SettingsDocAccessFields_jumpstartSubtitle_Delete {
   permission: Boolean!
 }
 
-type SettingsDocAccessFields_jumpstartAboutTitle {
-  create: SettingsDocAccessFields_jumpstartAboutTitle_Create
-  read: SettingsDocAccessFields_jumpstartAboutTitle_Read
-  update: SettingsDocAccessFields_jumpstartAboutTitle_Update
-  delete: SettingsDocAccessFields_jumpstartAboutTitle_Delete
-}
-
-type SettingsDocAccessFields_jumpstartAboutTitle_Create {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_jumpstartAboutTitle_Read {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_jumpstartAboutTitle_Update {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_jumpstartAboutTitle_Delete {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_jumpstartAbout {
-  create: SettingsDocAccessFields_jumpstartAbout_Create
-  read: SettingsDocAccessFields_jumpstartAbout_Read
-  update: SettingsDocAccessFields_jumpstartAbout_Update
-  delete: SettingsDocAccessFields_jumpstartAbout_Delete
-}
-
-type SettingsDocAccessFields_jumpstartAbout_Create {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_jumpstartAbout_Read {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_jumpstartAbout_Update {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_jumpstartAbout_Delete {
-  permission: Boolean!
-}
-
 type SettingsDocAccessFields_jumpstartFaqTitle {
   create: SettingsDocAccessFields_jumpstartFaqTitle_Create
   read: SettingsDocAccessFields_jumpstartFaqTitle_Read
@@ -26713,6 +26665,29 @@ type SettingsDocAccessFields_jumpstartFaqTitle_Update {
 }
 
 type SettingsDocAccessFields_jumpstartFaqTitle_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqJumpLabel {
+  create: SettingsDocAccessFields_jumpstartFaqJumpLabel_Create
+  read: SettingsDocAccessFields_jumpstartFaqJumpLabel_Read
+  update: SettingsDocAccessFields_jumpstartFaqJumpLabel_Update
+  delete: SettingsDocAccessFields_jumpstartFaqJumpLabel_Delete
+}
+
+type SettingsDocAccessFields_jumpstartFaqJumpLabel_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqJumpLabel_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqJumpLabel_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_jumpstartFaqJumpLabel_Delete {
   permission: Boolean!
 }
 
@@ -37746,9 +37721,8 @@ type SettingsFields {
   jumpstartLogo: SettingsFields_jumpstartLogo
   jumpstartHeading: SettingsFields_jumpstartHeading
   jumpstartSubtitle: SettingsFields_jumpstartSubtitle
-  jumpstartAboutTitle: SettingsFields_jumpstartAboutTitle
-  jumpstartAbout: SettingsFields_jumpstartAbout
   jumpstartFaqTitle: SettingsFields_jumpstartFaqTitle
+  jumpstartFaqJumpLabel: SettingsFields_jumpstartFaqJumpLabel
   jumpstartFaqs: SettingsFields_jumpstartFaqs
   updatedAt: SettingsFields_updatedAt
   createdAt: SettingsFields_createdAt
@@ -38030,52 +38004,6 @@ type SettingsFields_jumpstartSubtitle_Delete {
   permission: Boolean!
 }
 
-type SettingsFields_jumpstartAboutTitle {
-  create: SettingsFields_jumpstartAboutTitle_Create
-  read: SettingsFields_jumpstartAboutTitle_Read
-  update: SettingsFields_jumpstartAboutTitle_Update
-  delete: SettingsFields_jumpstartAboutTitle_Delete
-}
-
-type SettingsFields_jumpstartAboutTitle_Create {
-  permission: Boolean!
-}
-
-type SettingsFields_jumpstartAboutTitle_Read {
-  permission: Boolean!
-}
-
-type SettingsFields_jumpstartAboutTitle_Update {
-  permission: Boolean!
-}
-
-type SettingsFields_jumpstartAboutTitle_Delete {
-  permission: Boolean!
-}
-
-type SettingsFields_jumpstartAbout {
-  create: SettingsFields_jumpstartAbout_Create
-  read: SettingsFields_jumpstartAbout_Read
-  update: SettingsFields_jumpstartAbout_Update
-  delete: SettingsFields_jumpstartAbout_Delete
-}
-
-type SettingsFields_jumpstartAbout_Create {
-  permission: Boolean!
-}
-
-type SettingsFields_jumpstartAbout_Read {
-  permission: Boolean!
-}
-
-type SettingsFields_jumpstartAbout_Update {
-  permission: Boolean!
-}
-
-type SettingsFields_jumpstartAbout_Delete {
-  permission: Boolean!
-}
-
 type SettingsFields_jumpstartFaqTitle {
   create: SettingsFields_jumpstartFaqTitle_Create
   read: SettingsFields_jumpstartFaqTitle_Read
@@ -38096,6 +38024,29 @@ type SettingsFields_jumpstartFaqTitle_Update {
 }
 
 type SettingsFields_jumpstartFaqTitle_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqJumpLabel {
+  create: SettingsFields_jumpstartFaqJumpLabel_Create
+  read: SettingsFields_jumpstartFaqJumpLabel_Read
+  update: SettingsFields_jumpstartFaqJumpLabel_Update
+  delete: SettingsFields_jumpstartFaqJumpLabel_Delete
+}
+
+type SettingsFields_jumpstartFaqJumpLabel_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqJumpLabel_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqJumpLabel_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_jumpstartFaqJumpLabel_Delete {
   permission: Boolean!
 }
 
@@ -40475,9 +40426,8 @@ input mutationSettingsInput {
   jumpstartLogo: String
   jumpstartHeading: String
   jumpstartSubtitle: String
-  jumpstartAboutTitle: String
-  jumpstartAbout: String
   jumpstartFaqTitle: String
+  jumpstartFaqJumpLabel: String
   jumpstartFaqs: [mutationSettings_JumpstartFaqsInput]
   updatedAt: String
   createdAt: String

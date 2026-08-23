@@ -48,9 +48,8 @@ export const SETTINGS = `
     jumpstartLogo { ${MEDIA_FIELDS} }
     jumpstartHeading
     jumpstartSubtitle
-    jumpstartAboutTitle
-    jumpstartAbout
     jumpstartFaqTitle
+    jumpstartFaqJumpLabel
     jumpstartFaqs {
       question
       answer

@@ -133,32 +133,23 @@ export const Settings: GlobalConfig = {
               },
             },
             {
-              name: 'jumpstartAboutTitle',
-              type: 'text',
-              label: 'About Sidebar Heading',
-              defaultValue: 'WHAT IS JUMPSTART?',
-              admin: {
-                condition: (_, siblingData) => siblingData?.jumpstartEnabled,
-                description: 'Title displayed above the sidebar description.',
-              },
-            },
-            {
-              name: 'jumpstartAbout',
-              type: 'textarea',
-              label: 'What is Jumpstart?',
-              admin: {
-                condition: (_, siblingData) => siblingData?.jumpstartEnabled,
-                description:
-                  'Short introduction displayed beside the Jumpstart timeline while Jumpstart Mode is enabled.',
-              },
-            },
-            {
               name: 'jumpstartFaqTitle',
               type: 'text',
               label: 'FAQ Section Title',
               defaultValue: 'FAQS',
               admin: {
                 condition: (_, siblingData) => siblingData?.jumpstartEnabled,
+              },
+            },
+            {
+              name: 'jumpstartFaqJumpLabel',
+              type: 'text',
+              label: 'FAQ Jump Button Label',
+              defaultValue: 'Questions?',
+              admin: {
+                condition: (_, siblingData) => siblingData?.jumpstartEnabled,
+                description:
+                  'Label for the button that jumps to the FAQ section at the bottom of the page.',
               },
             },
             {

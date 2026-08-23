@@ -73,9 +73,8 @@ export default async function Page({ searchParams }: { searchParams: { view?: st
     const jumpstartEvents = events.filter(e => e.isJumpstart)
     const heading = settings.jumpstartHeading || 'Jumpstart'
     const subtitle = settings.jumpstartSubtitle || undefined
-    const aboutTitle = settings.jumpstartAboutTitle || undefined
-    const aboutText = settings.jumpstartAbout || undefined
     const faqTitle = settings.jumpstartFaqTitle || undefined
+    const faqJumpLabel = settings.jumpstartFaqJumpLabel || 'Questions?'
     const faqs = settings.jumpstartFaqs || undefined
     const dateRange = computeDateRange(jumpstartEvents) || undefined
     const currentView = searchParams?.view || 'timeline'
@@ -112,8 +111,7 @@ export default async function Page({ searchParams }: { searchParams: { view?: st
           events={jumpstartEvents}
           heading={heading}
           subtitle={subtitle}
-          aboutTitle={aboutTitle}
-          aboutText={aboutText}
+          faqJumpLabel={faqJumpLabel}
         />
         <JumpstartFaq title={faqTitle} faqs={faqs} />
       </div>
