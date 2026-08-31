@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import type { CityChallengeLocation } from '../../../../payload/payload-types'
+import { rubikMono } from '../../../_utilities/font'
 
 import classes from './index.module.scss'
 
@@ -12,6 +13,26 @@ type Props = {
   isLead: boolean
   teamId: string
   token: string
+}
+
+const NO_ZONE = 'No Zone'
+
+const getSafeLink = (value?: string | null): string | null => {
+  if (!value) return null
+  try {
+    const url = new URL(value)
+    if (url.protocol !== 'https:') return null
+    return url.href
+  } catch {
+    return null
+  }
+}
+
+const getMapsLink = (location: CityChallengeLocation): string | null => {
+  if (typeof location.latitude !== 'number' || typeof location.longitude !== 'number') {
+    return null
+  }
+  return `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`
 }
 
 export const ChallengeList: React.FC<Props> = ({
@@ -24,7 +45,16 @@ export const ChallengeList: React.FC<Props> = ({
   const [completed, setCompleted] = useState<string[]>(initialCompleted)
   const [submitting, setSubmitting] = useState<string | null>(null)
 
-  const sorted = [...locations].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+  const groups = useMemo(() => {
+    const sorted = [...locations].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+    const zones = new Map<string, CityChallengeLocation[]>()
+    for (const location of sorted) {
+      const zone = location.zone?.trim() || NO_ZONE
+      if (!zones.has(zone)) zones.set(zone, [])
+      zones.get(zone)!.push(location)
+    }
+    return Array.from(zones.entries())
+  }, [locations])
 
   const toggleComplete = async (locationId: string) => {
     if (submitting) return
@@ -55,7 +85,7 @@ export const ChallengeList: React.FC<Props> = ({
   }
 
   const completedCount = completed.length
-  const totalCount = sorted.length
+  const totalCount = locations.length
 
   return (
     <div className={classes.container}>
@@ -72,78 +102,93 @@ export const ChallengeList: React.FC<Props> = ({
       </div>
 
       <div className={classes.list}>
-        {sorted.map(location => {
-          const isCompleted = completed.includes(location.id)
-          const isLoading = submitting === location.id
+        {groups.map(([zone, items]) => (
+          <div key={zone} className={classes.zoneGroup}>
+            <h2 className={[classes.zoneTitle, rubikMono.className].join(' ')}>{zone}</h2>
+            {items.map(location => {
+              const isCompleted = completed.includes(location.id)
+              const isLoading = submitting === location.id
+              const mapsLink = getMapsLink(location)
+              const externalLink = getSafeLink(location.link)
 
-          return (
-            <div
-              key={location.id}
-              className={[classes.card, isCompleted ? classes.cardCompleted : ''].join(' ')}
-            >
-              <div className={classes.cardContent}>
-                <div className={classes.cardHeader}>
-                  {isLead ? (
-                    <button
-                      type="button"
-                      className={[
-                        classes.checkbox,
-                        isCompleted ? classes.checkboxChecked : '',
-                      ].join(' ')}
-                      onClick={() => toggleComplete(location.id)}
-                      disabled={isLoading}
-                      aria-label={`Mark "${location.name}" as ${
-                        isCompleted ? 'incomplete' : 'complete'
-                      }`}
-                    >
-                      {isCompleted && (
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+              return (
+                <div
+                  key={location.id}
+                  className={[classes.card, isCompleted ? classes.cardCompleted : ''].join(' ')}
+                >
+                  <div className={classes.cardContent}>
+                    <div className={classes.cardHeader}>
+                      {isLead ? (
+                        <button
+                          type="button"
+                          className={[
+                            classes.checkbox,
+                            isCompleted ? classes.checkboxChecked : '',
+                          ].join(' ')}
+                          onClick={() => toggleComplete(location.id)}
+                          disabled={isLoading}
+                          aria-label={`Mark "${location.name}" as ${
+                            isCompleted ? 'incomplete' : 'complete'
+                          }`}
                         >
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
+                          {isCompleted && (
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="3"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          )}
+                        </button>
+                      ) : (
+                        <div
+                          className={[
+                            classes.statusDot,
+                            isCompleted ? classes.statusDotComplete : '',
+                          ].join(' ')}
+                        />
                       )}
-                    </button>
-                  ) : (
-                    <div
-                      className={[
-                        classes.statusDot,
-                        isCompleted ? classes.statusDotComplete : '',
-                      ].join(' ')}
-                    />
-                  )}
-                  <h3 className={classes.cardTitle}>{location.name}</h3>
+                      <h3 className={classes.cardTitle}>{location.name}</h3>
+                    </div>
+                    {location.description && (
+                      <p className={classes.cardDescription}>{location.description}</p>
+                    )}
+                    <div className={classes.cardMeta}>
+                      {mapsLink ? (
+                        <a
+                          href={mapsLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={classes.mapsLink}
+                        >
+                          Get me there &rarr;
+                        </a>
+                      ) : externalLink ? (
+                        <a
+                          href={externalLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={classes.mapsLink}
+                        >
+                          Open &rarr;
+                        </a>
+                      ) : null}
+                    </div>
+                  </div>
                 </div>
-                {location.description && (
-                  <p className={classes.cardDescription}>{location.description}</p>
-                )}
-                <div className={classes.cardMeta}>
-                  <span className={classes.coords}>
-                    {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
-                  </span>
-                  <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={classes.mapsLink}
-                  >
-                    Get me there &rarr;
-                  </a>
-                </div>
-              </div>
-            </div>
-          )
-        })}
+              )
+            })}
+          </div>
+        ))}
       </div>
 
-      {sorted.length === 0 && <p className={classes.empty}>No challenges available yet.</p>}
+      {totalCount === 0 && <p className={classes.empty}>No challenges available yet.</p>}
     </div>
   )
 }

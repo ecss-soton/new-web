@@ -48,6 +48,31 @@
   gap: 12px;
 }
 
+.zoneGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 24px;
+
+  &:first-child {
+    padding-top: 0;
+  }
+}
+
+.zoneTitle {
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--jumpstart-neon-cyan);
+  margin: 0;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+
+  @include small-break {
+    font-size: 16px;
+  }
+}
+
 .card {
   background: var(--jumpstart-card);
   border: 2px solid var(--jumpstart-card-border);
@@ -168,13 +193,6 @@
     align-items: flex-start;
     gap: 6px;
   }
-}
-
-.coords {
-  font-size: 12px;
-  font-family: var(--font-mono);
-  color: var(--jumpstart-muted);
-  opacity: 0.7;
 }
 
 .mapsLink {

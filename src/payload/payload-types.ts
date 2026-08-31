@@ -1332,8 +1332,10 @@ export interface CityChallengeLocation {
   id: string;
   name: string;
   description?: string | null;
-  latitude: number;
-  longitude: number;
+  zone?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  link?: string | null;
   discoveryRadius?: number | null;
   sortOrder?: number | null;
   updatedAt: string;
