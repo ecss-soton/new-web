@@ -22993,8 +22993,10 @@ type CityChallengeLocation {
   id: String
   name: String!
   description: String
-  latitude: Float!
-  longitude: Float!
+  zone: String
+  latitude: Float
+  longitude: Float
+  link: String
   discoveryRadius: Float
   sortOrder: Float
   updatedAt: DateTime
@@ -23018,8 +23020,10 @@ type CityChallengeLocations {
 input CityChallengeLocation_where {
   name: CityChallengeLocation_name_operator
   description: CityChallengeLocation_description_operator
+  zone: CityChallengeLocation_zone_operator
   latitude: CityChallengeLocation_latitude_operator
   longitude: CityChallengeLocation_longitude_operator
+  link: CityChallengeLocation_link_operator
   discoveryRadius: CityChallengeLocation_discoveryRadius_operator
   sortOrder: CityChallengeLocation_sortOrder_operator
   updatedAt: CityChallengeLocation_updatedAt_operator
@@ -23047,6 +23051,17 @@ input CityChallengeLocation_description_operator {
   exists: Boolean
 }
 
+input CityChallengeLocation_zone_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
 input CityChallengeLocation_latitude_operator {
   equals: Float
   not_equals: Float
@@ -23054,6 +23069,7 @@ input CityChallengeLocation_latitude_operator {
   greater_than: Float
   less_than_equal: Float
   less_than: Float
+  exists: Boolean
 }
 
 input CityChallengeLocation_longitude_operator {
@@ -23063,6 +23079,18 @@ input CityChallengeLocation_longitude_operator {
   greater_than: Float
   less_than_equal: Float
   less_than: Float
+  exists: Boolean
+}
+
+input CityChallengeLocation_link_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
 }
 
 input CityChallengeLocation_discoveryRadius_operator {
@@ -23121,8 +23149,10 @@ input CityChallengeLocation_id_operator {
 input CityChallengeLocation_where_and {
   name: CityChallengeLocation_name_operator
   description: CityChallengeLocation_description_operator
+  zone: CityChallengeLocation_zone_operator
   latitude: CityChallengeLocation_latitude_operator
   longitude: CityChallengeLocation_longitude_operator
+  link: CityChallengeLocation_link_operator
   discoveryRadius: CityChallengeLocation_discoveryRadius_operator
   sortOrder: CityChallengeLocation_sortOrder_operator
   updatedAt: CityChallengeLocation_updatedAt_operator
@@ -23135,8 +23165,10 @@ input CityChallengeLocation_where_and {
 input CityChallengeLocation_where_or {
   name: CityChallengeLocation_name_operator
   description: CityChallengeLocation_description_operator
+  zone: CityChallengeLocation_zone_operator
   latitude: CityChallengeLocation_latitude_operator
   longitude: CityChallengeLocation_longitude_operator
+  link: CityChallengeLocation_link_operator
   discoveryRadius: CityChallengeLocation_discoveryRadius_operator
   sortOrder: CityChallengeLocation_sortOrder_operator
   updatedAt: CityChallengeLocation_updatedAt_operator
@@ -23161,8 +23193,10 @@ type city_challenge_locationsDocAccess {
 type CityChallengeLocationsDocAccessFields {
   name: CityChallengeLocationsDocAccessFields_name
   description: CityChallengeLocationsDocAccessFields_description
+  zone: CityChallengeLocationsDocAccessFields_zone
   latitude: CityChallengeLocationsDocAccessFields_latitude
   longitude: CityChallengeLocationsDocAccessFields_longitude
+  link: CityChallengeLocationsDocAccessFields_link
   discoveryRadius: CityChallengeLocationsDocAccessFields_discoveryRadius
   sortOrder: CityChallengeLocationsDocAccessFields_sortOrder
   updatedAt: CityChallengeLocationsDocAccessFields_updatedAt
@@ -23215,6 +23249,29 @@ type CityChallengeLocationsDocAccessFields_description_Delete {
   permission: Boolean!
 }
 
+type CityChallengeLocationsDocAccessFields_zone {
+  create: CityChallengeLocationsDocAccessFields_zone_Create
+  read: CityChallengeLocationsDocAccessFields_zone_Read
+  update: CityChallengeLocationsDocAccessFields_zone_Update
+  delete: CityChallengeLocationsDocAccessFields_zone_Delete
+}
+
+type CityChallengeLocationsDocAccessFields_zone_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_zone_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_zone_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_zone_Delete {
+  permission: Boolean!
+}
+
 type CityChallengeLocationsDocAccessFields_latitude {
   create: CityChallengeLocationsDocAccessFields_latitude_Create
   read: CityChallengeLocationsDocAccessFields_latitude_Read
@@ -23258,6 +23315,29 @@ type CityChallengeLocationsDocAccessFields_longitude_Update {
 }
 
 type CityChallengeLocationsDocAccessFields_longitude_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_link {
+  create: CityChallengeLocationsDocAccessFields_link_Create
+  read: CityChallengeLocationsDocAccessFields_link_Read
+  update: CityChallengeLocationsDocAccessFields_link_Update
+  delete: CityChallengeLocationsDocAccessFields_link_Delete
+}
+
+type CityChallengeLocationsDocAccessFields_link_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_link_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_link_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_link_Delete {
   permission: Boolean!
 }
 
@@ -36263,8 +36343,10 @@ type city_challenge_locationsAccess {
 type CityChallengeLocationsFields {
   name: CityChallengeLocationsFields_name
   description: CityChallengeLocationsFields_description
+  zone: CityChallengeLocationsFields_zone
   latitude: CityChallengeLocationsFields_latitude
   longitude: CityChallengeLocationsFields_longitude
+  link: CityChallengeLocationsFields_link
   discoveryRadius: CityChallengeLocationsFields_discoveryRadius
   sortOrder: CityChallengeLocationsFields_sortOrder
   updatedAt: CityChallengeLocationsFields_updatedAt
@@ -36317,6 +36399,29 @@ type CityChallengeLocationsFields_description_Delete {
   permission: Boolean!
 }
 
+type CityChallengeLocationsFields_zone {
+  create: CityChallengeLocationsFields_zone_Create
+  read: CityChallengeLocationsFields_zone_Read
+  update: CityChallengeLocationsFields_zone_Update
+  delete: CityChallengeLocationsFields_zone_Delete
+}
+
+type CityChallengeLocationsFields_zone_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_zone_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_zone_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_zone_Delete {
+  permission: Boolean!
+}
+
 type CityChallengeLocationsFields_latitude {
   create: CityChallengeLocationsFields_latitude_Create
   read: CityChallengeLocationsFields_latitude_Read
@@ -36360,6 +36465,29 @@ type CityChallengeLocationsFields_longitude_Update {
 }
 
 type CityChallengeLocationsFields_longitude_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_link {
+  create: CityChallengeLocationsFields_link_Create
+  read: CityChallengeLocationsFields_link_Read
+  update: CityChallengeLocationsFields_link_Update
+  delete: CityChallengeLocationsFields_link_Delete
+}
+
+type CityChallengeLocationsFields_link_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_link_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_link_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_link_Delete {
   permission: Boolean!
 }
 
@@ -40214,8 +40342,10 @@ input mutationWordleScoreUpdate_AttemptsInput {
 input mutationCityChallengeLocationInput {
   name: String!
   description: String
-  latitude: Float!
-  longitude: Float!
+  zone: String
+  latitude: Float
+  longitude: Float
+  link: String
   discoveryRadius: Float
   sortOrder: Float
   updatedAt: String
@@ -40225,8 +40355,10 @@ input mutationCityChallengeLocationInput {
 input mutationCityChallengeLocationUpdateInput {
   name: String
   description: String
+  zone: String
   latitude: Float
   longitude: Float
+  link: String
   discoveryRadius: Float
   sortOrder: Float
   updatedAt: String

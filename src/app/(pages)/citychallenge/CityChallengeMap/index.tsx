@@ -256,7 +256,12 @@ export const CityChallengeMap: React.FC<Props> = ({
     const sorted = [...locations].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
 
     sorted.forEach((location, index) => {
-      if (!location.id || !location.latitude || !location.longitude) return
+      if (
+        !location.id ||
+        typeof location.latitude !== 'number' ||
+        typeof location.longitude !== 'number'
+      )
+        return
 
       const isCompleted = completedChallenges.includes(location.id)
       const latLng: L.LatLngTuple = [location.latitude, location.longitude]
@@ -358,7 +363,7 @@ export const CityChallengeMap: React.FC<Props> = ({
 
   const discoveredCount = useMemo(() => {
     return locations.filter(loc => {
-      if (!loc.latitude || !loc.longitude) return false
+      if (typeof loc.latitude !== 'number' || typeof loc.longitude !== 'number') return false
       return discoveredAreas.some(
         p =>
           haversineDistance(p.lat, p.lng, loc.latitude, loc.longitude) <=
@@ -367,7 +372,9 @@ export const CityChallengeMap: React.FC<Props> = ({
     }).length
   }, [locations, discoveredAreas])
 
-  const totalCount = locations.length
+  const totalCount = locations.filter(
+    loc => typeof loc.latitude === 'number' && typeof loc.longitude === 'number',
+  ).length
 
   return (
     <div className={classes.wrapper}>
@@ -403,7 +410,7 @@ export const CityChallengeMap: React.FC<Props> = ({
         parts of the map — your whole team shares the discoveries!
       </p>
       <div className={classes.mapContainer}>
-        {locations.length === 0 ? (
+        {totalCount === 0 ? (
           <div className={classes.empty}>No locations available yet.</div>
         ) : (
           <div ref={mapContainerRef} className={classes.map} />
