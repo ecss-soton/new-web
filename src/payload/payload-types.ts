@@ -756,7 +756,12 @@ export interface Event {
   date: string;
   endTime?: string | null;
   location?: string | null;
-  description?: string | null;
+  description?:
+    | {
+        [k: string]: unknown;
+      }[]
+    | string
+    | null;
   link?: string | null;
   image?: string | Media | null;
   isJumpstart?: boolean | null;

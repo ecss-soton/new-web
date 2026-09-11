@@ -28,6 +28,15 @@ import { EventsCalendarView } from './EventsCalendarView'
 
 import classes from './index.module.scss'
 
+function shuffleArray<T>(arr: T[]): T[] {
+  const result = [...arr]
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[result[i], result[j]] = [result[j], result[i]]
+  }
+  return result
+}
+
 type Result = {
   docs: (Post | Project | Sponsor | Society | Committee | Event | string)[]
   hasNextPage: boolean
@@ -126,7 +135,7 @@ export const CollectionArchive: React.FC<Props> = props => {
       const searchQuery = qs.stringify(
         {
           depth: 1,
-          limit: relationTo === 'events' ? 300 : limit,
+          limit: relationTo === 'events' || relationTo === 'societies' ? 300 : limit,
           page,
           sort:
             relationTo === 'committee'
@@ -149,6 +158,14 @@ export const CollectionArchive: React.FC<Props> = props => {
                   isJumpstart: {
                     equals: true,
                   },
+                }
+              : {}),
+            // Filter out sponsors that haven't been given a level so the listing
+            // matches what the public detail routes serve (admin cookies must not
+            // make unlevelled sponsors appear here).
+            ...(relationTo === 'sponsors'
+              ? {
+                  level: { exists: true },
                 }
               : {}),
           },
@@ -186,6 +203,10 @@ export const CollectionArchive: React.FC<Props> = props => {
 
                 return importanceA - importanceB
               })
+            }
+
+            if (relationTo === 'societies') {
+              docs = shuffleArray(docs)
             }
 
             setResults(json)
@@ -260,6 +281,16 @@ export const CollectionArchive: React.FC<Props> = props => {
                   No events planned
                 </p>
                 <p className={classes.emptySubtext}>Check back soon for upcoming events.</p>
+              </div>
+            )}
+          {relationTo === 'sponsors' &&
+            isDataReady &&
+            (results.docs?.length ?? 0) === 0 && (
+              <div className={classes.emptyState}>
+                <p className={[classes.emptyHeading, inter.className].join(' ')}>No sponsors yet</p>
+                <p className={classes.emptySubtext}>
+                  Interested in sponsoring ECSS? Get in touch with us.
+                </p>
               </div>
             )}
           {relationTo === 'events' ? (

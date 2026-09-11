@@ -4,11 +4,28 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { Event, Media } from '../../../payload/payload-types'
+import RichText from '../RichText'
 import { inter } from '../../_utilities/font'
 import { getMonthName } from '../../_utilities/getMonthName'
 import { InterestedButton } from './InterestedButton'
 
 import classes from './index.module.scss'
+
+function extractPlainText(nodes: { text?: string; children?: unknown[] }[]): string {
+  let out = ''
+  for (const node of nodes) {
+    if (typeof node.text === 'string') out += node.text
+    if (Array.isArray(node.children))
+      out += extractPlainText(node.children as { text?: string; children?: unknown[] }[])
+  }
+  return out
+}
+
+function getDescriptionLength(desc: unknown): number {
+  if (typeof desc === 'string') return desc.length
+  if (Array.isArray(desc)) return extractPlainText(desc as { text?: string; children?: unknown[] }[]).length
+  return 0
+}
 
 export const EventItem: React.FC<{
   event?: Event
@@ -120,13 +137,29 @@ export const EventItem: React.FC<{
 
           {description && (
             <div className={classes.descriptionBox}>
-              <div className={!isExpanded ? classes.truncatedDesc : ''}>{description}</div>
-              {event._status == 'draft' && <p>This is a Draft, it won't show for all users.</p>}
-              {description.length > 150 && (
-                <button className={classes.expandButton} onClick={toggleExpand}>
-                  {isExpanded ? 'Show Less' : 'Read More'}
-                </button>
-              )}
+              {(() => {
+                const rawDesc: unknown = description
+                const isRich = Array.isArray(rawDesc)
+                return (
+                  <>
+                    <div className={!isExpanded ? classes.truncatedDesc : ''}>
+                      {isRich ? (
+                        <RichText content={rawDesc} />
+                      ) : (
+                        <>{rawDesc as string}</>
+                      )}
+                    </div>
+                    {event._status == 'draft' && (
+                      <p>This is a Draft, it won&apos;t show for all users.</p>
+                    )}
+                    {getDescriptionLength(rawDesc) > 150 && (
+                      <button className={classes.expandButton} onClick={toggleExpand}>
+                        {isExpanded ? 'Show Less' : 'Read More'}
+                      </button>
+                    )}
+                  </>
+                )
+              })()}
             </div>
           )}
 

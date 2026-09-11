@@ -77,6 +77,34 @@ function createPopupContent(location: CityChallengeLocation, isCompleted: boolea
     popup.append(desc)
   }
 
+  // Determine destination: CMS link takes priority over generated Google Maps URL.
+  let destinationHref: string | null = null
+  if (location.link) {
+    try {
+      const parsed = new URL(location.link)
+      if (parsed.protocol === 'https:') destinationHref = parsed.href
+    } catch {
+      // invalid URL — ignore
+    }
+  }
+  if (
+    !destinationHref &&
+    typeof location.latitude === 'number' &&
+    typeof location.longitude === 'number'
+  ) {
+    destinationHref = `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`
+  }
+
+  if (destinationHref) {
+    const link = document.createElement('a')
+    link.className = classes.popupLink
+    link.href = destinationHref
+    link.target = '_blank'
+    link.rel = 'noopener noreferrer'
+    link.textContent = 'Get me there →'
+    popup.append(link)
+  }
+
   return popup
 }
 
@@ -406,8 +434,7 @@ export const CityChallengeMap: React.FC<Props> = ({
         </div>
       </header>
       <p className={classes.intro}>
-        Explore Southampton to uncover hidden locations. Move around in the real world to reveal
-        parts of the map — your whole team shares the discoveries!
+        Explore Southampton to uncover ci
       </p>
       <div className={classes.mapContainer}>
         {totalCount === 0 ? (

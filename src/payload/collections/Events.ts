@@ -104,7 +104,7 @@ const Events: CollectionConfig = {
     {
       name: 'description',
       label: 'Description',
-      type: 'textarea',
+      type: 'richText',
     },
     {
       name: 'link',

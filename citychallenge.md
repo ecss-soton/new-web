@@ -14,7 +14,11 @@ shared fog-of-war map discovery, and role-based views (team lead vs participant)
 - **Collection `city-challenge-locations`** — `src/payload/collections/CityChallengeLocations.ts`
   - `name` (text, required) — location name
   - `description` (textarea) — clue or hint
-  - `latitude` / `longitude` (number, required, validated ±90 / ±180)
+  - `latitude` / `longitude` (number, optional) — required **only** for map-based challenges
+  - `link` (text, HTTPS URL, optional) — required for link-based challenges (e.g. "Follow this YouTube channel")
+  - **Either** a complete coordinate pair (`latitude` + `longitude`) **or** a valid HTTPS `link` must be present. Partial coordinates (only one of the two) are always rejected.
+  - If both coordinates **and** a link are provided, the link takes priority as the "Get me there" destination.
+  - Link-only challenges do **not** appear on the map (no pin is rendered without coordinates).
   - `discoveryRadius` (number, default 50) — how close in metres to trigger discovery
   - `sortOrder` (number, default 0)
   - Access: `read` = logged-in members only; `create/update/delete` = admins only
@@ -62,6 +66,8 @@ shared fog-of-war map discovery, and role-based views (team lead vs participant)
 - Discovery areas loaded from server (team's `discoveredAreas` field)
 - `destination-out` composite operation punches 80px-radius holes for each discovered point
 - All challenge locations shown as numbered pins (lime for undone, cyan for completed)
+- Map popups include a "Get me there →" link (CMS link preferred over generated Maps URL)
+- Link-only challenges (no coordinates) are only visible in the list view, not on the map
 - Geolocation tracking via `watchPosition` with event-driven discovery
 
 ### Discovery Efficiency
@@ -76,9 +82,10 @@ The client does NOT poll or use timers. Strategy:
 
 ### List View
 
-- Shows ALL challenges openly (names, descriptions, locations)
+- Shows ALL challenges (names, descriptions, "Get me there" destination)
+- Destination resolution: CMS `link` takes priority; falls back to a Google Maps URL generated from coordinates
+- No destination button is shown when a challenge has neither a valid link nor complete coordinates
 - Progress bar showing X/Y completed
-- Each card shows: name, description, coordinates, "Get me there" Google Maps link
 - Team lead sees checkboxes to toggle completion; participants see status dots
 - Sorted by `sortOrder`
 

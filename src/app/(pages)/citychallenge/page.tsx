@@ -8,6 +8,7 @@ import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
 import { ChallengeList } from './ChallengeList'
 import { NoTeamMessage } from './NoTeamMessage'
 import { TeamPanel } from './TeamPanel'
+import { TeamRoster } from './TeamRoster'
 
 import wrapperClasses from '../../_components/Jumpstart/pageWrapper.module.scss'
 
@@ -26,17 +27,19 @@ type TeamRole = 'lead' | 'participant' | 'none'
 interface ResolvedTeam {
   id: string
   name: string
-  teamLead: string
+  /** ID of the team lead (used for auth checks) */
+  teamLeadId: string
+  /** Display data for the lead — safe identity fields only */
+  teamLead: { id: string; name?: string | null; username?: string | null }
   members: { id: string; name?: string | null; username?: string | null }[]
   completedChallenges: string[]
   discoveredAreas: { lat: number; lng: number }[]
 }
 
 function resolveTeam(team: CityChallengeTeam): ResolvedTeam {
-  const leadId =
-    typeof team.teamLead === 'object' && team.teamLead !== null
-      ? (team.teamLead as User).id
-      : (team.teamLead as string)
+  const leadUser =
+    typeof team.teamLead === 'object' && team.teamLead !== null ? (team.teamLead as User) : null
+  const leadId = leadUser ? leadUser.id : (team.teamLead as string)
 
   const members = (team.members || []).map(m => {
     if (typeof m === 'object' && m !== null) {
@@ -56,7 +59,12 @@ function resolveTeam(team: CityChallengeTeam): ResolvedTeam {
   return {
     id: team.id,
     name: team.name,
-    teamLead: leadId,
+    teamLeadId: leadId,
+    teamLead: {
+      id: leadId,
+      name: leadUser?.name ?? null,
+      username: leadUser?.username ?? null,
+    },
     members,
     completedChallenges,
     discoveredAreas,
@@ -159,6 +167,14 @@ export default async function CityChallengePage({
                 completedChallenges={team.completedChallenges}
               />
             )
+          )}
+
+          {team && (
+            <TeamRoster
+              teamName={team.name}
+              teamLead={team.teamLead}
+              members={team.members}
+            />
           )}
         </div>
       )}

@@ -244,6 +244,16 @@
   letter-spacing: 0.05em;
 }
 
+.popupLink {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--jumpstart-neon-magenta);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
 .mockPanel {
   margin-top: 16px;
   display: flex;

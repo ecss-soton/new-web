@@ -17,24 +17,8 @@ export default async function WordlePage() {
     )}&redirect=${encodeURIComponent('/wordle')}`,
   })
 
-  let dailyWord = getDailyWord()
   const todayDate = getTodayDate()
   const puzzleNumber = getPuzzleNumber()
-
-  try {
-    const overrideReq = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/wordle-overrides?where[date][equals]=${todayDate}&depth=0`,
-      {
-        headers: { Authorization: `JWT ${token}` },
-      },
-    )
-    const { docs: overrideDocs } = await overrideReq.json()
-    if (overrideDocs && overrideDocs.length > 0) {
-      dailyWord = overrideDocs[0].word.toUpperCase()
-    }
-  } catch (err) {
-    console.warn('Failed to fetch word override:', err) // eslint-disable-line no-console
-  }
 
   let todayScore = null
   let existingDisplayName = null
@@ -72,13 +56,35 @@ export default async function WordlePage() {
     }
   }
 
+  // Only resolve and expose the daily word when the game is already complete.
+  // During active play the solution stays on the server; the /api/wordle-scores/guess
+  // endpoint handles answer validation and returns only tile statuses.
+  let completedGameSolution: string | null = null
+  if (todayScore) {
+    completedGameSolution = getDailyWord()
+    try {
+      const overrideReq = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/wordle-overrides?where[date][equals]=${todayDate}&depth=0`,
+        {
+          headers: { Authorization: `JWT ${token}` },
+        },
+      )
+      const { docs: overrideDocs } = await overrideReq.json()
+      if (overrideDocs && overrideDocs.length > 0) {
+        completedGameSolution = overrideDocs[0].word.toUpperCase()
+      }
+    } catch (err) {
+      console.warn('Failed to fetch word override:', err) // eslint-disable-line no-console
+    }
+  }
+
   return (
     <>
       <LowImpactHero title="ECSSle" type="lowImpact" />
       <Gutter>
         <WordleGame
           user={user}
-          solution={dailyWord}
+          solution={completedGameSolution}
           todayDate={todayDate}
           puzzleNumber={puzzleNumber}
           todayScore={todayScore}
