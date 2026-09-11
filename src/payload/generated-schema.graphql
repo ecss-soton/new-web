@@ -827,7 +827,7 @@ type Event {
   date: DateTime
   endTime: DateTime
   location: String
-  description: String
+  description(depth: Int): JSON
   link: String
   image(where: Event_Image_where): Media
   isJumpstart: Boolean
@@ -19648,10 +19648,10 @@ input Event_location_operator {
 }
 
 input Event_description_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
   exists: Boolean
 }
 
@@ -20349,7 +20349,7 @@ type EventVersion_Version {
   date: DateTime
   endTime: DateTime
   location: String
-  description: String
+  description(depth: Int): JSON
   link: String
   image(where: EventVersion_Version_Image_where): Media
   isJumpstart: Boolean
@@ -20659,10 +20659,10 @@ input versionsEvent_version__location_operator {
 }
 
 input versionsEvent_version__description_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
   exists: Boolean
 }
 
@@ -40140,7 +40140,7 @@ input mutationEventInput {
   date: String!
   endTime: String
   location: String
-  description: String
+  description: JSON
   link: String
   image: String
   isJumpstart: Boolean
@@ -40173,7 +40173,7 @@ input mutationEventUpdateInput {
   date: String
   endTime: String
   location: String
-  description: String
+  description: JSON
   link: String
   image: String
   isJumpstart: Boolean
