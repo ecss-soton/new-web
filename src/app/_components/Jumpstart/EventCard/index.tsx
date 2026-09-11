@@ -1,9 +1,13 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import moment from 'moment-timezone'
 
 import type { Event } from '../../../../payload/payload-types'
 import { Media } from '../../../_components/Media'
+import RichText from '../../../_components/RichText'
 import { bungee, inter } from '../../../_utilities/font'
+import { getSafeHref } from '../../../_utilities/getSafeHref'
 
 import classes from './index.module.scss'
 
@@ -30,14 +34,40 @@ const formatTimeRange = (startDate: string, endTime?: string | null): string => 
   return `${start} – ${end}`
 }
 
+function extractPlainText(nodes: { text?: string; children?: unknown[] }[]): string {
+  let out = ''
+  for (const node of nodes) {
+    if (typeof node.text === 'string') out += node.text
+    if (Array.isArray(node.children))
+      out += extractPlainText(node.children as { text?: string; children?: unknown[] }[])
+  }
+  return out
+}
+
+function getDescriptionLength(desc: unknown): number {
+  if (typeof desc === 'string') return desc.length
+  if (Array.isArray(desc))
+    return extractPlainText(desc as { text?: string; children?: unknown[] }[]).length
+  return 0
+}
+
 export const JumpstartEventCard: React.FC<Props> = ({ event, index }) => {
   const { name, date, endTime, location, description, mapsUrl, link, image, jumpstartCategory } =
     event
+
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  const safeLink = getSafeHref(link)
 
   const catKey = jumpstartCategory && CATEGORY_COLORS[jumpstartCategory] ? jumpstartCategory : null
   const catColor = catKey ? CATEGORY_COLORS[catKey] : 'var(--jumpstart-neon-magenta)'
   const rotation = ROTATIONS[index % ROTATIONS.length]
   const timeRange = formatTimeRange(date, endTime)
+
+  const rawDesc: unknown = description
+  const isRich = Array.isArray(rawDesc)
+  const descLength = getDescriptionLength(rawDesc)
+  const showToggle = descLength > 150
 
   return (
     <div
@@ -60,7 +90,26 @@ export const JumpstartEventCard: React.FC<Props> = ({ event, index }) => {
           <span className={classes.time}>{timeRange}</span>
         </div>
         {location && <p className={classes.location}>{location}</p>}
-        {description && <p className={classes.description}>{description}</p>}
+        {rawDesc != null && rawDesc !== '' && (
+          <div className={classes.descriptionBox}>
+            <div className={!isExpanded ? classes.truncatedDesc : ''}>
+              {isRich ? (
+                <RichText content={rawDesc} className={classes.richTextDescription} />
+              ) : (
+                <p className={classes.description}>{rawDesc as string}</p>
+              )}
+            </div>
+            {showToggle && (
+              <button
+                type="button"
+                className={classes.expandButton}
+                onClick={() => setIsExpanded(v => !v)}
+              >
+                {isExpanded ? 'Show Less' : 'Read More'}
+              </button>
+            )}
+          </div>
+        )}
         <div className={classes.actions}>
           {mapsUrl && (
             <a
@@ -72,9 +121,9 @@ export const JumpstartEventCard: React.FC<Props> = ({ event, index }) => {
               GET ME THERE
             </a>
           )}
-          {link && link.startsWith('https://') && (
+          {safeLink && (
             <a
-              href={link}
+              href={safeLink}
               target="_blank"
               rel="noopener noreferrer"
               className={[classes.linkButton, bungee.className].join(' ')}

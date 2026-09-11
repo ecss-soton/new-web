@@ -6,6 +6,7 @@ import { admins } from '../access/admins'
 import { adminsOrPublished } from '../access/adminsOrPublished'
 import { withEndpointErrorHandler } from '../utilities/endpointHandler'
 import { isHTTPS } from '../validate/isHTTPS'
+import { isSafeLink } from '../validate/isSafeLink'
 
 const validateCoordinate =
   (minimum: number, maximum: number, label: string): Validate =>
@@ -104,13 +105,13 @@ const Events: CollectionConfig = {
     {
       name: 'description',
       label: 'Description',
-      type: 'textarea',
+      type: 'richText',
     },
     {
       name: 'link',
       label: 'Any associated links',
       type: 'text',
-      validate: isHTTPS,
+      validate: isSafeLink,
     },
     {
       name: 'image',
@@ -248,7 +249,7 @@ const Events: CollectionConfig = {
             end: end,
             timezone: 'Europe/London',
             summary: event.name,
-            description: event.description || '',
+            description: typeof event.description === 'string' ? event.description : '',
             location: event.location || '',
             url: event.link || '',
           })

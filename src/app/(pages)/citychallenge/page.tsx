@@ -8,6 +8,7 @@ import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
 import { ChallengeList } from './ChallengeList'
 import { NoTeamMessage } from './NoTeamMessage'
 import { TeamPanel } from './TeamPanel'
+import { TeamRoster } from './TeamRoster'
 
 import wrapperClasses from '../../_components/Jumpstart/pageWrapper.module.scss'
 
@@ -23,20 +24,26 @@ const CityChallengeMap = nextDynamic(
 
 type TeamRole = 'lead' | 'participant' | 'none'
 
+// Geographic cell size — must match CityChallengeTeams.ts and CityChallengeMap/index.tsx.
+const CELL_DEG = 0.001
+
 interface ResolvedTeam {
   id: string
   name: string
-  teamLead: string
+  /** ID of the team lead (used for auth checks) */
+  teamLeadId: string
+  /** Display data for the lead — safe identity fields only */
+  teamLead: { id: string; name?: string | null; username?: string | null }
   members: { id: string; name?: string | null; username?: string | null }[]
   completedChallenges: string[]
-  discoveredAreas: { lat: number; lng: number }[]
+  /** Discovered geographic cell IDs in the form "latIdx:lngIdx". */
+  discoveredAreas: string[]
 }
 
 function resolveTeam(team: CityChallengeTeam): ResolvedTeam {
-  const leadId =
-    typeof team.teamLead === 'object' && team.teamLead !== null
-      ? (team.teamLead as User).id
-      : (team.teamLead as string)
+  const leadUser =
+    typeof team.teamLead === 'object' && team.teamLead !== null ? (team.teamLead as User) : null
+  const leadId = leadUser ? leadUser.id : (team.teamLead as string)
 
   const members = (team.members || []).map(m => {
     if (typeof m === 'object' && m !== null) {
@@ -51,12 +58,30 @@ function resolveTeam(team: CityChallengeTeam): ResolvedTeam {
     return c as string
   })
 
-  const discoveredAreas = Array.isArray(team.discoveredAreas) ? team.discoveredAreas : []
+  // Normalize discoveredAreas to cell IDs, migrating legacy {lat,lng}[] data if present.
+  const rawAreas = Array.isArray(team.discoveredAreas) ? team.discoveredAreas : []
+  const discoveredAreas: string[] = (() => {
+    if (rawAreas.length === 0) return []
+    if (typeof rawAreas[0] === 'string') return rawAreas as string[]
+    // Legacy format: array of {lat, lng} point objects — convert to cell IDs client-side.
+    const cells = (rawAreas as { lat?: unknown; lng?: unknown }[])
+      .filter(
+        (p): p is { lat: number; lng: number } =>
+          typeof p.lat === 'number' && typeof p.lng === 'number',
+      )
+      .map(p => `${Math.floor(p.lat / CELL_DEG)}:${Math.floor(p.lng / CELL_DEG)}`)
+    return [...new Set(cells)]
+  })()
 
   return {
     id: team.id,
     name: team.name,
-    teamLead: leadId,
+    teamLeadId: leadId,
+    teamLead: {
+      id: leadId,
+      name: leadUser?.name ?? null,
+      username: leadUser?.username ?? null,
+    },
     members,
     completedChallenges,
     discoveredAreas,
@@ -159,6 +184,10 @@ export default async function CityChallengePage({
                 completedChallenges={team.completedChallenges}
               />
             )
+          )}
+
+          {team && (
+            <TeamRoster teamName={team.name} teamLead={team.teamLead} members={team.members} />
           )}
         </div>
       )}

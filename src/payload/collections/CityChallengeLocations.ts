@@ -25,14 +25,18 @@ const validateCoordinatesOrLink: Validate = (value, { data, operation }) => {
   const hasLng = typeof doc.longitude === 'number'
   const hasLink = typeof value === 'string' && value.trim() !== ''
 
+  // A valid HTTPS link on its own is always sufficient.
+  if (hasLink) return true
+
+  // Both coordinates provided → valid location-based challenge.
   if (hasLat && hasLng) return true
 
+  // One coordinate present without the other is always an error.
   if (hasLat !== hasLng) {
     return 'Latitude and longitude must both be provided for location-based challenges.'
   }
 
-  if (hasLink) return true
-
+  // Partial-update that doesn't touch either field — leave existing state alone.
   if (operation === 'update' && !('latitude' in doc) && !('longitude' in doc)) {
     return true
   }

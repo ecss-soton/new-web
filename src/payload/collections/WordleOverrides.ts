@@ -5,7 +5,10 @@ import { admins } from '../access/admins'
 const WordleOverrides: CollectionConfig = {
   slug: 'wordle-overrides',
   access: {
-    read: () => true,
+    // Only admins may read overrides through the public REST/GraphQL API.
+    // The /guess endpoint resolves overrides internally via the Payload local API
+    // and never exposes the raw word to clients.
+    read: admins,
     create: admins,
     update: admins,
     delete: admins,

@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 
 const getInternalRedirect = (redirect: string | undefined, baseUrl: string): string | null => {
-  if (!redirect || !redirect.startsWith('/') || redirect.startsWith('//')) return null
+  if (!redirect?.startsWith('/') || redirect.startsWith('//')) return null
 
   try {
     const redirectUrl = new URL(redirect, baseUrl)

@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 
 import { Page } from '../../../payload/payload-types'
+import { getSafeHref } from '../../_utilities/getSafeHref'
 import { Button, Props as ButtonProps } from '../Button'
 
 import classes from './index.module.scss'
@@ -20,17 +21,6 @@ export type CMSLinkType = {
   className?: string
   invert?: ButtonProps['invert']
   onClick?: () => void
-}
-
-const getSafeHref = (href: string | undefined): string | undefined => {
-  if (!href) return undefined
-  if (href.startsWith('/') && !href.startsWith('//')) return href
-
-  try {
-    return new URL(href).protocol === 'https:' ? href : undefined
-  } catch {
-    return undefined
-  }
 }
 
 export const CMSLink: React.FC<CMSLinkType> = ({

@@ -1,5 +1,7 @@
 import type { PayloadHandler } from 'payload/config'
 
+import type { WordleScore } from '../../../payload-types'
+
 interface UserStats {
   userId: string
   displayName: string
@@ -46,11 +48,11 @@ export const leaderboard: PayloadHandler = async (req, res): Promise<void> => {
       limit: 0,
     })
 
-    const allScores = scores.docs
+    const allScores = scores.docs as WordleScore[]
 
-    const userMap = new Map<string, any[]>()
-    allScores.forEach((score: any) => {
-      const uid = typeof score.user === 'object' ? score.user.id || score.user : score.user
+    const userMap = new Map<string, WordleScore[]>()
+    allScores.forEach(score => {
+      const uid = typeof score.user === 'object' ? score.user.id : score.user
       if (!userMap.has(uid)) userMap.set(uid, [])
       const userScores = userMap.get(uid)
       if (userScores) userScores.push(score)
@@ -59,19 +61,19 @@ export const leaderboard: PayloadHandler = async (req, res): Promise<void> => {
     const stats: UserStats[] = []
 
     userMap.forEach((userScores, userId) => {
-      const sorted = userScores.sort((a: any, b: any) => {
+      const sorted = userScores.sort((a, b) => {
         if (a.date < b.date) return -1
         if (a.date > b.date) return 1
         return 0
       })
 
       const totalGames = sorted.length
-      const totalWins = sorted.filter((s: any) => s.solved).length
+      const totalWins = sorted.filter(s => s.solved).length
       const winRate = totalGames > 0 ? totalWins / totalGames : 0
-      const solvedScores = sorted.filter((s: any) => s.solved)
+      const solvedScores = sorted.filter(s => s.solved)
       const avgGuesses =
         solvedScores.length > 0
-          ? solvedScores.reduce((sum: number, s: any) => sum + s.guesses, 0) / solvedScores.length
+          ? solvedScores.reduce((sum, s) => sum + s.guesses, 0) / solvedScores.length
           : 0
 
       let currentStreak = 0

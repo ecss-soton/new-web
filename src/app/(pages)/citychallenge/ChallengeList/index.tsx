@@ -28,11 +28,25 @@ const getSafeLink = (value?: string | null): string | null => {
   }
 }
 
-const getMapsLink = (location: CityChallengeLocation): string | null => {
-  if (typeof location.latitude !== 'number' || typeof location.longitude !== 'number') {
-    return null
+/** Returns the best destination link for a challenge:
+ *  1. Validated CMS external link (highest priority)
+ *  2. Generated Google Maps URL from complete coordinates
+ *  3. null when neither is available
+ */
+const getDestinationLink = (
+  location: CityChallengeLocation,
+): { href: string; label: string } | null => {
+  const safe = getSafeLink(location.link)
+  if (safe) return { href: safe, label: 'Get me there →' }
+
+  if (typeof location.latitude === 'number' && typeof location.longitude === 'number') {
+    return {
+      href: `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`,
+      label: 'Get me there →',
+    }
   }
-  return `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`
+
+  return null
 }
 
 export const ChallengeList: React.FC<Props> = ({
@@ -108,8 +122,7 @@ export const ChallengeList: React.FC<Props> = ({
             {items.map(location => {
               const isCompleted = completed.includes(location.id)
               const isLoading = submitting === location.id
-              const mapsLink = getMapsLink(location)
-              const externalLink = getSafeLink(location.link)
+              const destination = getDestinationLink(location)
 
               return (
                 <div
@@ -160,25 +173,16 @@ export const ChallengeList: React.FC<Props> = ({
                       <p className={classes.cardDescription}>{location.description}</p>
                     )}
                     <div className={classes.cardMeta}>
-                      {mapsLink ? (
+                      {destination && (
                         <a
-                          href={mapsLink}
+                          href={destination.href}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={classes.mapsLink}
                         >
-                          Get me there &rarr;
+                          {destination.label}
                         </a>
-                      ) : externalLink ? (
-                        <a
-                          href={externalLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={classes.mapsLink}
-                        >
-                          Open &rarr;
-                        </a>
-                      ) : null}
+                      )}
                     </div>
                   </div>
                 </div>

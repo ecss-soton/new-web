@@ -148,6 +148,57 @@
   flex: 1;
 }
 
+.descriptionBox {
+  margin-bottom: 14px;
+  flex: 1;
+}
+
+.truncatedDesc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.richTextDescription {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--jumpstart-muted);
+
+  p {
+    margin: 0 0 6px 0;
+  }
+
+  a {
+    color: var(--card-cat);
+    text-underline-offset: 2px;
+  }
+}
+
+.expandButton {
+  background: none;
+  border: none;
+  color: var(--jumpstart-text);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: var(--card-cat);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--card-cat);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
 .actions {
   display: flex;
   align-items: center;
