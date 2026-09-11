@@ -9,6 +9,7 @@ import type { Event } from '../../../payload/payload-types'
 import { Page } from '../../../payload/payload-types'
 import { Gutter } from '../../_components/Gutter'
 import { Media as MediaComp } from '../../_components/Media'
+import { useJumpstartSettings } from '../../_providers/JumpstartSettings'
 import { inter } from '../../_utilities/font'
 import { getMonthName } from '../../_utilities/getMonthName'
 
@@ -28,6 +29,7 @@ export const NextEventBlock: React.FC<
   eventsLinkUrl = '/events',
   timezone = 'Europe/London',
 }) => {
+  const { jumpstartEnabled, jumpstartHeading } = useJumpstartSettings()
   const [docs, setDocs] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | undefined>(undefined)
@@ -35,6 +37,8 @@ export const NextEventBlock: React.FC<
   const isRequesting = useRef(false)
 
   useEffect(() => {
+    if (jumpstartEnabled) return
+
     let timer: NodeJS.Timeout = null
 
     if (!isRequesting.current) {
@@ -96,7 +100,31 @@ export const NextEventBlock: React.FC<
     return () => {
       if (timer) clearTimeout(timer)
     }
-  }, [])
+  }, [jumpstartEnabled])
+
+  if (jumpstartEnabled) {
+    return (
+      <div className={classes.background}>
+        {media && <MediaComp resource={media} className={classes.backgroundMedia} priority />}
+        <div className={[classes.container, inter.className].join(' ')}>
+          <div className={classes.text}>
+            <h3 className={classes.nextEvent}>{subheading}</h3>
+            <h1 className={classes.title}>{jumpstartHeading}</h1>
+          </div>
+          <div className={classes.info}>
+            <div className={classes.when}>
+              <div className={classes.date}>
+                <span className={[classes.day, classes.dayLabel].join(' ')}>Ongoing</span>
+              </div>
+            </div>
+            <Link href="/jumpstart" className={[classes.moreInfo, classes.link].join(' ')}>
+              {eventsLinkText}
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (isLoading) {
     return (

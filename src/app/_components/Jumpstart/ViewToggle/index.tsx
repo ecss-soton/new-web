@@ -18,7 +18,7 @@ export const JumpstartViewToggle: React.FC = () => {
       params.set('view', view)
     }
     const query = params.toString()
-    router.replace(query ? `/?${query}` : '/', { scroll: false })
+    router.replace(query ? `/jumpstart?${query}` : '/jumpstart', { scroll: false })
   }
 
   return (

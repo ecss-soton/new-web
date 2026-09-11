@@ -114,7 +114,7 @@ const Header: React.FC = () => {
         className={[classes.header, isScrolled ? classes.scrolled : ''].filter(Boolean).join(' ')}
       >
         <Gutter className={classes.wrap}>
-          <Link href="/" className={classes.home}>
+          <Link href={settings?.jumpstartEnabled ? '/?noredirect=1' : '/'} className={classes.home}>
             <ThemeImage
               className={classes.logo}
               src={logoSrc}
