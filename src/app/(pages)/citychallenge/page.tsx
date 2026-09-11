@@ -24,6 +24,9 @@ const CityChallengeMap = nextDynamic(
 
 type TeamRole = 'lead' | 'participant' | 'none'
 
+// Geographic cell size — must match CityChallengeTeams.ts and CityChallengeMap/index.tsx.
+const CELL_DEG = 0.001
+
 interface ResolvedTeam {
   id: string
   name: string
@@ -33,7 +36,8 @@ interface ResolvedTeam {
   teamLead: { id: string; name?: string | null; username?: string | null }
   members: { id: string; name?: string | null; username?: string | null }[]
   completedChallenges: string[]
-  discoveredAreas: { lat: number; lng: number }[]
+  /** Discovered geographic cell IDs in the form "latIdx:lngIdx". */
+  discoveredAreas: string[]
 }
 
 function resolveTeam(team: CityChallengeTeam): ResolvedTeam {
@@ -54,7 +58,20 @@ function resolveTeam(team: CityChallengeTeam): ResolvedTeam {
     return c as string
   })
 
-  const discoveredAreas = Array.isArray(team.discoveredAreas) ? team.discoveredAreas : []
+  // Normalize discoveredAreas to cell IDs, migrating legacy {lat,lng}[] data if present.
+  const rawAreas = Array.isArray(team.discoveredAreas) ? team.discoveredAreas : []
+  const discoveredAreas: string[] = (() => {
+    if (rawAreas.length === 0) return []
+    if (typeof rawAreas[0] === 'string') return rawAreas as string[]
+    // Legacy format: array of {lat, lng} point objects — convert to cell IDs client-side.
+    const cells = (rawAreas as { lat?: unknown; lng?: unknown }[])
+      .filter(
+        (p): p is { lat: number; lng: number } =>
+          typeof p.lat === 'number' && typeof p.lng === 'number',
+      )
+      .map(p => `${Math.floor(p.lat / CELL_DEG)}:${Math.floor(p.lng / CELL_DEG)}`)
+    return [...new Set(cells)]
+  })()
 
   return {
     id: team.id,
@@ -170,11 +187,7 @@ export default async function CityChallengePage({
           )}
 
           {team && (
-            <TeamRoster
-              teamName={team.name}
-              teamLead={team.teamLead}
-              members={team.members}
-            />
+            <TeamRoster teamName={team.name} teamLead={team.teamLead} members={team.members} />
           )}
         </div>
       )}

@@ -4,23 +4,29 @@ import { admins } from '../access/admins'
 import { user } from '../access/user'
 import type { CityChallengeTeam } from '../payload-types'
 
-interface DiscoveredPoint {
-  lat: number
-  lng: number
+// Geographic grid cell size in degrees. Must match the constant in CityChallengeMap/index.tsx.
+// At Southampton (~51°N): ≈111 m per degree latitude, ≈70 m per degree longitude.
+const CELL_DEG = 0.001
+
+function latLngToCell(lat: number, lng: number): string {
+  return `${Math.floor(lat / CELL_DEG)}:${Math.floor(lng / CELL_DEG)}`
 }
 
-function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const R = 6371000
-  const dLat = ((lat2 - lat1) * Math.PI) / 180
-  const dLng = ((lng2 - lng1) * Math.PI) / 180
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2)
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  return R * c
+/**
+ * Returns a deduplicated array of cell-ID strings from whatever is stored in
+ * discoveredAreas, migrating the legacy {lat,lng}[] format on first access.
+ */
+function migrateDiscoveredAreas(raw: unknown): string[] {
+  if (!Array.isArray(raw) || raw.length === 0) return []
+  if (typeof raw[0] === 'string') return raw as string[]
+  // Legacy format: array of {lat, lng} point objects.
+  const cells = (raw as { lat?: unknown; lng?: unknown }[])
+    .filter(
+      (p): p is { lat: number; lng: number } =>
+        typeof p.lat === 'number' && typeof p.lng === 'number',
+    )
+    .map(p => latLngToCell(p.lat, p.lng))
+  return [...new Set(cells)]
 }
 
 function isTeamMember(team: CityChallengeTeam, userId: string): boolean {
@@ -150,19 +156,15 @@ const CityChallengeTeams: CollectionConfig = {
             return res.status(400).json({ error: 'Invalid coordinates' })
           }
 
-          const existing: DiscoveredPoint[] = Array.isArray(team.discoveredAreas)
-            ? team.discoveredAreas
-            : []
+          // Migrate legacy {lat,lng}[] data to cell-ID string[] on first write.
+          const cells = migrateDiscoveredAreas(team.discoveredAreas)
+          const newCell = latLngToCell(lat, lng)
 
-          const isNovel = !existing.some(
-            point => haversineDistance(lat, lng, point.lat, point.lng) < 50,
-          )
-
-          if (!isNovel) {
-            return res.status(200).json({ discoveredAreas: existing, added: false })
+          if (cells.includes(newCell)) {
+            return res.status(200).json({ discoveredAreas: cells, added: false })
           }
 
-          const updated = [...existing, { lat, lng }]
+          const updated = [...cells, newCell]
 
           await req.payload.update({
             collection: 'city-challenge-teams',

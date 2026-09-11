@@ -137,8 +137,45 @@
   }
 }
 
-.scratchcard {
+.fogCanvas {
   // position and z-index set inline for proper Leaflet pane layering
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 12px;
+  padding: 0 4px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--jumpstart-muted);
+}
+
+.legendFog {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: rgba(18, 18, 20, 0.85);
+  border: 1px solid var(--jumpstart-card-border);
+  flex-shrink: 0;
+}
+
+.legendRevealed {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: transparent;
+  border: 1px solid var(--jumpstart-neon-lime);
+  flex-shrink: 0;
 }
 
 .empty {

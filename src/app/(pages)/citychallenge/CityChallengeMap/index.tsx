@@ -10,32 +10,14 @@ import 'leaflet/dist/leaflet.css'
 import classes from './index.module.scss'
 
 const SOUTHAMPTON: L.LatLngTuple = [50.935, -1.396]
-const DISCOVERY_RADIUS = 50
 const THROTTLE_MS = 10000
 
-interface DiscoveredPoint {
-  lat: number
-  lng: number
-}
+// Geographic grid cell size in degrees. Must match the value in CityChallengeTeams.ts.
+// At Southampton (~51°N): ≈111 m latitude per degree, ≈70 m longitude per degree.
+const CELL_DEG = 0.001
 
-function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const R = 6371000
-  const dLat = ((lat2 - lat1) * Math.PI) / 180
-  const dLng = ((lng2 - lng1) * Math.PI) / 180
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2)
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  return R * c
-}
-
-function isNovelPoint(point: DiscoveredPoint, existing: DiscoveredPoint[]): boolean {
-  return !existing.some(
-    p => haversineDistance(point.lat, point.lng, p.lat, p.lng) < DISCOVERY_RADIUS,
-  )
+function latLngToCell(lat: number, lng: number): string {
+  return `${Math.floor(lat / CELL_DEG)}:${Math.floor(lng / CELL_DEG)}`
 }
 
 function createMarkerIcon(
@@ -77,7 +59,7 @@ function createPopupContent(location: CityChallengeLocation, isCompleted: boolea
     popup.append(desc)
   }
 
-  // Determine destination: CMS link takes priority over generated Google Maps URL.
+  // Determine destination: CMS link takes priority over a generated Google Maps URL.
   let destinationHref: string | null = null
   if (location.link) {
     try {
@@ -113,7 +95,8 @@ type Props = {
   isAdmin?: boolean
   teamId: string
   token: string
-  discoveredAreas: DiscoveredPoint[]
+  /** Array of discovered cell IDs in the form "latIdx:lngIdx". */
+  discoveredAreas: string[]
   completedChallenges: string[]
 }
 
@@ -133,7 +116,7 @@ export const CityChallengeMap: React.FC<Props> = ({
 
   const [userPosition, setUserPosition] = useState<GeolocationPosition | null>(null)
   const [geoError, setGeoError] = useState<string | null>(null)
-  const [discoveredAreas, setDiscoveredAreas] = useState<DiscoveredPoint[]>(initialDiscovered)
+  const [discoveredAreas, setDiscoveredAreas] = useState<string[]>(initialDiscovered)
   const [copied, setCopied] = useState(false)
   const [mockLat, setMockLat] = useState('50.935')
   const [mockLng, setMockLng] = useState('-1.396')
@@ -155,10 +138,15 @@ export const CityChallengeMap: React.FC<Props> = ({
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    ctx.fillStyle = 'rgba(18, 18, 20, 0.82)'
+    const cells = discoveredAreasRef.current
+
+    // 1. Fill the entire canvas with the dark fog overlay.
+    ctx.globalCompositeOperation = 'source-over'
+    ctx.fillStyle = 'rgba(18, 18, 20, 0.85)'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)'
+    // 2. Subtle grid texture on the fog (pixel grid, purely decorative).
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)'
     ctx.lineWidth = 1
     const gridSize = 40
     for (let x = 0; x < canvas.width; x += gridSize) {
@@ -174,30 +162,40 @@ export const CityChallengeMap: React.FC<Props> = ({
       ctx.stroke()
     }
 
-    ctx.font = '14px monospace'
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.12)'
-    for (let x = 20; x < canvas.width; x += 80) {
-      for (let y = 20; y < canvas.height; y += 80) {
-        ctx.fillText('?', x, y)
-      }
+    // 3. Hint text before any cell has been discovered.
+    if (cells.length === 0) {
+      ctx.font = '13px Inter, sans-serif'
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'
+      ctx.textAlign = 'center'
+      ctx.fillText('Move around to reveal hidden locations', canvas.width / 2, canvas.height - 24)
     }
 
-    ctx.font = '13px Inter, sans-serif'
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.18)'
-    ctx.textAlign = 'center'
-    ctx.fillText('Move around to reveal hidden locations', canvas.width / 2, canvas.height - 24)
-
-    const areas = discoveredAreasRef.current
-    areas.forEach(point => {
-      const latlng = map.latLngToContainerPoint([point.lat, point.lng])
-      const radius = 80
-      ctx.save()
+    // 4. Erase fog pixels for each discovered geographic cell, revealing the map
+    //    tiles underneath. Cells are stable across pan and zoom because they are
+    //    derived from geographic coordinates, not screen pixels.
+    if (cells.length > 0) {
       ctx.globalCompositeOperation = 'destination-out'
-      ctx.beginPath()
-      ctx.arc(latlng.x, latlng.y, radius, 0, Math.PI * 2)
-      ctx.fill()
-      ctx.restore()
-    })
+      cells.forEach(cellId => {
+        const parts = cellId.split(':')
+        if (parts.length !== 2) return
+        const latIdx = Number(parts[0])
+        const lngIdx = Number(parts[1])
+        if (isNaN(latIdx) || isNaN(lngIdx)) return
+
+        const latMin = latIdx * CELL_DEG
+        const latMax = (latIdx + 1) * CELL_DEG
+        const lngMin = lngIdx * CELL_DEG
+        const lngMax = (lngIdx + 1) * CELL_DEG
+
+        // Leaflet: latitude increases upward, so the "top" of the cell is latMax.
+        const topLeft = map.latLngToContainerPoint([latMax, lngMin])
+        const bottomRight = map.latLngToContainerPoint([latMin, lngMax])
+
+        ctx.fillStyle = 'rgba(0,0,0,1)'
+        ctx.fillRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y)
+      })
+      ctx.globalCompositeOperation = 'source-over'
+    }
   }, [])
 
   const drawCanvasRef = useRef(drawCanvas)
@@ -224,7 +222,7 @@ export const CityChallengeMap: React.FC<Props> = ({
 
         if (res.ok) {
           const data = await res.json()
-          if (data.added && data.discoveredAreas) {
+          if (Array.isArray(data.discoveredAreas)) {
             setDiscoveredAreas(data.discoveredAreas)
           }
         }
@@ -254,7 +252,7 @@ export const CityChallengeMap: React.FC<Props> = ({
 
     const mapContainer = map.getContainer()
     const canvas = document.createElement('canvas')
-    canvas.className = classes.scratchcard
+    canvas.className = classes.fogCanvas
     canvas.style.cssText =
       'position:absolute;top:0;left:0;width:100%;height:100%;z-index:450;pointer-events:none;'
     mapContainer.appendChild(canvas)
@@ -366,15 +364,15 @@ export const CityChallengeMap: React.FC<Props> = ({
     }
   }, [mockEnabled, mockLat, mockLng])
 
-  // Discovery logic — event-driven with client-side dedup
+  // Discovery logic — check cell novelty, optimistically update locally, then sync to server.
   useEffect(() => {
     if (!userPosition) return
 
     const { latitude, longitude } = userPosition.coords
-    const point: DiscoveredPoint = { lat: latitude, lng: longitude }
+    const cellId = latLngToCell(latitude, longitude)
 
-    if (isNovelPoint(point, discoveredAreasRef.current)) {
-      setDiscoveredAreas(prev => [...prev, point])
+    if (!discoveredAreasRef.current.includes(cellId)) {
+      setDiscoveredAreas(prev => [...prev, cellId])
       postDiscovery(latitude, longitude)
     }
   }, [userPosition, postDiscovery])
@@ -389,14 +387,11 @@ export const CityChallengeMap: React.FC<Props> = ({
     }
   }
 
+  // A location is "discovered" when the team has revealed the grid cell it sits in.
   const discoveredCount = useMemo(() => {
     return locations.filter(loc => {
       if (typeof loc.latitude !== 'number' || typeof loc.longitude !== 'number') return false
-      return discoveredAreas.some(
-        p =>
-          haversineDistance(p.lat, p.lng, loc.latitude, loc.longitude) <=
-          (loc.discoveryRadius ?? 50),
-      )
+      return discoveredAreas.includes(latLngToCell(loc.latitude, loc.longitude))
     }).length
   }, [locations, discoveredAreas])
 
@@ -434,7 +429,7 @@ export const CityChallengeMap: React.FC<Props> = ({
         </div>
       </header>
       <p className={classes.intro}>
-        Explore Southampton to uncover ci
+        Explore Southampton to uncover city challenges hidden around you.
       </p>
       <div className={classes.mapContainer}>
         {totalCount === 0 ? (
@@ -442,6 +437,16 @@ export const CityChallengeMap: React.FC<Props> = ({
         ) : (
           <div ref={mapContainerRef} className={classes.map} />
         )}
+      </div>
+      <div className={classes.legend} role="note" aria-label="Map legend">
+        <span className={classes.legendItem}>
+          <span className={classes.legendFog} aria-hidden="true" />
+          Unexplored
+        </span>
+        <span className={classes.legendItem}>
+          <span className={classes.legendRevealed} aria-hidden="true" />
+          Discovered
+        </span>
       </div>
       {isAdmin && (
         <div className={classes.mockPanel}>
