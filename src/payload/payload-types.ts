@@ -760,7 +760,6 @@ export interface Event {
     | {
         [k: string]: unknown;
       }[]
-    | string
     | null;
   link?: string | null;
   image?: string | Media | null;
