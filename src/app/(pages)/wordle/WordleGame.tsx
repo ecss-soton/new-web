@@ -300,15 +300,12 @@ export const WordleGame: React.FC<WordleGameProps> = ({
 
         setIsProcessingGuess(true)
         try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_SERVER_URL}/api/wordle-scores/guess`,
-            {
-              method: 'POST',
-              credentials: 'include',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ date: todayDate, guess: currentGuess, isLastGuess }),
-            },
-          )
+          const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/wordle-scores/guess`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ date: todayDate, guess: currentGuess, isLastGuess }),
+          })
 
           const data = await res.json()
 
@@ -441,7 +438,7 @@ export const WordleGame: React.FC<WordleGameProps> = ({
           const rowClasses = [classes.row, isCurrentRow && shakeRow ? classes.shake : ''].join(' ')
 
           const isSubmitted = rowIndex < guesses.length
-          const rowStatuses = isSubmitted ? (guessStatuses[rowIndex] || []) : []
+          const rowStatuses = isSubmitted ? guessStatuses[rowIndex] || [] : []
 
           return (
             <div key={rowIndex} className={rowClasses}>

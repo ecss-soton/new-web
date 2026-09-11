@@ -39,7 +39,7 @@ export const PrettyPrintLink: () => JSX.Element = () => {
     }
 
     fetchData()
-  }, [data])
+  }, [id])
 
   if (error) {
     return <p>{error}</p>

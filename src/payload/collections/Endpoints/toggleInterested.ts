@@ -1,5 +1,10 @@
 import type { PayloadHandler } from 'payload/config'
 
+type RelationshipValue = string | { id: string }
+
+const getRelationId = (value: RelationshipValue): string =>
+  typeof value === 'string' ? value : value.id
+
 export const toggleInterested: PayloadHandler = async (req, res) => {
   const { user, payload } = req
   const eventId = req.params.id
@@ -20,8 +25,7 @@ export const toggleInterested: PayloadHandler = async (req, res) => {
       return res.status(404).json({ error: 'Event not found' })
     }
 
-    const getUserId = (u: any): any => (typeof u === 'string' ? u : u.id)
-    const interestedUsers = (event.interestedUsers || []).map(getUserId)
+    const interestedUsers = (event.interestedUsers || []).map(getRelationId)
     const isInterested = interestedUsers.includes(user.id)
 
     let updatedEvent
@@ -53,8 +57,7 @@ export const toggleInterested: PayloadHandler = async (req, res) => {
       id: user.id,
       depth: 0,
     })
-    const getEventId = (e: any): any => (typeof e === 'string' ? e : e.id)
-    const userEvents = (userDoc.interestedEvents || []).map(getEventId)
+    const userEvents = (userDoc.interestedEvents || []).map(getRelationId)
 
     if (isInterested) {
       await payload.update({

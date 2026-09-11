@@ -7,6 +7,7 @@ import type { Event } from '../../../../payload/payload-types'
 import { Media } from '../../../_components/Media'
 import RichText from '../../../_components/RichText'
 import { bungee, inter } from '../../../_utilities/font'
+import { getSafeHref } from '../../../_utilities/getSafeHref'
 
 import classes from './index.module.scss'
 
@@ -55,6 +56,8 @@ export const JumpstartEventCard: React.FC<Props> = ({ event, index }) => {
     event
 
   const [isExpanded, setIsExpanded] = useState(false)
+
+  const safeLink = getSafeHref(link)
 
   const catKey = jumpstartCategory && CATEGORY_COLORS[jumpstartCategory] ? jumpstartCategory : null
   const catColor = catKey ? CATEGORY_COLORS[catKey] : 'var(--jumpstart-neon-magenta)'
@@ -118,9 +121,9 @@ export const JumpstartEventCard: React.FC<Props> = ({ event, index }) => {
               GET ME THERE
             </a>
           )}
-          {link && link.startsWith('https://') && (
+          {safeLink && (
             <a
-              href={link}
+              href={safeLink}
               target="_blank"
               rel="noopener noreferrer"
               className={[classes.linkButton, bungee.className].join(' ')}

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -27,13 +27,15 @@ export const HeaderNav: React.FC<HeaderNavComponentProps> = ({
   const currentPath = usePathname()
 
   const [isOpen, setIsOpen] = useState(false)
+  const previousPath = useRef(currentPath)
 
   useEffect(() => {
-    if (isOpen) {
+    if (previousPath.current !== currentPath) {
+      previousPath.current = currentPath
       setIsOpen(false)
       onToggleMenu(false)
     }
-  }, [currentPath])
+  }, [currentPath, onToggleMenu])
 
   const toggleMenu = () => {
     const newIsOpen = !isOpen

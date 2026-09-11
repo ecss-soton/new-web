@@ -283,16 +283,14 @@ export const CollectionArchive: React.FC<Props> = props => {
                 <p className={classes.emptySubtext}>Check back soon for upcoming events.</p>
               </div>
             )}
-          {relationTo === 'sponsors' &&
-            isDataReady &&
-            (results.docs?.length ?? 0) === 0 && (
-              <div className={classes.emptyState}>
-                <p className={[classes.emptyHeading, inter.className].join(' ')}>No sponsors yet</p>
-                <p className={classes.emptySubtext}>
-                  Interested in sponsoring ECSS? Get in touch with us.
-                </p>
-              </div>
-            )}
+          {relationTo === 'sponsors' && isDataReady && (results.docs?.length ?? 0) === 0 && (
+            <div className={classes.emptyState}>
+              <p className={[classes.emptyHeading, inter.className].join(' ')}>No sponsors yet</p>
+              <p className={classes.emptySubtext}>
+                Interested in sponsoring ECSS? Get in touch with us.
+              </p>
+            </div>
+          )}
           {relationTo === 'events' ? (
             <div className={classes.eventsViewWrapper}>
               <div className={classes.viewToggleRow}>

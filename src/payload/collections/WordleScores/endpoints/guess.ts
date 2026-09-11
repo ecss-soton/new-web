@@ -1,7 +1,7 @@
 import type { PayloadHandler } from 'payload/config'
 
-import { getDailyWord, getTodayDate } from '../../../app/(pages)/wordle/techWords'
-import VALID_WORDS from '../../../app/(pages)/wordle/validWords.json'
+import { getDailyWord, getTodayDate } from '../../../../app/(pages)/wordle/techWords'
+import VALID_WORDS from '../../../../app/(pages)/wordle/validWords.json'
 
 type TileStatus = 'correct' | 'present' | 'absent'
 
@@ -42,7 +42,11 @@ export const guess: PayloadHandler = async (req, res): Promise<void> => {
     return
   }
 
-  const { date, guess: guessWord, isLastGuess } = req.body as {
+  const {
+    date,
+    guess: guessWord,
+    isLastGuess,
+  } = req.body as {
     date?: string
     guess?: string
     isLastGuess?: boolean

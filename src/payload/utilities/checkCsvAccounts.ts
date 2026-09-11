@@ -12,6 +12,13 @@ interface UserFindResult {
   totalDocs: number
 }
 
+interface UserDocLike {
+  id: string | number
+  email?: string | null
+  username?: string | null
+  roles?: Array<'admin' | 'user' | 'susu'> | null
+}
+
 export interface CsvAccountCheckStats {
   totalProcessed: number
   matchedRows: number
@@ -175,7 +182,7 @@ export const runCheckSingleUserFromCsvFile = async ({
 }: {
   payload: PayloadLike
   csvFilePath: string
-  userDoc: any
+  userDoc: UserDocLike
   role?: 'admin' | 'user' | 'susu'
 }): Promise<void> => {
   if (!fs.existsSync(csvFilePath)) {

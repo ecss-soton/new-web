@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../../access/admins'
 import { user } from '../../access/user'
+import type { User } from '../../payload-types'
 import { guess as guessHandler } from './endpoints/guess'
 import { leaderboard } from './endpoints/leaderboard'
 import { saveScore } from './endpoints/saveScore'
@@ -14,7 +15,7 @@ const WordleScores: CollectionConfig = {
     // Anonymous users see nothing; authenticated users see only their own scores; admins see all.
     read: ({ req: { user: reqUser } }) => {
       if (!reqUser) return false
-      if ((reqUser as any).roles?.includes('admin')) return true
+      if ((reqUser as User).roles?.includes('admin')) return true
       return { user: { equals: reqUser.id } }
     },
     create: user,

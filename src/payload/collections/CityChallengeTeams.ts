@@ -20,7 +20,7 @@ function migrateDiscoveredAreas(raw: unknown): string[] {
   if (!Array.isArray(raw) || raw.length === 0) return []
   if (typeof raw[0] === 'string') return raw as string[]
   // Legacy format: array of {lat, lng} point objects.
-  const cells = (raw as { lat?: unknown; lng?: unknown }[])
+  const cells = (raw as Array<{ lat?: unknown; lng?: unknown }>)
     .filter(
       (p): p is { lat: number; lng: number } =>
         typeof p.lat === 'number' && typeof p.lng === 'number',

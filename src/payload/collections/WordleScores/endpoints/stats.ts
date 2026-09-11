@@ -1,5 +1,7 @@
 import type { PayloadHandler } from 'payload/config'
 
+import type { WordleScore } from '../../../payload-types'
+
 const isNextDay = (prev: string, next: string): boolean => {
   const p = new Date(prev)
   const n = new Date(next)
@@ -38,14 +40,14 @@ export const stats: PayloadHandler = async (req, res): Promise<void> => {
       limit: 0,
     })
 
-    const allScores = scores.docs
+    const allScores = scores.docs as WordleScore[]
     const totalGames = allScores.length
-    const totalWins = allScores.filter((s: any) => s.solved).length
+    const totalWins = allScores.filter(s => s.solved).length
     const winRate = totalGames > 0 ? totalWins / totalGames : 0
-    const solvedScores = allScores.filter((s: any) => s.solved)
+    const solvedScores = allScores.filter(s => s.solved)
     const avgGuesses =
       solvedScores.length > 0
-        ? solvedScores.reduce((sum: number, s: any) => sum + s.guesses, 0) / solvedScores.length
+        ? solvedScores.reduce((sum, s) => sum + s.guesses, 0) / solvedScores.length
         : 0
 
     let currentStreak = 0
@@ -58,11 +60,8 @@ export const stats: PayloadHandler = async (req, res): Promise<void> => {
     let expectedDate = today
 
     for (const score of reversed) {
-      const scoreDate =
-        typeof (score as any).date === 'string'
-          ? (score as any).date
-          : toYYYYMMDD((score as any).date)
-      if ((score as any).solved && (expectedDate === today || scoreDate === expectedDate)) {
+      const scoreDate = typeof score.date === 'string' ? score.date : toYYYYMMDD(score.date)
+      if (score.solved && (expectedDate === today || scoreDate === expectedDate)) {
         currentStreak++
         const next = new Date(scoreDate)
         next.setDate(next.getDate() - 1)
@@ -73,11 +72,8 @@ export const stats: PayloadHandler = async (req, res): Promise<void> => {
     }
 
     for (const score of allScores) {
-      const scoreDate =
-        typeof (score as any).date === 'string'
-          ? (score as any).date
-          : toYYYYMMDD((score as any).date)
-      if ((score as any).solved) {
+      const scoreDate = typeof score.date === 'string' ? score.date : toYYYYMMDD(score.date)
+      if (score.solved) {
         if (!prevDate || isNextDay(prevDate, scoreDate)) {
           streak++
         } else {
@@ -90,7 +86,7 @@ export const stats: PayloadHandler = async (req, res): Promise<void> => {
       prevDate = scoreDate
     }
 
-    const latestScore = reversed[0] as any
+    const latestScore = reversed[0]
     const displayName = latestScore?.displayName || ''
 
     const rating = computeRating(winRate, totalWins, currentStreak, maxStreak, avgGuesses)

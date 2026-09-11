@@ -3,8 +3,6 @@ import moment from 'moment-timezone'
 import nextDynamic from 'next/dynamic'
 
 import type { Event, Settings } from '../../../payload/payload-types'
-import { fetchDocs } from '../../_api/fetchDoc'
-import { fetchSettings } from '../../_api/fetchGlobals'
 import { JumpstartFaq } from './Faq'
 import { JumpstartHero } from './JumpstartHero'
 import { JumpstartTimeline } from './Timeline'
@@ -17,10 +15,9 @@ const JumpstartViewToggle = nextDynamic(
   { ssr: false },
 )
 
-const JumpstartMapView = nextDynamic(
-  () => import('./MapView').then(mod => mod.JumpstartMapView),
-  { ssr: false },
-)
+const JumpstartMapView = nextDynamic(() => import('./MapView').then(mod => mod.JumpstartMapView), {
+  ssr: false,
+})
 
 const TIMEZONE = 'Europe/London'
 
@@ -49,24 +46,15 @@ const computeDateRange = (events: Event[]): string | null => {
 
 type Props = {
   currentView?: string
+  settings: Settings | null
+  events: Event[]
 }
 
-export const JumpstartPageContent: React.FC<Props> = async ({ currentView = 'timeline' }) => {
-  let settings: Settings | null = null
-  let events: Event[] = []
-
-  try {
-    settings = await fetchSettings()
-  } catch (_error) {
-    // swallow
-  }
-
-  try {
-    events = await fetchDocs<Event>('events')
-  } catch (_error) {
-    // swallow
-  }
-
+export const JumpstartPageContent: React.FC<Props> = ({
+  currentView = 'timeline',
+  settings,
+  events,
+}) => {
   const jumpstartEvents = events.filter(e => e.isJumpstart)
   const heading = settings?.jumpstartHeading || 'Jumpstart'
   const subtitle = settings?.jumpstartSubtitle || undefined

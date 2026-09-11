@@ -4,9 +4,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { Event, Media } from '../../../payload/payload-types'
-import RichText from '../RichText'
 import { inter } from '../../_utilities/font'
 import { getMonthName } from '../../_utilities/getMonthName'
+import RichText from '../RichText'
 import { InterestedButton } from './InterestedButton'
 
 import classes from './index.module.scss'
@@ -23,7 +23,8 @@ function extractPlainText(nodes: { text?: string; children?: unknown[] }[]): str
 
 function getDescriptionLength(desc: unknown): number {
   if (typeof desc === 'string') return desc.length
-  if (Array.isArray(desc)) return extractPlainText(desc as { text?: string; children?: unknown[] }[]).length
+  if (Array.isArray(desc))
+    return extractPlainText(desc as { text?: string; children?: unknown[] }[]).length
   return 0
 }
 
@@ -143,11 +144,7 @@ export const EventItem: React.FC<{
                 return (
                   <>
                     <div className={!isExpanded ? classes.truncatedDesc : ''}>
-                      {isRich ? (
-                        <RichText content={rawDesc} />
-                      ) : (
-                        <>{rawDesc as string}</>
-                      )}
+                      {isRich ? <RichText content={rawDesc} /> : <>{rawDesc as string}</>}
                     </div>
                     {event._status == 'draft' && (
                       <p>This is a Draft, it won&apos;t show for all users.</p>

@@ -8,7 +8,7 @@ export const toggleWebhook: PayloadHandler = async (req, res) => {
   // We'll extract: body.content, body.id (message id), body.author
 
   try {
-    if (!body || !body.id) {
+    if (!body?.id) {
       return res.status(400).json({ error: 'Missing Discord Message ID' })
     }
 
