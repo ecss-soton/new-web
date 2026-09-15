@@ -38,7 +38,7 @@ const getDestinationLink = (
   location: CityChallengeLocation,
 ): { href: string; label: string } | null => {
   const safe = getSafeLink(location.link)
-  if (safe) return { href: safe, label: 'Get me there →' }
+  if (safe) return { href: safe, label: 'Open link now' }
 
   if (typeof location.latitude === 'number' && typeof location.longitude === 'number') {
     return {
@@ -112,6 +112,10 @@ export const ChallengeList: React.FC<Props> = ({
 
   return (
     <div className={classes.container}>
+      {isLead && (
+        <p className={classes.leadHint}>Tick each task off once all of your team has done it.</p>
+      )}
+
       <div className={classes.progress}>
         <span className={classes.progressText}>
           {completedCount} / {totalCount} completed

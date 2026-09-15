@@ -180,10 +180,6 @@ export default async function CityChallengePage({
         <NoTeamMessage />
       ) : (
         <div>
-          {role === 'lead' && team && (
-            <TeamPanel teamId={team.id} teamName={team.name} members={team.members} token={token} />
-          )}
-
           <CityChallengeViewToggle />
 
           {currentView === 'list' && team ? (
@@ -209,9 +205,17 @@ export default async function CityChallengePage({
             )
           )}
 
-          {team && (
-            <TeamRoster teamName={team.name} teamLead={team.teamLead} members={team.members} />
-          )}
+          {team &&
+            (role === 'lead' ? (
+              <TeamPanel
+                teamId={team.id}
+                teamName={team.name}
+                members={team.members}
+                token={token}
+              />
+            ) : (
+              <TeamRoster teamName={team.name} teamLead={team.teamLead} members={team.members} />
+            ))}
         </div>
       )}
     </div>

@@ -1,11 +1,23 @@
 @import '../../../_css/common';
 
 .roster {
+  max-width: 800px;
+  margin: 40px auto 0;
   background: var(--jumpstart-card);
   border: 2px solid var(--jumpstart-card-border);
   border-radius: 12px;
-  padding: 20px 24px;
-  margin-top: 24px;
+  padding: 24px 32px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
+
+  @include mid-break {
+    margin-top: 32px;
+    padding: 20px 24px;
+  }
+
+  @include small-break {
+    margin-top: 24px;
+    padding: 18px 16px;
+  }
 }
 
 .rosterTitle {

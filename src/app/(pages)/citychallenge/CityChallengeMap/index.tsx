@@ -62,10 +62,14 @@ function createPopupContent(location: CityChallengeLocation, isCompleted: boolea
 
   // Determine destination: CMS link takes priority over a generated Google Maps URL.
   let destinationHref: string | null = null
+  let destinationLabel = 'Get me there →'
   if (location.link) {
     try {
       const parsed = new URL(location.link)
-      if (parsed.protocol === 'https:') destinationHref = parsed.href
+      if (parsed.protocol === 'https:') {
+        destinationHref = parsed.href
+        destinationLabel = 'Open link now'
+      }
     } catch {
       // invalid URL — ignore
     }
@@ -84,7 +88,7 @@ function createPopupContent(location: CityChallengeLocation, isCompleted: boolea
     link.href = destinationHref
     link.target = '_blank'
     link.rel = 'noopener noreferrer'
-    link.textContent = 'Get me there →'
+    link.textContent = destinationLabel
     popup.append(link)
   }
 
