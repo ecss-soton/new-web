@@ -4,21 +4,19 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import L from 'leaflet'
 
 import type { CityChallengeLocation } from '../../../../payload/payload-types'
+import {
+  cellBounds,
+  getExploredPercentage,
+  latLngToCell,
+  MAX_DISCOVERY_BATCH,
+} from '../../../_utilities/cityChallenge'
 
 import 'leaflet/dist/leaflet.css'
 
 import classes from './index.module.scss'
 
 const SOUTHAMPTON: L.LatLngTuple = [50.935, -1.396]
-const THROTTLE_MS = 10000
-
-// Geographic grid cell size in degrees. Must match the value in CityChallengeTeams.ts.
-// At Southampton (~51°N): ≈111 m latitude per degree, ≈70 m longitude per degree.
-const CELL_DEG = 0.001
-
-function latLngToCell(lat: number, lng: number): string {
-  return `${Math.floor(lat / CELL_DEG)}:${Math.floor(lng / CELL_DEG)}`
-}
+const THROTTLE_MS = 8000
 
 function createMarkerIcon(
   location: CityChallengeLocation,
@@ -61,10 +59,14 @@ function createPopupContent(location: CityChallengeLocation, isCompleted: boolea
 
   // Determine destination: CMS link takes priority over a generated Google Maps URL.
   let destinationHref: string | null = null
+  let destinationLabel = 'Get me there →'
   if (location.link) {
     try {
       const parsed = new URL(location.link)
-      if (parsed.protocol === 'https:') destinationHref = parsed.href
+      if (parsed.protocol === 'https:') {
+        destinationHref = parsed.href
+        destinationLabel = 'Open link now'
+      }
     } catch {
       // invalid URL — ignore
     }
@@ -83,7 +85,7 @@ function createPopupContent(location: CityChallengeLocation, isCompleted: boolea
     link.href = destinationHref
     link.target = '_blank'
     link.rel = 'noopener noreferrer'
-    link.textContent = 'Get me there →'
+    link.textContent = destinationLabel
     popup.append(link)
   }
 
@@ -98,7 +100,10 @@ type Props = {
   /** Array of discovered cell IDs in the form "latIdx:lngIdx". */
   discoveredAreas: string[]
   completedChallenges: string[]
+  error?: string | null
 }
+
+type Point = { lat: number; lng: number }
 
 export const CityChallengeMap: React.FC<Props> = ({
   locations,
@@ -107,15 +112,24 @@ export const CityChallengeMap: React.FC<Props> = ({
   token,
   discoveredAreas: initialDiscovered,
   completedChallenges,
+  error: locationsError,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const markersRef = useRef<Map<string, L.Marker>>(new Map())
-  const lastPostRef = useRef<number>(0)
+  const initTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const rafRef = useRef<number | null>(null)
+
+  // Discovery queue — positions are buffered so the throttle never drops a cell.
+  const pendingRef = useRef<Point[]>([])
+  const flushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const lastFlushRef = useRef<number>(0)
+  const flushingRef = useRef<boolean>(false)
 
   const [userPosition, setUserPosition] = useState<GeolocationPosition | null>(null)
   const [geoError, setGeoError] = useState<string | null>(null)
+  const [syncError, setSyncError] = useState<string | null>(null)
   const [discoveredAreas, setDiscoveredAreas] = useState<string[]>(initialDiscovered)
   const [copied, setCopied] = useState(false)
   const [mockLat, setMockLat] = useState('50.935')
@@ -132,8 +146,15 @@ export const CityChallengeMap: React.FC<Props> = ({
     if (!map || !canvas) return
 
     const container = map.getContainer()
-    canvas.width = container.clientWidth
-    canvas.height = container.clientHeight
+    if (!container.clientWidth || !container.clientHeight) return
+
+    // The fog lives inside a Leaflet pane (above tiles, below markers), so the
+    // map pane's transform would otherwise drag it around. Counter that transform
+    // to keep the canvas viewport-fixed; holes are drawn in container coordinates.
+    const size = map.getSize()
+    canvas.width = size.x
+    canvas.height = size.y
+    L.DomUtil.setPosition(canvas, map.containerPointToLayerPoint([0, 0]))
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
@@ -176,16 +197,9 @@ export const CityChallengeMap: React.FC<Props> = ({
     if (cells.length > 0) {
       ctx.globalCompositeOperation = 'destination-out'
       cells.forEach(cellId => {
-        const parts = cellId.split(':')
-        if (parts.length !== 2) return
-        const latIdx = Number(parts[0])
-        const lngIdx = Number(parts[1])
-        if (isNaN(latIdx) || isNaN(lngIdx)) return
-
-        const latMin = latIdx * CELL_DEG
-        const latMax = (latIdx + 1) * CELL_DEG
-        const lngMin = lngIdx * CELL_DEG
-        const lngMax = (lngIdx + 1) * CELL_DEG
+        const bounds = cellBounds(cellId)
+        if (!bounds) return
+        const { latMin, latMax, lngMin, lngMax } = bounds
 
         // Leaflet: latitude increases upward, so the "top" of the cell is latMax.
         const topLeft = map.latLngToContainerPoint([latMax, lngMin])
@@ -201,37 +215,83 @@ export const CityChallengeMap: React.FC<Props> = ({
   const drawCanvasRef = useRef(drawCanvas)
   drawCanvasRef.current = drawCanvas
 
-  const postDiscovery = useCallback(
-    async (lat: number, lng: number) => {
-      const now = Date.now()
-      if (now - lastPostRef.current < THROTTLE_MS) return
-      lastPostRef.current = now
+  // Coalesce redraws to one per animation frame so the fog holes track the map
+  // continuously while panning/zooming instead of only snapping on release.
+  const scheduleDraw = useCallback(() => {
+    if (rafRef.current !== null) return
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null
+      drawCanvasRef.current()
+    })
+  }, [])
 
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/city-challenge-teams/${teamId}/discover`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `JWT ${token}`,
-            },
-            body: JSON.stringify({ lat, lng }),
+  const scheduleDrawRef = useRef(scheduleDraw)
+  scheduleDrawRef.current = scheduleDraw
+
+  const flushDiscoveries = useCallback(async () => {
+    if (flushingRef.current) return
+    const batch = pendingRef.current.splice(0, MAX_DISCOVERY_BATCH)
+    if (batch.length === 0) return
+
+    flushingRef.current = true
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/city-challenge-teams/${teamId}/discover`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `JWT ${token}`,
           },
-        )
+          body: JSON.stringify({ points: batch }),
+        },
+      )
 
-        if (res.ok) {
-          const data = await res.json()
-          if (Array.isArray(data.discoveredAreas)) {
-            setDiscoveredAreas(data.discoveredAreas)
-          }
+      if (res.ok) {
+        const data = await res.json()
+        if (Array.isArray(data.discoveredAreas)) {
+          // Union with any cells added optimistically since the request started.
+          setDiscoveredAreas(prev =>
+            Array.from(new Set([...prev, ...(data.discoveredAreas as string[])])),
+          )
         }
-      } catch {
-        // network error — silent
+        setSyncError(null)
+      } else {
+        pendingRef.current.unshift(...batch)
+        setSyncError('Discoveries are not syncing — will retry.')
       }
-    },
-    [teamId, token],
-  )
+    } catch {
+      pendingRef.current.unshift(...batch)
+      setSyncError('Discoveries are not syncing — will retry.')
+    } finally {
+      flushingRef.current = false
+
+      // Trailing flush: guarantee buffered positions are eventually sent.
+      if (pendingRef.current.length > 0 && !flushTimerRef.current) {
+        const wait = Math.max(0, THROTTLE_MS - (Date.now() - lastFlushRef.current))
+        flushTimerRef.current = setTimeout(() => {
+          flushTimerRef.current = null
+          lastFlushRef.current = Date.now()
+          flushDiscoveriesRef.current()
+        }, wait)
+      }
+    }
+  }, [teamId, token])
+
+  const flushDiscoveriesRef = useRef(flushDiscoveries)
+  flushDiscoveriesRef.current = flushDiscoveries
+
+  const enqueueDiscovery = useCallback((lat: number, lng: number) => {
+    pendingRef.current.push({ lat, lng })
+    if (flushTimerRef.current) return
+
+    const wait = Math.max(0, THROTTLE_MS - (Date.now() - lastFlushRef.current))
+    flushTimerRef.current = setTimeout(() => {
+      flushTimerRef.current = null
+      lastFlushRef.current = Date.now()
+      flushDiscoveriesRef.current()
+    }, wait)
+  }, [])
 
   // Initialize map
   useEffect(() => {
@@ -241,30 +301,62 @@ export const CityChallengeMap: React.FC<Props> = ({
       center: SOUTHAMPTON,
       zoom: 15,
       zoomControl: false,
-      attributionControl: false,
     })
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map)
 
     mapRef.current = map
 
     const mapContainer = map.getContainer()
+
+    // Guarantee a single fog layer: remove any orphaned canvas left behind by a
+    // previous mount (e.g. React StrictMode's dev double-invoke) before adding ours.
+    mapContainer.querySelectorAll('[data-fog-canvas]').forEach(node => node.remove())
+
+    // Put the fog in its own pane so it renders above map tiles but below the
+    // marker pane (z-index 600), leaving pins/popups crisp on top of the fog.
+    const fogPane = map.createPane('cityChallengeFog')
+    fogPane.style.zIndex = '450'
+    fogPane.style.pointerEvents = 'none'
+
     const canvas = document.createElement('canvas')
+    canvas.dataset.fogCanvas = 'true'
     canvas.className = classes.fogCanvas
-    canvas.style.cssText =
-      'position:absolute;top:0;left:0;width:100%;height:100%;z-index:450;pointer-events:none;'
-    mapContainer.appendChild(canvas)
+    canvas.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;'
+    fogPane.appendChild(canvas)
     canvasRef.current = canvas
 
-    const handleMove = () => drawCanvasRef.current()
+    const handleMove = () => scheduleDrawRef.current()
+    const handleResize = () => {
+      map.invalidateSize()
+      drawCanvasRef.current()
+    }
+    map.on('move', handleMove)
     map.on('moveend', handleMove)
+    map.on('zoom', handleMove)
     map.on('zoomend', handleMove)
+    window.addEventListener('resize', handleResize)
 
-    setTimeout(() => drawCanvasRef.current(), 300)
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(handleResize) : null
+    resizeObserver?.observe(mapContainer)
+
+    initTimerRef.current = setTimeout(() => drawCanvasRef.current(), 300)
 
     return () => {
+      if (initTimerRef.current) clearTimeout(initTimerRef.current)
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
+      if (flushTimerRef.current) {
+        clearTimeout(flushTimerRef.current)
+        flushTimerRef.current = null
+      }
+      window.removeEventListener('resize', handleResize)
+      resizeObserver?.disconnect()
+      canvas.remove()
       map.remove()
       mapRef.current = null
       canvasRef.current = null
@@ -364,7 +456,7 @@ export const CityChallengeMap: React.FC<Props> = ({
     }
   }, [mockEnabled, mockLat, mockLng])
 
-  // Discovery logic — check cell novelty, optimistically update locally, then sync to server.
+  // Discovery logic — check cell novelty, optimistically update locally, then queue for sync.
   useEffect(() => {
     if (!userPosition) return
 
@@ -372,10 +464,10 @@ export const CityChallengeMap: React.FC<Props> = ({
     const cellId = latLngToCell(latitude, longitude)
 
     if (!discoveredAreasRef.current.includes(cellId)) {
-      setDiscoveredAreas(prev => [...prev, cellId])
-      postDiscovery(latitude, longitude)
+      setDiscoveredAreas(prev => (prev.includes(cellId) ? prev : [...prev, cellId]))
+      enqueueDiscovery(latitude, longitude)
     }
-  }, [userPosition, postDiscovery])
+  }, [userPosition, enqueueDiscovery])
 
   const copyLink = async () => {
     try {
@@ -399,6 +491,9 @@ export const CityChallengeMap: React.FC<Props> = ({
     loc => typeof loc.latitude === 'number' && typeof loc.longitude === 'number',
   ).length
 
+  // Percentage of the Southampton play area the team has revealed.
+  const exploredPercent = useMemo(() => getExploredPercentage(discoveredAreas), [discoveredAreas])
+
   return (
     <div className={classes.wrapper}>
       <header className={classes.header}>
@@ -406,6 +501,9 @@ export const CityChallengeMap: React.FC<Props> = ({
         <div className={classes.stats}>
           <span className={classes.stat}>
             Discovered: {discoveredCount} / {totalCount}
+          </span>
+          <span className={[classes.stat, classes.statExplored].join(' ')}>
+            Southampton explored: {exploredPercent.toFixed(1)}%
           </span>
         </div>
         <div className={classes.actions}>
@@ -426,13 +524,22 @@ export const CityChallengeMap: React.FC<Props> = ({
             {copied ? 'Copied!' : 'Copy link'}
           </button>
           {geoError && <span className={classes.geoError}>{geoError}</span>}
+          {syncError && (
+            <span className={classes.geoError} role="status">
+              {syncError}
+            </span>
+          )}
         </div>
       </header>
       <p className={classes.intro}>
         Explore Southampton to uncover city challenges hidden around you.
       </p>
       <div className={classes.mapContainer}>
-        {totalCount === 0 ? (
+        {locationsError ? (
+          <div className={classes.empty} role="alert">
+            {locationsError}
+          </div>
+        ) : totalCount === 0 ? (
           <div className={classes.empty}>No locations available yet.</div>
         ) : (
           <div ref={mapContainerRef} className={classes.map} />

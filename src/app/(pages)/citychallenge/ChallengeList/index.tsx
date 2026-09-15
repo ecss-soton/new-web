@@ -13,6 +13,8 @@ type Props = {
   isLead: boolean
   teamId: string
   token: string
+  error?: string | null
+  exploredPercent?: number
 }
 
 const NO_ZONE = 'No Zone'
@@ -37,7 +39,7 @@ const getDestinationLink = (
   location: CityChallengeLocation,
 ): { href: string; label: string } | null => {
   const safe = getSafeLink(location.link)
-  if (safe) return { href: safe, label: 'Get me there →' }
+  if (safe) return { href: safe, label: 'Open link now' }
 
   if (typeof location.latitude === 'number' && typeof location.longitude === 'number') {
     return {
@@ -55,9 +57,12 @@ export const ChallengeList: React.FC<Props> = ({
   isLead,
   teamId,
   token,
+  error: initialError,
+  exploredPercent = 0,
 }) => {
   const [completed, setCompleted] = useState<string[]>(initialCompleted)
   const [submitting, setSubmitting] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(initialError ?? null)
 
   const groups = useMemo(() => {
     const sorted = [...locations].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
@@ -73,6 +78,7 @@ export const ChallengeList: React.FC<Props> = ({
   const toggleComplete = async (locationId: string) => {
     if (submitting) return
     setSubmitting(locationId)
+    setError(null)
 
     try {
       const res = await fetch(
@@ -87,22 +93,31 @@ export const ChallengeList: React.FC<Props> = ({
         },
       )
 
-      if (res.ok) {
-        const data = await res.json()
-        setCompleted(data.completedChallenges ?? [])
+      const data = await res.json().catch(() => ({}))
+
+      if (!res.ok) {
+        setError(data.error || 'Failed to update challenge')
+        return
       }
+
+      setCompleted(data.completedChallenges ?? [])
     } catch {
-      // network error — silent
+      setError('Network error — please try again')
     } finally {
       setSubmitting(null)
     }
   }
 
-  const completedCount = completed.length
+  const locationIds = useMemo(() => new Set(locations.map(location => location.id)), [locations])
+  const completedCount = completed.filter(id => locationIds.has(id)).length
   const totalCount = locations.length
 
   return (
     <div className={classes.container}>
+      {isLead && (
+        <p className={classes.leadHint}>Tick each task off once all of your team has done it.</p>
+      )}
+
       <div className={classes.progress}>
         <span className={classes.progressText}>
           {completedCount} / {totalCount} completed
@@ -113,7 +128,16 @@ export const ChallengeList: React.FC<Props> = ({
             style={{ width: totalCount > 0 ? `${(completedCount / totalCount) * 100}%` : '0%' }}
           />
         </div>
+        <span className={classes.exploredText}>
+          Southampton explored: {exploredPercent.toFixed(1)}%
+        </span>
       </div>
+
+      {error && (
+        <p className={classes.error} role="alert">
+          {error}
+        </p>
+      )}
 
       <div className={classes.list}>
         {groups.map(([zone, items]) => (

@@ -126,16 +126,6 @@ const CityChallengeLocations: CollectionConfig = {
       },
     },
     {
-      name: 'discoveryRadius',
-      type: 'number',
-      label: 'Discovery Radius (metres)',
-      defaultValue: 50,
-      admin: {
-        description: 'How close (in metres) the user must be to discover this location.',
-        step: 1,
-      },
-    },
-    {
       name: 'sortOrder',
       type: 'number',
       label: 'Sort Order',

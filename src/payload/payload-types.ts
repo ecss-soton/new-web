@@ -1340,7 +1340,6 @@ export interface CityChallengeLocation {
   latitude?: number | null;
   longitude?: number | null;
   link?: string | null;
-  discoveryRadius?: number | null;
   sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;

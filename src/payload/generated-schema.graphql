@@ -22997,7 +22997,6 @@ type CityChallengeLocation {
   latitude: Float
   longitude: Float
   link: String
-  discoveryRadius: Float
   sortOrder: Float
   updatedAt: DateTime
   createdAt: DateTime
@@ -23024,7 +23023,6 @@ input CityChallengeLocation_where {
   latitude: CityChallengeLocation_latitude_operator
   longitude: CityChallengeLocation_longitude_operator
   link: CityChallengeLocation_link_operator
-  discoveryRadius: CityChallengeLocation_discoveryRadius_operator
   sortOrder: CityChallengeLocation_sortOrder_operator
   updatedAt: CityChallengeLocation_updatedAt_operator
   createdAt: CityChallengeLocation_createdAt_operator
@@ -23093,16 +23091,6 @@ input CityChallengeLocation_link_operator {
   exists: Boolean
 }
 
-input CityChallengeLocation_discoveryRadius_operator {
-  equals: Float
-  not_equals: Float
-  greater_than_equal: Float
-  greater_than: Float
-  less_than_equal: Float
-  less_than: Float
-  exists: Boolean
-}
-
 input CityChallengeLocation_sortOrder_operator {
   equals: Float
   not_equals: Float
@@ -23153,7 +23141,6 @@ input CityChallengeLocation_where_and {
   latitude: CityChallengeLocation_latitude_operator
   longitude: CityChallengeLocation_longitude_operator
   link: CityChallengeLocation_link_operator
-  discoveryRadius: CityChallengeLocation_discoveryRadius_operator
   sortOrder: CityChallengeLocation_sortOrder_operator
   updatedAt: CityChallengeLocation_updatedAt_operator
   createdAt: CityChallengeLocation_createdAt_operator
@@ -23169,7 +23156,6 @@ input CityChallengeLocation_where_or {
   latitude: CityChallengeLocation_latitude_operator
   longitude: CityChallengeLocation_longitude_operator
   link: CityChallengeLocation_link_operator
-  discoveryRadius: CityChallengeLocation_discoveryRadius_operator
   sortOrder: CityChallengeLocation_sortOrder_operator
   updatedAt: CityChallengeLocation_updatedAt_operator
   createdAt: CityChallengeLocation_createdAt_operator
@@ -23197,7 +23183,6 @@ type CityChallengeLocationsDocAccessFields {
   latitude: CityChallengeLocationsDocAccessFields_latitude
   longitude: CityChallengeLocationsDocAccessFields_longitude
   link: CityChallengeLocationsDocAccessFields_link
-  discoveryRadius: CityChallengeLocationsDocAccessFields_discoveryRadius
   sortOrder: CityChallengeLocationsDocAccessFields_sortOrder
   updatedAt: CityChallengeLocationsDocAccessFields_updatedAt
   createdAt: CityChallengeLocationsDocAccessFields_createdAt
@@ -23338,29 +23323,6 @@ type CityChallengeLocationsDocAccessFields_link_Update {
 }
 
 type CityChallengeLocationsDocAccessFields_link_Delete {
-  permission: Boolean!
-}
-
-type CityChallengeLocationsDocAccessFields_discoveryRadius {
-  create: CityChallengeLocationsDocAccessFields_discoveryRadius_Create
-  read: CityChallengeLocationsDocAccessFields_discoveryRadius_Read
-  update: CityChallengeLocationsDocAccessFields_discoveryRadius_Update
-  delete: CityChallengeLocationsDocAccessFields_discoveryRadius_Delete
-}
-
-type CityChallengeLocationsDocAccessFields_discoveryRadius_Create {
-  permission: Boolean!
-}
-
-type CityChallengeLocationsDocAccessFields_discoveryRadius_Read {
-  permission: Boolean!
-}
-
-type CityChallengeLocationsDocAccessFields_discoveryRadius_Update {
-  permission: Boolean!
-}
-
-type CityChallengeLocationsDocAccessFields_discoveryRadius_Delete {
   permission: Boolean!
 }
 
@@ -36347,7 +36309,6 @@ type CityChallengeLocationsFields {
   latitude: CityChallengeLocationsFields_latitude
   longitude: CityChallengeLocationsFields_longitude
   link: CityChallengeLocationsFields_link
-  discoveryRadius: CityChallengeLocationsFields_discoveryRadius
   sortOrder: CityChallengeLocationsFields_sortOrder
   updatedAt: CityChallengeLocationsFields_updatedAt
   createdAt: CityChallengeLocationsFields_createdAt
@@ -36488,29 +36449,6 @@ type CityChallengeLocationsFields_link_Update {
 }
 
 type CityChallengeLocationsFields_link_Delete {
-  permission: Boolean!
-}
-
-type CityChallengeLocationsFields_discoveryRadius {
-  create: CityChallengeLocationsFields_discoveryRadius_Create
-  read: CityChallengeLocationsFields_discoveryRadius_Read
-  update: CityChallengeLocationsFields_discoveryRadius_Update
-  delete: CityChallengeLocationsFields_discoveryRadius_Delete
-}
-
-type CityChallengeLocationsFields_discoveryRadius_Create {
-  permission: Boolean!
-}
-
-type CityChallengeLocationsFields_discoveryRadius_Read {
-  permission: Boolean!
-}
-
-type CityChallengeLocationsFields_discoveryRadius_Update {
-  permission: Boolean!
-}
-
-type CityChallengeLocationsFields_discoveryRadius_Delete {
   permission: Boolean!
 }
 
@@ -40346,7 +40284,6 @@ input mutationCityChallengeLocationInput {
   latitude: Float
   longitude: Float
   link: String
-  discoveryRadius: Float
   sortOrder: Float
   updatedAt: String
   createdAt: String
@@ -40359,7 +40296,6 @@ input mutationCityChallengeLocationUpdateInput {
   latitude: Float
   longitude: Float
   link: String
-  discoveryRadius: Float
   sortOrder: Float
   updatedAt: String
   createdAt: String

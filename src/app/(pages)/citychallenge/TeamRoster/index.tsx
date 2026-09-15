@@ -11,7 +11,7 @@ type Props = {
 }
 
 function displayMember(m: Member): string {
-  return m.name || m.username || m.id
+  return m.name || m.username || 'Unknown member'
 }
 
 export const TeamRoster: React.FC<Props> = ({ teamName, teamLead, members }) => {

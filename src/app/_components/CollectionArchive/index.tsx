@@ -209,10 +209,11 @@ export const CollectionArchive: React.FC<Props> = props => {
               docs = shuffleArray(docs)
             }
 
-            setResults(json)
+            const nextResult = { ...json, docs } as Result
+            setResults(nextResult)
             setIsLoading(false)
             if (typeof onResultChange === 'function') {
-              onResultChange(json)
+              onResultChange(nextResult)
             }
           }
         } catch (err) {

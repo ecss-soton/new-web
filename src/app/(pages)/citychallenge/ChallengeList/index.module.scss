@@ -5,6 +5,12 @@
   margin: 0 auto;
 }
 
+.leadHint {
+  margin: 24px 0 20px;
+  font-size: 13px;
+  color: var(--jumpstart-muted);
+}
+
 .progress {
   margin-bottom: 32px;
   display: flex;
@@ -40,6 +46,13 @@
   border-radius: 4px;
   transition: width 0.3s ease;
   box-shadow: 0 0 8px var(--jumpstart-neon-lime);
+}
+
+.exploredText {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--jumpstart-neon-cyan);
+  white-space: nowrap;
 }
 
 .list {
@@ -218,4 +231,14 @@
   font-size: 15px;
   color: var(--jumpstart-muted);
   padding: 60px 0;
+}
+
+.error {
+  margin: 0 0 20px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--jumpstart-neon-orange);
+  background: rgba(255, 85, 0, 0.08);
+  border: 1px solid var(--jumpstart-neon-orange);
+  border-radius: 6px;
 }

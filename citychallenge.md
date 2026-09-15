@@ -7,48 +7,71 @@ shared fog-of-war map discovery, and role-based views (team lead vs participant)
 
 ---
 
-## Completed
+## Payload CMS
 
-### Payload CMS
+### Collection `city-challenge-locations` — `src/payload/collections/CityChallengeLocations.ts`
 
-- **Collection `city-challenge-locations`** — `src/payload/collections/CityChallengeLocations.ts`
-  - `name` (text, required) — location name
-  - `description` (textarea) — clue or hint
-  - `latitude` / `longitude` (number, optional) — required **only** for map-based challenges
-  - `link` (text, HTTPS URL, optional) — required for link-based challenges (e.g. "Follow this YouTube channel")
-  - **Either** a complete coordinate pair (`latitude` + `longitude`) **or** a valid HTTPS `link` must be present. Partial coordinates (only one of the two) are always rejected.
-  - If both coordinates **and** a link are provided, the link takes priority as the "Get me there" destination.
-  - Link-only challenges do **not** appear on the map (no pin is rendered without coordinates).
-  - `discoveryRadius` (number, default 50) — how close in metres to trigger discovery
-  - `sortOrder` (number, default 0)
-  - Access: `read` = logged-in members only; `create/update/delete` = admins only
+- `name` (text, required) — location name
+- `description` (textarea) — clue or hint
+- `zone` (text, optional) — groups challenges in the list view ("No Zone" if blank)
+- `latitude` / `longitude` (number, optional) — required **only** for map-based challenges
+- `link` (text, HTTPS URL, optional) — required for link-based challenges (e.g. "Follow this YouTube channel")
+- **Either** a complete coordinate pair (`latitude` + `longitude`) **or** a valid HTTPS `link` must be present. Partial coordinates (only one of the two) are always rejected.
+- If both coordinates **and** a link are provided, the link takes priority as the "Get me there" destination.
+- Link-only challenges do **not** appear on the map (no pin is rendered without coordinates).
+- `sortOrder` (number, default 0)
+- Access: `read` = logged-in members only; `create/update/delete` = admins only
 
-- **Collection `city-challenge-teams`** — `src/payload/collections/CityChallengeTeams.ts`
-  - `name` (text, required) — team display name
-  - `teamLead` (relationship → users, required) — the user who manages the team
-  - `members` (relationship → users, hasMany) — participating team members
-  - `completedChallenges` (relationship → city-challenge-locations, hasMany) — challenges marked done
-  - `discoveredAreas` (JSON) — array of `{lat, lng}` points for shared fog-of-war
-  - Access: `read` = any logged-in user; `create/update/delete` = admins only
-  - Custom endpoints handle team lead and member interactions (see below)
+### Collection `city-challenge-teams` — `src/payload/collections/CityChallengeTeams.ts`
 
-- **Custom endpoints on `city-challenge-teams`:**
-  - `POST /:id/discover` — any team member submits `{lat, lng}`; server checks haversine distance and appends if >50m from all existing points
-  - `POST /:id/complete` — team lead toggles a challenge ID in `completedChallenges`
-  - `POST /:id/members` — team lead adds/removes members by username
+- `name` (text, required) — team display name
+- `teamLead` (relationship → users, required) — the user who manages the team
+- `members` (relationship → users, hasMany) — participating team members (excludes the lead)
+- `completedChallenges` (relationship → city-challenge-locations, hasMany) — challenges marked done
+- `discoveredAreas` (JSON) — array of fog-of-war grid cell IDs (`"latIdx:lngIdx"`)
+- Access: `read` = the team's lead/members or an admin only; `create/update/delete` = admins only
+- Custom endpoints handle team lead and member interactions (see below)
 
-- Both collections registered in `payload.config.ts`
+### Fog-of-war grid
 
-### Page / Routing
+- Geographic cells of `CITY_CHALLENGE_CELL_DEG = 0.002` degrees (≈222 m latitude, ≈140 m
+  longitude at Southampton). All shared logic lives in `src/app/_utilities/cityChallenge.ts`
+  (single source of truth imported by the collection, page, and map).
+- Stored as cell-ID strings; legacy `{lat,lng}` point arrays are migrated on read/write.
+- Server caps a team at `MAX_DISCOVERY_CELLS` (20 000) cells and accepts batched
+  `{ points: [{lat,lng}] }` (max 200 per request) as well as a single `{lat,lng}`.
+- The Southampton play area is `CITY_CHALLENGE_BOUNDS` (axis-aligned box); the explored
+  percentage is `revealed cells in box / total cells in box`.
+
+### Custom endpoints on `city-challenge-teams`
+
+- `POST /:id/discover` — any team member submits `{lat,lng}` or `{points:[...]}`; coordinates are
+  validated, deduplicated by grid cell, and stored. Returns the updated `discoveredAreas`.
+- `POST /:id/complete` — team lead toggles a challenge ID; the location must exist.
+- `POST /:id/members` — team lead adds/removes a member by stable `userId` (or `username`).
+  Rejects the lead, duplicates, and users already committed to another team. Returns the roster.
+- `GET /:id/roster` — lead/member/admin; returns safe `{id, name, username}` summaries for the
+  lead and members. This is the canonical source of member names, because regular users cannot
+  read each other's user documents.
+- `GET /:id/member-search?q=` — lead/admin only; searches users by name/username (`like`), excludes
+  the lead, current members, and users already on another team. Used for member autocomplete.
+
+Both collections are registered in `payload.config.ts`.
+
+---
+
+## Page / Routing
 
 - **`/citychallenge`** — `src/app/(pages)/citychallenge/page.tsx`
   - Auth guard via `getMeUser()` — redirects unauthenticated users to `/login`
-  - Fetches locations and team data; determines user role (`lead`, `participant`, `none`)
-  - Supports `?view=list` (default) and `?view=map` query param for view switching
+  - Determines the user's team and role (`lead`, `participant`, `none`)
+  - Fetches names through `/:id/roster` (never relies on access-restricted relationship population)
+  - Supports `?view=list` (default) and `?view=map` query params for view switching
   - Role-based rendering:
     - No team → "Ask your team lead to add you!" message
     - Participant → list/map toggle, read-only challenge list, shared fog-of-war map
     - Team lead → same + team management panel + mark challenges complete
+  - API failures are surfaced as an error banner rather than rendering a misleading empty state
 
 ### Components
 
@@ -57,37 +80,42 @@ shared fog-of-war map discovery, and role-based views (team lead vs participant)
 | `ViewToggle` | `citychallenge/ViewToggle/` | Client component. List/Map switcher using URL query params |
 | `NoTeamMessage` | `citychallenge/NoTeamMessage/` | "Ask your team lead" placeholder for unassigned users |
 | `ChallengeList` | `citychallenge/ChallengeList/` | List view: all challenges with completion status/checkboxes |
-| `TeamPanel` | `citychallenge/TeamPanel/` | Team lead: add/remove members by username |
+| `TeamPanel` | `citychallenge/TeamPanel/` | Team lead: member autocomplete search + add/remove |
 | `CityChallengeMap` | `citychallenge/CityChallengeMap/` | Map view with shared fog-of-war and challenge pins |
 
 ### Map View — Shared Fog of War
 
-- Canvas overlay with dark semi-transparent fill, grid pattern, and `?` marks
-- Discovery areas loaded from server (team's `discoveredAreas` field)
-- `destination-out` composite operation punches 80px-radius holes for each discovered point
+- Canvas overlay with dark semi-transparent fill, grid pattern, and hint text
+- Discovery cells loaded from the server (team's `discoveredAreas` field)
+- `destination-out` composite operation punches out revealed geographic cells
+- Redraws on pan/zoom and on container resize (`ResizeObserver` + `map.invalidateSize()`)
 - All challenge locations shown as numbered pins (lime for undone, cyan for completed)
 - Map popups include a "Get me there →" link (CMS link preferred over generated Maps URL)
-- Link-only challenges (no coordinates) are only visible in the list view, not on the map
+- OpenStreetMap tile attribution is shown
 - Geolocation tracking via `watchPosition` with event-driven discovery
+- Header shows **"Southampton explored: NN.N%"** — the share of grid cells revealed within the
+  bounding box `CITY_CHALLENGE_BOUNDS` in `src/app/_utilities/cityChallenge.ts`
 
 ### Discovery Efficiency
 
-The client does NOT poll or use timers. Strategy:
+The client does NOT poll or use timers for position. Strategy:
 
-1. **Event-driven** — `watchPosition` fires only when device detects movement
-2. **Client-side dedup** — before any network call, checks if position is within 50m of any existing point in memory
-3. **10-second throttle** — safety net to prevent GPS jitter bursts
-4. **Optimistic local update** — appends to in-memory array immediately on successful POST
-5. **Bounded storage** — ~50m grid spacing means max ~1,600 points for all of central Southampton; typical teams will have 50–200 points
+1. **Event-driven** — `watchPosition` fires only when the device detects movement
+2. **Client-side dedup** — before any network call, checks if the grid cell is already known
+3. **Batched, queue-backed sync** — new cells are buffered and flushed on a trailing-edge throttle,
+   so a burst of movement never drops a cell; failed batches are re-queued and retried
+4. **Optimistic local update** — revealed cells appear immediately; server responses are unioned
+   in rather than replacing local state
+5. **Bounded storage** — server caps stored cells, and the thicker 0.002° grid keeps counts low
 
 ### List View
 
 - Shows ALL challenges (names, descriptions, "Get me there" destination)
-- Destination resolution: CMS `link` takes priority; falls back to a Google Maps URL generated from coordinates
-- No destination button is shown when a challenge has neither a valid link nor complete coordinates
-- Progress bar showing X/Y completed
+- Destination resolution: CMS `link` takes priority; falls back to a Google Maps URL from coordinates
+- No destination button when a challenge has neither a valid link nor complete coordinates
+- Progress bar counts only completions that map to known challenges
 - Team lead sees checkboxes to toggle completion; participants see status dots
-- Sorted by `sortOrder`
+- Sorted by `sortOrder`, grouped by `zone`
 
 ### Admin/CMS Workflow
 
@@ -97,107 +125,68 @@ The client does NOT poll or use timers. Strategy:
 
 ---
 
-## Skipped / Deferred
+## Security & Integrity Notes
 
-### Type Generation
-
-- `npm run generate:types` and `npm run generate:graphQLSchema` could not be run because
-  project dependencies were not installed in the sandbox environment. The `CityChallengeTeam`
-  interface was manually added to `payload-types.ts`. **You should regenerate types** when
-  running locally with full dependencies installed:
-  ```bash
-  npm run generate:types
-  npm run generate:graphQLSchema
-  ```
-
-### GraphQL Schema
-
-- The generated GraphQL schema file was not updated (same reason as above). Regeneration
-  will handle this automatically.
-
-### Build Verification
-
-- `npm run build` could not be run due to missing dependencies. The code follows the same
-  patterns as existing working components and should build cleanly once dependencies are
-  installed.
+- Relationship population respects access control, so the frontend resolves member names through
+  the `roster` endpoint instead of `depth=1` (which would return raw IDs to non-admins).
+- Team reads are scoped to the team's lead/members (admins see all).
+- Member changes validate the target user, prevent the lead being added as a member, and prevent a
+  user joining multiple teams. The one-team-per-user rule is enforced both in the `members`
+  endpoint and by a collection `beforeChange` hook, so admin/CMS edits are covered too.
+- Completion validates that the challenge exists.
+- Hidden/legacy data stays safe: `discoveredAreas` is migrated, capped, and deduplicated.
+- The JWT token is passed to client components from the server page (same pattern as booking and
+  elections) and is already present in the browser's `payload-token` cookie.
 
 ---
 
-## Concerns & Notes
+## Manual QA Checklist
 
-### Payload Query for "members contains user.id"
+No automated tests exist for this feature; run through the following against a dev instance with
+MongoDB and at least two user accounts (one lead, one member) plus an admin.
 
-The page uses `?where[members][contains]=userId` to find teams. Payload's `contains`
-operator on relationship fields works with MongoDB's `$in` query on arrays of IDs.
-This should work correctly with Payload 2 + Mongoose, but worth verifying with a
-real test against the database. If it doesn't work as expected, the alternative is
-to fetch all teams (there should be few) and filter client-side.
+### Auth & routing
+- [ ] Logged out → `/citychallenge` redirects to `/login` and returns to `/citychallenge` after login.
+- [ ] `?redirect=//evil.com` and `?redirect=javascript:alert(1)` are rejected by the login route.
+- [ ] `?view=map` shows the map; any other `?view=` value falls back to the list.
+- [ ] No-team user sees the "Ask your team lead" message; lead sees `TeamPanel`; member sees `TeamRoster`.
 
-### Race Condition on Discovery
+### Access control (expect 401/403 where noted)
+- [ ] Unauthenticated `GET /:id/roster`, `/member-search`, `POST /:id/members|complete|discover` → 401.
+- [ ] A member of team A cannot read team B via `GET /api/city-challenge-teams` (empty) or call team B's
+  `roster`/`members`/`complete`/`discover` (403).
+- [ ] A participant cannot call `members`, `complete`, or `member-search` (403).
+- [ ] Admin can list/read all teams and call `roster`/`member-search`.
 
-If two team members POST discoveries at exactly the same time, both could pass the
-server-side "no existing point within 50m" check and both get appended. This results
-in two close-together points rather than data loss. It's benign — the fog-of-war just
-gets a slightly redundant extra hole. No locking/transactions needed for this.
+### Team management
+- [ ] Search by name and username returns results; `already on another team` entries are disabled.
+- [ ] Add a member → name appears in the list and roster immediately (no raw IDs anywhere).
+- [ ] Remove a member → disappears from the list and roster.
+- [ ] Adding the team lead, or a user already on another team, is rejected (400/409).
+- [ ] Adding an existing member is idempotent (no duplicate).
+- [ ] Editing a team in the admin UI to reuse a lead/member from another team is rejected by the
+  `beforeChange` hook.
 
-### discoveredAreas Growth
+### Challenges
+- [ ] Lead can tick/untick; member sees status dots only.
+- [ ] Invalid `locationId` returns 400; progress counts only known challenges.
+- [ ] Link-only challenge shows "Open link now"; coordinate-only shows "Get me there →".
 
-The JSON field stores all discovery points for the team. For an event lasting a few
-days with ~10 team members walking around, expect 50–200 points (~2–8 KB of JSON).
-If teams run much longer or cover huge areas, consider:
-- A separate `city-challenge-discoveries` collection with individual documents
-- Periodic server-side dedup/cleanup job
-- Pagination of the JSON field (unlikely needed for a university society event)
+### Map & fog
+- [ ] Revealing a cell persists across reload; two browsers/accounts on the same team both persist
+  discoveries (note: concurrent same-instant writes may lose a cell — known accepted limitation).
+- [ ] Invalid/empty/oversized `{points}` batches return 400; single `{lat,lng}` still works.
+- [ ] Geolocation denied / unsupported shows an error, map still renders.
+- [ ] Admin mock-location panel reveals cells; canvas redraws on pan/zoom/resize.
+- [ ] "Southampton explored: NN.N%" increases as cells inside the bounds are revealed and stays
+  within 0–100%.
+- [ ] Legacy `{lat,lng}` `discoveredAreas` data still renders (migrates to cell IDs).
 
-### Team Lead Discovery vs Completion
+### Data hygiene
+- [ ] `discoveredAreas` is read-only in the admin UI; clearing requires delete/recreate or the
+  documented `mongosh updateMany`.
+- [ ] Deleting and recreating a team resets fog, members, and completions.
 
-These are deliberately separate concepts:
-- **Discovery** (fog-of-war): any team member walking near a point reveals the map area
-- **Completion** (challenge done): only the team lead can tick this off in the list view
-
-This means the team lead doesn't need to physically visit locations — they can mark
-challenges complete based on photo proof, teammate reports, etc.
-
-### No Leaderboard Yet
-
-There's no cross-team leaderboard. Each team sees only their own progress. A future
-enhancement could show "Team X: 8/15, Team Y: 12/15" — would need a public/aggregate
-read endpoint.
-
-### Session Token Passed to Client Components
-
-The JWT token is passed as a prop from the server page to client components for API calls.
-This is the same pattern used by booking, elections, and other pages. The token is
-already in the `payload-token` cookie accessible to the browser, so this doesn't
-introduce new security exposure — it just avoids client components needing to parse cookies.
-
-### Mobile UX
-
-The map view works on mobile but could benefit from:
-- Full-screen mode (hiding header/footer)
-- Larger touch targets
-- Battery-aware geolocation (reduce `enableHighAccuracy` on low battery)
-These are stretch goals, not blockers.
-
----
-
-## Remaining / To Do
-
-### Must-do (before launch)
-
-- [ ] **Regenerate types** — run `npm run generate:types` and `npm run generate:graphQLSchema`
-- [ ] **Test team queries** — verify `where[members][contains]` and `where[teamLead][equals]` work correctly with Payload REST API
-- [ ] **Test custom endpoints** — verify discover/complete/members endpoints with real JWT auth
-- [ ] **Seed test data** — create a test team with locations in the CMS admin
-
-### Nice to have
-
-- [ ] **Cross-team leaderboard** — public view of all teams' completion progress
-- [ ] **Team discovery sync** — periodically poll or use SSE to show teammates' new discoveries in real-time (currently only loads on page mount)
-- [ ] **Discovery animation** — animate hole punch when a new area is revealed
-- [ ] **User position marker** — show pulsing dot at user's current GPS location
-- [ ] **Distance indicator** — "Nearest challenge: 120m away"
-- [ ] **Sound effect** — subtle audio feedback on discovery
-- [ ] **Dark map tiles** — switch to a dark tile provider for better aesthetic
-- [ ] **Mobile full-screen** — hide chrome on mobile for immersive map experience
-- [ ] **Offline support** — cache tile data for areas with poor mobile signal
+### Regression
+- [ ] Societies/committee archive ordering still behaves (committee by importance, societies shuffled).
+- [ ] Jumpstart timeline still collapses past days and highlights today.
