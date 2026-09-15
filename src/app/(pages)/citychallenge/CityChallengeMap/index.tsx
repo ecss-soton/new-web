@@ -10,11 +10,12 @@ import 'leaflet/dist/leaflet.css'
 import classes from './index.module.scss'
 
 const SOUTHAMPTON: L.LatLngTuple = [50.935, -1.396]
-const THROTTLE_MS = 10000
+const THROTTLE_MS = 8000
+const MAX_DISCOVERY_BATCH = 200
 
-// Geographic grid cell size in degrees. Must match the value in CityChallengeTeams.ts.
-// At Southampton (~51°N): ≈111 m latitude per degree, ≈70 m longitude per degree.
-const CELL_DEG = 0.001
+// Geographic grid cell size in degrees. Must match the value in CityChallengeTeams.ts
+// and the City Challenge page. At Southampton (~51°N): ≈222 m latitude, ≈140 m longitude.
+const CELL_DEG = 0.002
 
 function latLngToCell(lat: number, lng: number): string {
   return `${Math.floor(lat / CELL_DEG)}:${Math.floor(lng / CELL_DEG)}`
@@ -98,7 +99,10 @@ type Props = {
   /** Array of discovered cell IDs in the form "latIdx:lngIdx". */
   discoveredAreas: string[]
   completedChallenges: string[]
+  error?: string | null
 }
+
+type Point = { lat: number; lng: number }
 
 export const CityChallengeMap: React.FC<Props> = ({
   locations,
@@ -107,15 +111,23 @@ export const CityChallengeMap: React.FC<Props> = ({
   token,
   discoveredAreas: initialDiscovered,
   completedChallenges,
+  error: locationsError,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const markersRef = useRef<Map<string, L.Marker>>(new Map())
-  const lastPostRef = useRef<number>(0)
+  const initTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Discovery queue — positions are buffered so the throttle never drops a cell.
+  const pendingRef = useRef<Point[]>([])
+  const flushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const lastFlushRef = useRef<number>(0)
+  const flushingRef = useRef<boolean>(false)
 
   const [userPosition, setUserPosition] = useState<GeolocationPosition | null>(null)
   const [geoError, setGeoError] = useState<string | null>(null)
+  const [syncError, setSyncError] = useState<string | null>(null)
   const [discoveredAreas, setDiscoveredAreas] = useState<string[]>(initialDiscovered)
   const [copied, setCopied] = useState(false)
   const [mockLat, setMockLat] = useState('50.935')
@@ -132,6 +144,8 @@ export const CityChallengeMap: React.FC<Props> = ({
     if (!map || !canvas) return
 
     const container = map.getContainer()
+    if (!container.clientWidth || !container.clientHeight) return
+
     canvas.width = container.clientWidth
     canvas.height = container.clientHeight
 
@@ -201,37 +215,70 @@ export const CityChallengeMap: React.FC<Props> = ({
   const drawCanvasRef = useRef(drawCanvas)
   drawCanvasRef.current = drawCanvas
 
-  const postDiscovery = useCallback(
-    async (lat: number, lng: number) => {
-      const now = Date.now()
-      if (now - lastPostRef.current < THROTTLE_MS) return
-      lastPostRef.current = now
+  const flushDiscoveries = useCallback(async () => {
+    if (flushingRef.current) return
+    const batch = pendingRef.current.splice(0, MAX_DISCOVERY_BATCH)
+    if (batch.length === 0) return
 
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/city-challenge-teams/${teamId}/discover`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `JWT ${token}`,
-            },
-            body: JSON.stringify({ lat, lng }),
+    flushingRef.current = true
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/city-challenge-teams/${teamId}/discover`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `JWT ${token}`,
           },
-        )
+          body: JSON.stringify({ points: batch }),
+        },
+      )
 
-        if (res.ok) {
-          const data = await res.json()
-          if (Array.isArray(data.discoveredAreas)) {
-            setDiscoveredAreas(data.discoveredAreas)
-          }
+      if (res.ok) {
+        const data = await res.json()
+        if (Array.isArray(data.discoveredAreas)) {
+          // Union with any cells added optimistically since the request started.
+          setDiscoveredAreas(prev =>
+            Array.from(new Set([...prev, ...(data.discoveredAreas as string[])])),
+          )
         }
-      } catch {
-        // network error — silent
+        setSyncError(null)
+      } else {
+        pendingRef.current.unshift(...batch)
+        setSyncError('Discoveries are not syncing — will retry.')
       }
-    },
-    [teamId, token],
-  )
+    } catch {
+      pendingRef.current.unshift(...batch)
+      setSyncError('Discoveries are not syncing — will retry.')
+    } finally {
+      flushingRef.current = false
+
+      // Trailing flush: guarantee buffered positions are eventually sent.
+      if (pendingRef.current.length > 0 && !flushTimerRef.current) {
+        const wait = Math.max(0, THROTTLE_MS - (Date.now() - lastFlushRef.current))
+        flushTimerRef.current = setTimeout(() => {
+          flushTimerRef.current = null
+          lastFlushRef.current = Date.now()
+          flushDiscoveriesRef.current()
+        }, wait)
+      }
+    }
+  }, [teamId, token])
+
+  const flushDiscoveriesRef = useRef(flushDiscoveries)
+  flushDiscoveriesRef.current = flushDiscoveries
+
+  const enqueueDiscovery = useCallback((lat: number, lng: number) => {
+    pendingRef.current.push({ lat, lng })
+    if (flushTimerRef.current) return
+
+    const wait = Math.max(0, THROTTLE_MS - (Date.now() - lastFlushRef.current))
+    flushTimerRef.current = setTimeout(() => {
+      flushTimerRef.current = null
+      lastFlushRef.current = Date.now()
+      flushDiscoveriesRef.current()
+    }, wait)
+  }, [])
 
   // Initialize map
   useEffect(() => {
@@ -241,11 +288,12 @@ export const CityChallengeMap: React.FC<Props> = ({
       center: SOUTHAMPTON,
       zoom: 15,
       zoomControl: false,
-      attributionControl: false,
     })
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map)
 
     mapRef.current = map
@@ -259,12 +307,28 @@ export const CityChallengeMap: React.FC<Props> = ({
     canvasRef.current = canvas
 
     const handleMove = () => drawCanvasRef.current()
+    const handleResize = () => {
+      map.invalidateSize()
+      drawCanvasRef.current()
+    }
     map.on('moveend', handleMove)
     map.on('zoomend', handleMove)
+    window.addEventListener('resize', handleResize)
 
-    setTimeout(() => drawCanvasRef.current(), 300)
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(handleResize) : null
+    resizeObserver?.observe(mapContainer)
+
+    initTimerRef.current = setTimeout(() => drawCanvasRef.current(), 300)
 
     return () => {
+      if (initTimerRef.current) clearTimeout(initTimerRef.current)
+      if (flushTimerRef.current) {
+        clearTimeout(flushTimerRef.current)
+        flushTimerRef.current = null
+      }
+      window.removeEventListener('resize', handleResize)
+      resizeObserver?.disconnect()
       map.remove()
       mapRef.current = null
       canvasRef.current = null
@@ -364,7 +428,7 @@ export const CityChallengeMap: React.FC<Props> = ({
     }
   }, [mockEnabled, mockLat, mockLng])
 
-  // Discovery logic — check cell novelty, optimistically update locally, then sync to server.
+  // Discovery logic — check cell novelty, optimistically update locally, then queue for sync.
   useEffect(() => {
     if (!userPosition) return
 
@@ -372,10 +436,10 @@ export const CityChallengeMap: React.FC<Props> = ({
     const cellId = latLngToCell(latitude, longitude)
 
     if (!discoveredAreasRef.current.includes(cellId)) {
-      setDiscoveredAreas(prev => [...prev, cellId])
-      postDiscovery(latitude, longitude)
+      setDiscoveredAreas(prev => (prev.includes(cellId) ? prev : [...prev, cellId]))
+      enqueueDiscovery(latitude, longitude)
     }
-  }, [userPosition, postDiscovery])
+  }, [userPosition, enqueueDiscovery])
 
   const copyLink = async () => {
     try {
@@ -426,13 +490,22 @@ export const CityChallengeMap: React.FC<Props> = ({
             {copied ? 'Copied!' : 'Copy link'}
           </button>
           {geoError && <span className={classes.geoError}>{geoError}</span>}
+          {syncError && (
+            <span className={classes.geoError} role="status">
+              {syncError}
+            </span>
+          )}
         </div>
       </header>
       <p className={classes.intro}>
         Explore Southampton to uncover city challenges hidden around you.
       </p>
       <div className={classes.mapContainer}>
-        {totalCount === 0 ? (
+        {locationsError ? (
+          <div className={classes.empty} role="alert">
+            {locationsError}
+          </div>
+        ) : totalCount === 0 ? (
           <div className={classes.empty}>No locations available yet.</div>
         ) : (
           <div ref={mapContainerRef} className={classes.map} />

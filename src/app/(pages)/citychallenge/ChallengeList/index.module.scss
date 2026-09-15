@@ -219,3 +219,13 @@
   color: var(--jumpstart-muted);
   padding: 60px 0;
 }
+
+.error {
+  margin: 0 0 20px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--jumpstart-neon-orange);
+  background: rgba(255, 85, 0, 0.08);
+  border: 1px solid var(--jumpstart-neon-orange);
+  border-radius: 6px;
+}

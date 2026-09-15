@@ -1,0 +1,12 @@
+@import '../../_css/common';
+
+.error {
+  max-width: 800px;
+  margin: 24px auto;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--jumpstart-neon-orange);
+  background: rgba(255, 85, 0, 0.08);
+  border: 1px solid var(--jumpstart-neon-orange);
+  border-radius: 8px;
+}
