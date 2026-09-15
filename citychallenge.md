@@ -34,12 +34,14 @@ shared fog-of-war map discovery, and role-based views (team lead vs participant)
 
 ### Fog-of-war grid
 
-- Geographic cells of `CELL_DEG = 0.002` degrees (≈222 m latitude, ≈140 m longitude at Southampton).
-  The constant is duplicated in `CityChallengeTeams.ts`, `page.tsx`, and `CityChallengeMap/index.tsx`
-  and **must be kept in sync**.
+- Geographic cells of `CITY_CHALLENGE_CELL_DEG = 0.002` degrees (≈222 m latitude, ≈140 m
+  longitude at Southampton). All shared logic lives in `src/app/_utilities/cityChallenge.ts`
+  (single source of truth imported by the collection, page, and map).
 - Stored as cell-ID strings; legacy `{lat,lng}` point arrays are migrated on read/write.
 - Server caps a team at `MAX_DISCOVERY_CELLS` (20 000) cells and accepts batched
   `{ points: [{lat,lng}] }` (max 200 per request) as well as a single `{lat,lng}`.
+- The Southampton play area is `CITY_CHALLENGE_BOUNDS` (axis-aligned box); the explored
+  percentage is `revealed cells in box / total cells in box`.
 
 ### Custom endpoints on `city-challenge-teams`
 
@@ -91,6 +93,8 @@ Both collections are registered in `payload.config.ts`.
 - Map popups include a "Get me there →" link (CMS link preferred over generated Maps URL)
 - OpenStreetMap tile attribution is shown
 - Geolocation tracking via `watchPosition` with event-driven discovery
+- Header shows **"Southampton explored: NN.N%"** — the share of grid cells revealed within the
+  bounding box `CITY_CHALLENGE_BOUNDS` in `src/app/_utilities/cityChallenge.ts`
 
 ### Discovery Efficiency
 
@@ -127,8 +131,62 @@ The client does NOT poll or use timers for position. Strategy:
   the `roster` endpoint instead of `depth=1` (which would return raw IDs to non-admins).
 - Team reads are scoped to the team's lead/members (admins see all).
 - Member changes validate the target user, prevent the lead being added as a member, and prevent a
-  user joining multiple teams.
+  user joining multiple teams. The one-team-per-user rule is enforced both in the `members`
+  endpoint and by a collection `beforeChange` hook, so admin/CMS edits are covered too.
 - Completion validates that the challenge exists.
 - Hidden/legacy data stays safe: `discoveredAreas` is migrated, capped, and deduplicated.
 - The JWT token is passed to client components from the server page (same pattern as booking and
   elections) and is already present in the browser's `payload-token` cookie.
+
+---
+
+## Manual QA Checklist
+
+No automated tests exist for this feature; run through the following against a dev instance with
+MongoDB and at least two user accounts (one lead, one member) plus an admin.
+
+### Auth & routing
+- [ ] Logged out → `/citychallenge` redirects to `/login` and returns to `/citychallenge` after login.
+- [ ] `?redirect=//evil.com` and `?redirect=javascript:alert(1)` are rejected by the login route.
+- [ ] `?view=map` shows the map; any other `?view=` value falls back to the list.
+- [ ] No-team user sees the "Ask your team lead" message; lead sees `TeamPanel`; member sees `TeamRoster`.
+
+### Access control (expect 401/403 where noted)
+- [ ] Unauthenticated `GET /:id/roster`, `/member-search`, `POST /:id/members|complete|discover` → 401.
+- [ ] A member of team A cannot read team B via `GET /api/city-challenge-teams` (empty) or call team B's
+  `roster`/`members`/`complete`/`discover` (403).
+- [ ] A participant cannot call `members`, `complete`, or `member-search` (403).
+- [ ] Admin can list/read all teams and call `roster`/`member-search`.
+
+### Team management
+- [ ] Search by name and username returns results; `already on another team` entries are disabled.
+- [ ] Add a member → name appears in the list and roster immediately (no raw IDs anywhere).
+- [ ] Remove a member → disappears from the list and roster.
+- [ ] Adding the team lead, or a user already on another team, is rejected (400/409).
+- [ ] Adding an existing member is idempotent (no duplicate).
+- [ ] Editing a team in the admin UI to reuse a lead/member from another team is rejected by the
+  `beforeChange` hook.
+
+### Challenges
+- [ ] Lead can tick/untick; member sees status dots only.
+- [ ] Invalid `locationId` returns 400; progress counts only known challenges.
+- [ ] Link-only challenge shows "Open link now"; coordinate-only shows "Get me there →".
+
+### Map & fog
+- [ ] Revealing a cell persists across reload; two browsers/accounts on the same team both persist
+  discoveries (note: concurrent same-instant writes may lose a cell — known accepted limitation).
+- [ ] Invalid/empty/oversized `{points}` batches return 400; single `{lat,lng}` still works.
+- [ ] Geolocation denied / unsupported shows an error, map still renders.
+- [ ] Admin mock-location panel reveals cells; canvas redraws on pan/zoom/resize.
+- [ ] "Southampton explored: NN.N%" increases as cells inside the bounds are revealed and stays
+  within 0–100%.
+- [ ] Legacy `{lat,lng}` `discoveredAreas` data still renders (migrates to cell IDs).
+
+### Data hygiene
+- [ ] `discoveredAreas` is read-only in the admin UI; clearing requires delete/recreate or the
+  documented `mongosh updateMany`.
+- [ ] Deleting and recreating a team resets fog, members, and completions.
+
+### Regression
+- [ ] Societies/committee archive ordering still behaves (committee by importance, societies shuffled).
+- [ ] Jumpstart timeline still collapses past days and highlights today.

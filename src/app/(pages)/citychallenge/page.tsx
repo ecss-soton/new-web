@@ -1,32 +1,25 @@
 import React from 'react'
 import { Metadata } from 'next'
-import nextDynamic from 'next/dynamic'
 
 import type { CityChallengeLocation, CityChallengeTeam, User } from '../../../payload/payload-types'
+import {
+  getExploredPercentage,
+  migrateDiscoveredAreas,
+  relationshipId,
+} from '../../_utilities/cityChallenge'
 import { getMeUser } from '../../_utilities/getMeUser'
 import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
 import { ChallengeList } from './ChallengeList'
+import { CityChallengeMapLoader } from './CityChallengeMap/MapLoader'
 import { NoTeamMessage } from './NoTeamMessage'
 import { TeamPanel } from './TeamPanel'
 import { TeamRoster } from './TeamRoster'
+import { CityChallengeViewToggleLoader } from './ViewToggle/ViewToggleLoader'
 
 import wrapperClasses from '../../_components/Jumpstart/pageWrapper.module.scss'
 import classes from './page.module.scss'
 
-const CityChallengeViewToggle = nextDynamic(
-  () => import('./ViewToggle').then(mod => mod.CityChallengeViewToggle),
-  { ssr: false },
-)
-
-const CityChallengeMap = nextDynamic(
-  () => import('./CityChallengeMap').then(mod => mod.CityChallengeMap),
-  { ssr: false },
-)
-
 type TeamRole = 'lead' | 'participant' | 'none'
-
-// Geographic cell size — must match CityChallengeTeams.ts and CityChallengeMap/index.tsx.
-const CELL_DEG = 0.002
 
 interface MemberDisplay {
   id: string
@@ -54,15 +47,6 @@ interface ResolvedTeam {
   discoveredAreas: string[]
 }
 
-function relationshipId(value: unknown): string {
-  if (typeof value === 'string') return value
-  if (typeof value === 'number') return String(value)
-  if (value && typeof value === 'object' && 'id' in value) {
-    return String((value as { id: unknown }).id)
-  }
-  return ''
-}
-
 function resolveTeam(team: CityChallengeTeam, roster: RosterResponse | null): ResolvedTeam {
   const leadId = relationshipId(team.teamLead)
   const rawMembers = (team.members ?? []).map(relationshipId)
@@ -78,18 +62,7 @@ function resolveTeam(team: CityChallengeTeam, roster: RosterResponse | null): Re
   const completedChallenges = (team.completedChallenges ?? []).map(relationshipId)
 
   // Normalize discoveredAreas to cell IDs, migrating legacy {lat,lng}[] data if present.
-  const rawAreas = Array.isArray(team.discoveredAreas) ? team.discoveredAreas : []
-  const discoveredAreas: string[] = (() => {
-    if (rawAreas.length === 0) return []
-    if (typeof rawAreas[0] === 'string') return rawAreas as string[]
-    const cells = (rawAreas as { lat?: unknown; lng?: unknown }[])
-      .filter(
-        (p): p is { lat: number; lng: number } =>
-          typeof p.lat === 'number' && typeof p.lng === 'number',
-      )
-      .map(p => `${Math.floor(p.lat / CELL_DEG)}:${Math.floor(p.lng / CELL_DEG)}`)
-    return [...new Set(cells)]
-  })()
+  const discoveredAreas = migrateDiscoveredAreas(team.discoveredAreas)
 
   return {
     id: team.id,
@@ -124,7 +97,7 @@ export default async function CityChallengePage({
   })
 
   const isAdmin = user?.roles?.includes('admin') ?? false
-  const currentView = searchParams?.view || 'list'
+  const currentView = searchParams?.view === 'map' ? 'map' : 'list'
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL
 
   let locations: CityChallengeLocation[] = []
@@ -134,7 +107,7 @@ export default async function CityChallengePage({
   let role: TeamRole = 'none'
 
   const locationsJson = await fetchJson<{ docs: CityChallengeLocation[] }>(
-    `${serverUrl}/api/city-challenge-locations?limit=100&sort=sortOrder`,
+    `${serverUrl}/api/city-challenge-locations?limit=0&sort=sortOrder`,
     token,
   )
   if (locationsJson) {
@@ -148,16 +121,21 @@ export default async function CityChallengePage({
     `${serverUrl}/api/city-challenge-teams?where[teamLead][equals]=${user.id}&depth=0&limit=1`,
     token,
   )
-  const memberJson = leadJson?.docs?.length
-    ? null
-    : await fetchJson<{ docs: CityChallengeTeam[] }>(
-        `${serverUrl}/api/city-challenge-teams?where[members][contains]=${user.id}&depth=0&limit=1`,
-        token,
-      )
+
+  let memberJson: { docs: CityChallengeTeam[] } | null = null
+  let teamLookupFailed = leadJson === null
+
+  if (leadJson && leadJson.docs?.length === 0) {
+    memberJson = await fetchJson<{ docs: CityChallengeTeam[] }>(
+      `${serverUrl}/api/city-challenge-teams?where[members][contains]=${user.id}&depth=0&limit=1`,
+      token,
+    )
+    if (memberJson === null) teamLookupFailed = true
+  }
 
   const rawTeam = leadJson?.docs?.[0] ?? memberJson?.docs?.[0] ?? null
 
-  if (leadJson === null && memberJson === null) {
+  if (teamLookupFailed) {
     teamError = 'We could not load your team right now. Please refresh the page.'
   } else if (rawTeam) {
     role = leadJson?.docs?.length ? 'lead' : 'participant'
@@ -180,7 +158,7 @@ export default async function CityChallengePage({
         <NoTeamMessage />
       ) : (
         <div>
-          <CityChallengeViewToggle />
+          <CityChallengeViewToggleLoader />
 
           {currentView === 'list' && team ? (
             <ChallengeList
@@ -190,10 +168,11 @@ export default async function CityChallengePage({
               teamId={team.id}
               token={token}
               error={locationsError}
+              exploredPercent={getExploredPercentage(team.discoveredAreas)}
             />
           ) : (
             team && (
-              <CityChallengeMap
+              <CityChallengeMapLoader
                 locations={locations}
                 isAdmin={isAdmin}
                 teamId={team.id}

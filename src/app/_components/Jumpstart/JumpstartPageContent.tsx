@@ -1,23 +1,15 @@
 import React from 'react'
 import moment from 'moment-timezone'
-import nextDynamic from 'next/dynamic'
 
 import type { Event, Settings } from '../../../payload/payload-types'
 import { JumpstartFaq } from './Faq'
 import { JumpstartHero } from './JumpstartHero'
+import { JumpstartMapViewLoader } from './MapView/MapLoader'
 import { JumpstartTimeline } from './Timeline'
+import { JumpstartViewToggleLoader } from './ViewToggle/ViewToggleLoader'
 
 import mapPageClasses from './MapPage.module.scss'
 import wrapperClasses from './pageWrapper.module.scss'
-
-const JumpstartViewToggle = nextDynamic(
-  () => import('./ViewToggle').then(mod => mod.JumpstartViewToggle),
-  { ssr: false },
-)
-
-const JumpstartMapView = nextDynamic(() => import('./MapView').then(mod => mod.JumpstartMapView), {
-  ssr: false,
-})
 
 const TIMEZONE = 'Europe/London'
 
@@ -76,10 +68,10 @@ export const JumpstartPageContent: React.FC<Props> = ({
       <div className={wrapperClasses.page}>
         <JumpstartHero dateRange={dateRange || ''} logo={logo} />
         <div className={mapPageClasses.page}>
-          <JumpstartViewToggle />
+          <JumpstartViewToggleLoader />
         </div>
         <div className={mapPageClasses.mapWrapper}>
-          <JumpstartMapView events={jumpstartEvents} />
+          <JumpstartMapViewLoader events={jumpstartEvents} />
         </div>
         <JumpstartFaq title={faqTitle} faqs={faqs} />
       </div>

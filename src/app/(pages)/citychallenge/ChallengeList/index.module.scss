@@ -52,6 +52,13 @@
   box-shadow: 0 0 8px var(--jumpstart-neon-lime);
 }
 
+.exploredText {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--jumpstart-neon-cyan);
+  white-space: nowrap;
+}
+
 .list {
   display: flex;
   flex-direction: column;

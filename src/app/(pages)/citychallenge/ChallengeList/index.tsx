@@ -14,6 +14,7 @@ type Props = {
   teamId: string
   token: string
   error?: string | null
+  exploredPercent?: number
 }
 
 const NO_ZONE = 'No Zone'
@@ -57,6 +58,7 @@ export const ChallengeList: React.FC<Props> = ({
   teamId,
   token,
   error: initialError,
+  exploredPercent = 0,
 }) => {
   const [completed, setCompleted] = useState<string[]>(initialCompleted)
   const [submitting, setSubmitting] = useState<string | null>(null)
@@ -126,6 +128,9 @@ export const ChallengeList: React.FC<Props> = ({
             style={{ width: totalCount > 0 ? `${(completedCount / totalCount) * 100}%` : '0%' }}
           />
         </div>
+        <span className={classes.exploredText}>
+          Southampton explored: {exploredPercent.toFixed(1)}%
+        </span>
       </div>
 
       {error && (

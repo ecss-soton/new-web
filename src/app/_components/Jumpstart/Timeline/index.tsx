@@ -4,7 +4,7 @@ import moment from 'moment-timezone'
 import type { Event } from '../../../../payload/payload-types'
 import { bungee, rubikMono } from '../../../_utilities/font'
 import { JumpstartEventCard } from '../EventCard'
-import { JumpstartViewToggle } from '../ViewToggle'
+import { JumpstartViewToggleLoader } from '../ViewToggle/ViewToggleLoader'
 
 import classes from './index.module.scss'
 
@@ -56,7 +56,7 @@ export const JumpstartTimeline: React.FC<Props> = ({ events, heading, subtitle, 
         {subtitle && <p className={classes.subtitle}>{subtitle}</p>}
       </div>
 
-      <JumpstartViewToggle />
+      <JumpstartViewToggleLoader />
 
       <div className={classes.grid}>
         <a className={[classes.jumpToFaq, bungee.className].join(' ')} href="#faqs">

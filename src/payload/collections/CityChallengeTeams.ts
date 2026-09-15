@@ -1,16 +1,21 @@
+import { APIError } from 'payload/errors'
 import type { CollectionConfig, PayloadRequest } from 'payload/types'
 
+import {
+  isTeamLead,
+  isTeamMember,
+  latLngToCell,
+  MAX_DISCOVERY_BATCH,
+  MAX_DISCOVERY_CELLS,
+  memberIds,
+  migrateDiscoveredAreas,
+  parseCoordinate,
+  relationshipId,
+  teamLeadId,
+} from '../../app/_utilities/cityChallenge'
 import { admins } from '../access/admins'
 import { isAdmin } from '../access/isAdmin'
 import type { CityChallengeTeam, User } from '../payload-types'
-
-// Geographic grid cell size in degrees. Must match the constant in CityChallengeMap/index.tsx
-// and the City Challenge page. At Southampton (~51°N): ≈222 m latitude, ≈140 m longitude.
-const CELL_DEG = 0.002
-
-// Safety bounds so a single team's fog-of-war JSON cannot grow without limit.
-const MAX_DISCOVERY_CELLS = 20000
-const MAX_DISCOVERY_BATCH = 200
 
 type Payload = PayloadRequest['payload']
 
@@ -25,70 +30,6 @@ interface Roster {
   name: string
   teamLead: UserSummary
   members: UserSummary[]
-}
-
-function latLngToCell(lat: number, lng: number): string {
-  return `${Math.floor(lat / CELL_DEG)}:${Math.floor(lng / CELL_DEG)}`
-}
-
-/**
- * Returns a deduplicated array of cell-ID strings from whatever is stored in
- * discoveredAreas, migrating the legacy {lat,lng}[] format on first access.
- */
-function migrateDiscoveredAreas(raw: unknown): string[] {
-  if (!Array.isArray(raw) || raw.length === 0) return []
-  if (typeof raw[0] === 'string') return [...new Set(raw as string[])]
-  // Legacy format: array of {lat, lng} point objects.
-  const cells = (raw as Array<{ lat?: unknown; lng?: unknown }>)
-    .filter(
-      (p): p is { lat: number; lng: number } =>
-        typeof p.lat === 'number' && typeof p.lng === 'number',
-    )
-    .map(p => latLngToCell(p.lat, p.lng))
-  return [...new Set(cells)]
-}
-
-/** Pulls a stable ID out of a relationship value that may be an ID or a doc. */
-function relationshipId(value: unknown): string {
-  if (typeof value === 'string') return value
-  if (typeof value === 'number') return String(value)
-  if (value && typeof value === 'object' && 'id' in value) {
-    return String((value as { id: unknown }).id)
-  }
-  return ''
-}
-
-function teamLeadId(team: CityChallengeTeam): string {
-  return relationshipId(team.teamLead)
-}
-
-function memberIds(team: CityChallengeTeam): string[] {
-  if (!Array.isArray(team.members)) return []
-  const seen = new Set<string>()
-  const ids: string[] = []
-  for (const member of team.members) {
-    const id = relationshipId(member)
-    if (id && !seen.has(id)) {
-      seen.add(id)
-      ids.push(id)
-    }
-  }
-  return ids
-}
-
-function isTeamMember(team: CityChallengeTeam, userId: string): boolean {
-  return teamLeadId(team) === userId || memberIds(team).includes(userId)
-}
-
-function isTeamLead(team: CityChallengeTeam, userId: string): boolean {
-  return teamLeadId(team) === userId
-}
-
-function parseCoordinate(lat: unknown, lng: unknown): { lat: number; lng: number } | null {
-  if (typeof lat !== 'number' || typeof lng !== 'number') return null
-  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null
-  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null
-  return { lat, lng }
 }
 
 /** Loads a team without throwing, returning null when it does not exist. */
@@ -213,6 +154,61 @@ async function committedUserIds(payload: Payload, excludeTeamId: string): Promis
   return ids
 }
 
+/**
+ * Prevents a user from leading or joining more than one team. Only runs when the
+ * roster actually changes, so frequent discovery/completion writes skip it.
+ * Covers admin/CMS edits as well as API calls.
+ */
+async function validateUniqueRoster({
+  data,
+  originalDoc,
+  operation,
+  req,
+}: {
+  data: Record<string, unknown>
+  originalDoc?: Record<string, unknown>
+  operation: 'create' | 'update'
+  req: PayloadRequest
+}): Promise<Record<string, unknown>> {
+  const touchesRoster = operation === 'create' || 'teamLead' in data || 'members' in data
+  if (!touchesRoster) return data
+
+  const effectiveLead = 'teamLead' in data ? data.teamLead : originalDoc?.teamLead
+  const effectiveMembers = 'members' in data ? data.members : originalDoc?.members
+
+  const leadId = teamLeadId({ teamLead: effectiveLead })
+  const members = memberIds({ members: effectiveMembers })
+
+  if (leadId && members.includes(leadId)) {
+    throw new APIError('The team lead cannot also be listed as a team member.', 400)
+  }
+
+  const rosterIds = [leadId, ...members].filter(Boolean)
+  if (rosterIds.length === 0) return data
+
+  const originalId = typeof originalDoc?.id === 'string' ? originalDoc.id : undefined
+  const otherTeams = await req.payload.find({
+    collection: 'city-challenge-teams',
+    where: originalId ? { id: { not_equals: originalId } } : undefined,
+    limit: 0,
+    depth: 0,
+    overrideAccess: true,
+  })
+
+  const used = new Set<string>()
+  for (const team of otherTeams.docs as CityChallengeTeam[]) {
+    const otherLead = teamLeadId(team)
+    if (otherLead) used.add(otherLead)
+    for (const id of memberIds(team)) used.add(id)
+  }
+
+  if (rosterIds.some(id => used.has(id))) {
+    throw new APIError('One or more selected users are already on another team.', 400)
+  }
+
+  return data
+}
+
 const CityChallengeTeams: CollectionConfig = {
   slug: 'city-challenge-teams',
   access: {
@@ -227,6 +223,9 @@ const CityChallengeTeams: CollectionConfig = {
     create: admins,
     update: admins,
     delete: admins,
+  },
+  hooks: {
+    beforeChange: [validateUniqueRoster],
   },
   admin: {
     useAsTitle: 'name',

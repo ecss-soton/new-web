@@ -4,6 +4,12 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import L from 'leaflet'
 
 import type { CityChallengeLocation } from '../../../../payload/payload-types'
+import {
+  MAX_DISCOVERY_BATCH,
+  cellBounds,
+  getExploredPercentage,
+  latLngToCell,
+} from '../../../_utilities/cityChallenge'
 
 import 'leaflet/dist/leaflet.css'
 
@@ -11,15 +17,6 @@ import classes from './index.module.scss'
 
 const SOUTHAMPTON: L.LatLngTuple = [50.935, -1.396]
 const THROTTLE_MS = 8000
-const MAX_DISCOVERY_BATCH = 200
-
-// Geographic grid cell size in degrees. Must match the value in CityChallengeTeams.ts
-// and the City Challenge page. At Southampton (~51°N): ≈222 m latitude, ≈140 m longitude.
-const CELL_DEG = 0.002
-
-function latLngToCell(lat: number, lng: number): string {
-  return `${Math.floor(lat / CELL_DEG)}:${Math.floor(lng / CELL_DEG)}`
-}
 
 function createMarkerIcon(
   location: CityChallengeLocation,
@@ -122,6 +119,7 @@ export const CityChallengeMap: React.FC<Props> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const markersRef = useRef<Map<string, L.Marker>>(new Map())
   const initTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const rafRef = useRef<number | null>(null)
 
   // Discovery queue — positions are buffered so the throttle never drops a cell.
   const pendingRef = useRef<Point[]>([])
@@ -194,16 +192,9 @@ export const CityChallengeMap: React.FC<Props> = ({
     if (cells.length > 0) {
       ctx.globalCompositeOperation = 'destination-out'
       cells.forEach(cellId => {
-        const parts = cellId.split(':')
-        if (parts.length !== 2) return
-        const latIdx = Number(parts[0])
-        const lngIdx = Number(parts[1])
-        if (isNaN(latIdx) || isNaN(lngIdx)) return
-
-        const latMin = latIdx * CELL_DEG
-        const latMax = (latIdx + 1) * CELL_DEG
-        const lngMin = lngIdx * CELL_DEG
-        const lngMax = (lngIdx + 1) * CELL_DEG
+        const bounds = cellBounds(cellId)
+        if (!bounds) return
+        const { latMin, latMax, lngMin, lngMax } = bounds
 
         // Leaflet: latitude increases upward, so the "top" of the cell is latMax.
         const topLeft = map.latLngToContainerPoint([latMax, lngMin])
@@ -218,6 +209,19 @@ export const CityChallengeMap: React.FC<Props> = ({
 
   const drawCanvasRef = useRef(drawCanvas)
   drawCanvasRef.current = drawCanvas
+
+  // Coalesce redraws to one per animation frame so the fog holes track the map
+  // continuously while panning/zooming instead of only snapping on release.
+  const scheduleDraw = useCallback(() => {
+    if (rafRef.current !== null) return
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null
+      drawCanvasRef.current()
+    })
+  }, [])
+
+  const scheduleDrawRef = useRef(scheduleDraw)
+  scheduleDrawRef.current = scheduleDraw
 
   const flushDiscoveries = useCallback(async () => {
     if (flushingRef.current) return
@@ -303,19 +307,27 @@ export const CityChallengeMap: React.FC<Props> = ({
     mapRef.current = map
 
     const mapContainer = map.getContainer()
+
+    // Guarantee a single fog layer: remove any orphaned canvas left behind by a
+    // previous mount (e.g. React StrictMode's dev double-invoke) before adding ours.
+    mapContainer.querySelectorAll('[data-fog-canvas]').forEach(node => node.remove())
+
     const canvas = document.createElement('canvas')
+    canvas.dataset.fogCanvas = 'true'
     canvas.className = classes.fogCanvas
     canvas.style.cssText =
       'position:absolute;top:0;left:0;width:100%;height:100%;z-index:450;pointer-events:none;'
     mapContainer.appendChild(canvas)
     canvasRef.current = canvas
 
-    const handleMove = () => drawCanvasRef.current()
+    const handleMove = () => scheduleDrawRef.current()
     const handleResize = () => {
       map.invalidateSize()
       drawCanvasRef.current()
     }
+    map.on('move', handleMove)
     map.on('moveend', handleMove)
+    map.on('zoom', handleMove)
     map.on('zoomend', handleMove)
     window.addEventListener('resize', handleResize)
 
@@ -327,12 +339,14 @@ export const CityChallengeMap: React.FC<Props> = ({
 
     return () => {
       if (initTimerRef.current) clearTimeout(initTimerRef.current)
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
       if (flushTimerRef.current) {
         clearTimeout(flushTimerRef.current)
         flushTimerRef.current = null
       }
       window.removeEventListener('resize', handleResize)
       resizeObserver?.disconnect()
+      canvas.remove()
       map.remove()
       mapRef.current = null
       canvasRef.current = null
@@ -467,6 +481,9 @@ export const CityChallengeMap: React.FC<Props> = ({
     loc => typeof loc.latitude === 'number' && typeof loc.longitude === 'number',
   ).length
 
+  // Percentage of the Southampton play area the team has revealed.
+  const exploredPercent = useMemo(() => getExploredPercentage(discoveredAreas), [discoveredAreas])
+
   return (
     <div className={classes.wrapper}>
       <header className={classes.header}>
@@ -474,6 +491,9 @@ export const CityChallengeMap: React.FC<Props> = ({
         <div className={classes.stats}>
           <span className={classes.stat}>
             Discovered: {discoveredCount} / {totalCount}
+          </span>
+          <span className={[classes.stat, classes.statExplored].join(' ')}>
+            Southampton explored: {exploredPercent.toFixed(1)}%
           </span>
         </div>
         <div className={classes.actions}>
