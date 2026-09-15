@@ -5,10 +5,10 @@ import L from 'leaflet'
 
 import type { CityChallengeLocation } from '../../../../payload/payload-types'
 import {
-  MAX_DISCOVERY_BATCH,
   cellBounds,
   getExploredPercentage,
   latLngToCell,
+  MAX_DISCOVERY_BATCH,
 } from '../../../_utilities/cityChallenge'
 
 import 'leaflet/dist/leaflet.css'
