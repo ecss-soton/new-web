@@ -148,8 +148,13 @@ export const CityChallengeMap: React.FC<Props> = ({
     const container = map.getContainer()
     if (!container.clientWidth || !container.clientHeight) return
 
-    canvas.width = container.clientWidth
-    canvas.height = container.clientHeight
+    // The fog lives inside a Leaflet pane (above tiles, below markers), so the
+    // map pane's transform would otherwise drag it around. Counter that transform
+    // to keep the canvas viewport-fixed; holes are drawn in container coordinates.
+    const size = map.getSize()
+    canvas.width = size.x
+    canvas.height = size.y
+    L.DomUtil.setPosition(canvas, map.containerPointToLayerPoint([0, 0]))
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
@@ -312,12 +317,17 @@ export const CityChallengeMap: React.FC<Props> = ({
     // previous mount (e.g. React StrictMode's dev double-invoke) before adding ours.
     mapContainer.querySelectorAll('[data-fog-canvas]').forEach(node => node.remove())
 
+    // Put the fog in its own pane so it renders above map tiles but below the
+    // marker pane (z-index 600), leaving pins/popups crisp on top of the fog.
+    const fogPane = map.createPane('cityChallengeFog')
+    fogPane.style.zIndex = '450'
+    fogPane.style.pointerEvents = 'none'
+
     const canvas = document.createElement('canvas')
     canvas.dataset.fogCanvas = 'true'
     canvas.className = classes.fogCanvas
-    canvas.style.cssText =
-      'position:absolute;top:0;left:0;width:100%;height:100%;z-index:450;pointer-events:none;'
-    mapContainer.appendChild(canvas)
+    canvas.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;'
+    fogPane.appendChild(canvas)
     canvasRef.current = canvas
 
     const handleMove = () => scheduleDrawRef.current()
