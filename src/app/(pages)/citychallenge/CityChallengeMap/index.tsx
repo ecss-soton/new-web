@@ -5,8 +5,8 @@ import L from 'leaflet'
 
 import type { CityChallengeLocation } from '../../../../payload/payload-types'
 import {
-  type ChallengeProgressEntry,
   cellBounds,
+  type ChallengeProgressEntry,
   challengeProgressToMap,
   computeChallengeScore,
   getChallengeMaxCount,
