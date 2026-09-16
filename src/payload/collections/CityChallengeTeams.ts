@@ -8,6 +8,7 @@ import {
   MAX_DISCOVERY_BATCH,
   MAX_DISCOVERY_CELLS,
   memberIds,
+  migrateChallengeProgress,
   migrateDiscoveredAreas,
   parseCoordinate,
   relationshipId,
@@ -15,7 +16,7 @@ import {
 } from '../../app/_utilities/cityChallenge'
 import { admins } from '../access/admins'
 import { isAdmin } from '../access/isAdmin'
-import type { CityChallengeTeam, User } from '../payload-types'
+import type { CityChallengeLocation, CityChallengeTeam, User } from '../payload-types'
 
 type Payload = PayloadRequest['payload']
 
@@ -270,6 +271,16 @@ const CityChallengeTeams: CollectionConfig = {
       },
     },
     {
+      name: 'challengeProgress',
+      type: 'json',
+      label: 'Challenge Progress',
+      admin: {
+        readOnly: true,
+        description:
+          'Array of { locationId, count } entries tracking counter challenge progress. Managed via the complete endpoint.',
+      },
+    },
+    {
       name: 'discoveredAreas',
       type: 'json',
       label: 'Discovered Areas',
@@ -381,42 +392,66 @@ const CityChallengeTeams: CollectionConfig = {
               .json({ error: 'Only the team lead can mark challenges complete' })
           }
 
-          const { locationId } = (req.body ?? {}) as { locationId?: unknown }
+          const body = (req.body ?? {}) as { locationId?: unknown; count?: unknown }
+          const { locationId } = body
           if (!locationId || typeof locationId !== 'string') {
             return res.status(400).json({ error: 'Missing locationId' })
           }
 
-          // Guard against dangling relationship IDs.
+          // Guard against dangling relationship IDs and read the completion type.
+          let location: CityChallengeLocation
           try {
-            await req.payload.findByID({
+            location = (await req.payload.findByID({
               collection: 'city-challenge-locations',
               id: locationId,
               depth: 0,
-            })
+            })) as CityChallengeLocation
           } catch {
             return res.status(400).json({ error: 'Unknown challenge' })
           }
 
-          const current: string[] = Array.isArray(team.completedChallenges)
+          let completedChallenges: string[] = Array.isArray(team.completedChallenges)
             ? [
                 ...new Set(
                   (team.completedChallenges as Array<string | { id: string }>).map(relationshipId),
                 ),
               ].filter(Boolean)
             : []
+          let challengeProgress = migrateChallengeProgress(team.challengeProgress)
 
-          const updated = current.includes(locationId)
-            ? current.filter(id => id !== locationId)
-            : [...current, locationId]
+          if (location.completionType === 'counter') {
+            const maxCount =
+              typeof location.maxCount === 'number' &&
+              Number.isInteger(location.maxCount) &&
+              location.maxCount > 0
+                ? location.maxCount
+                : 0
+            if (maxCount < 1) {
+              return res.status(400).json({ error: 'This challenge has no maximum count set' })
+            }
+            if (typeof body.count !== 'number' || !Number.isInteger(body.count) || body.count < 0) {
+              return res.status(400).json({ error: 'count must be a whole number of 0 or more' })
+            }
+
+            const clamped = Math.min(body.count, maxCount)
+            challengeProgress = challengeProgress.filter(entry => entry.locationId !== locationId)
+            if (clamped > 0) {
+              challengeProgress.push({ locationId, count: clamped })
+            }
+          } else {
+            completedChallenges = completedChallenges.includes(locationId)
+              ? completedChallenges.filter(id => id !== locationId)
+              : [...completedChallenges, locationId]
+          }
 
           await req.payload.update({
             collection: 'city-challenge-teams',
             id: teamId,
-            data: { completedChallenges: updated },
+            data: { completedChallenges, challengeProgress },
             depth: 0,
           })
 
-          return res.status(200).json({ completedChallenges: updated })
+          return res.status(200).json({ completedChallenges, challengeProgress })
         } catch (err: unknown) {
           req.payload.logger.error(err as Error)
           return res.status(500).json({ error: 'Internal server error' })

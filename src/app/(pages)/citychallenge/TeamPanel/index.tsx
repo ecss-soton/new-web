@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 
+import { bungee } from '../../../_utilities/font'
+
 import classes from './index.module.scss'
 
 type MemberSummary = { id: string; name?: string | null; username?: string | null }
@@ -188,7 +190,7 @@ export const TeamPanel: React.FC<Props> = ({
 
   return (
     <div className={classes.panel}>
-      <h3 className={classes.panelTitle}>Team: {teamName}</h3>
+      <h3 className={[classes.panelTitle, bungee.className].join(' ')}>Team: {teamName}</h3>
 
       <div className={classes.membersList}>
         <h4 className={classes.membersHeading}>Members ({members.length})</h4>

@@ -22994,12 +22994,20 @@ type CityChallengeLocation {
   name: String!
   description: String
   zone: String
+  completionType: CityChallengeLocation_completionType!
+  points: Float
+  maxCount: Float
   latitude: Float
   longitude: Float
   link: String
   sortOrder: Float
   updatedAt: DateTime
   createdAt: DateTime
+}
+
+enum CityChallengeLocation_completionType {
+  tick
+  counter
 }
 
 type CityChallengeLocations {
@@ -23020,6 +23028,9 @@ input CityChallengeLocation_where {
   name: CityChallengeLocation_name_operator
   description: CityChallengeLocation_description_operator
   zone: CityChallengeLocation_zone_operator
+  completionType: CityChallengeLocation_completionType_operator
+  points: CityChallengeLocation_points_operator
+  maxCount: CityChallengeLocation_maxCount_operator
   latitude: CityChallengeLocation_latitude_operator
   longitude: CityChallengeLocation_longitude_operator
   link: CityChallengeLocation_link_operator
@@ -23057,6 +23068,39 @@ input CityChallengeLocation_zone_operator {
   in: [String]
   not_in: [String]
   all: [String]
+  exists: Boolean
+}
+
+input CityChallengeLocation_completionType_operator {
+  equals: CityChallengeLocation_completionType_Input
+  not_equals: CityChallengeLocation_completionType_Input
+  in: [CityChallengeLocation_completionType_Input]
+  not_in: [CityChallengeLocation_completionType_Input]
+  all: [CityChallengeLocation_completionType_Input]
+}
+
+enum CityChallengeLocation_completionType_Input {
+  tick
+  counter
+}
+
+input CityChallengeLocation_points_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input CityChallengeLocation_maxCount_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
   exists: Boolean
 }
 
@@ -23138,6 +23182,9 @@ input CityChallengeLocation_where_and {
   name: CityChallengeLocation_name_operator
   description: CityChallengeLocation_description_operator
   zone: CityChallengeLocation_zone_operator
+  completionType: CityChallengeLocation_completionType_operator
+  points: CityChallengeLocation_points_operator
+  maxCount: CityChallengeLocation_maxCount_operator
   latitude: CityChallengeLocation_latitude_operator
   longitude: CityChallengeLocation_longitude_operator
   link: CityChallengeLocation_link_operator
@@ -23153,6 +23200,9 @@ input CityChallengeLocation_where_or {
   name: CityChallengeLocation_name_operator
   description: CityChallengeLocation_description_operator
   zone: CityChallengeLocation_zone_operator
+  completionType: CityChallengeLocation_completionType_operator
+  points: CityChallengeLocation_points_operator
+  maxCount: CityChallengeLocation_maxCount_operator
   latitude: CityChallengeLocation_latitude_operator
   longitude: CityChallengeLocation_longitude_operator
   link: CityChallengeLocation_link_operator
@@ -23180,6 +23230,9 @@ type CityChallengeLocationsDocAccessFields {
   name: CityChallengeLocationsDocAccessFields_name
   description: CityChallengeLocationsDocAccessFields_description
   zone: CityChallengeLocationsDocAccessFields_zone
+  completionType: CityChallengeLocationsDocAccessFields_completionType
+  points: CityChallengeLocationsDocAccessFields_points
+  maxCount: CityChallengeLocationsDocAccessFields_maxCount
   latitude: CityChallengeLocationsDocAccessFields_latitude
   longitude: CityChallengeLocationsDocAccessFields_longitude
   link: CityChallengeLocationsDocAccessFields_link
@@ -23254,6 +23307,75 @@ type CityChallengeLocationsDocAccessFields_zone_Update {
 }
 
 type CityChallengeLocationsDocAccessFields_zone_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_completionType {
+  create: CityChallengeLocationsDocAccessFields_completionType_Create
+  read: CityChallengeLocationsDocAccessFields_completionType_Read
+  update: CityChallengeLocationsDocAccessFields_completionType_Update
+  delete: CityChallengeLocationsDocAccessFields_completionType_Delete
+}
+
+type CityChallengeLocationsDocAccessFields_completionType_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_completionType_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_completionType_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_completionType_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_points {
+  create: CityChallengeLocationsDocAccessFields_points_Create
+  read: CityChallengeLocationsDocAccessFields_points_Read
+  update: CityChallengeLocationsDocAccessFields_points_Update
+  delete: CityChallengeLocationsDocAccessFields_points_Delete
+}
+
+type CityChallengeLocationsDocAccessFields_points_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_points_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_points_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_points_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_maxCount {
+  create: CityChallengeLocationsDocAccessFields_maxCount_Create
+  read: CityChallengeLocationsDocAccessFields_maxCount_Read
+  update: CityChallengeLocationsDocAccessFields_maxCount_Update
+  delete: CityChallengeLocationsDocAccessFields_maxCount_Delete
+}
+
+type CityChallengeLocationsDocAccessFields_maxCount_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_maxCount_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_maxCount_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsDocAccessFields_maxCount_Delete {
   permission: Boolean!
 }
 
@@ -23421,6 +23543,7 @@ type CityChallengeTeam {
   teamLead: User!
   members: [User!]
   completedChallenges: [CityChallengeLocation!]
+  challengeProgress: JSON
   discoveredAreas: JSON
   updatedAt: DateTime
   createdAt: DateTime
@@ -23445,6 +23568,7 @@ input CityChallengeTeam_where {
   teamLead: CityChallengeTeam_teamLead_operator
   members: CityChallengeTeam_members_operator
   completedChallenges: CityChallengeTeam_completedChallenges_operator
+  challengeProgress: CityChallengeTeam_challengeProgress_operator
   discoveredAreas: CityChallengeTeam_discoveredAreas_operator
   updatedAt: CityChallengeTeam_updatedAt_operator
   createdAt: CityChallengeTeam_createdAt_operator
@@ -23486,6 +23610,16 @@ input CityChallengeTeam_completedChallenges_operator {
   in: [JSON]
   not_in: [JSON]
   all: [JSON]
+  exists: Boolean
+}
+
+input CityChallengeTeam_challengeProgress_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  within: JSON
+  intersects: JSON
   exists: Boolean
 }
 
@@ -23537,6 +23671,7 @@ input CityChallengeTeam_where_and {
   teamLead: CityChallengeTeam_teamLead_operator
   members: CityChallengeTeam_members_operator
   completedChallenges: CityChallengeTeam_completedChallenges_operator
+  challengeProgress: CityChallengeTeam_challengeProgress_operator
   discoveredAreas: CityChallengeTeam_discoveredAreas_operator
   updatedAt: CityChallengeTeam_updatedAt_operator
   createdAt: CityChallengeTeam_createdAt_operator
@@ -23550,6 +23685,7 @@ input CityChallengeTeam_where_or {
   teamLead: CityChallengeTeam_teamLead_operator
   members: CityChallengeTeam_members_operator
   completedChallenges: CityChallengeTeam_completedChallenges_operator
+  challengeProgress: CityChallengeTeam_challengeProgress_operator
   discoveredAreas: CityChallengeTeam_discoveredAreas_operator
   updatedAt: CityChallengeTeam_updatedAt_operator
   createdAt: CityChallengeTeam_createdAt_operator
@@ -23575,6 +23711,7 @@ type CityChallengeTeamsDocAccessFields {
   teamLead: CityChallengeTeamsDocAccessFields_teamLead
   members: CityChallengeTeamsDocAccessFields_members
   completedChallenges: CityChallengeTeamsDocAccessFields_completedChallenges
+  challengeProgress: CityChallengeTeamsDocAccessFields_challengeProgress
   discoveredAreas: CityChallengeTeamsDocAccessFields_discoveredAreas
   updatedAt: CityChallengeTeamsDocAccessFields_updatedAt
   createdAt: CityChallengeTeamsDocAccessFields_createdAt
@@ -23669,6 +23806,29 @@ type CityChallengeTeamsDocAccessFields_completedChallenges_Update {
 }
 
 type CityChallengeTeamsDocAccessFields_completedChallenges_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_challengeProgress {
+  create: CityChallengeTeamsDocAccessFields_challengeProgress_Create
+  read: CityChallengeTeamsDocAccessFields_challengeProgress_Read
+  update: CityChallengeTeamsDocAccessFields_challengeProgress_Update
+  delete: CityChallengeTeamsDocAccessFields_challengeProgress_Delete
+}
+
+type CityChallengeTeamsDocAccessFields_challengeProgress_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_challengeProgress_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_challengeProgress_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsDocAccessFields_challengeProgress_Delete {
   permission: Boolean!
 }
 
@@ -36306,6 +36466,9 @@ type CityChallengeLocationsFields {
   name: CityChallengeLocationsFields_name
   description: CityChallengeLocationsFields_description
   zone: CityChallengeLocationsFields_zone
+  completionType: CityChallengeLocationsFields_completionType
+  points: CityChallengeLocationsFields_points
+  maxCount: CityChallengeLocationsFields_maxCount
   latitude: CityChallengeLocationsFields_latitude
   longitude: CityChallengeLocationsFields_longitude
   link: CityChallengeLocationsFields_link
@@ -36380,6 +36543,75 @@ type CityChallengeLocationsFields_zone_Update {
 }
 
 type CityChallengeLocationsFields_zone_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_completionType {
+  create: CityChallengeLocationsFields_completionType_Create
+  read: CityChallengeLocationsFields_completionType_Read
+  update: CityChallengeLocationsFields_completionType_Update
+  delete: CityChallengeLocationsFields_completionType_Delete
+}
+
+type CityChallengeLocationsFields_completionType_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_completionType_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_completionType_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_completionType_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_points {
+  create: CityChallengeLocationsFields_points_Create
+  read: CityChallengeLocationsFields_points_Read
+  update: CityChallengeLocationsFields_points_Update
+  delete: CityChallengeLocationsFields_points_Delete
+}
+
+type CityChallengeLocationsFields_points_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_points_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_points_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_points_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_maxCount {
+  create: CityChallengeLocationsFields_maxCount_Create
+  read: CityChallengeLocationsFields_maxCount_Read
+  update: CityChallengeLocationsFields_maxCount_Update
+  delete: CityChallengeLocationsFields_maxCount_Delete
+}
+
+type CityChallengeLocationsFields_maxCount_Create {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_maxCount_Read {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_maxCount_Update {
+  permission: Boolean!
+}
+
+type CityChallengeLocationsFields_maxCount_Delete {
   permission: Boolean!
 }
 
@@ -36554,6 +36786,7 @@ type CityChallengeTeamsFields {
   teamLead: CityChallengeTeamsFields_teamLead
   members: CityChallengeTeamsFields_members
   completedChallenges: CityChallengeTeamsFields_completedChallenges
+  challengeProgress: CityChallengeTeamsFields_challengeProgress
   discoveredAreas: CityChallengeTeamsFields_discoveredAreas
   updatedAt: CityChallengeTeamsFields_updatedAt
   createdAt: CityChallengeTeamsFields_createdAt
@@ -36648,6 +36881,29 @@ type CityChallengeTeamsFields_completedChallenges_Update {
 }
 
 type CityChallengeTeamsFields_completedChallenges_Delete {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_challengeProgress {
+  create: CityChallengeTeamsFields_challengeProgress_Create
+  read: CityChallengeTeamsFields_challengeProgress_Read
+  update: CityChallengeTeamsFields_challengeProgress_Update
+  delete: CityChallengeTeamsFields_challengeProgress_Delete
+}
+
+type CityChallengeTeamsFields_challengeProgress_Create {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_challengeProgress_Read {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_challengeProgress_Update {
+  permission: Boolean!
+}
+
+type CityChallengeTeamsFields_challengeProgress_Delete {
   permission: Boolean!
 }
 
@@ -40281,6 +40537,9 @@ input mutationCityChallengeLocationInput {
   name: String!
   description: String
   zone: String
+  completionType: CityChallengeLocation_completionType_MutationInput!
+  points: Float
+  maxCount: Float
   latitude: Float
   longitude: Float
   link: String
@@ -40289,16 +40548,29 @@ input mutationCityChallengeLocationInput {
   createdAt: String
 }
 
+enum CityChallengeLocation_completionType_MutationInput {
+  tick
+  counter
+}
+
 input mutationCityChallengeLocationUpdateInput {
   name: String
   description: String
   zone: String
+  completionType: CityChallengeLocationUpdate_completionType_MutationInput
+  points: Float
+  maxCount: Float
   latitude: Float
   longitude: Float
   link: String
   sortOrder: Float
   updatedAt: String
   createdAt: String
+}
+
+enum CityChallengeLocationUpdate_completionType_MutationInput {
+  tick
+  counter
 }
 
 input mutationCityChallengeTeamInput {
@@ -40306,6 +40578,7 @@ input mutationCityChallengeTeamInput {
   teamLead: String
   members: [String]
   completedChallenges: [String]
+  challengeProgress: JSON
   discoveredAreas: JSON
   updatedAt: String
   createdAt: String
@@ -40316,6 +40589,7 @@ input mutationCityChallengeTeamUpdateInput {
   teamLead: String
   members: [String]
   completedChallenges: [String]
+  challengeProgress: JSON
   discoveredAreas: JSON
   updatedAt: String
   createdAt: String

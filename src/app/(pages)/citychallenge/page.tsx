@@ -1,9 +1,11 @@
 import React from 'react'
 import { Metadata } from 'next'
 
-import type { CityChallengeLocation, CityChallengeTeam, User } from '../../../payload/payload-types'
+import type { CityChallengeLocation, CityChallengeTeam } from '../../../payload/payload-types'
 import {
+  type ChallengeProgressEntry,
   getExploredPercentage,
+  migrateChallengeProgress,
   migrateDiscoveredAreas,
   relationshipId,
 } from '../../_utilities/cityChallenge'
@@ -43,6 +45,8 @@ interface ResolvedTeam {
   teamLead: MemberDisplay
   members: MemberDisplay[]
   completedChallenges: string[]
+  /** Counter challenge progress entries. */
+  challengeProgress: ChallengeProgressEntry[]
   /** Discovered geographic cell IDs in the form "latIdx:lngIdx". */
   discoveredAreas: string[]
 }
@@ -60,6 +64,7 @@ function resolveTeam(team: CityChallengeTeam, roster: RosterResponse | null): Re
     rosterMap.get(id) ?? { id, name: null, username: null }
 
   const completedChallenges = (team.completedChallenges ?? []).map(relationshipId)
+  const challengeProgress = migrateChallengeProgress(team.challengeProgress)
 
   // Normalize discoveredAreas to cell IDs, migrating legacy {lat,lng}[] data if present.
   const discoveredAreas = migrateDiscoveredAreas(team.discoveredAreas)
@@ -71,6 +76,7 @@ function resolveTeam(team: CityChallengeTeam, roster: RosterResponse | null): Re
     teamLead: display(leadId),
     members: rawMembers.map(display),
     completedChallenges,
+    challengeProgress,
     discoveredAreas,
   }
 }
@@ -164,6 +170,7 @@ export default async function CityChallengePage({
             <ChallengeList
               locations={locations}
               completedChallenges={team.completedChallenges}
+              challengeProgress={team.challengeProgress}
               isLead={role === 'lead'}
               teamId={team.id}
               token={token}
@@ -179,6 +186,7 @@ export default async function CityChallengePage({
                 token={token}
                 discoveredAreas={team.discoveredAreas}
                 completedChallenges={team.completedChallenges}
+                challengeProgress={team.challengeProgress}
                 error={locationsError}
               />
             )

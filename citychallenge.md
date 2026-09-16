@@ -14,11 +14,14 @@ shared fog-of-war map discovery, and role-based views (team lead vs participant)
 - `name` (text, required) — location name
 - `description` (textarea) — clue or hint
 - `zone` (text, optional) — groups challenges in the list view ("No Zone" if blank)
-- `latitude` / `longitude` (number, optional) — required **only** for map-based challenges
-- `link` (text, HTTPS URL, optional) — required for link-based challenges (e.g. "Follow this YouTube channel")
-- **Either** a complete coordinate pair (`latitude` + `longitude`) **or** a valid HTTPS `link` must be present. Partial coordinates (only one of the two) are always rejected.
-- If both coordinates **and** a link are provided, the link takes priority as the "Get me there" destination.
-- Link-only challenges do **not** appear on the map (no pin is rendered without coordinates).
+- `completionType` (select, required, default `tick`) — `tick` (done / not done) or `counter` (x out of y)
+- `points` (number, default 0) — points for a tick, or points per increment for a counter
+- `maxCount` (number, required for counters) — maximum number of increments; counter points are `count × points`, capped at `maxCount × points`
+- `latitude` / `longitude` (number, **optional**) — if either is set the other must be set too; both may be blank
+- `link` (text, HTTPS URL, **optional**)
+- **Everything is optional except `name`.** A challenge may have coordinates, a link, both, or neither.
+- If both coordinates **and** a link are provided, the link takes priority as the destination.
+- Challenges without coordinates do **not** appear on the map (no pin is rendered).
 - `sortOrder` (number, default 0)
 - Access: `read` = logged-in members only; `create/update/delete` = admins only
 
@@ -27,7 +30,8 @@ shared fog-of-war map discovery, and role-based views (team lead vs participant)
 - `name` (text, required) — team display name
 - `teamLead` (relationship → users, required) — the user who manages the team
 - `members` (relationship → users, hasMany) — participating team members (excludes the lead)
-- `completedChallenges` (relationship → city-challenge-locations, hasMany) — challenges marked done
+- `completedChallenges` (relationship → city-challenge-locations, hasMany) — ticked challenges
+- `challengeProgress` (JSON, readOnly) — array of `{ locationId, count }` entries for counter challenges
 - `discoveredAreas` (JSON) — array of fog-of-war grid cell IDs (`"latIdx:lngIdx"`)
 - Access: `read` = the team's lead/members or an admin only; `create/update/delete` = admins only
 - Custom endpoints handle team lead and member interactions (see below)
@@ -47,7 +51,9 @@ shared fog-of-war map discovery, and role-based views (team lead vs participant)
 
 - `POST /:id/discover` — any team member submits `{lat,lng}` or `{points:[...]}`; coordinates are
   validated, deduplicated by grid cell, and stored. Returns the updated `discoveredAreas`.
-- `POST /:id/complete` — team lead toggles a challenge ID; the location must exist.
+- `POST /:id/complete` — team lead updates one challenge. For a `tick` challenge it toggles the ID; for a
+  `counter` challenge it accepts `{ count }` (integer ≥ 0), clamps it to `0..maxCount`, and stores it in
+  `challengeProgress`. The location must exist. Returns the updated `completedChallenges` and `challengeProgress`.
 - `POST /:id/members` — team lead adds/removes a member by stable `userId` (or `username`).
   Rejects the lead, duplicates, and users already committed to another team. Returns the roster.
 - `GET /:id/roster` — lead/member/admin; returns safe `{id, name, username}` summaries for the
@@ -89,12 +95,13 @@ Both collections are registered in `payload.config.ts`.
 - Discovery cells loaded from the server (team's `discoveredAreas` field)
 - `destination-out` composite operation punches out revealed geographic cells
 - Redraws on pan/zoom and on container resize (`ResizeObserver` + `map.invalidateSize()`)
-- All challenge locations shown as numbered pins (lime for undone, cyan for completed)
-- Map popups include a "Get me there →" link (CMS link preferred over generated Maps URL)
+- Only challenges with coordinates get a pin; pins are numbered in `sortOrder` so numbers have no gaps
+- Pins are lime while incomplete and cyan once complete (a counter is complete at `maxCount`)
+- Map popups include points and counter progress, plus a "Get me there →" link
 - OpenStreetMap tile attribution is shown
 - Geolocation tracking via `watchPosition` with event-driven discovery
 - Header shows **"Southampton explored: NN.N%"** — the share of grid cells revealed within the
-  bounding box `CITY_CHALLENGE_BOUNDS` in `src/app/_utilities/cityChallenge.ts`
+  bounding box `CITY_CHALLENGE_BOUNDS` in `src/app/_utilities/cityChallenge.ts` — and team **points**
 
 ### Discovery Efficiency
 
@@ -110,11 +117,14 @@ The client does NOT poll or use timers for position. Strategy:
 
 ### List View
 
-- Shows ALL challenges (names, descriptions, "Get me there" destination)
-- Destination resolution: CMS `link` takes priority; falls back to a Google Maps URL from coordinates
+- Shows ALL challenges (names, descriptions, points, destination)
+- Destination resolution: CMS `link` takes priority; otherwise coordinates open in the device's default
+  map app (Apple Maps on iOS/iPadOS, `geo:` on Android, Google Maps on desktop) via
+  `src/app/_utilities/mapLinks.ts`. Platform detection runs after mount to avoid hydration mismatches.
 - No destination button when a challenge has neither a valid link nor complete coordinates
-- Progress bar counts only completions that map to known challenges
-- Team lead sees checkboxes to toggle completion; participants see status dots
+- Points shown per challenge and as a team total (`earned / max`); the completion bar counts ticks and
+  counters that have reached `maxCount`
+- Team lead sees checkboxes for ticks and −/+ controls for counters; participants see read-only status
 - Sorted by `sortOrder`, grouped by `zone`
 
 ### Admin/CMS Workflow
@@ -171,6 +181,12 @@ MongoDB and at least two user accounts (one lead, one member) plus an admin.
 - [ ] Lead can tick/untick; member sees status dots only.
 - [ ] Invalid `locationId` returns 400; progress counts only known challenges.
 - [ ] Link-only challenge shows "Open link now"; coordinate-only shows "Get me there →".
+- [ ] Challenge with neither coordinates nor a link renders (no destination button, no pin).
+- [ ] Coordinates: providing only one of latitude/longitude is rejected; leaving both blank is accepted.
+- [ ] Counter: lead −/+ clamps between 0 and `maxCount`; `count` of a negative/non-integer returns 400.
+- [ ] Counter at `maxCount` counts as complete and awards `maxCount × points`; partial awards proportionally.
+- [ ] Points display matches `computeChallengeScore` (per-card and team total).
+- [ ] Destination opens Apple Maps on iOS, the default Android map app via `geo:`, and Google Maps on desktop.
 
 ### Map & fog
 - [ ] Revealing a cell persists across reload; two browsers/accounts on the same team both persist

@@ -16,36 +16,53 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-wrap: wrap;
 
   @include small-break {
     flex-direction: column;
     align-items: stretch;
-    gap: 8px;
+    gap: 10px;
   }
 }
 
 .progressText {
   font-size: 14px;
   font-weight: 700;
-  color: var(--jumpstart-neon-lime);
+  color: var(--jumpstart-text);
   white-space: nowrap;
 }
 
 .progressBar {
   flex: 1;
-  height: 8px;
-  background: var(--jumpstart-card);
-  border-radius: 4px;
-  border: 1px solid var(--jumpstart-card-border);
+  min-width: 140px;
+  height: 10px;
+  background: var(--jumpstart-bg);
+  border: 2px solid #000;
+  border-radius: 3px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
   overflow: hidden;
 }
 
 .progressFill {
   height: 100%;
   background: var(--jumpstart-neon-lime);
-  border-radius: 4px;
   transition: width 0.3s ease;
-  box-shadow: 0 0 8px var(--jumpstart-neon-lime);
+}
+
+.scoreText {
+  align-self: flex-start;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: #000;
+  background: var(--jumpstart-neon-lime);
+  border: 2px solid #000;
+  border-radius: 4px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .exploredText {
@@ -73,13 +90,27 @@
 }
 
 .zoneTitle {
+  position: relative;
+  align-self: flex-start;
+  margin: 0 0 8px;
+  padding-bottom: 8px;
   font-size: 18px;
   font-weight: 400;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--jumpstart-neon-cyan);
-  margin: 0;
+  color: var(--zone-accent, var(--jumpstart-neon-cyan));
   text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 46px;
+    height: 5px;
+    background: var(--zone-accent, var(--jumpstart-neon-cyan));
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  }
 
   @include small-break {
     font-size: 16px;
@@ -87,21 +118,37 @@
 }
 
 .card {
+  --card-rotation: 0deg;
+
+  position: relative;
+  padding: 16px 20px;
   background: var(--jumpstart-card);
   border: 2px solid var(--jumpstart-card-border);
-  border-radius: 10px;
-  padding: 16px 20px;
-  transition: all 0.15s ease;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.4);
+  transform: rotate(var(--card-rotation));
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+
+  &:nth-of-type(odd) {
+    --card-rotation: -0.4deg;
+  }
+
+  &:nth-of-type(even) {
+    --card-rotation: 0.4deg;
+  }
 
   &:hover {
-    border-color: var(--jumpstart-neon-cyan);
-    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+    transform: rotate(var(--card-rotation)) translateY(-3px);
+    box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.5);
+    border-color: var(--zone-accent, var(--jumpstart-neon-cyan));
   }
 }
 
 .cardCompleted {
   border-color: var(--jumpstart-neon-lime);
-  opacity: 0.75;
 
   &:hover {
     border-color: var(--jumpstart-neon-lime);
@@ -122,21 +169,23 @@
 
 .checkbox {
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  border: 2px solid var(--jumpstart-card-border);
-  border-radius: 6px;
-  background: transparent;
-  cursor: pointer;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s ease;
-  color: #000;
   padding: 0;
+  color: #000;
+  background: transparent;
+  border: 2px solid #000;
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
 
   &:hover {
-    border-color: var(--jumpstart-neon-lime);
+    background: rgba(212, 255, 0, 0.15);
   }
 
   &:focus-visible {
@@ -152,60 +201,155 @@
 
 .checkboxChecked {
   background: var(--jumpstart-neon-lime);
-  border-color: var(--jumpstart-neon-lime);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
 }
 
 .statusDot {
   flex-shrink: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--jumpstart-card-border);
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: transparent;
   border: 2px solid var(--jumpstart-card-border);
 }
 
 .statusDotComplete {
   background: var(--jumpstart-neon-lime);
-  border-color: var(--jumpstart-neon-lime);
-  box-shadow: 0 0 6px var(--jumpstart-neon-lime);
+  border-color: #000;
+  box-shadow: 0 0 8px var(--jumpstart-neon-lime);
 }
 
 .cardTitle {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--jumpstart-text);
+  min-width: 0;
   margin: 0;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  color: var(--jumpstart-text);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
 
   @include small-break {
-    font-size: 14px;
+    font-size: 13px;
   }
 }
 
 .cardDescription {
-  font-size: 14px;
-  color: var(--jumpstart-muted);
-  line-height: 1.5;
   margin: 0;
-  padding-left: 36px;
+  padding-left: 38px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--jumpstart-muted);
 
   @include small-break {
-    padding-left: 24px;
+    padding-left: 26px;
     font-size: 13px;
   }
+}
+
+.counterRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 38px;
+
+  @include small-break {
+    padding-left: 26px;
+  }
+}
+
+.counterButton {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--jumpstart-neon-cyan);
+  background: transparent;
+  border: 2px solid #000;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--jumpstart-neon-cyan);
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--jumpstart-neon-cyan);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.counterTrack {
+  flex: 1;
+  max-width: 220px;
+  height: 10px;
+  background: var(--jumpstart-bg);
+  border: 2px solid #000;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.counterFill {
+  height: 100%;
+  background: var(--jumpstart-neon-cyan);
+  transition: width 0.2s ease;
+}
+
+.cardCompleted .counterFill {
+  background: var(--jumpstart-neon-lime);
+}
+
+.counterValue {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--jumpstart-text);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .cardMeta {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding-left: 36px;
+  padding-left: 38px;
 
   @include small-break {
-    padding-left: 24px;
+    padding-left: 26px;
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
   }
+}
+
+.pointsLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--jumpstart-neon-lime);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
 }
 
 .mapsLink {
@@ -218,6 +362,7 @@
 
   &:hover {
     text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   &:focus-visible {
@@ -239,6 +384,20 @@
   font-size: 13px;
   color: var(--jumpstart-neon-orange);
   background: rgba(255, 85, 0, 0.08);
-  border: 1px solid var(--jumpstart-neon-orange);
+  border: 2px solid var(--jumpstart-neon-orange);
   border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card:hover,
+  .counterButton:hover:not(:disabled) {
+    transform: none;
+    transition: none;
+  }
+
+  .progressFill,
+  .counterFill {
+    transition: none;
+  }
 }

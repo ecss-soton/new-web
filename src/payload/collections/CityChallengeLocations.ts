@@ -2,49 +2,52 @@ import type { CollectionConfig, Validate } from 'payload/types'
 
 import { admins } from '../access/admins'
 import { user } from '../access/user'
-import type { CityChallengeLocation } from '../payload-types'
 
+// Coordinates are optional, but latitude and longitude must be supplied together.
+// Both validators perform the same pair check so it holds whichever field changes.
 const validateCoordinate =
   (minimum: number, maximum: number, label: string): Validate =>
-  value => {
-    if (value === undefined || value === null) return true
-    if (
-      typeof value !== 'number' ||
-      !Number.isFinite(value) ||
-      value < minimum ||
-      value > maximum
-    ) {
-      return `${label} must be between ${minimum} and ${maximum}`
+  (value, { data }) => {
+    if (value !== undefined && value !== null) {
+      if (
+        typeof value !== 'number' ||
+        !Number.isFinite(value) ||
+        value < minimum ||
+        value > maximum
+      ) {
+        return `${label} must be between ${minimum} and ${maximum}`
+      }
     }
+
+    const doc = (data ?? {}) as { latitude?: unknown; longitude?: unknown }
+    const hasLat = typeof doc.latitude === 'number'
+    const hasLng = typeof doc.longitude === 'number'
+    if (hasLat !== hasLng) {
+      return 'Latitude and longitude must both be provided (or left blank).'
+    }
+
     return true
   }
 
-const validateCoordinatesOrLink: Validate = (value, { data, operation }) => {
-  const doc = (data ?? {}) as Partial<CityChallengeLocation>
-  const hasLat = typeof doc.latitude === 'number'
-  const hasLng = typeof doc.longitude === 'number'
-  const hasLink = typeof value === 'string' && value.trim() !== ''
-
-  // A valid HTTPS link on its own is always sufficient.
-  if (hasLink) return true
-
-  // Both coordinates provided → valid location-based challenge.
-  if (hasLat && hasLng) return true
-
-  // One coordinate present without the other is always an error.
-  if (hasLat !== hasLng) {
-    return 'Latitude and longitude must both be provided for location-based challenges.'
+const validatePoints: Validate = value => {
+  if (value === undefined || value === null) return true
+  if (typeof value !== 'number' || !Number.isInteger(value) || value < 0) {
+    return 'Points must be a whole number of 0 or more'
   }
-
-  // Partial-update that doesn't touch either field — leave existing state alone.
-  if (operation === 'update' && !('latitude' in doc) && !('longitude' in doc)) {
-    return true
-  }
-
-  return 'Provide either coordinates (latitude and longitude) or an external link.'
+  return true
 }
 
-const validateLink: Validate = (value, options) => {
+const validateMaxCount: Validate = (value, { data }) => {
+  if ((data as { completionType?: unknown } | undefined)?.completionType !== 'counter') {
+    return true
+  }
+  if (typeof value !== 'number' || !Number.isInteger(value) || value < 1) {
+    return 'Counter challenges require a maximum count of 1 or more'
+  }
+  return true
+}
+
+const validateLink: Validate = value => {
   if (typeof value === 'string' && value.trim() !== '') {
     let url: URL
     try {
@@ -56,7 +59,7 @@ const validateLink: Validate = (value, options) => {
       return 'Link must use HTTPS'
     }
   }
-  return validateCoordinatesOrLink(value, options)
+  return true
 }
 
 const CityChallengeLocations: CollectionConfig = {
@@ -69,7 +72,17 @@ const CityChallengeLocations: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'zone', 'latitude', 'longitude', 'link', 'sortOrder'],
+    defaultColumns: [
+      'name',
+      'zone',
+      'completionType',
+      'points',
+      'maxCount',
+      'latitude',
+      'longitude',
+      'link',
+      'sortOrder',
+    ],
   },
   fields: [
     {
@@ -96,13 +109,50 @@ const CityChallengeLocations: CollectionConfig = {
       },
     },
     {
+      name: 'completionType',
+      type: 'select',
+      label: 'Completion Type',
+      required: true,
+      defaultValue: 'tick',
+      options: [
+        { label: 'Tick (done / not done)', value: 'tick' },
+        { label: 'Counter (x out of y)', value: 'counter' },
+      ],
+      admin: {
+        description:
+          'A tick awards its points once. A counter awards points per increment up to the maximum.',
+      },
+    },
+    {
+      name: 'points',
+      type: 'number',
+      label: 'Points',
+      defaultValue: 0,
+      validate: validatePoints,
+      admin: {
+        step: 1,
+        description: 'Points awarded for a completed tick, or per unit for a counter.',
+      },
+    },
+    {
+      name: 'maxCount',
+      type: 'number',
+      label: 'Maximum Count',
+      validate: validateMaxCount,
+      admin: {
+        step: 1,
+        condition: data => (data?.completionType as string | undefined) === 'counter',
+        description: 'Required for counter challenges: the maximum number of increments.',
+      },
+    },
+    {
       name: 'latitude',
       type: 'number',
       label: 'Latitude',
       validate: validateCoordinate(-90, 90, 'Latitude'),
       admin: {
         step: 0.0001,
-        description: 'Required for location-based challenges.',
+        description: 'Optional. If provided, longitude must be provided too.',
       },
     },
     {
@@ -112,7 +162,7 @@ const CityChallengeLocations: CollectionConfig = {
       validate: validateCoordinate(-180, 180, 'Longitude'),
       admin: {
         step: 0.0001,
-        description: 'Required for location-based challenges.',
+        description: 'Optional. If provided, latitude must be provided too.',
       },
     },
     {
@@ -122,7 +172,7 @@ const CityChallengeLocations: CollectionConfig = {
       validate: validateLink,
       admin: {
         description:
-          'For non-location challenges (e.g. "Follow this YouTube channel"). Must be an HTTPS URL.',
+          'Optional. For non-location challenges (e.g. "Follow this YouTube channel"). Must be an HTTPS URL.',
       },
     },
     {
