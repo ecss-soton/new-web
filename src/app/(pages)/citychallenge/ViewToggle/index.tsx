@@ -3,6 +3,8 @@
 import React from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
+import { bungee } from '../../../_utilities/font'
+
 import classes from './index.module.scss'
 
 export const CityChallengeViewToggle: React.FC = () => {
@@ -26,7 +28,9 @@ export const CityChallengeViewToggle: React.FC = () => {
       <button
         type="button"
         aria-pressed={currentView === 'list'}
-        className={[classes.option, currentView === 'list' ? classes.active : ''].join(' ')}
+        className={[classes.option, bungee.className, currentView === 'list' ? classes.active : '']
+          .filter(Boolean)
+          .join(' ')}
         onClick={() => setView('list')}
       >
         <svg
@@ -51,7 +55,9 @@ export const CityChallengeViewToggle: React.FC = () => {
       <button
         type="button"
         aria-pressed={currentView === 'map'}
-        className={[classes.option, currentView === 'map' ? classes.active : ''].join(' ')}
+        className={[classes.option, bungee.className, currentView === 'map' ? classes.active : '']
+          .filter(Boolean)
+          .join(' ')}
         onClick={() => setView('map')}
       >
         <svg

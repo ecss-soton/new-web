@@ -1337,6 +1337,9 @@ export interface CityChallengeLocation {
   name: string;
   description?: string | null;
   zone?: string | null;
+  completionType: 'tick' | 'counter';
+  points?: number | null;
+  maxCount?: number | null;
   latitude?: number | null;
   longitude?: number | null;
   link?: string | null;
@@ -1354,6 +1357,15 @@ export interface CityChallengeTeam {
   teamLead: string | User;
   members?: (string | User)[] | null;
   completedChallenges?: (string | CityChallengeLocation)[] | null;
+  challengeProgress?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   discoveredAreas?:
     | {
         [k: string]: unknown;

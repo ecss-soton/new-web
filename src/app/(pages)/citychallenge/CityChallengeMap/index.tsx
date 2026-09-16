@@ -5,11 +5,20 @@ import L from 'leaflet'
 
 import type { CityChallengeLocation } from '../../../../payload/payload-types'
 import {
+  type ChallengeProgressEntry,
   cellBounds,
+  challengeProgressToMap,
+  computeChallengeScore,
+  getChallengeMaxCount,
+  getChallengeMaxPoints,
+  getChallengeUnitPoints,
   getExploredPercentage,
+  isChallengeComplete,
   latLngToCell,
   MAX_DISCOVERY_BATCH,
 } from '../../../_utilities/cityChallenge'
+import { bungee } from '../../../_utilities/font'
+import { detectMapPlatform, getDestinationLink } from '../../../_utilities/mapLinks'
 
 import 'leaflet/dist/leaflet.css'
 
@@ -34,7 +43,19 @@ function createMarkerIcon(
   })
 }
 
-function createPopupContent(location: CityChallengeLocation, isCompleted: boolean): HTMLDivElement {
+function getPopupPointsText(location: CityChallengeLocation): string {
+  const unit = getChallengeUnitPoints(location)
+  if (unit <= 0) return ''
+  return location.completionType === 'counter'
+    ? `${unit} pts each · max ${getChallengeMaxPoints(location)} pts`
+    : `${unit} pts`
+}
+
+function createPopupContent(
+  location: CityChallengeLocation,
+  isCompleted: boolean,
+  count: number,
+): HTMLDivElement {
   const popup = document.createElement('div')
   popup.className = classes.popup
 
@@ -43,10 +64,12 @@ function createPopupContent(location: CityChallengeLocation, isCompleted: boolea
   title.textContent = location.name
   popup.append(title)
 
+  const isCounter = location.completionType === 'counter'
+
   if (isCompleted) {
     const badge = document.createElement('span')
     badge.className = classes.popupBadge
-    badge.textContent = 'Completed'
+    badge.textContent = isCounter ? 'Complete' : 'Completed'
     popup.append(badge)
   }
 
@@ -57,35 +80,30 @@ function createPopupContent(location: CityChallengeLocation, isCompleted: boolea
     popup.append(desc)
   }
 
-  // Determine destination: CMS link takes priority over a generated Google Maps URL.
-  let destinationHref: string | null = null
-  let destinationLabel = 'Get me there →'
-  if (location.link) {
-    try {
-      const parsed = new URL(location.link)
-      if (parsed.protocol === 'https:') {
-        destinationHref = parsed.href
-        destinationLabel = 'Open link now'
-      }
-    } catch {
-      // invalid URL — ignore
-    }
-  }
-  if (
-    !destinationHref &&
-    typeof location.latitude === 'number' &&
-    typeof location.longitude === 'number'
-  ) {
-    destinationHref = `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`
+  if (isCounter) {
+    const progress = document.createElement('span')
+    progress.className = classes.popupProgress
+    progress.textContent = `Progress: ${count} / ${getChallengeMaxCount(location)}`
+    popup.append(progress)
   }
 
-  if (destinationHref) {
+  const pointsText = getPopupPointsText(location)
+  if (pointsText) {
+    const points = document.createElement('span')
+    points.className = classes.popupPoints
+    points.textContent = pointsText
+    popup.append(points)
+  }
+
+  // CMS link takes priority; otherwise coordinates open in the device's map app.
+  const destination = getDestinationLink(location, detectMapPlatform())
+  if (destination) {
     const link = document.createElement('a')
     link.className = classes.popupLink
-    link.href = destinationHref
+    link.href = destination.href
     link.target = '_blank'
     link.rel = 'noopener noreferrer'
-    link.textContent = destinationLabel
+    link.textContent = destination.label
     popup.append(link)
   }
 
@@ -100,6 +118,7 @@ type Props = {
   /** Array of discovered cell IDs in the form "latIdx:lngIdx". */
   discoveredAreas: string[]
   completedChallenges: string[]
+  challengeProgress: ChallengeProgressEntry[]
   error?: string | null
 }
 
@@ -112,6 +131,7 @@ export const CityChallengeMap: React.FC<Props> = ({
   token,
   discoveredAreas: initialDiscovered,
   completedChallenges,
+  challengeProgress,
   error: locationsError,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null)
@@ -136,6 +156,8 @@ export const CityChallengeMap: React.FC<Props> = ({
   const [mockLng, setMockLng] = useState('-1.396')
   const [mockEnabled, setMockEnabled] = useState(false)
   const [showMockPanel, setShowMockPanel] = useState(false)
+
+  const progress = useMemo(() => challengeProgressToMap(challengeProgress), [challengeProgress])
 
   const discoveredAreasRef = useRef(discoveredAreas)
   discoveredAreasRef.current = discoveredAreas
@@ -371,24 +393,26 @@ export const CityChallengeMap: React.FC<Props> = ({
     markersRef.current.forEach(marker => map.removeLayer(marker))
     markersRef.current.clear()
 
-    const sorted = [...locations].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-
-    sorted.forEach((location, index) => {
-      if (
-        !location.id ||
-        typeof location.latitude !== 'number' ||
-        typeof location.longitude !== 'number'
+    // Only challenges with coordinates get a pin; number them in sort order so
+    // the on-map numbers have no gaps now that coordinates are optional.
+    const mappable = locations
+      .filter(
+        (location): location is CityChallengeLocation & { latitude: number; longitude: number } =>
+          typeof location.latitude === 'number' && typeof location.longitude === 'number',
       )
-        return
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
 
-      const isCompleted = completedChallenges.includes(location.id)
+    mappable.forEach((location, index) => {
+      if (!location.id) return
+
+      const isCompleted = isChallengeComplete(location, completedChallenges, progress)
       const latLng: L.LatLngTuple = [location.latitude, location.longitude]
       const marker = L.marker(latLng, {
         icon: createMarkerIcon(location, index, isCompleted),
         title: `${index + 1}. ${location.name}`,
       })
         .addTo(map)
-        .bindPopup(createPopupContent(location, isCompleted), {
+        .bindPopup(createPopupContent(location, isCompleted, progress[location.id] ?? 0), {
           className: classes.popupContainer,
         })
 
@@ -396,7 +420,7 @@ export const CityChallengeMap: React.FC<Props> = ({
     })
 
     drawCanvasRef.current()
-  }, [locations, completedChallenges])
+  }, [locations, completedChallenges, progress])
 
   // Redraw canvas when discovered areas change
   useEffect(() => {
@@ -494,13 +518,21 @@ export const CityChallengeMap: React.FC<Props> = ({
   // Percentage of the Southampton play area the team has revealed.
   const exploredPercent = useMemo(() => getExploredPercentage(discoveredAreas), [discoveredAreas])
 
+  const score = useMemo(
+    () => computeChallengeScore(locations, completedChallenges, progress),
+    [locations, completedChallenges, progress],
+  )
+
   return (
     <div className={classes.wrapper}>
       <header className={classes.header}>
-        <h1 className={classes.title}>City Challenge</h1>
+        <h1 className={[classes.title, bungee.className].join(' ')}>City Challenge</h1>
         <div className={classes.stats}>
           <span className={classes.stat}>
             Discovered: {discoveredCount} / {totalCount}
+          </span>
+          <span className={[classes.stat, classes.statPoints].join(' ')}>
+            Points: {score.earned} / {score.max}
           </span>
           <span className={[classes.stat, classes.statExplored].join(' ')}>
             Southampton explored: {exploredPercent.toFixed(1)}%

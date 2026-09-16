@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { bungee } from '../../../_utilities/font'
+
 import classes from './index.module.scss'
 
 type Member = { id: string; name?: string | null; username?: string | null }
@@ -22,7 +24,7 @@ export const TeamRoster: React.FC<Props> = ({ teamName, teamLead, members }) => 
 
   return (
     <div className={classes.roster}>
-      <h3 className={classes.rosterTitle}>Team: {teamName}</h3>
+      <h3 className={[classes.rosterTitle, bungee.className].join(' ')}>Team: {teamName}</h3>
       <ul className={classes.rosterList}>
         {allMembers.map(member => (
           <li key={member.id} className={classes.rosterItem}>

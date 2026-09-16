@@ -1,15 +1,29 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import type { CityChallengeLocation } from '../../../../payload/payload-types'
-import { rubikMono } from '../../../_utilities/font'
+import {
+  type ChallengeProgressEntry,
+  challengeProgressToMap,
+  computeChallengeScore,
+  getChallengeMaxCount,
+  getChallengeUnitPoints,
+  isChallengeComplete,
+} from '../../../_utilities/cityChallenge'
+import { bungee, rubikMono } from '../../../_utilities/font'
+import {
+  detectMapPlatform,
+  getDestinationLink,
+  type MapPlatform,
+} from '../../../_utilities/mapLinks'
 
 import classes from './index.module.scss'
 
 type Props = {
   locations: CityChallengeLocation[]
   completedChallenges: string[]
+  challengeProgress: ChallengeProgressEntry[]
   isLead: boolean
   teamId: string
   token: string
@@ -19,41 +33,28 @@ type Props = {
 
 const NO_ZONE = 'No Zone'
 
-const getSafeLink = (value?: string | null): string | null => {
-  if (!value) return null
-  try {
-    const url = new URL(value)
-    if (url.protocol !== 'https:') return null
-    return url.href
-  } catch {
-    return null
+// Decorative per-zone accents (lime is deliberately excluded so it always
+// means "complete"). Cyan is the page's primary interactive colour.
+const ZONE_ACCENTS = [
+  'var(--jumpstart-neon-cyan)',
+  'var(--jumpstart-neon-magenta)',
+  'var(--jumpstart-neon-orange)',
+  'var(--jumpstart-neon-purple)',
+]
+
+const getPointsLabel = (location: CityChallengeLocation): string | null => {
+  const unit = getChallengeUnitPoints(location)
+  if (location.completionType === 'counter') {
+    const max = getChallengeMaxCount(location)
+    return unit > 0 ? `${unit} pts each · max ${max * unit} pts` : `${max} max`
   }
-}
-
-/** Returns the best destination link for a challenge:
- *  1. Validated CMS external link (highest priority)
- *  2. Generated Google Maps URL from complete coordinates
- *  3. null when neither is available
- */
-const getDestinationLink = (
-  location: CityChallengeLocation,
-): { href: string; label: string } | null => {
-  const safe = getSafeLink(location.link)
-  if (safe) return { href: safe, label: 'Open link now' }
-
-  if (typeof location.latitude === 'number' && typeof location.longitude === 'number') {
-    return {
-      href: `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`,
-      label: 'Get me there →',
-    }
-  }
-
-  return null
+  return unit > 0 ? `${unit} pts` : null
 }
 
 export const ChallengeList: React.FC<Props> = ({
   locations,
   completedChallenges: initialCompleted,
+  challengeProgress,
   isLead,
   teamId,
   token,
@@ -61,8 +62,17 @@ export const ChallengeList: React.FC<Props> = ({
   exploredPercent = 0,
 }) => {
   const [completed, setCompleted] = useState<string[]>(initialCompleted)
+  const [progress, setProgress] = useState<Record<string, number>>(() =>
+    challengeProgressToMap(challengeProgress),
+  )
   const [submitting, setSubmitting] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(initialError ?? null)
+  const [platform, setPlatform] = useState<MapPlatform | null>(null)
+
+  // Platform detection must run after mount so server and client markup match.
+  useEffect(() => {
+    setPlatform(detectMapPlatform())
+  }, [])
 
   const groups = useMemo(() => {
     const sorted = [...locations].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
@@ -75,12 +85,22 @@ export const ChallengeList: React.FC<Props> = ({
     return Array.from(zones.entries())
   }, [locations])
 
-  const toggleComplete = async (locationId: string) => {
+  const score = useMemo(
+    () => computeChallengeScore(locations, completed, progress),
+    [locations, completed, progress],
+  )
+
+  const updateChallenge = async (location: CityChallengeLocation, count?: number) => {
     if (submitting) return
-    setSubmitting(locationId)
+    setSubmitting(location.id)
     setError(null)
 
     try {
+      const body =
+        location.completionType === 'counter'
+          ? { locationId: location.id, count: count ?? 0 }
+          : { locationId: location.id }
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/city-challenge-teams/${teamId}/complete`,
         {
@@ -89,7 +109,7 @@ export const ChallengeList: React.FC<Props> = ({
             'Content-Type': 'application/json',
             Authorization: `JWT ${token}`,
           },
-          body: JSON.stringify({ locationId }),
+          body: JSON.stringify(body),
         },
       )
 
@@ -100,7 +120,8 @@ export const ChallengeList: React.FC<Props> = ({
         return
       }
 
-      setCompleted(data.completedChallenges ?? [])
+      setCompleted(Array.isArray(data.completedChallenges) ? data.completedChallenges : [])
+      setProgress(challengeProgressToMap(data.challengeProgress))
     } catch {
       setError('Network error — please try again')
     } finally {
@@ -108,26 +129,30 @@ export const ChallengeList: React.FC<Props> = ({
     }
   }
 
-  const locationIds = useMemo(() => new Set(locations.map(location => location.id)), [locations])
-  const completedCount = completed.filter(id => locationIds.has(id)).length
   const totalCount = locations.length
 
   return (
     <div className={classes.container}>
       {isLead && (
-        <p className={classes.leadHint}>Tick each task off once all of your team has done it.</p>
+        <p className={classes.leadHint}>
+          Tick each task off once all of your team has done it, or update the count for counter
+          challenges.
+        </p>
       )}
 
       <div className={classes.progress}>
         <span className={classes.progressText}>
-          {completedCount} / {totalCount} completed
+          {score.completed} / {totalCount} completed
         </span>
         <div className={classes.progressBar}>
           <div
             className={classes.progressFill}
-            style={{ width: totalCount > 0 ? `${(completedCount / totalCount) * 100}%` : '0%' }}
+            style={{ width: totalCount > 0 ? `${(score.completed / totalCount) * 100}%` : '0%' }}
           />
         </div>
+        <span className={classes.scoreText}>
+          Points: {score.earned} / {score.max}
+        </span>
         <span className={classes.exploredText}>
           Southampton explored: {exploredPercent.toFixed(1)}%
         </span>
@@ -140,13 +165,25 @@ export const ChallengeList: React.FC<Props> = ({
       )}
 
       <div className={classes.list}>
-        {groups.map(([zone, items]) => (
-          <div key={zone} className={classes.zoneGroup}>
+        {groups.map(([zone, items], groupIndex) => (
+          <div
+            key={zone}
+            className={classes.zoneGroup}
+            style={
+              {
+                '--zone-accent': ZONE_ACCENTS[groupIndex % ZONE_ACCENTS.length],
+              } as React.CSSProperties
+            }
+          >
             <h2 className={[classes.zoneTitle, rubikMono.className].join(' ')}>{zone}</h2>
             {items.map(location => {
-              const isCompleted = completed.includes(location.id)
+              const isCounter = location.completionType === 'counter'
+              const count = progress[location.id] ?? 0
+              const max = getChallengeMaxCount(location)
+              const isCompleted = isChallengeComplete(location, completed, progress)
               const isLoading = submitting === location.id
-              const destination = getDestinationLink(location)
+              const destination = getDestinationLink(location, platform)
+              const pointsLabel = getPointsLabel(location)
 
               return (
                 <div
@@ -155,14 +192,14 @@ export const ChallengeList: React.FC<Props> = ({
                 >
                   <div className={classes.cardContent}>
                     <div className={classes.cardHeader}>
-                      {isLead ? (
+                      {isCounter ? null : isLead ? (
                         <button
                           type="button"
                           className={[
                             classes.checkbox,
                             isCompleted ? classes.checkboxChecked : '',
                           ].join(' ')}
-                          onClick={() => toggleComplete(location.id)}
+                          onClick={() => updateChallenge(location)}
                           disabled={isLoading}
                           aria-label={`Mark "${location.name}" as ${
                             isCompleted ? 'incomplete' : 'complete'
@@ -191,12 +228,56 @@ export const ChallengeList: React.FC<Props> = ({
                           ].join(' ')}
                         />
                       )}
-                      <h3 className={classes.cardTitle}>{location.name}</h3>
+                      <h3 className={[classes.cardTitle, bungee.className].join(' ')}>
+                        {location.name}
+                      </h3>
                     </div>
                     {location.description && (
                       <p className={classes.cardDescription}>{location.description}</p>
                     )}
+                    {isCounter && (
+                      <div className={classes.counterRow}>
+                        {isLead && (
+                          <button
+                            type="button"
+                            className={classes.counterButton}
+                            onClick={() => updateChallenge(location, count - 1)}
+                            disabled={isLoading || count <= 0}
+                            aria-label={`Decrease progress for "${location.name}"`}
+                          >
+                            −
+                          </button>
+                        )}
+                        <div
+                          className={classes.counterTrack}
+                          role="img"
+                          aria-label={`${count} of ${max} completed`}
+                        >
+                          <div
+                            className={classes.counterFill}
+                            style={{
+                              width: max > 0 ? `${Math.min(100, (count / max) * 100)}%` : '0%',
+                            }}
+                          />
+                        </div>
+                        <span className={classes.counterValue} aria-live="polite">
+                          {count} / {max}
+                        </span>
+                        {isLead && (
+                          <button
+                            type="button"
+                            className={classes.counterButton}
+                            onClick={() => updateChallenge(location, count + 1)}
+                            disabled={isLoading || count >= max}
+                            aria-label={`Increase progress for "${location.name}"`}
+                          >
+                            +
+                          </button>
+                        )}
+                      </div>
+                    )}
                     <div className={classes.cardMeta}>
+                      {pointsLabel && <span className={classes.pointsLabel}>{pointsLabel}</span>}
                       {destination && (
                         <a
                           href={destination.href}

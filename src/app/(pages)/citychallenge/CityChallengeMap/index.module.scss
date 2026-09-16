@@ -23,13 +23,12 @@
 }
 
 .title {
-  font-family: var(--font-mono);
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 400;
   color: var(--jumpstart-neon-cyan);
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.6);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
   margin: 0;
 
   @include small-break {
@@ -47,8 +46,12 @@
 .stat {
   font-size: 14px;
   font-weight: 700;
-  color: var(--jumpstart-neon-lime);
+  color: var(--jumpstart-neon-cyan);
   text-shadow: 1px 1px 0 #000;
+}
+
+.statPoints {
+  color: var(--jumpstart-neon-lime);
 }
 
 .statExplored {
@@ -69,18 +72,25 @@
   padding: 8px 18px;
   font-size: 13px;
   font-weight: 700;
-  border: 2px solid var(--jumpstart-card-border);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid #000;
   background: var(--jumpstart-card);
   color: var(--jumpstart-neon-cyan);
-  border-radius: 8px;
+  border-radius: 4px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
-    border-color: var(--jumpstart-neon-cyan);
     color: #000;
     background: var(--jumpstart-neon-cyan);
-    box-shadow: 3px 3px 0 #000;
+    transform: translateY(-2px);
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
   }
 
   &:focus-visible {
@@ -94,8 +104,8 @@
   color: var(--jumpstart-neon-orange);
   background: rgba(255, 85, 0, 0.1);
   padding: 4px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--jumpstart-neon-orange);
+  border-radius: 4px;
+  border: 2px solid var(--jumpstart-neon-orange);
 }
 
 .intro {
@@ -112,10 +122,10 @@
 
 .mapContainer {
   position: relative;
-  border-radius: 12px;
+  border-radius: 6px;
   overflow: hidden;
-  border: 2px solid var(--jumpstart-card-border);
-  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.4);
+  border: 2px solid #000;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.4);
 
   @include small-break {
     border-radius: 0;
@@ -190,7 +200,7 @@
   font-size: 15px;
   color: var(--jumpstart-muted);
   border: 2px dashed var(--jumpstart-card-border);
-  border-radius: 12px;
+  border-radius: 6px;
 
   @include mid-break {
     height: 420px;
@@ -206,11 +216,11 @@
   width: 32px;
   height: 32px;
   border-radius: 50% 50% 50% 0;
-  background: var(--jumpstart-neon-lime);
+  background: var(--jumpstart-neon-cyan);
   position: relative;
   transform: rotate(-45deg);
   box-shadow:
-    0 0 10px var(--jumpstart-neon-lime),
+    0 0 10px var(--jumpstart-neon-cyan),
     3px 3px 0 #000;
   border: 2px solid #000;
   display: flex;
@@ -219,9 +229,9 @@
 }
 
 .markerCompleted {
-  background: var(--jumpstart-neon-cyan);
+  background: var(--jumpstart-neon-lime);
   box-shadow:
-    0 0 10px var(--jumpstart-neon-cyan),
+    0 0 10px var(--jumpstart-neon-lime),
     3px 3px 0 #000;
 }
 
@@ -236,9 +246,9 @@
 
 .popupContainer {
   :global(.leaflet-popup-content-wrapper) {
-    border-radius: 8px;
+    border-radius: 6px;
     padding: 0;
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
     border: 2px solid #000;
     background: var(--jumpstart-card);
   }
@@ -273,6 +283,21 @@
   line-height: 1.5;
 }
 
+.popupProgress {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--jumpstart-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.popupPoints {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--jumpstart-neon-lime);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .popupBadge {
   font-size: 11px;
   font-weight: 700;
@@ -287,8 +312,8 @@
 
 .popupLink {
   font-size: 12px;
-  font-weight: 600;
-  color: var(--jumpstart-neon-magenta);
+  font-weight: 700;
+  color: var(--jumpstart-neon-cyan);
   text-decoration: underline;
   text-underline-offset: 2px;
   align-self: flex-start;
@@ -307,14 +332,22 @@
   padding: 6px 14px;
   font-size: 11px;
   font-weight: 700;
-  border: 1px solid var(--jumpstart-card-border);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid #000;
   background: var(--jumpstart-card);
   color: var(--jumpstart-neon-cyan);
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    border-color: var(--jumpstart-neon-cyan);
+    background: var(--jumpstart-neon-cyan);
+    color: #000;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--jumpstart-neon-cyan);
+    outline-offset: 2px;
   }
 }
 
@@ -339,7 +372,7 @@
   padding: 4px 8px;
   font-size: 12px;
   font-family: var(--font-mono);
-  border: 1px solid var(--jumpstart-card-border);
+  border: 2px solid var(--jumpstart-card-border);
   background: var(--jumpstart-card);
   color: var(--jumpstart-text);
   border-radius: 4px;
@@ -349,14 +382,28 @@
   padding: 5px 14px;
   font-size: 11px;
   font-weight: 700;
-  border: 1px solid var(--jumpstart-neon-magenta);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid #000;
   background: transparent;
-  color: var(--jumpstart-neon-magenta);
-  border-radius: 6px;
+  color: var(--jumpstart-neon-cyan);
+  border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    background: var(--jumpstart-neon-magenta);
+    background: var(--jumpstart-neon-cyan);
     color: #000;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--jumpstart-neon-cyan);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shareButton:hover {
+    transform: none;
+    transition: none;
   }
 }

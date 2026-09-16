@@ -18,13 +18,13 @@
 }
 
 .heading {
-  font-family: var(--font-mono);
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 400;
   color: var(--jumpstart-neon-cyan);
   margin: 0 0 12px;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
 
   @include small-break {
     font-size: 20px;
