@@ -48,7 +48,7 @@ export default async function CityChallengeAdminPage() {
         </header>
 
         {data ? (
-          <AdminProgressView data={data} />
+          <AdminProgressView data={data} token={token} />
         ) : (
           <p className={classes.error} role="alert">
             We could not load team progress right now. Please try again later.

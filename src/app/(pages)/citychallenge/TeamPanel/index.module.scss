@@ -35,6 +35,30 @@
   }
 }
 
+.renameForm {
+  margin: 0 0 20px;
+}
+
+.renameLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--jumpstart-muted);
+}
+
+.renameRow {
+  display: flex;
+  gap: 8px;
+
+  .input {
+    flex: 1;
+    width: auto;
+  }
+}
+
 .membersList {
   margin-bottom: 20px;
 }
