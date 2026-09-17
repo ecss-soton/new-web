@@ -2,6 +2,7 @@ import type { CollectionConfig, Validate } from 'payload/types'
 
 import { admins } from '../access/admins'
 import { user } from '../access/user'
+import Groups from './groups'
 
 // Coordinates are optional, but latitude and longitude must be supplied together.
 // Both validators perform the same pair check so it holds whichever field changes.
@@ -72,6 +73,7 @@ const CityChallengeLocations: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
+    group: Groups.CityChallenge,
     defaultColumns: [
       'name',
       'zone',

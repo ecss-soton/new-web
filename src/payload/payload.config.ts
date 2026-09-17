@@ -43,6 +43,7 @@ import Users from './collections/Users'
 import Votes from './collections/Votes'
 import WordleOverrides from './collections/WordleOverrides'
 import WordleScores from './collections/WordleScores'
+import { cityChallengeProgress } from './endpoints/cityChallengeProgress'
 import { Footer } from './globals/Footer'
 import { Header } from './globals/Header'
 import { Settings } from './globals/Settings'
@@ -162,6 +163,11 @@ export default buildConfig({
   cors: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   csrf: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   endpoints: [
+    {
+      path: '/city-challenge/progress',
+      method: 'get',
+      handler: cityChallengeProgress,
+    },
     // The seed endpoint is used to populate the database with some example data
     // You should delete this endpoint before deploying your site to production
     // {
