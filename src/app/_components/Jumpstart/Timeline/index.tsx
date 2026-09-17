@@ -49,6 +49,12 @@ export const JumpstartTimeline: React.FC<Props> = ({ events, heading, subtitle, 
   const sortedKeys = getSortedDateKeys(groups)
   const todayKey = getTodayKey()
 
+  // Upcoming days first (chronological), with collapsed past days moved to the
+  // bottom, most recent first.
+  const upcomingKeys = sortedKeys.filter(key => key >= todayKey)
+  const pastKeys = sortedKeys.filter(key => key < todayKey).reverse()
+  const displayKeys = [...upcomingKeys, ...pastKeys]
+
   return (
     <div className={classes.container}>
       <div className={classes.header}>
@@ -64,7 +70,7 @@ export const JumpstartTimeline: React.FC<Props> = ({ events, heading, subtitle, 
         </a>
 
         <div className={classes.timeline}>
-          {sortedKeys.map(dateKey => {
+          {displayKeys.map(dateKey => {
             const dayEvents = groups.get(dateKey) || []
             const isToday = dateKey === todayKey
             const isPast = dateKey < todayKey
