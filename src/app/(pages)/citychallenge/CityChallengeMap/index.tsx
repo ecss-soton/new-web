@@ -273,9 +273,8 @@ export const CityChallengeMap: React.FC<Props> = ({
         const data = await res.json()
         if (Array.isArray(data.discoveredAreas)) {
           // Union with any cells added optimistically since the request started.
-          setDiscoveredAreas(prev =>
-            Array.from(new Set([...prev, ...(data.discoveredAreas as string[])])),
-          )
+          const incoming = data.discoveredAreas as string[]
+          setDiscoveredAreas(prev => Array.from(new Set([...prev, ...incoming])))
         }
         setSyncError(null)
       } else {

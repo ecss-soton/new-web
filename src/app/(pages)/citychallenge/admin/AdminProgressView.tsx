@@ -7,11 +7,11 @@ import {
   type AdminLocation,
   type AdminProgressData,
   type ChallengeBreakdown,
+  challengeBreakdown,
   type ChallengeState,
   type PreparedTeam,
-  type TeamChallengeStatus,
-  challengeBreakdown,
   prepareTeam,
+  type TeamChallengeStatus,
   teamChallengeStatus,
   teamSummary,
 } from '../../../_utilities/cityChallengeStats'
