@@ -51,9 +51,11 @@ shared fog-of-war map discovery, and role-based views (team lead vs participant)
 
 - `POST /:id/discover` — any team member submits `{lat,lng}` or `{points:[...]}`; coordinates are
   validated, deduplicated by grid cell, and stored. Returns the updated `discoveredAreas`.
-- `POST /:id/complete` — team lead updates one challenge. For a `tick` challenge it toggles the ID; for a
-  `counter` challenge it accepts `{ count }` (integer ≥ 0), clamps it to `0..maxCount`, and stores it in
-  `challengeProgress`. The location must exist. Returns the updated `completedChallenges` and `challengeProgress`.
+- `POST /:id/complete` — team lead **or admin** updates one challenge. For a `tick` challenge it toggles
+  the ID; for a `counter` challenge it accepts `{ count }` (integer ≥ 0), clamps it to `0..maxCount`, and
+  stores it in `challengeProgress`. The location must exist. Returns the updated `completedChallenges` and
+  `challengeProgress`.
+- `POST /:id/name` — team lead **or admin** renames the team with `{ name }` (trimmed, 1–60 chars).
 - `POST /:id/members` — team lead adds/removes a member by stable `userId` (or `username`).
   Rejects the lead, duplicates, and users already committed to another team. Returns the roster.
 - `GET /:id/roster` — lead/member/admin; returns safe `{id, name, username}` summaries for the
@@ -76,8 +78,10 @@ shared fog-of-war map discovery, and role-based views (team lead vs participant)
   redirected to `/citychallenge`).
   - **Teams tab**: sortable leaderboard (rank, team, lead, members, completed, points, explored %,
     updated); rows expand to that team's per-challenge status and link to the Payload document.
-  - **Challenges tab**: sortable by completed/not-completed teams, completion %, points awarded,
-    points, zone, name; filterable; rows expand into Completed / In progress / Not started team lists.
+    Admins can rename the team and toggle ticks / adjust counters inline.
+  - **Challenges tab**: grouped by zone (No Zone last), sortable within each zone by completed /
+    not-completed teams, completion %, points awarded, points, name; filterable; rows expand into
+    Completed / In progress / Not started team lists, where admins can update any team's progress inline.
   - Derivations live in `src/app/_utilities/cityChallengeStats.ts`, sharing the scoring rules in
     `cityChallenge.ts` so admin figures match the player UI.
   - Admins also get a "team progress" link on `/citychallenge`.

@@ -387,10 +387,10 @@ const CityChallengeTeams: CollectionConfig = {
             return res.status(404).json({ error: 'Team not found' })
           }
 
-          if (!isTeamLead(team, userId)) {
+          if (!isTeamLead(team, userId) && !isAdmin(req.user as User)) {
             return res
               .status(403)
-              .json({ error: 'Only the team lead can mark challenges complete' })
+              .json({ error: 'Only the team lead or an admin can update challenges' })
           }
 
           const body = (req.body ?? {}) as { locationId?: unknown; count?: unknown }
@@ -453,6 +453,52 @@ const CityChallengeTeams: CollectionConfig = {
           })
 
           return res.status(200).json({ completedChallenges, challengeProgress })
+        } catch (err: unknown) {
+          req.payload.logger.error(err as Error)
+          return res.status(500).json({ error: 'Internal server error' })
+        }
+      },
+    },
+    {
+      path: '/:id/name',
+      method: 'post',
+      handler: async (req: PayloadRequest, res) => {
+        try {
+          const userId = req.user?.id
+          if (!userId) {
+            return res.status(401).json({ error: 'Unauthorized' })
+          }
+
+          const teamId = req.params.id
+          const team = await findTeam(req.payload, teamId)
+          if (!team) {
+            return res.status(404).json({ error: 'Team not found' })
+          }
+
+          if (!isTeamLead(team, userId) && !isAdmin(req.user as User)) {
+            return res
+              .status(403)
+              .json({ error: 'Only the team lead or an admin can rename the team' })
+          }
+
+          const { name } = (req.body ?? {}) as { name?: unknown }
+          if (typeof name !== 'string') {
+            return res.status(400).json({ error: 'Missing name' })
+          }
+
+          const trimmed = name.trim().replace(/\s+/g, ' ')
+          if (trimmed.length < 1 || trimmed.length > 60) {
+            return res.status(400).json({ error: 'Team name must be between 1 and 60 characters' })
+          }
+
+          await req.payload.update({
+            collection: 'city-challenge-teams',
+            id: teamId,
+            data: { name: trimmed },
+            depth: 0,
+          })
+
+          return res.status(200).json({ name: trimmed })
         } catch (err: unknown) {
           req.payload.logger.error(err as Error)
           return res.status(500).json({ error: 'Internal server error' })

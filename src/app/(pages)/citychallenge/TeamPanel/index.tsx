@@ -35,6 +35,9 @@ export const TeamPanel: React.FC<Props> = ({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [currentName, setCurrentName] = useState(teamName)
+  const [nameInput, setNameInput] = useState(teamName)
+  const [savingName, setSavingName] = useState(false)
 
   const abortRef = useRef<AbortController | null>(null)
   const blurTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -170,6 +173,51 @@ export const TeamPanel: React.FC<Props> = ({
     }
   }
 
+  const normalizedName = nameInput.trim().replace(/\s+/g, ' ')
+
+  const renameTeam = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (savingName || normalizedName === currentName) return
+    if (!normalizedName || normalizedName.length > 60) {
+      setError('Team name must be between 1 and 60 characters')
+      return
+    }
+
+    setSavingName(true)
+    setError(null)
+    setSuccess(null)
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/city-challenge-teams/${teamId}/name`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `JWT ${token}`,
+          },
+          body: JSON.stringify({ name: normalizedName }),
+        },
+      )
+
+      const data = await res.json().catch(() => ({}))
+
+      if (!res.ok) {
+        setError(data.error || 'Failed to rename team')
+        return
+      }
+
+      const saved = typeof data.name === 'string' ? data.name : normalizedName
+      setCurrentName(saved)
+      setNameInput(saved)
+      setSuccess('Team name updated')
+    } catch {
+      setError('Network error')
+    } finally {
+      setSavingName(false)
+    }
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!open || results.length === 0) return
 
@@ -190,7 +238,33 @@ export const TeamPanel: React.FC<Props> = ({
 
   return (
     <div className={classes.panel}>
-      <h3 className={[classes.panelTitle, bungee.className].join(' ')}>Team: {teamName}</h3>
+      <h3 className={[classes.panelTitle, bungee.className].join(' ')}>
+        Team: {currentName || teamName}
+      </h3>
+
+      <form className={classes.renameForm} onSubmit={renameTeam}>
+        <label className={classes.renameLabel} htmlFor="cc-team-name">
+          Team name
+        </label>
+        <div className={classes.renameRow}>
+          <input
+            id="cc-team-name"
+            type="text"
+            className={classes.input}
+            value={nameInput}
+            maxLength={60}
+            disabled={savingName}
+            onChange={e => setNameInput(e.target.value)}
+          />
+          <button
+            type="submit"
+            className={classes.addButton}
+            disabled={savingName || !normalizedName || normalizedName === currentName}
+          >
+            {savingName ? 'Saving…' : 'Save'}
+          </button>
+        </div>
+      </form>
 
       <div className={classes.membersList}>
         <h4 className={classes.membersHeading}>Members ({members.length})</h4>

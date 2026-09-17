@@ -359,6 +359,189 @@
   border-color: var(--jumpstart-card-border);
 }
 
+.control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.controlButton {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--jumpstart-neon-cyan);
+  background: transparent;
+  border: 2px solid #000;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    color: #000;
+    background: var(--jumpstart-neon-cyan);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--jumpstart-neon-cyan);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.controlValue {
+  min-width: 44px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--jumpstart-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.controlToggle {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--jumpstart-muted);
+  background: transparent;
+  border: 2px solid var(--jumpstart-card-border);
+  border-radius: 3px;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    color: var(--jumpstart-neon-cyan);
+    border-color: var(--jumpstart-neon-cyan);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--jumpstart-neon-cyan);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.controlToggleOn {
+  color: #000;
+  background: var(--jumpstart-neon-lime);
+  border-color: #000;
+
+  &:hover:not(:disabled) {
+    color: #000;
+    border-color: #000;
+  }
+}
+
+.renameForm {
+  margin: 0 0 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--jumpstart-card-border);
+}
+
+.renameLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--jumpstart-muted);
+}
+
+.renameRow {
+  display: flex;
+  gap: 8px;
+  max-width: 420px;
+}
+
+.renameInput {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--jumpstart-text);
+  background: transparent;
+  border: 2px solid var(--jumpstart-card-border);
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.15s ease;
+
+  &:focus {
+    border-color: var(--jumpstart-neon-cyan);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.renameButton {
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--jumpstart-neon-cyan);
+  background: transparent;
+  border: 2px solid #000;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    color: #000;
+    background: var(--jumpstart-neon-cyan);
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--jumpstart-neon-cyan);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.zoneRow th {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--jumpstart-neon-cyan);
+  background: var(--jumpstart-bg);
+  border-bottom: 2px solid #000;
+  white-space: nowrap;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+}
+
+.zoneCount {
+  color: var(--jumpstart-muted);
+  font-weight: 700;
+}
+
 .groups {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -420,6 +603,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tab:hover:not(.tabActive),
+  .renameButton:hover:not(:disabled),
   .chevron {
     transform: none;
     transition: none;
