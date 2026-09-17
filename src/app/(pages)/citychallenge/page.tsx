@@ -160,6 +160,14 @@ export default async function CityChallengePage({
         </p>
       )}
 
+      {isAdmin && (
+        <div className={classes.adminBar}>
+          <a className={classes.adminLink} href="/citychallenge/admin">
+            Admin: team progress →
+          </a>
+        </div>
+      )}
+
       {teamError ? null : role === 'none' ? (
         <NoTeamMessage />
       ) : (

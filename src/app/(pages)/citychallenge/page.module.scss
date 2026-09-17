@@ -10,3 +10,49 @@
   border: 2px solid var(--jumpstart-neon-orange);
   border-radius: 6px;
 }
+
+.adminBar {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 16px 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.adminLink {
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--jumpstart-neon-cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  background: var(--jumpstart-card);
+  border: 2px solid #000;
+  border-radius: 4px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    color: #000;
+    background: var(--jumpstart-neon-cyan);
+    transform: translateY(-2px);
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--jumpstart-neon-cyan);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adminLink:hover {
+    transform: none;
+    transition: none;
+  }
+}

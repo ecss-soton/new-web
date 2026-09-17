@@ -62,7 +62,25 @@ shared fog-of-war map discovery, and role-based views (team lead vs participant)
 - `GET /:id/member-search?q=` — lead/admin only; searches users by name/username (`like`), excludes
   the lead, current members, and users already on another team. Used for member autocomplete.
 
-Both collections are registered in `payload.config.ts`.
+### Root endpoint
+
+- `GET /api/city-challenge/progress` — admin only (403 otherwise). Returns `{ locations, teams }`
+  for the admin progress view: each team's lead/member count, `completedChallenges`,
+  `challengeProgress`, `exploredPercent`, and `lastUpdated`. Raw grid cells stay server-side.
+- Both collections are registered in `payload.config.ts` and grouped under **City Challenge** in
+  the admin sidebar via `src/payload/collections/groups.ts`.
+
+### Admin progress view
+
+- **`/citychallenge/admin`** — `src/app/(pages)/citychallenge/admin/`; admin only (non-admins are
+  redirected to `/citychallenge`).
+  - **Teams tab**: sortable leaderboard (rank, team, lead, members, completed, points, explored %,
+    updated); rows expand to that team's per-challenge status and link to the Payload document.
+  - **Challenges tab**: sortable by completed/not-completed teams, completion %, points awarded,
+    points, zone, name; filterable; rows expand into Completed / In progress / Not started team lists.
+  - Derivations live in `src/app/_utilities/cityChallengeStats.ts`, sharing the scoring rules in
+    `cityChallenge.ts` so admin figures match the player UI.
+  - Admins also get a "team progress" link on `/citychallenge`.
 
 ---
 

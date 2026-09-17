@@ -62,9 +62,7 @@ export const ChallengeList: React.FC<Props> = ({
   exploredPercent = 0,
 }) => {
   const [completed, setCompleted] = useState<string[]>(initialCompleted)
-  const [progress, setProgress] = useState<Record<string, number>>(() =>
-    challengeProgressToMap(challengeProgress),
-  )
+  const [progress, setProgress] = useState(() => challengeProgressToMap(challengeProgress))
   const [submitting, setSubmitting] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(initialError ?? null)
   const [platform, setPlatform] = useState<MapPlatform | null>(null)

@@ -17,6 +17,7 @@ import {
 import { admins } from '../access/admins'
 import { isAdmin } from '../access/isAdmin'
 import type { CityChallengeLocation, CityChallengeTeam, User } from '../payload-types'
+import Groups from './groups'
 
 type Payload = PayloadRequest['payload']
 
@@ -230,8 +231,8 @@ const CityChallengeTeams: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'teamLead', 'members'],
-    group: 'City Challenge',
+    defaultColumns: ['name', 'teamLead', 'members', 'updatedAt'],
+    group: Groups.CityChallenge,
   },
   fields: [
     {
