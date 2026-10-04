@@ -764,7 +764,7 @@ export interface Event {
   link?: string | null;
   image?: string | Media | null;
   isJumpstart?: boolean | null;
-  jumpstartCategory?: ('welcome' | 'academic' | 'social' | 'competitive') | null;
+  category?: ('welcome' | 'academic' | 'social' | 'competitive') | null;
   sortOrder?: number | null;
   mapsUrl?: string | null;
   latitude?: number | null;

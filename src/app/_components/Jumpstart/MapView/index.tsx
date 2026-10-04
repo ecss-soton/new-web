@@ -5,6 +5,11 @@ import L from 'leaflet'
 import moment from 'moment-timezone'
 
 import type { Event } from '../../../../payload/payload-types'
+import {
+  EVENT_CATEGORIES,
+  type EventCategory,
+  isEventCategory,
+} from '../../../../utilities/eventCategories'
 
 import 'leaflet/dist/leaflet.css'
 
@@ -17,19 +22,16 @@ type Props = {
 const TIMEZONE = 'Europe/London'
 const SOUTHAMPTON: L.LatLngTuple = [50.935, -1.396]
 
-const CATEGORY_COLORS: Record<NonNullable<Event['jumpstartCategory']>, string> = {
+const CATEGORY_COLORS: Record<EventCategory, string> = {
   welcome: 'var(--jumpstart-cat-welcome)',
   academic: 'var(--jumpstart-cat-academic)',
   social: 'var(--jumpstart-cat-social)',
   competitive: 'var(--jumpstart-cat-competitive)',
 }
 
-const CATEGORY_LABELS: Record<NonNullable<Event['jumpstartCategory']>, string> = {
-  welcome: 'Welcome / General',
-  academic: 'Academic',
-  social: 'Social',
-  competitive: 'Competitive / Track',
-}
+const CATEGORY_LABELS = Object.fromEntries(
+  EVENT_CATEGORIES.map(category => [category.value, category.label]),
+) as Record<EventCategory, string>
 
 const getDateKey = (dateStr: string): string => {
   return moment.utc(dateStr).tz(TIMEZONE).format('YYYY-MM-DD')
@@ -39,10 +41,8 @@ const formatDayPill = (dateKey: string): string => {
   return moment(dateKey, 'YYYY-MM-DD').format('ddd Do MMM')
 }
 
-const getCategory = (event: Event): NonNullable<Event['jumpstartCategory']> | null => {
-  const category = event.jumpstartCategory
-  return category && category in CATEGORY_COLORS ? category : null
-}
+const getCategory = (event: Event): EventCategory | null =>
+  isEventCategory(event.category) ? event.category : null
 
 const createIcon = (event: Event, sequence: number): L.DivIcon => {
   const category = getCategory(event)

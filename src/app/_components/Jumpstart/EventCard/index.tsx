@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import moment from 'moment-timezone'
 
 import type { Event } from '../../../../payload/payload-types'
+import { type EventCategory, isEventCategory } from '../../../../utilities/eventCategories'
 import { Media } from '../../../_components/Media'
 import RichText from '../../../_components/RichText'
 import { bungee, inter } from '../../../_utilities/font'
@@ -11,7 +12,7 @@ import { getSafeHref } from '../../../_utilities/getSafeHref'
 
 import classes from './index.module.scss'
 
-const CATEGORY_COLORS: Record<string, string> = {
+const CATEGORY_COLORS: Record<EventCategory, string> = {
   welcome: 'var(--jumpstart-cat-welcome)',
   academic: 'var(--jumpstart-cat-academic)',
   social: 'var(--jumpstart-cat-social)',
@@ -52,14 +53,13 @@ function getDescriptionLength(desc: unknown): number {
 }
 
 export const JumpstartEventCard: React.FC<Props> = ({ event, index }) => {
-  const { name, date, endTime, location, description, mapsUrl, link, image, jumpstartCategory } =
-    event
+  const { name, date, endTime, location, description, mapsUrl, link, image, category } = event
 
   const [isExpanded, setIsExpanded] = useState(false)
 
   const safeLink = getSafeHref(link)
 
-  const catKey = jumpstartCategory && CATEGORY_COLORS[jumpstartCategory] ? jumpstartCategory : null
+  const catKey = isEventCategory(category) ? category : null
   const catColor = catKey ? CATEGORY_COLORS[catKey] : 'var(--jumpstart-neon-magenta)'
   const rotation = ROTATIONS[index % ROTATIONS.length]
   const timeRange = formatTimeRange(date, endTime)

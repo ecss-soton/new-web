@@ -1,7 +1,8 @@
 import ical from 'ical-generator'
 import moment from 'moment-timezone'
-import type { CollectionConfig, Validate } from 'payload/types'
+import type { CollectionConfig, Validate, Where } from 'payload/types'
 
+import { EVENT_CATEGORIES, isEventCategory } from '../../utilities/eventCategories'
 import { admins } from '../access/admins'
 import { adminsOrPublished } from '../access/adminsOrPublished'
 import { withEndpointErrorHandler } from '../utilities/endpointHandler'
@@ -33,7 +34,7 @@ const Events: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'date', 'isJumpstart', 'sortOrder'],
+    defaultColumns: ['name', 'date', 'category', 'isJumpstart', 'sortOrder'],
   },
   versions: {
     drafts: true,
@@ -125,18 +126,13 @@ const Events: CollectionConfig = {
       type: 'checkbox',
     },
     {
-      name: 'jumpstartCategory',
+      name: 'category',
       label: 'Event Category',
       type: 'select',
-      options: [
-        { label: 'Welcome / General', value: 'welcome' },
-        { label: 'Academic', value: 'academic' },
-        { label: 'Social', value: 'social' },
-        { label: 'Competitive / Track', value: 'competitive' },
-      ],
+      options: [...EVENT_CATEGORIES],
       admin: {
-        condition: (_, siblingData) => siblingData?.isJumpstart,
-        description: 'Controls the color accent on the event card.',
+        description:
+          'Category used to group events and to filter calendar subscriptions. Leave blank if the event does not fit a category.',
       },
     },
     {
@@ -210,9 +206,39 @@ const Events: CollectionConfig = {
       method: 'get',
       handler: async (req, res) => {
         const { payload } = req
+
+        // `categories` accepts a comma-separated list (or repeated query params)
+        // of category values. Unknown values are ignored. With no valid category
+        // selected the feed contains every published event.
+        const rawCategories = req.query?.categories
+        const requestedCategories = (Array.isArray(rawCategories) ? rawCategories : [rawCategories])
+          .filter((value): value is string => typeof value === 'string')
+          .flatMap(value => value.split(','))
+          .map(value => value.trim())
+          .filter(isEventCategory)
+
+        const where: Where = { _status: { equals: 'published' } }
+
+        if (requestedCategories.length > 0) {
+          where.category = { in: requestedCategories }
+        }
+
+        // `user` scopes the feed to events the user has marked as interested.
+        // Only accept a Mongo ObjectId shape so an invalid value cannot trigger
+        // a database cast error.
+        const rawUser = req.query?.user
+        const userId =
+          typeof rawUser === 'string' && /^[a-f\d]{24}$/i.test(rawUser.trim())
+            ? rawUser.trim()
+            : undefined
+
+        if (userId) {
+          where.interestedUsers = { in: [userId] }
+        }
+
         const { docs: events } = await payload.find({
           collection: 'events',
-          where: { _status: { equals: 'published' } },
+          where,
           limit: 500,
           sort: '-date',
         })

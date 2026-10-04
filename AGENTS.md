@@ -88,7 +88,10 @@ Do not hand-edit generated files when the generation commands are available. If 
 - Jumpstart is a homepage mode, not a separate route.
 - Entry point: `src/app/page.tsx`; it activates when `settings.jumpstartEnabled` is true.
 - Timeline and map components live in `src/app/_components/Jumpstart/`.
-- Events use `isJumpstart`, `jumpstartCategory`, `sortOrder`, `latitude`, and `longitude`.
+- Events use `isJumpstart`, `category`, `sortOrder`, `latitude`, and `longitude`.
+- `category` (from `src/utilities/eventCategories.ts`) drives Jumpstart accents and the
+  `/api/events/ics` feed filters (`?categories=academic,social`, `?user=<id>`). It applies to
+  all events, not just Jumpstart.
 - Map pins use category colour and chronological numbering. Preserve numeric and non-colour cues for accessibility.
 - Map popup data must be created with DOM APIs/`textContent`, not interpolated into HTML strings.
 - `jumpstartAbout` is the CMS-managed “What is Jumpstart?” sidebar content.

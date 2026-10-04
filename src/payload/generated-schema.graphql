@@ -831,7 +831,7 @@ type Event {
   link: String
   image(where: Event_Image_where): Media
   isJumpstart: Boolean
-  jumpstartCategory: Event_jumpstartCategory
+  category: Event_category
   sortOrder: Float
   mapsUrl: String
   latitude: Float
@@ -1031,7 +1031,7 @@ input Event_Image_where_or {
   OR: [Event_Image_where_or]
 }
 
-enum Event_jumpstartCategory {
+enum Event_category {
   welcome
   academic
   social
@@ -19581,7 +19581,7 @@ input Event_where {
   link: Event_link_operator
   image: Event_image_operator
   isJumpstart: Event_isJumpstart_operator
-  jumpstartCategory: Event_jumpstartCategory_operator
+  category: Event_category_operator
   sortOrder: Event_sortOrder_operator
   mapsUrl: Event_mapsUrl_operator
   latitude: Event_latitude_operator
@@ -19678,16 +19678,16 @@ input Event_isJumpstart_operator {
   exists: Boolean
 }
 
-input Event_jumpstartCategory_operator {
-  equals: Event_jumpstartCategory_Input
-  not_equals: Event_jumpstartCategory_Input
-  in: [Event_jumpstartCategory_Input]
-  not_in: [Event_jumpstartCategory_Input]
-  all: [Event_jumpstartCategory_Input]
+input Event_category_operator {
+  equals: Event_category_Input
+  not_equals: Event_category_Input
+  in: [Event_category_Input]
+  not_in: [Event_category_Input]
+  all: [Event_category_Input]
   exists: Boolean
 }
 
-enum Event_jumpstartCategory_Input {
+enum Event_category_Input {
   welcome
   academic
   social
@@ -19800,7 +19800,7 @@ input Event_where_and {
   link: Event_link_operator
   image: Event_image_operator
   isJumpstart: Event_isJumpstart_operator
-  jumpstartCategory: Event_jumpstartCategory_operator
+  category: Event_category_operator
   sortOrder: Event_sortOrder_operator
   mapsUrl: Event_mapsUrl_operator
   latitude: Event_latitude_operator
@@ -19824,7 +19824,7 @@ input Event_where_or {
   link: Event_link_operator
   image: Event_image_operator
   isJumpstart: Event_isJumpstart_operator
-  jumpstartCategory: Event_jumpstartCategory_operator
+  category: Event_category_operator
   sortOrder: Event_sortOrder_operator
   mapsUrl: Event_mapsUrl_operator
   latitude: Event_latitude_operator
@@ -19861,7 +19861,7 @@ type EventsDocAccessFields {
   link: EventsDocAccessFields_link
   image: EventsDocAccessFields_image
   isJumpstart: EventsDocAccessFields_isJumpstart
-  jumpstartCategory: EventsDocAccessFields_jumpstartCategory
+  category: EventsDocAccessFields_category
   sortOrder: EventsDocAccessFields_sortOrder
   mapsUrl: EventsDocAccessFields_mapsUrl
   latitude: EventsDocAccessFields_latitude
@@ -20080,26 +20080,26 @@ type EventsDocAccessFields_isJumpstart_Delete {
   permission: Boolean!
 }
 
-type EventsDocAccessFields_jumpstartCategory {
-  create: EventsDocAccessFields_jumpstartCategory_Create
-  read: EventsDocAccessFields_jumpstartCategory_Read
-  update: EventsDocAccessFields_jumpstartCategory_Update
-  delete: EventsDocAccessFields_jumpstartCategory_Delete
+type EventsDocAccessFields_category {
+  create: EventsDocAccessFields_category_Create
+  read: EventsDocAccessFields_category_Read
+  update: EventsDocAccessFields_category_Update
+  delete: EventsDocAccessFields_category_Delete
 }
 
-type EventsDocAccessFields_jumpstartCategory_Create {
+type EventsDocAccessFields_category_Create {
   permission: Boolean!
 }
 
-type EventsDocAccessFields_jumpstartCategory_Read {
+type EventsDocAccessFields_category_Read {
   permission: Boolean!
 }
 
-type EventsDocAccessFields_jumpstartCategory_Update {
+type EventsDocAccessFields_category_Update {
   permission: Boolean!
 }
 
-type EventsDocAccessFields_jumpstartCategory_Delete {
+type EventsDocAccessFields_category_Delete {
   permission: Boolean!
 }
 
@@ -20353,7 +20353,7 @@ type EventVersion_Version {
   link: String
   image(where: EventVersion_Version_Image_where): Media
   isJumpstart: Boolean
-  jumpstartCategory: EventVersion_Version_jumpstartCategory
+  category: EventVersion_Version_category
   sortOrder: Float
   mapsUrl: String
   latitude: Float
@@ -20553,7 +20553,7 @@ input EventVersion_Version_Image_where_or {
   OR: [EventVersion_Version_Image_where_or]
 }
 
-enum EventVersion_Version_jumpstartCategory {
+enum EventVersion_Version_category {
   welcome
   academic
   social
@@ -20589,7 +20589,7 @@ input versionsEvent_where {
   version__link: versionsEvent_version__link_operator
   version__image: versionsEvent_version__image_operator
   version__isJumpstart: versionsEvent_version__isJumpstart_operator
-  version__jumpstartCategory: versionsEvent_version__jumpstartCategory_operator
+  version__category: versionsEvent_version__category_operator
   version__sortOrder: versionsEvent_version__sortOrder_operator
   version__mapsUrl: versionsEvent_version__mapsUrl_operator
   version__latitude: versionsEvent_version__latitude_operator
@@ -20689,16 +20689,16 @@ input versionsEvent_version__isJumpstart_operator {
   exists: Boolean
 }
 
-input versionsEvent_version__jumpstartCategory_operator {
-  equals: versionsEvent_version__jumpstartCategory_Input
-  not_equals: versionsEvent_version__jumpstartCategory_Input
-  in: [versionsEvent_version__jumpstartCategory_Input]
-  not_in: [versionsEvent_version__jumpstartCategory_Input]
-  all: [versionsEvent_version__jumpstartCategory_Input]
+input versionsEvent_version__category_operator {
+  equals: versionsEvent_version__category_Input
+  not_equals: versionsEvent_version__category_Input
+  in: [versionsEvent_version__category_Input]
+  not_in: [versionsEvent_version__category_Input]
+  all: [versionsEvent_version__category_Input]
   exists: Boolean
 }
 
-enum versionsEvent_version__jumpstartCategory_Input {
+enum versionsEvent_version__category_Input {
   welcome
   academic
   social
@@ -20850,7 +20850,7 @@ input versionsEvent_where_and {
   version__link: versionsEvent_version__link_operator
   version__image: versionsEvent_version__image_operator
   version__isJumpstart: versionsEvent_version__isJumpstart_operator
-  version__jumpstartCategory: versionsEvent_version__jumpstartCategory_operator
+  version__category: versionsEvent_version__category_operator
   version__sortOrder: versionsEvent_version__sortOrder_operator
   version__mapsUrl: versionsEvent_version__mapsUrl_operator
   version__latitude: versionsEvent_version__latitude_operator
@@ -20878,7 +20878,7 @@ input versionsEvent_where_or {
   version__link: versionsEvent_version__link_operator
   version__image: versionsEvent_version__image_operator
   version__isJumpstart: versionsEvent_version__isJumpstart_operator
-  version__jumpstartCategory: versionsEvent_version__jumpstartCategory_operator
+  version__category: versionsEvent_version__category_operator
   version__sortOrder: versionsEvent_version__sortOrder_operator
   version__mapsUrl: versionsEvent_version__mapsUrl_operator
   version__latitude: versionsEvent_version__latitude_operator
@@ -34733,7 +34733,7 @@ type EventsFields {
   link: EventsFields_link
   image: EventsFields_image
   isJumpstart: EventsFields_isJumpstart
-  jumpstartCategory: EventsFields_jumpstartCategory
+  category: EventsFields_category
   sortOrder: EventsFields_sortOrder
   mapsUrl: EventsFields_mapsUrl
   latitude: EventsFields_latitude
@@ -34952,26 +34952,26 @@ type EventsFields_isJumpstart_Delete {
   permission: Boolean!
 }
 
-type EventsFields_jumpstartCategory {
-  create: EventsFields_jumpstartCategory_Create
-  read: EventsFields_jumpstartCategory_Read
-  update: EventsFields_jumpstartCategory_Update
-  delete: EventsFields_jumpstartCategory_Delete
+type EventsFields_category {
+  create: EventsFields_category_Create
+  read: EventsFields_category_Read
+  update: EventsFields_category_Update
+  delete: EventsFields_category_Delete
 }
 
-type EventsFields_jumpstartCategory_Create {
+type EventsFields_category_Create {
   permission: Boolean!
 }
 
-type EventsFields_jumpstartCategory_Read {
+type EventsFields_category_Read {
   permission: Boolean!
 }
 
-type EventsFields_jumpstartCategory_Update {
+type EventsFields_category_Update {
   permission: Boolean!
 }
 
-type EventsFields_jumpstartCategory_Delete {
+type EventsFields_category_Delete {
   permission: Boolean!
 }
 
@@ -40338,7 +40338,7 @@ input mutationEventInput {
   link: String
   image: String
   isJumpstart: Boolean
-  jumpstartCategory: Event_jumpstartCategory_MutationInput
+  category: Event_category_MutationInput
   sortOrder: Float
   mapsUrl: String
   latitude: Float
@@ -40350,7 +40350,7 @@ input mutationEventInput {
   _status: Event__status_MutationInput
 }
 
-enum Event_jumpstartCategory_MutationInput {
+enum Event_category_MutationInput {
   welcome
   academic
   social
@@ -40371,7 +40371,7 @@ input mutationEventUpdateInput {
   link: String
   image: String
   isJumpstart: Boolean
-  jumpstartCategory: EventUpdate_jumpstartCategory_MutationInput
+  category: EventUpdate_category_MutationInput
   sortOrder: Float
   mapsUrl: String
   latitude: Float
@@ -40383,7 +40383,7 @@ input mutationEventUpdateInput {
   _status: EventUpdate__status_MutationInput
 }
 
-enum EventUpdate_jumpstartCategory_MutationInput {
+enum EventUpdate_category_MutationInput {
   welcome
   academic
   social
