@@ -5,7 +5,7 @@ import { Gutter } from '../../_components/Gutter'
 import { LowImpactHero } from '../../_heros/LowImpact'
 import { getMeUser } from '../../_utilities/getMeUser'
 import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
-import { getDailyWord, getPuzzleNumber, getTodayDate } from './techWords'
+import { getPuzzleNumber, getTodayDate } from './techWords'
 import { WordleGame } from './WordleGame'
 
 export const dynamic = 'force-dynamic'
@@ -56,35 +56,14 @@ export default async function WordlePage() {
     }
   }
 
-  // Only resolve and expose the daily word when the game is already complete.
-  // During active play the solution stays on the server; the /api/wordle-scores/guess
-  // endpoint handles answer validation and returns only tile statuses.
-  let completedGameSolution: string | null = null
-  if (todayScore) {
-    completedGameSolution = getDailyWord()
-    try {
-      const overrideReq = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/wordle-overrides?where[date][equals]=${todayDate}&depth=0`,
-        {
-          headers: { Authorization: `JWT ${token}` },
-        },
-      )
-      const { docs: overrideDocs } = await overrideReq.json()
-      if (overrideDocs && overrideDocs.length > 0) {
-        completedGameSolution = overrideDocs[0].word.toUpperCase()
-      }
-    } catch (err) {
-      console.warn('Failed to fetch word override:', err) // eslint-disable-line no-console
-    }
-  }
-
+  // The daily word never leaves the server during active play; completed games
+  // are rendered from the stored attempts/statuses and answer in the score doc.
   return (
     <>
       <LowImpactHero title="ECSSle" type="lowImpact" />
       <Gutter>
         <WordleGame
           user={user}
-          solution={completedGameSolution}
           todayDate={todayDate}
           puzzleNumber={puzzleNumber}
           todayScore={todayScore}

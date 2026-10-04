@@ -1318,10 +1318,13 @@ export interface WordleScore {
   displayName: string;
   date: string;
   solved: boolean;
+  completed: boolean;
   guesses: number;
+  answer?: string | null;
   attempts?:
     | {
         guess?: string | null;
+        statuses?: string | null;
         id?: string | null;
       }[]
     | null;

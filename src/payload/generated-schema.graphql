@@ -22543,7 +22543,9 @@ type WordleScore {
   displayName: String!
   date: String!
   solved: Boolean!
+  completed: Boolean!
   guesses: Float!
+  answer: String
   attempts: [WordleScore_Attempts!]
   updatedAt: DateTime
   createdAt: DateTime
@@ -22551,6 +22553,7 @@ type WordleScore {
 
 type WordleScore_Attempts {
   guess: String
+  statuses: String
   id: String
 }
 
@@ -22573,8 +22576,11 @@ input WordleScore_where {
   displayName: WordleScore_displayName_operator
   date: WordleScore_date_operator
   solved: WordleScore_solved_operator
+  completed: WordleScore_completed_operator
   guesses: WordleScore_guesses_operator
+  answer: WordleScore_answer_operator
   attempts__guess: WordleScore_attempts__guess_operator
+  attempts__statuses: WordleScore_attempts__statuses_operator
   attempts__id: WordleScore_attempts__id_operator
   updatedAt: WordleScore_updatedAt_operator
   createdAt: WordleScore_createdAt_operator
@@ -22616,6 +22622,11 @@ input WordleScore_solved_operator {
   not_equals: Boolean
 }
 
+input WordleScore_completed_operator {
+  equals: Boolean
+  not_equals: Boolean
+}
+
 input WordleScore_guesses_operator {
   equals: Float
   not_equals: Float
@@ -22625,7 +22636,29 @@ input WordleScore_guesses_operator {
   less_than: Float
 }
 
+input WordleScore_answer_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
 input WordleScore_attempts__guess_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input WordleScore_attempts__statuses_operator {
   equals: String
   not_equals: String
   like: String
@@ -22685,8 +22718,11 @@ input WordleScore_where_and {
   displayName: WordleScore_displayName_operator
   date: WordleScore_date_operator
   solved: WordleScore_solved_operator
+  completed: WordleScore_completed_operator
   guesses: WordleScore_guesses_operator
+  answer: WordleScore_answer_operator
   attempts__guess: WordleScore_attempts__guess_operator
+  attempts__statuses: WordleScore_attempts__statuses_operator
   attempts__id: WordleScore_attempts__id_operator
   updatedAt: WordleScore_updatedAt_operator
   createdAt: WordleScore_createdAt_operator
@@ -22700,8 +22736,11 @@ input WordleScore_where_or {
   displayName: WordleScore_displayName_operator
   date: WordleScore_date_operator
   solved: WordleScore_solved_operator
+  completed: WordleScore_completed_operator
   guesses: WordleScore_guesses_operator
+  answer: WordleScore_answer_operator
   attempts__guess: WordleScore_attempts__guess_operator
+  attempts__statuses: WordleScore_attempts__statuses_operator
   attempts__id: WordleScore_attempts__id_operator
   updatedAt: WordleScore_updatedAt_operator
   createdAt: WordleScore_createdAt_operator
@@ -22727,7 +22766,9 @@ type WordleScoresDocAccessFields {
   displayName: WordleScoresDocAccessFields_displayName
   date: WordleScoresDocAccessFields_date
   solved: WordleScoresDocAccessFields_solved
+  completed: WordleScoresDocAccessFields_completed
   guesses: WordleScoresDocAccessFields_guesses
+  answer: WordleScoresDocAccessFields_answer
   attempts: WordleScoresDocAccessFields_attempts
   updatedAt: WordleScoresDocAccessFields_updatedAt
   createdAt: WordleScoresDocAccessFields_createdAt
@@ -22825,6 +22866,29 @@ type WordleScoresDocAccessFields_solved_Delete {
   permission: Boolean!
 }
 
+type WordleScoresDocAccessFields_completed {
+  create: WordleScoresDocAccessFields_completed_Create
+  read: WordleScoresDocAccessFields_completed_Read
+  update: WordleScoresDocAccessFields_completed_Update
+  delete: WordleScoresDocAccessFields_completed_Delete
+}
+
+type WordleScoresDocAccessFields_completed_Create {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_completed_Read {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_completed_Update {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_completed_Delete {
+  permission: Boolean!
+}
+
 type WordleScoresDocAccessFields_guesses {
   create: WordleScoresDocAccessFields_guesses_Create
   read: WordleScoresDocAccessFields_guesses_Read
@@ -22845,6 +22909,29 @@ type WordleScoresDocAccessFields_guesses_Update {
 }
 
 type WordleScoresDocAccessFields_guesses_Delete {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_answer {
+  create: WordleScoresDocAccessFields_answer_Create
+  read: WordleScoresDocAccessFields_answer_Read
+  update: WordleScoresDocAccessFields_answer_Update
+  delete: WordleScoresDocAccessFields_answer_Delete
+}
+
+type WordleScoresDocAccessFields_answer_Create {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_answer_Read {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_answer_Update {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_answer_Delete {
   permission: Boolean!
 }
 
@@ -22874,6 +22961,7 @@ type WordleScoresDocAccessFields_attempts_Delete {
 
 type WordleScoresDocAccessFields_attempts_Fields {
   guess: WordleScoresDocAccessFields_attempts_guess
+  statuses: WordleScoresDocAccessFields_attempts_statuses
   id: WordleScoresDocAccessFields_attempts_id
 }
 
@@ -22897,6 +22985,29 @@ type WordleScoresDocAccessFields_attempts_guess_Update {
 }
 
 type WordleScoresDocAccessFields_attempts_guess_Delete {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_attempts_statuses {
+  create: WordleScoresDocAccessFields_attempts_statuses_Create
+  read: WordleScoresDocAccessFields_attempts_statuses_Read
+  update: WordleScoresDocAccessFields_attempts_statuses_Update
+  delete: WordleScoresDocAccessFields_attempts_statuses_Delete
+}
+
+type WordleScoresDocAccessFields_attempts_statuses_Create {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_attempts_statuses_Read {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_attempts_statuses_Update {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_attempts_statuses_Delete {
   permission: Boolean!
 }
 
@@ -36192,7 +36303,9 @@ type WordleScoresFields {
   displayName: WordleScoresFields_displayName
   date: WordleScoresFields_date
   solved: WordleScoresFields_solved
+  completed: WordleScoresFields_completed
   guesses: WordleScoresFields_guesses
+  answer: WordleScoresFields_answer
   attempts: WordleScoresFields_attempts
   updatedAt: WordleScoresFields_updatedAt
   createdAt: WordleScoresFields_createdAt
@@ -36290,6 +36403,29 @@ type WordleScoresFields_solved_Delete {
   permission: Boolean!
 }
 
+type WordleScoresFields_completed {
+  create: WordleScoresFields_completed_Create
+  read: WordleScoresFields_completed_Read
+  update: WordleScoresFields_completed_Update
+  delete: WordleScoresFields_completed_Delete
+}
+
+type WordleScoresFields_completed_Create {
+  permission: Boolean!
+}
+
+type WordleScoresFields_completed_Read {
+  permission: Boolean!
+}
+
+type WordleScoresFields_completed_Update {
+  permission: Boolean!
+}
+
+type WordleScoresFields_completed_Delete {
+  permission: Boolean!
+}
+
 type WordleScoresFields_guesses {
   create: WordleScoresFields_guesses_Create
   read: WordleScoresFields_guesses_Read
@@ -36310,6 +36446,29 @@ type WordleScoresFields_guesses_Update {
 }
 
 type WordleScoresFields_guesses_Delete {
+  permission: Boolean!
+}
+
+type WordleScoresFields_answer {
+  create: WordleScoresFields_answer_Create
+  read: WordleScoresFields_answer_Read
+  update: WordleScoresFields_answer_Update
+  delete: WordleScoresFields_answer_Delete
+}
+
+type WordleScoresFields_answer_Create {
+  permission: Boolean!
+}
+
+type WordleScoresFields_answer_Read {
+  permission: Boolean!
+}
+
+type WordleScoresFields_answer_Update {
+  permission: Boolean!
+}
+
+type WordleScoresFields_answer_Delete {
   permission: Boolean!
 }
 
@@ -36339,6 +36498,7 @@ type WordleScoresFields_attempts_Delete {
 
 type WordleScoresFields_attempts_Fields {
   guess: WordleScoresFields_attempts_guess
+  statuses: WordleScoresFields_attempts_statuses
   id: WordleScoresFields_attempts_id
 }
 
@@ -36362,6 +36522,29 @@ type WordleScoresFields_attempts_guess_Update {
 }
 
 type WordleScoresFields_attempts_guess_Delete {
+  permission: Boolean!
+}
+
+type WordleScoresFields_attempts_statuses {
+  create: WordleScoresFields_attempts_statuses_Create
+  read: WordleScoresFields_attempts_statuses_Read
+  update: WordleScoresFields_attempts_statuses_Update
+  delete: WordleScoresFields_attempts_statuses_Delete
+}
+
+type WordleScoresFields_attempts_statuses_Create {
+  permission: Boolean!
+}
+
+type WordleScoresFields_attempts_statuses_Read {
+  permission: Boolean!
+}
+
+type WordleScoresFields_attempts_statuses_Update {
+  permission: Boolean!
+}
+
+type WordleScoresFields_attempts_statuses_Delete {
   permission: Boolean!
 }
 
@@ -40506,7 +40689,9 @@ input mutationWordleScoreInput {
   displayName: String!
   date: String!
   solved: Boolean
+  completed: Boolean
   guesses: Float!
+  answer: String
   attempts: [mutationWordleScore_AttemptsInput]
   updatedAt: String
   createdAt: String
@@ -40514,6 +40699,7 @@ input mutationWordleScoreInput {
 
 input mutationWordleScore_AttemptsInput {
   guess: String
+  statuses: String
   id: String
 }
 
@@ -40522,7 +40708,9 @@ input mutationWordleScoreUpdateInput {
   displayName: String
   date: String
   solved: Boolean
+  completed: Boolean
   guesses: Float
+  answer: String
   attempts: [mutationWordleScoreUpdate_AttemptsInput]
   updatedAt: String
   createdAt: String
@@ -40530,6 +40718,7 @@ input mutationWordleScoreUpdateInput {
 
 input mutationWordleScoreUpdate_AttemptsInput {
   guess: String
+  statuses: String
   id: String
 }
 

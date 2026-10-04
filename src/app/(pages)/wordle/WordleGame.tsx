@@ -19,43 +19,22 @@ const KEYBOARD_ROWS = [
 
 type TileStatus = 'correct' | 'present' | 'absent'
 
-// Compute tile statuses locally — only used for board replay when `solution` is known
-// (i.e., when the game is already complete and page.tsx has safely passed the answer).
-const getRowStatuses = (guess: string, solution: string): TileStatus[] => {
-  const statuses: TileStatus[] = Array(WORD_LENGTH).fill('absent')
-  const solutionChars = solution.split('')
-  const remainingSolutionChars: Record<string, number> = {}
+type StoredAttempt = { guess?: string | null; statuses?: string | null }
 
-  solutionChars.forEach(char => {
-    remainingSolutionChars[char] = (remainingSolutionChars[char] || 0) + 1
-  })
-
-  for (let i = 0; i < WORD_LENGTH; i++) {
-    if (guess[i] === solution[i]) {
-      statuses[i] = 'correct'
-      remainingSolutionChars[guess[i]]--
-    }
-  }
-
-  for (let i = 0; i < WORD_LENGTH; i++) {
-    if (statuses[i] !== 'correct') {
-      const char = guess[i]
-      if (remainingSolutionChars[char] > 0) {
-        statuses[i] = 'present'
-        remainingSolutionChars[char]--
-      }
-    }
-  }
-
-  return statuses
-}
+type TodayScore = {
+  solved?: boolean | null
+  completed?: boolean | null
+  attempts?: StoredAttempt[] | null
+  answer?: string | null
+  displayName?: string | null
+} | null
 
 // Map a status string ('correct'|'present'|'absent') to the corresponding CSS module class
 const statusToClass = (status: TileStatus | string): string => {
   if (status === 'correct') return classes.correct
   if (status === 'present') return classes.present
   if (status === 'absent') return classes.absent
-  // Fallback: the status might already be a class string (from `getRowStatuses` above)
+  // Fallback: the value may already be resolved to a class string.
   return status
 }
 
@@ -67,24 +46,21 @@ const getEmojiFromStatus = (status: TileStatus | string): string => {
 
 interface WordleGameProps {
   user: { id: string; name?: string | null; username?: string | null }
-  /** Passed only when the game is already complete (loaded from saved score). null during active play. */
-  solution: string | null
   todayDate: string
   puzzleNumber: number
-  todayScore: any | null
+  todayScore: TodayScore
   existingDisplayName: string | null
 }
 
 export const WordleGame: React.FC<WordleGameProps> = ({
   user,
-  solution,
   todayDate,
   puzzleNumber,
   todayScore,
   existingDisplayName,
 }) => {
   const [guesses, setGuesses] = useState<string[]>([])
-  // Statuses for each submitted guess row, populated from the /guess endpoint or from solution.
+  // Statuses for each submitted guess row, restored from the stored game.
   const [guessStatuses, setGuessStatuses] = useState<(TileStatus | string)[][]>([])
   const [currentGuess, setCurrentGuess] = useState('')
   const [gameStatus, setGameStatus] = useState<'playing' | 'won' | 'lost'>('playing')
@@ -92,14 +68,13 @@ export const WordleGame: React.FC<WordleGameProps> = ({
   const [message, setMessage] = useState('')
   const [copied, setCopied] = useState(false)
   const [isProcessingGuess, setIsProcessingGuess] = useState(false)
-  // Revealed by the server on the final failed guess; also set from `solution` for completed games.
+  // Revealed by the server only once a completed loss is recorded.
   const [revealedAnswer, setRevealedAnswer] = useState<string | null>(null)
   const announcementRef = useRef<HTMLDivElement>(null)
 
   const [displayName, setDisplayName] = useState(existingDisplayName || '')
   const [showNameModal, setShowNameModal] = useState(false)
   const [nameInput, setNameInput] = useState(user.name || user.username || '')
-  const [saving, setSaving] = useState(false)
   const [stats, setStats] = useState<any>(null)
   const [replayLocked, setReplayLocked] = useState(false)
   const [editingName, setEditingName] = useState(false)
@@ -123,38 +98,23 @@ export const WordleGame: React.FC<WordleGameProps> = ({
     }
   }, [user.id])
 
-  const saveScore = useCallback(
-    async (solved: boolean, guessCount: number, attemptList: string[]) => {
-      setSaving(true)
-      try {
-        const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/wordle-scores/save`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            date: todayDate,
-            solved,
-            guesses: solved ? guessCount : MAX_GUESSES,
-            attempts: attemptList.map(g => ({ guess: g })),
-            displayName,
-          }),
-        })
-        if (req.ok) {
-          await fetchStats()
-        } else if (req.status === 409) {
-          setMessage('Already played today')
-          setTimeout(() => setMessage(''), 2500)
-        }
-      } catch {
-        setMessage('Failed to save score')
-        setTimeout(() => setMessage(''), 2500)
-      }
-      setSaving(false)
-    },
-    [todayDate, displayName, fetchStats],
-  )
-
   useEffect(() => {
+    const applyScore = (score: TodayScore) => {
+      const attempts = score?.attempts || []
+      setGuesses(attempts.map(a => a.guess || ''))
+      setGuessStatuses(attempts.map(a => (a.statuses ? a.statuses.split(',') : [])))
+      setDisplayName(score?.displayName || existingDisplayName || '')
+
+      if (score?.completed) {
+        setGameStatus(score.solved ? 'won' : 'lost')
+        setReplayLocked(true)
+        if (!score.solved && score.answer) setRevealedAnswer(score.answer)
+      } else {
+        setGameStatus('playing')
+        setReplayLocked(false)
+      }
+    }
+
     const checkToday = async () => {
       try {
         const req = await fetch(
@@ -163,17 +123,7 @@ export const WordleGame: React.FC<WordleGameProps> = ({
         )
         const { docs } = await req.json()
         if (docs && docs.length > 0) {
-          const score = docs[0]
-          const attemptList: string[] = score.attempts?.map((a: any) => a.guess) || []
-          setGuesses(attemptList)
-          setGameStatus(score.solved ? 'won' : 'lost')
-          setReplayLocked(true)
-          setDisplayName(score.displayName || existingDisplayName || '')
-          // Rebuild board statuses from the saved solution (only available on completed games)
-          if (solution) {
-            setGuessStatuses(attemptList.map(g => getRowStatuses(g, solution)))
-            if (!score.solved) setRevealedAnswer(solution)
-          }
+          applyScore(docs[0])
           fetchStats()
           return
         }
@@ -182,14 +132,7 @@ export const WordleGame: React.FC<WordleGameProps> = ({
       }
 
       if (todayScore) {
-        const attemptStrings = todayScore.attempts?.map((a: any) => a.guess) || []
-        setGuesses(attemptStrings)
-        setGameStatus(todayScore.solved ? 'won' : 'lost')
-        setReplayLocked(true)
-        if (solution) {
-          setGuessStatuses(attemptStrings.map((g: string) => getRowStatuses(g, solution)))
-          if (!todayScore.solved) setRevealedAnswer(solution)
-        }
+        applyScore(todayScore)
         fetchStats()
       } else if (!existingDisplayName) {
         setShowNameModal(true)
@@ -296,7 +239,6 @@ export const WordleGame: React.FC<WordleGameProps> = ({
         }
 
         const newGuesses = [...guesses, currentGuess]
-        const isLastGuess = newGuesses.length >= MAX_GUESSES
 
         setIsProcessingGuess(true)
         try {
@@ -304,7 +246,7 @@ export const WordleGame: React.FC<WordleGameProps> = ({
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ date: todayDate, guess: currentGuess, isLastGuess }),
+            body: JSON.stringify({ date: todayDate, guess: currentGuess, displayName }),
           })
 
           const data = await res.json()
@@ -329,11 +271,11 @@ export const WordleGame: React.FC<WordleGameProps> = ({
 
           if (data.won) {
             setGameStatus('won')
-            saveScore(true, newGuesses.length, newGuesses)
-          } else if (isLastGuess) {
+            fetchStats()
+          } else if (data.completed) {
             setGameStatus('lost')
             if (data.answer) setRevealedAnswer(data.answer)
-            saveScore(false, MAX_GUESSES, newGuesses)
+            fetchStats()
           }
         } catch {
           showMessage('Network error — try again')
@@ -349,7 +291,16 @@ export const WordleGame: React.FC<WordleGameProps> = ({
         setCurrentGuess(prev => prev + key)
       }
     },
-    [currentGuess, gameStatus, guesses, replayLocked, isProcessingGuess, todayDate, saveScore],
+    [
+      currentGuess,
+      gameStatus,
+      guesses,
+      replayLocked,
+      isProcessingGuess,
+      todayDate,
+      displayName,
+      fetchStats,
+    ],
   )
 
   useEffect(() => {
@@ -509,8 +460,6 @@ export const WordleGame: React.FC<WordleGameProps> = ({
           </div>
         </div>
       )}
-
-      {saving && <p className={classes.savingText}>Saving your score...</p>}
 
       {stats && (
         <div className={classes.statsPanel}>
