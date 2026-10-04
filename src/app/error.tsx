@@ -15,11 +15,13 @@ export default function GlobalError({
 
   return (
     <main className="page-container">
-      <h1>Something went wrong</h1>
-      <p>We could not load this page. Please try again.</p>
-      <button type="button" onClick={reset}>
-        Try again
-      </button>
+      <div className="status-screen">
+        <h1>Something went wrong</h1>
+        <p>We could not load this page. Please try again.</p>
+        <button type="button" onClick={reset}>
+          Try again
+        </button>
+      </div>
     </main>
   )
 }

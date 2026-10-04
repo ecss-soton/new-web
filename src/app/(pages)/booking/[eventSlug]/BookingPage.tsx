@@ -135,7 +135,9 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
   if (loading) {
     return (
       <div className="page-container">
-        <p>Loading booking system...</p>
+        <div className="status-screen">
+          <p>Loading booking system...</p>
+        </div>
       </div>
     )
   }
@@ -143,7 +145,9 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
   if (error && !data) {
     return (
       <div className="page-container">
-        <p style={{ color: 'var(--color-error-400)' }}>{error}</p>
+        <div className="status-screen">
+          <p style={{ color: 'var(--color-error-400)' }}>{error}</p>
+        </div>
       </div>
     )
   }
@@ -151,7 +155,9 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
   if (!data) {
     return (
       <div className="page-container">
-        <p>Unable to load booking data. Please try again later.</p>
+        <div className="status-screen">
+          <p>Unable to load booking data. Please try again later.</p>
+        </div>
       </div>
     )
   }

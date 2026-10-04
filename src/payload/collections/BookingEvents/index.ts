@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload/types'
 import { admins } from '../../access/admins'
 import { slugField } from '../../fields/slug'
 import Groups from '../groups'
+import { ImportTicketHolders } from './react/ImportTicketHolders'
 
 export const BookingEvents: CollectionConfig = {
   slug: 'booking-events',
@@ -37,6 +38,15 @@ export const BookingEvents: CollectionConfig = {
         description: 'URL-safe identifier (auto-generated from name)',
       },
     }),
+    {
+      name: 'importTicketHolders',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: ImportTicketHolders,
+        },
+      },
+    },
     {
       name: 'date',
       type: 'date',

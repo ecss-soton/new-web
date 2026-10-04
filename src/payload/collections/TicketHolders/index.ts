@@ -140,7 +140,10 @@ export const TicketHolders: CollectionConfig = {
             record[header[j]] = cols[j] || ''
           }
 
-          const sotonId = record.sotonid
+          // Accept either a university username ("ab1c23") or an email
+          // ("ab1c23@soton.ac.uk"); guest-list checks compare against the
+          // Azure AD mailNickname.
+          const sotonId = (record.sotonid || '').split('@')[0].trim().toLowerCase()
           const name = record.name
 
           if (!sotonId || !name) {
