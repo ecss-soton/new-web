@@ -16,6 +16,8 @@
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload generate:types",
     "generate:graphQLSchema": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload generate:graphQLSchema",
     "check-susu": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/checkCsvAccounts.ts",
+    "migrate:event-categories": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/migrateEventCategories.ts",
+    "migrate:wordle-scores": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/migrateWordleScores.ts",
     "lint": "eslint src",
     "lint:fix": "eslint --fix --ext .ts,.tsx src",
     "prettier": "prettier --check \"src/**/*.{ts,tsx,js,json,html}\"",

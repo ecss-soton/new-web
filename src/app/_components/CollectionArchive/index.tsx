@@ -13,6 +13,7 @@ import type {
   Society,
   Sponsor,
 } from '../../../payload/payload-types'
+import { EVENT_CATEGORIES, type EventCategory } from '../../../utilities/eventCategories'
 import type { ArchiveBlockProps } from '../../_blocks/ArchiveBlock/types'
 import { useAuth } from '../../_providers/Auth'
 import { inter } from '../../_utilities/font'
@@ -104,6 +105,7 @@ export const CollectionArchive: React.FC<Props> = props => {
   const [isPopUpVisible, setIsPopUpVisible] = useState<Committee | null>(null)
   const [showSubscribeModal, setShowSubscribeModal] = useState(false)
   const [feedType, setFeedType] = useState<'all' | 'interested'>(user ? 'interested' : 'all')
+  const [selectedCategories, setSelectedCategories] = useState<EventCategory[]>([])
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle')
 
   // Desktop Calendar vs Timeline View for Events
@@ -239,13 +241,34 @@ export const CollectionArchive: React.FC<Props> = props => {
   useEffect(() => {
     if (showSubscribeModal) {
       setFeedType(user ? 'interested' : 'all')
+      setSelectedCategories([])
       setCopyStatus('idle')
     }
   }, [showSubscribeModal, user])
 
+  const toggleCategory = (category: EventCategory) => {
+    setSelectedCategories(previous => {
+      if (previous.includes(category)) {
+        return previous.filter(value => value !== category)
+      }
+      return [...previous, category]
+    })
+  }
+
   const getUrls = (type: 'all' | 'interested') => {
     const baseUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/events/ics`
-    const icalUrl = type === 'interested' && user?.id ? `${baseUrl}?user=${user.id}` : baseUrl
+    const params = new URLSearchParams()
+
+    if (type === 'interested' && user?.id) {
+      params.set('user', user.id)
+    }
+
+    if (selectedCategories.length > 0) {
+      params.set('categories', selectedCategories.join(','))
+    }
+
+    const query = params.toString()
+    const icalUrl = query ? `${baseUrl}?${query}` : baseUrl
     const webcalUrl = icalUrl.replace(/^https?:\/\//, 'webcal://')
 
     return { icalUrl, webcalUrl }
@@ -477,6 +500,45 @@ export const CollectionArchive: React.FC<Props> = props => {
                 You are viewing all events. Log in for a personalized feed.
               </p>
             )}
+
+            <fieldset className={classes.categorySection}>
+              <legend className={classes.categoryLegend}>Event categories</legend>
+              <p className={classes.categoryHint}>
+                Choose one or more categories, or leave all unselected to subscribe to every event.
+              </p>
+              <div className={classes.categoryChips}>
+                {EVENT_CATEGORIES.map(category => {
+                  const isSelected = selectedCategories.includes(category.value)
+                  return (
+                    <label
+                      key={category.value}
+                      className={[
+                        classes.categoryChip,
+                        isSelected ? classes.categoryChipActive : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleCategory(category.value)}
+                      />
+                      <span>{category.label}</span>
+                    </label>
+                  )
+                })}
+              </div>
+              {selectedCategories.length > 0 && (
+                <button
+                  type="button"
+                  className={classes.categoryClear}
+                  onClick={() => setSelectedCategories([])}
+                >
+                  Clear (subscribe to all events)
+                </button>
+              )}
+            </fieldset>
 
             <div className={classes.instructionSection}>
               <h4>Apple, Mac, Outlook</h4>

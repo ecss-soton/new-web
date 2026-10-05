@@ -49,7 +49,9 @@ export const SeatPage: React.FC<{
   if (loading) {
     return (
       <div className="page-container">
-        <p>Loading seat plan...</p>
+        <div className="status-screen">
+          <p>Loading seat plan...</p>
+        </div>
       </div>
     )
   }
@@ -57,7 +59,9 @@ export const SeatPage: React.FC<{
   if (error) {
     return (
       <div className="page-container">
-        <p style={{ color: 'var(--color-error-400)' }}>{error}</p>
+        <div className="status-screen">
+          <p style={{ color: 'var(--color-error-400)' }}>{error}</p>
+        </div>
       </div>
     )
   }
@@ -65,7 +69,9 @@ export const SeatPage: React.FC<{
   if (!data) {
     return (
       <div className="page-container">
-        <p>Table not found. Check the link and try again.</p>
+        <div className="status-screen">
+          <p>Table not found. Check the link and try again.</p>
+        </div>
       </div>
     )
   }

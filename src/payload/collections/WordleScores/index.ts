@@ -5,7 +5,6 @@ import { user } from '../../access/user'
 import type { User } from '../../payload-types'
 import { guess as guessHandler } from './endpoints/guess'
 import { leaderboard } from './endpoints/leaderboard'
-import { saveScore } from './endpoints/saveScore'
 import { stats } from './endpoints/stats'
 import { updateDisplayName } from './endpoints/updateDisplayName'
 
@@ -49,11 +48,27 @@ const WordleScores: CollectionConfig = {
       required: true,
     },
     {
+      name: 'completed',
+      type: 'checkbox',
+      required: true,
+      defaultValue: false,
+      admin: {
+        description: 'Set when the round is won or all guesses are used up.',
+      },
+    },
+    {
       name: 'guesses',
       type: 'number',
       required: true,
       min: 0,
       max: 6,
+    },
+    {
+      name: 'answer',
+      type: 'text',
+      admin: {
+        description: 'Revealed word, stored only for a completed loss.',
+      },
     },
     {
       name: 'attempts',
@@ -63,6 +78,13 @@ const WordleScores: CollectionConfig = {
           name: 'guess',
           type: 'text',
         },
+        {
+          name: 'statuses',
+          type: 'text',
+          admin: {
+            description: 'Comma-separated tile statuses (correct/present/absent).',
+          },
+        },
       ],
     },
   ],
@@ -71,11 +93,6 @@ const WordleScores: CollectionConfig = {
       path: '/guess',
       method: 'post',
       handler: guessHandler,
-    },
-    {
-      path: '/save',
-      method: 'post',
-      handler: saveScore,
     },
     {
       path: '/stats/:userId',

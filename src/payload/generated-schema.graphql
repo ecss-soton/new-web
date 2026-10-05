@@ -831,7 +831,7 @@ type Event {
   link: String
   image(where: Event_Image_where): Media
   isJumpstart: Boolean
-  jumpstartCategory: Event_jumpstartCategory
+  category: Event_category
   sortOrder: Float
   mapsUrl: String
   latitude: Float
@@ -1031,7 +1031,7 @@ input Event_Image_where_or {
   OR: [Event_Image_where_or]
 }
 
-enum Event_jumpstartCategory {
+enum Event_category {
   welcome
   academic
   social
@@ -19581,7 +19581,7 @@ input Event_where {
   link: Event_link_operator
   image: Event_image_operator
   isJumpstart: Event_isJumpstart_operator
-  jumpstartCategory: Event_jumpstartCategory_operator
+  category: Event_category_operator
   sortOrder: Event_sortOrder_operator
   mapsUrl: Event_mapsUrl_operator
   latitude: Event_latitude_operator
@@ -19678,16 +19678,16 @@ input Event_isJumpstart_operator {
   exists: Boolean
 }
 
-input Event_jumpstartCategory_operator {
-  equals: Event_jumpstartCategory_Input
-  not_equals: Event_jumpstartCategory_Input
-  in: [Event_jumpstartCategory_Input]
-  not_in: [Event_jumpstartCategory_Input]
-  all: [Event_jumpstartCategory_Input]
+input Event_category_operator {
+  equals: Event_category_Input
+  not_equals: Event_category_Input
+  in: [Event_category_Input]
+  not_in: [Event_category_Input]
+  all: [Event_category_Input]
   exists: Boolean
 }
 
-enum Event_jumpstartCategory_Input {
+enum Event_category_Input {
   welcome
   academic
   social
@@ -19800,7 +19800,7 @@ input Event_where_and {
   link: Event_link_operator
   image: Event_image_operator
   isJumpstart: Event_isJumpstart_operator
-  jumpstartCategory: Event_jumpstartCategory_operator
+  category: Event_category_operator
   sortOrder: Event_sortOrder_operator
   mapsUrl: Event_mapsUrl_operator
   latitude: Event_latitude_operator
@@ -19824,7 +19824,7 @@ input Event_where_or {
   link: Event_link_operator
   image: Event_image_operator
   isJumpstart: Event_isJumpstart_operator
-  jumpstartCategory: Event_jumpstartCategory_operator
+  category: Event_category_operator
   sortOrder: Event_sortOrder_operator
   mapsUrl: Event_mapsUrl_operator
   latitude: Event_latitude_operator
@@ -19861,7 +19861,7 @@ type EventsDocAccessFields {
   link: EventsDocAccessFields_link
   image: EventsDocAccessFields_image
   isJumpstart: EventsDocAccessFields_isJumpstart
-  jumpstartCategory: EventsDocAccessFields_jumpstartCategory
+  category: EventsDocAccessFields_category
   sortOrder: EventsDocAccessFields_sortOrder
   mapsUrl: EventsDocAccessFields_mapsUrl
   latitude: EventsDocAccessFields_latitude
@@ -20080,26 +20080,26 @@ type EventsDocAccessFields_isJumpstart_Delete {
   permission: Boolean!
 }
 
-type EventsDocAccessFields_jumpstartCategory {
-  create: EventsDocAccessFields_jumpstartCategory_Create
-  read: EventsDocAccessFields_jumpstartCategory_Read
-  update: EventsDocAccessFields_jumpstartCategory_Update
-  delete: EventsDocAccessFields_jumpstartCategory_Delete
+type EventsDocAccessFields_category {
+  create: EventsDocAccessFields_category_Create
+  read: EventsDocAccessFields_category_Read
+  update: EventsDocAccessFields_category_Update
+  delete: EventsDocAccessFields_category_Delete
 }
 
-type EventsDocAccessFields_jumpstartCategory_Create {
+type EventsDocAccessFields_category_Create {
   permission: Boolean!
 }
 
-type EventsDocAccessFields_jumpstartCategory_Read {
+type EventsDocAccessFields_category_Read {
   permission: Boolean!
 }
 
-type EventsDocAccessFields_jumpstartCategory_Update {
+type EventsDocAccessFields_category_Update {
   permission: Boolean!
 }
 
-type EventsDocAccessFields_jumpstartCategory_Delete {
+type EventsDocAccessFields_category_Delete {
   permission: Boolean!
 }
 
@@ -20353,7 +20353,7 @@ type EventVersion_Version {
   link: String
   image(where: EventVersion_Version_Image_where): Media
   isJumpstart: Boolean
-  jumpstartCategory: EventVersion_Version_jumpstartCategory
+  category: EventVersion_Version_category
   sortOrder: Float
   mapsUrl: String
   latitude: Float
@@ -20553,7 +20553,7 @@ input EventVersion_Version_Image_where_or {
   OR: [EventVersion_Version_Image_where_or]
 }
 
-enum EventVersion_Version_jumpstartCategory {
+enum EventVersion_Version_category {
   welcome
   academic
   social
@@ -20589,7 +20589,7 @@ input versionsEvent_where {
   version__link: versionsEvent_version__link_operator
   version__image: versionsEvent_version__image_operator
   version__isJumpstart: versionsEvent_version__isJumpstart_operator
-  version__jumpstartCategory: versionsEvent_version__jumpstartCategory_operator
+  version__category: versionsEvent_version__category_operator
   version__sortOrder: versionsEvent_version__sortOrder_operator
   version__mapsUrl: versionsEvent_version__mapsUrl_operator
   version__latitude: versionsEvent_version__latitude_operator
@@ -20689,16 +20689,16 @@ input versionsEvent_version__isJumpstart_operator {
   exists: Boolean
 }
 
-input versionsEvent_version__jumpstartCategory_operator {
-  equals: versionsEvent_version__jumpstartCategory_Input
-  not_equals: versionsEvent_version__jumpstartCategory_Input
-  in: [versionsEvent_version__jumpstartCategory_Input]
-  not_in: [versionsEvent_version__jumpstartCategory_Input]
-  all: [versionsEvent_version__jumpstartCategory_Input]
+input versionsEvent_version__category_operator {
+  equals: versionsEvent_version__category_Input
+  not_equals: versionsEvent_version__category_Input
+  in: [versionsEvent_version__category_Input]
+  not_in: [versionsEvent_version__category_Input]
+  all: [versionsEvent_version__category_Input]
   exists: Boolean
 }
 
-enum versionsEvent_version__jumpstartCategory_Input {
+enum versionsEvent_version__category_Input {
   welcome
   academic
   social
@@ -20850,7 +20850,7 @@ input versionsEvent_where_and {
   version__link: versionsEvent_version__link_operator
   version__image: versionsEvent_version__image_operator
   version__isJumpstart: versionsEvent_version__isJumpstart_operator
-  version__jumpstartCategory: versionsEvent_version__jumpstartCategory_operator
+  version__category: versionsEvent_version__category_operator
   version__sortOrder: versionsEvent_version__sortOrder_operator
   version__mapsUrl: versionsEvent_version__mapsUrl_operator
   version__latitude: versionsEvent_version__latitude_operator
@@ -20878,7 +20878,7 @@ input versionsEvent_where_or {
   version__link: versionsEvent_version__link_operator
   version__image: versionsEvent_version__image_operator
   version__isJumpstart: versionsEvent_version__isJumpstart_operator
-  version__jumpstartCategory: versionsEvent_version__jumpstartCategory_operator
+  version__category: versionsEvent_version__category_operator
   version__sortOrder: versionsEvent_version__sortOrder_operator
   version__mapsUrl: versionsEvent_version__mapsUrl_operator
   version__latitude: versionsEvent_version__latitude_operator
@@ -22543,7 +22543,9 @@ type WordleScore {
   displayName: String!
   date: String!
   solved: Boolean!
+  completed: Boolean!
   guesses: Float!
+  answer: String
   attempts: [WordleScore_Attempts!]
   updatedAt: DateTime
   createdAt: DateTime
@@ -22551,6 +22553,7 @@ type WordleScore {
 
 type WordleScore_Attempts {
   guess: String
+  statuses: String
   id: String
 }
 
@@ -22573,8 +22576,11 @@ input WordleScore_where {
   displayName: WordleScore_displayName_operator
   date: WordleScore_date_operator
   solved: WordleScore_solved_operator
+  completed: WordleScore_completed_operator
   guesses: WordleScore_guesses_operator
+  answer: WordleScore_answer_operator
   attempts__guess: WordleScore_attempts__guess_operator
+  attempts__statuses: WordleScore_attempts__statuses_operator
   attempts__id: WordleScore_attempts__id_operator
   updatedAt: WordleScore_updatedAt_operator
   createdAt: WordleScore_createdAt_operator
@@ -22616,6 +22622,11 @@ input WordleScore_solved_operator {
   not_equals: Boolean
 }
 
+input WordleScore_completed_operator {
+  equals: Boolean
+  not_equals: Boolean
+}
+
 input WordleScore_guesses_operator {
   equals: Float
   not_equals: Float
@@ -22625,7 +22636,29 @@ input WordleScore_guesses_operator {
   less_than: Float
 }
 
+input WordleScore_answer_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
 input WordleScore_attempts__guess_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input WordleScore_attempts__statuses_operator {
   equals: String
   not_equals: String
   like: String
@@ -22685,8 +22718,11 @@ input WordleScore_where_and {
   displayName: WordleScore_displayName_operator
   date: WordleScore_date_operator
   solved: WordleScore_solved_operator
+  completed: WordleScore_completed_operator
   guesses: WordleScore_guesses_operator
+  answer: WordleScore_answer_operator
   attempts__guess: WordleScore_attempts__guess_operator
+  attempts__statuses: WordleScore_attempts__statuses_operator
   attempts__id: WordleScore_attempts__id_operator
   updatedAt: WordleScore_updatedAt_operator
   createdAt: WordleScore_createdAt_operator
@@ -22700,8 +22736,11 @@ input WordleScore_where_or {
   displayName: WordleScore_displayName_operator
   date: WordleScore_date_operator
   solved: WordleScore_solved_operator
+  completed: WordleScore_completed_operator
   guesses: WordleScore_guesses_operator
+  answer: WordleScore_answer_operator
   attempts__guess: WordleScore_attempts__guess_operator
+  attempts__statuses: WordleScore_attempts__statuses_operator
   attempts__id: WordleScore_attempts__id_operator
   updatedAt: WordleScore_updatedAt_operator
   createdAt: WordleScore_createdAt_operator
@@ -22727,7 +22766,9 @@ type WordleScoresDocAccessFields {
   displayName: WordleScoresDocAccessFields_displayName
   date: WordleScoresDocAccessFields_date
   solved: WordleScoresDocAccessFields_solved
+  completed: WordleScoresDocAccessFields_completed
   guesses: WordleScoresDocAccessFields_guesses
+  answer: WordleScoresDocAccessFields_answer
   attempts: WordleScoresDocAccessFields_attempts
   updatedAt: WordleScoresDocAccessFields_updatedAt
   createdAt: WordleScoresDocAccessFields_createdAt
@@ -22825,6 +22866,29 @@ type WordleScoresDocAccessFields_solved_Delete {
   permission: Boolean!
 }
 
+type WordleScoresDocAccessFields_completed {
+  create: WordleScoresDocAccessFields_completed_Create
+  read: WordleScoresDocAccessFields_completed_Read
+  update: WordleScoresDocAccessFields_completed_Update
+  delete: WordleScoresDocAccessFields_completed_Delete
+}
+
+type WordleScoresDocAccessFields_completed_Create {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_completed_Read {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_completed_Update {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_completed_Delete {
+  permission: Boolean!
+}
+
 type WordleScoresDocAccessFields_guesses {
   create: WordleScoresDocAccessFields_guesses_Create
   read: WordleScoresDocAccessFields_guesses_Read
@@ -22845,6 +22909,29 @@ type WordleScoresDocAccessFields_guesses_Update {
 }
 
 type WordleScoresDocAccessFields_guesses_Delete {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_answer {
+  create: WordleScoresDocAccessFields_answer_Create
+  read: WordleScoresDocAccessFields_answer_Read
+  update: WordleScoresDocAccessFields_answer_Update
+  delete: WordleScoresDocAccessFields_answer_Delete
+}
+
+type WordleScoresDocAccessFields_answer_Create {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_answer_Read {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_answer_Update {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_answer_Delete {
   permission: Boolean!
 }
 
@@ -22874,6 +22961,7 @@ type WordleScoresDocAccessFields_attempts_Delete {
 
 type WordleScoresDocAccessFields_attempts_Fields {
   guess: WordleScoresDocAccessFields_attempts_guess
+  statuses: WordleScoresDocAccessFields_attempts_statuses
   id: WordleScoresDocAccessFields_attempts_id
 }
 
@@ -22897,6 +22985,29 @@ type WordleScoresDocAccessFields_attempts_guess_Update {
 }
 
 type WordleScoresDocAccessFields_attempts_guess_Delete {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_attempts_statuses {
+  create: WordleScoresDocAccessFields_attempts_statuses_Create
+  read: WordleScoresDocAccessFields_attempts_statuses_Read
+  update: WordleScoresDocAccessFields_attempts_statuses_Update
+  delete: WordleScoresDocAccessFields_attempts_statuses_Delete
+}
+
+type WordleScoresDocAccessFields_attempts_statuses_Create {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_attempts_statuses_Read {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_attempts_statuses_Update {
+  permission: Boolean!
+}
+
+type WordleScoresDocAccessFields_attempts_statuses_Delete {
   permission: Boolean!
 }
 
@@ -34733,7 +34844,7 @@ type EventsFields {
   link: EventsFields_link
   image: EventsFields_image
   isJumpstart: EventsFields_isJumpstart
-  jumpstartCategory: EventsFields_jumpstartCategory
+  category: EventsFields_category
   sortOrder: EventsFields_sortOrder
   mapsUrl: EventsFields_mapsUrl
   latitude: EventsFields_latitude
@@ -34952,26 +35063,26 @@ type EventsFields_isJumpstart_Delete {
   permission: Boolean!
 }
 
-type EventsFields_jumpstartCategory {
-  create: EventsFields_jumpstartCategory_Create
-  read: EventsFields_jumpstartCategory_Read
-  update: EventsFields_jumpstartCategory_Update
-  delete: EventsFields_jumpstartCategory_Delete
+type EventsFields_category {
+  create: EventsFields_category_Create
+  read: EventsFields_category_Read
+  update: EventsFields_category_Update
+  delete: EventsFields_category_Delete
 }
 
-type EventsFields_jumpstartCategory_Create {
+type EventsFields_category_Create {
   permission: Boolean!
 }
 
-type EventsFields_jumpstartCategory_Read {
+type EventsFields_category_Read {
   permission: Boolean!
 }
 
-type EventsFields_jumpstartCategory_Update {
+type EventsFields_category_Update {
   permission: Boolean!
 }
 
-type EventsFields_jumpstartCategory_Delete {
+type EventsFields_category_Delete {
   permission: Boolean!
 }
 
@@ -36192,7 +36303,9 @@ type WordleScoresFields {
   displayName: WordleScoresFields_displayName
   date: WordleScoresFields_date
   solved: WordleScoresFields_solved
+  completed: WordleScoresFields_completed
   guesses: WordleScoresFields_guesses
+  answer: WordleScoresFields_answer
   attempts: WordleScoresFields_attempts
   updatedAt: WordleScoresFields_updatedAt
   createdAt: WordleScoresFields_createdAt
@@ -36290,6 +36403,29 @@ type WordleScoresFields_solved_Delete {
   permission: Boolean!
 }
 
+type WordleScoresFields_completed {
+  create: WordleScoresFields_completed_Create
+  read: WordleScoresFields_completed_Read
+  update: WordleScoresFields_completed_Update
+  delete: WordleScoresFields_completed_Delete
+}
+
+type WordleScoresFields_completed_Create {
+  permission: Boolean!
+}
+
+type WordleScoresFields_completed_Read {
+  permission: Boolean!
+}
+
+type WordleScoresFields_completed_Update {
+  permission: Boolean!
+}
+
+type WordleScoresFields_completed_Delete {
+  permission: Boolean!
+}
+
 type WordleScoresFields_guesses {
   create: WordleScoresFields_guesses_Create
   read: WordleScoresFields_guesses_Read
@@ -36310,6 +36446,29 @@ type WordleScoresFields_guesses_Update {
 }
 
 type WordleScoresFields_guesses_Delete {
+  permission: Boolean!
+}
+
+type WordleScoresFields_answer {
+  create: WordleScoresFields_answer_Create
+  read: WordleScoresFields_answer_Read
+  update: WordleScoresFields_answer_Update
+  delete: WordleScoresFields_answer_Delete
+}
+
+type WordleScoresFields_answer_Create {
+  permission: Boolean!
+}
+
+type WordleScoresFields_answer_Read {
+  permission: Boolean!
+}
+
+type WordleScoresFields_answer_Update {
+  permission: Boolean!
+}
+
+type WordleScoresFields_answer_Delete {
   permission: Boolean!
 }
 
@@ -36339,6 +36498,7 @@ type WordleScoresFields_attempts_Delete {
 
 type WordleScoresFields_attempts_Fields {
   guess: WordleScoresFields_attempts_guess
+  statuses: WordleScoresFields_attempts_statuses
   id: WordleScoresFields_attempts_id
 }
 
@@ -36362,6 +36522,29 @@ type WordleScoresFields_attempts_guess_Update {
 }
 
 type WordleScoresFields_attempts_guess_Delete {
+  permission: Boolean!
+}
+
+type WordleScoresFields_attempts_statuses {
+  create: WordleScoresFields_attempts_statuses_Create
+  read: WordleScoresFields_attempts_statuses_Read
+  update: WordleScoresFields_attempts_statuses_Update
+  delete: WordleScoresFields_attempts_statuses_Delete
+}
+
+type WordleScoresFields_attempts_statuses_Create {
+  permission: Boolean!
+}
+
+type WordleScoresFields_attempts_statuses_Read {
+  permission: Boolean!
+}
+
+type WordleScoresFields_attempts_statuses_Update {
+  permission: Boolean!
+}
+
+type WordleScoresFields_attempts_statuses_Delete {
   permission: Boolean!
 }
 
@@ -40338,7 +40521,7 @@ input mutationEventInput {
   link: String
   image: String
   isJumpstart: Boolean
-  jumpstartCategory: Event_jumpstartCategory_MutationInput
+  category: Event_category_MutationInput
   sortOrder: Float
   mapsUrl: String
   latitude: Float
@@ -40350,7 +40533,7 @@ input mutationEventInput {
   _status: Event__status_MutationInput
 }
 
-enum Event_jumpstartCategory_MutationInput {
+enum Event_category_MutationInput {
   welcome
   academic
   social
@@ -40371,7 +40554,7 @@ input mutationEventUpdateInput {
   link: String
   image: String
   isJumpstart: Boolean
-  jumpstartCategory: EventUpdate_jumpstartCategory_MutationInput
+  category: EventUpdate_category_MutationInput
   sortOrder: Float
   mapsUrl: String
   latitude: Float
@@ -40383,7 +40566,7 @@ input mutationEventUpdateInput {
   _status: EventUpdate__status_MutationInput
 }
 
-enum EventUpdate_jumpstartCategory_MutationInput {
+enum EventUpdate_category_MutationInput {
   welcome
   academic
   social
@@ -40506,7 +40689,9 @@ input mutationWordleScoreInput {
   displayName: String!
   date: String!
   solved: Boolean
+  completed: Boolean
   guesses: Float!
+  answer: String
   attempts: [mutationWordleScore_AttemptsInput]
   updatedAt: String
   createdAt: String
@@ -40514,6 +40699,7 @@ input mutationWordleScoreInput {
 
 input mutationWordleScore_AttemptsInput {
   guess: String
+  statuses: String
   id: String
 }
 
@@ -40522,7 +40708,9 @@ input mutationWordleScoreUpdateInput {
   displayName: String
   date: String
   solved: Boolean
+  completed: Boolean
   guesses: Float
+  answer: String
   attempts: [mutationWordleScoreUpdate_AttemptsInput]
   updatedAt: String
   createdAt: String
@@ -40530,6 +40718,7 @@ input mutationWordleScoreUpdateInput {
 
 input mutationWordleScoreUpdate_AttemptsInput {
   guess: String
+  statuses: String
   id: String
 }
 

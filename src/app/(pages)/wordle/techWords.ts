@@ -160,11 +160,16 @@ const TECH_WORDS = [
   'YIELD',
 ]
 
+// The salt keeps the daily word unpredictable from the public source alone.
+// `WORDLE_SECRET` is optional; falling back to `PAYLOAD_SECRET` means no new
+// deployment configuration is strictly required. Only ever read server-side.
+const getDailyWordSalt = (): string => process.env.WORDLE_SECRET || process.env.PAYLOAD_SECRET || ''
+
 export function getDailyWord(): string {
-  const today = new Date().toISOString().split('T')[0]
+  const input = `${new Date().toISOString().split('T')[0]}:${getDailyWordSalt()}`
   let hash = 5381
-  for (let i = 0; i < today.length; i++) {
-    hash = ((hash << 5) + hash + today.charCodeAt(i)) | 0
+  for (let i = 0; i < input.length; i++) {
+    hash = ((hash << 5) + hash + input.charCodeAt(i)) | 0
   }
   return TECH_WORDS[(hash >>> 0) % TECH_WORDS.length]
 }

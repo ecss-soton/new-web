@@ -51,6 +51,29 @@ body {
   color: var(--theme-text);
 }
 
+.page-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: calc(var(--base) * 1.5) var(--gutter-h);
+  min-height: 60vh;
+}
+
+.status-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: calc(var(--base) / 2);
+  text-align: center;
+  color: var(--theme-elevation-600);
+
+  p {
+    margin: 0;
+  }
+}
+
 ::selection {
   background: var(--theme-success-500);
   color: var(--color-base-800);

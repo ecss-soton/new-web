@@ -45,6 +45,7 @@ export const leaderboard: PayloadHandler = async (req, res): Promise<void> => {
   try {
     const scores = await payload.find({
       collection: 'wordle-scores',
+      where: { completed: { equals: true } },
       limit: 0,
     })
 

@@ -35,7 +35,7 @@ export const stats: PayloadHandler = async (req, res): Promise<void> => {
 
     const scores = await payload.find({
       collection: 'wordle-scores',
-      where: { user: { equals: userId } },
+      where: { and: [{ user: { equals: userId } }, { completed: { equals: true } }] },
       sort: 'date',
       limit: 0,
     })

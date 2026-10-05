@@ -375,6 +375,71 @@
   margin: 0 0 1rem;
 }
 
+.categorySection {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1.25rem;
+}
+
+.categoryLegend {
+  padding: 0;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.categoryHint {
+  margin: 0 0 0.75rem;
+  color: var(--theme-elevation-600);
+  font-size: 0.9rem;
+}
+
+.categoryChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.categoryChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--theme-elevation-200);
+  border-radius: 999px;
+  background: var(--theme-elevation-50);
+  color: var(--theme-elevation-800);
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    margin: 0;
+    cursor: pointer;
+  }
+
+  &:focus-within {
+    outline: 2px solid var(--theme-elevation-1000);
+    outline-offset: 2px;
+  }
+}
+
+.categoryChipActive {
+  background: var(--theme-elevation-1000);
+  border-color: var(--theme-elevation-1000);
+  color: var(--theme-bg);
+}
+
+.categoryClear {
+  margin-top: 0.75rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--theme-elevation-600);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .instructionSection {
   display: grid;
   gap: 0.75rem;
