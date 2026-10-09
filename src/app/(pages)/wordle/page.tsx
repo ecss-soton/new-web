@@ -4,7 +4,6 @@ import { Metadata } from 'next'
 import { Gutter } from '../../_components/Gutter'
 import { LowImpactHero } from '../../_heros/LowImpact'
 import { getMeUser } from '../../_utilities/getMeUser'
-import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
 import { getPuzzleNumber, getTodayDate } from './techWords'
 import { WordleGame } from './WordleGame'
 
@@ -77,8 +76,6 @@ export default async function WordlePage() {
 export const metadata: Metadata = {
   title: 'ECSSle',
   description: 'A daily tech-themed word puzzle for ECSS members.',
-  openGraph: mergeOpenGraph({
-    title: 'ECSSle',
-    url: '/wordle',
-  }),
+  openGraph: null,
+  twitter: null,
 }

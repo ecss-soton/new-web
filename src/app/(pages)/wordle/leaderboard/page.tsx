@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { Gutter } from '../../../_components/Gutter'
 import { LowImpactHero } from '../../../_heros/LowImpact'
 import { getMeUser } from '../../../_utilities/getMeUser'
-import { mergeOpenGraph } from '../../../_utilities/mergeOpenGraph'
 import { type LeaderboardEntry, LeaderboardTable } from './LeaderboardTable'
 
 import classes from './index.module.scss'
@@ -49,8 +48,6 @@ export default async function LeaderboardPage() {
 export const metadata: Metadata = {
   title: 'ECSSle Leaderboard',
   description: 'See how you rank against other ECSSle players.',
-  openGraph: mergeOpenGraph({
-    title: 'ECSSle Leaderboard',
-    url: '/wordle/leaderboard',
-  }),
+  openGraph: null,
+  twitter: null,
 }
