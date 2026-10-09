@@ -1,0 +1,24 @@
+.sectionRule {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0;
+  border-top: 4px solid var(--news-ink);
+  border-bottom: 1px solid var(--news-ink);
+}
+
+.heading {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  letter-spacing: 0.04em;
+  color: var(--news-ink);
+}
+
+.subheading {
+  margin: 0;
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--news-muted);
+}

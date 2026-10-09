@@ -2,6 +2,7 @@ import type { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 
 import type { Config } from '../../payload/payload-types'
 import { EVENTS } from '../_graphql/events'
+import { NEWSLETTER, NEWSLETTERS } from '../_graphql/newsletters'
 import { PAGE, PAGES } from '../_graphql/pages'
 import { POST, POSTS } from '../_graphql/posts'
 import { PROJECT, PROJECTS } from '../_graphql/projects'
@@ -19,6 +20,7 @@ const singleQueryMap: Record<string, QueryConfig> = {
   pages: { query: PAGE, key: 'Pages' },
   posts: { query: POST, key: 'Posts' },
   projects: { query: PROJECT, key: 'Projects' },
+  newsletters: { query: NEWSLETTER, key: 'Newsletters' },
   societies: { query: SOCIETY, key: 'Societies' },
   sponsors: { query: SPONSOR, key: 'Sponsors' },
 }
@@ -28,6 +30,7 @@ const pluralQueryMap: Record<string, QueryConfig> = {
   pages: { query: PAGES, key: 'Pages' },
   posts: { query: POSTS, key: 'Posts' },
   projects: { query: PROJECTS, key: 'Projects' },
+  newsletters: { query: NEWSLETTERS, key: 'Newsletters' },
   events: { query: EVENTS, key: 'Events' },
   societies: { query: SOCIETIES, key: 'Societies' },
   sponsors: { query: SPONSORS, key: 'Sponsors' },

@@ -1,0 +1,28 @@
+// Newsprint theme for the /news section.
+// Variables are scoped to `.news-page` and adapt to the site's data-theme.
+
+.news-page {
+  --news-ink: var(--theme-text);
+  --news-muted: var(--theme-elevation-550);
+  --news-rule: var(--theme-border-color);
+  --news-rule-strong: var(--theme-elevation-400);
+  --news-paper: var(--theme-bg);
+
+  color: var(--news-ink);
+}
+
+[data-theme='light'] .news-page {
+  --news-paper: #faf8f1;
+  --news-ink: #17150f;
+  --news-muted: #5c574c;
+  --news-rule: rgba(23, 21, 15, 0.28);
+  --news-rule-strong: rgba(23, 21, 15, 0.75);
+}
+
+[data-theme='dark'] .news-page {
+  --news-paper: #16130f;
+  --news-ink: #efe9db;
+  --news-muted: #a49d8d;
+  --news-rule: rgba(239, 233, 219, 0.24);
+  --news-rule-strong: rgba(239, 233, 219, 0.7);
+}

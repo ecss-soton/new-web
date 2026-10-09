@@ -26,6 +26,7 @@ import Events from './collections/Events'
 import { Media } from './collections/Media'
 import { MemberImports } from './collections/MemberImports'
 import Merch from './collections/Merch'
+import { Newsletters } from './collections/Newsletters'
 import Nominations from './collections/Nominations'
 import { Pages } from './collections/Pages'
 import Positions from './collections/Position'
@@ -129,6 +130,7 @@ export default buildConfig({
     Pages,
     Posts,
     Projects,
+    Newsletters,
     Media,
     MemberImports,
     Categories,
@@ -191,7 +193,7 @@ export default buildConfig({
       collections: ['categories'],
     }),
     seo({
-      collections: ['pages', 'posts', 'projects'],
+      collections: ['pages', 'posts', 'projects', 'newsletters'],
       generateTitle,
       uploadsCollection: 'media',
     }),

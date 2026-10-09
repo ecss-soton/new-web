@@ -1,0 +1,102 @@
+.page {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.empty {
+  margin-top: 2rem;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--news-muted);
+}
+
+.archive {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.issue {
+  border: 1px solid var(--news-rule);
+  background: var(--news-paper);
+}
+
+.issueLink {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-bottom: 1px solid var(--news-rule);
+  background: color-mix(in srgb, var(--news-ink) 6%, transparent);
+}
+
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coverPlaceholder {
+  padding: 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--news-muted);
+}
+
+.issueMeta {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1rem 1.1rem 1.3rem;
+}
+
+.issueKicker {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ecss-red);
+}
+
+.issueTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.4rem;
+  line-height: 1.15;
+  color: var(--news-ink);
+}
+
+.issueSummary {
+  flex: 1;
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--news-muted);
+}
+
+.readMore {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--news-ink);
+}
+
+.issueLink:hover .readMore {
+  color: var(--ecss-red);
+}

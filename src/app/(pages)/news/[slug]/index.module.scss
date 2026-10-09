@@ -1,0 +1,24 @@
+.page {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.printEdition {
+  margin-top: 2.5rem;
+  text-align: center;
+}
+
+.printEdition a {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ecss-red);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+
+.printEdition a:hover {
+  opacity: 0.8;
+}

@@ -129,6 +129,8 @@ npm run build
 
 There is no established automated test suite. For election, booking, access-control, or concurrency changes, add focused tests or provide direct API/manual test cases. Test concurrent writes with parallel requests, not only browser clicks.
 
+If local mongod fails, do not attempt to run local versions. Let the user  manually run mongo and verify that Payload works. Do not get stuck in a loop of mongo.
+
 If local dependency installation fails because of Sharp/libvips permissions, do not modify dependency versions as a workaround. Report the environment failure and still run static diagnostics where possible.
 
 ## Change boundaries

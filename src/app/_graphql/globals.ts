@@ -54,6 +54,15 @@ export const SETTINGS = `
       question
       answer
     }
+    newsMastheadTitle
+    newsMastheadEyebrow
+    newsArchiveTagline
+    newsEmptyState
+    newsCoverPlaceholder
+    newsReadIssueLabel
+    newsPrintEditionLabel
+    newsSeoTitle
+    newsSeoDescription
   }
 `
 
