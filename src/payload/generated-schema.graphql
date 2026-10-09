@@ -28421,7 +28421,6 @@ type Settings {
   newsArchiveTagline: String
   newsEmptyState: String
   newsCoverPlaceholder: String
-  newsReadIssueLabel: String
   newsPrintEditionLabel: String
   newsSeoTitle: String
   newsSeoDescription: String
@@ -29214,7 +29213,6 @@ type SettingsDocAccessFields {
   newsArchiveTagline: SettingsDocAccessFields_newsArchiveTagline
   newsEmptyState: SettingsDocAccessFields_newsEmptyState
   newsCoverPlaceholder: SettingsDocAccessFields_newsCoverPlaceholder
-  newsReadIssueLabel: SettingsDocAccessFields_newsReadIssueLabel
   newsPrintEditionLabel: SettingsDocAccessFields_newsPrintEditionLabel
   newsSeoTitle: SettingsDocAccessFields_newsSeoTitle
   newsSeoDescription: SettingsDocAccessFields_newsSeoDescription
@@ -29755,29 +29753,6 @@ type SettingsDocAccessFields_newsCoverPlaceholder_Update {
 }
 
 type SettingsDocAccessFields_newsCoverPlaceholder_Delete {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_newsReadIssueLabel {
-  create: SettingsDocAccessFields_newsReadIssueLabel_Create
-  read: SettingsDocAccessFields_newsReadIssueLabel_Read
-  update: SettingsDocAccessFields_newsReadIssueLabel_Update
-  delete: SettingsDocAccessFields_newsReadIssueLabel_Delete
-}
-
-type SettingsDocAccessFields_newsReadIssueLabel_Create {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_newsReadIssueLabel_Read {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_newsReadIssueLabel_Update {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_newsReadIssueLabel_Delete {
   permission: Boolean!
 }
 
@@ -41383,7 +41358,6 @@ type SettingsFields {
   newsArchiveTagline: SettingsFields_newsArchiveTagline
   newsEmptyState: SettingsFields_newsEmptyState
   newsCoverPlaceholder: SettingsFields_newsCoverPlaceholder
-  newsReadIssueLabel: SettingsFields_newsReadIssueLabel
   newsPrintEditionLabel: SettingsFields_newsPrintEditionLabel
   newsSeoTitle: SettingsFields_newsSeoTitle
   newsSeoDescription: SettingsFields_newsSeoDescription
@@ -41924,29 +41898,6 @@ type SettingsFields_newsCoverPlaceholder_Update {
 }
 
 type SettingsFields_newsCoverPlaceholder_Delete {
-  permission: Boolean!
-}
-
-type SettingsFields_newsReadIssueLabel {
-  create: SettingsFields_newsReadIssueLabel_Create
-  read: SettingsFields_newsReadIssueLabel_Read
-  update: SettingsFields_newsReadIssueLabel_Update
-  delete: SettingsFields_newsReadIssueLabel_Delete
-}
-
-type SettingsFields_newsReadIssueLabel_Create {
-  permission: Boolean!
-}
-
-type SettingsFields_newsReadIssueLabel_Read {
-  permission: Boolean!
-}
-
-type SettingsFields_newsReadIssueLabel_Update {
-  permission: Boolean!
-}
-
-type SettingsFields_newsReadIssueLabel_Delete {
   permission: Boolean!
 }
 
@@ -44386,7 +44337,6 @@ input mutationSettingsInput {
   newsArchiveTagline: String
   newsEmptyState: String
   newsCoverPlaceholder: String
-  newsReadIssueLabel: String
   newsPrintEditionLabel: String
   newsSeoTitle: String
   newsSeoDescription: String

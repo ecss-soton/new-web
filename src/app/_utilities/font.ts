@@ -1,10 +1,9 @@
 import {
+  Bricolage_Grotesque,
   Bungee,
   Inter,
   Permanent_Marker,
-  Playfair_Display_SC,
   Rubik_Mono_One,
-  Source_Serif_4,
 } from 'next/font/google'
 
 export const inter = Inter({
@@ -13,16 +12,10 @@ export const inter = Inter({
   style: ['normal'],
 })
 
-export const playfair = Playfair_Display_SC({
+export const bricolage = Bricolage_Grotesque({
   subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: 'variable',
   style: ['normal'],
-})
-
-export const sourceSerif = Source_Serif_4({
-  subsets: ['latin'],
-  weight: ['400', '600'],
-  style: ['normal', 'italic'],
 })
 
 export const permanentMarker = Permanent_Marker({

@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 
-import { playfair } from '../../_utilities/font'
+import { bricolage } from '../../_utilities/font'
 
 import classes from './Masthead.module.scss'
 
@@ -30,7 +30,7 @@ export const Masthead: React.FC<Props> = ({
   return (
     <header className={classes.masthead}>
       <p className={classes.above}>{eyebrow}</p>
-      <h1 className={[classes.title, playfair.className].join(' ')}>
+      <h1 className={[classes.title, bricolage.className].join(' ')}>
         {href ? <Link href={href}>{title}</Link> : title}
       </h1>
       {hasIssueLine && (

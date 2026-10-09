@@ -202,12 +202,6 @@ export const Settings: GlobalConfig = {
               defaultValue: 'ECSS Times',
             },
             {
-              name: 'newsReadIssueLabel',
-              type: 'text',
-              label: '"Read issue" label',
-              defaultValue: 'Read issue',
-            },
-            {
               name: 'newsPrintEditionLabel',
               type: 'text',
               label: 'Print edition link label',

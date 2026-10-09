@@ -59,7 +59,6 @@ export const SETTINGS = `
     newsArchiveTagline
     newsEmptyState
     newsCoverPlaceholder
-    newsReadIssueLabel
     newsPrintEditionLabel
     newsSeoTitle
     newsSeoDescription

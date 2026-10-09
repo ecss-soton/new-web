@@ -1692,7 +1692,6 @@ export interface Settings {
   newsArchiveTagline?: string | null;
   newsEmptyState?: string | null;
   newsCoverPlaceholder?: string | null;
-  newsReadIssueLabel?: string | null;
   newsPrintEditionLabel?: string | null;
   newsSeoTitle?: string | null;
   newsSeoDescription?: string | null;

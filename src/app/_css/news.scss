@@ -12,17 +12,17 @@
 }
 
 [data-theme='light'] .news-page {
-  --news-paper: #faf8f1;
-  --news-ink: #17150f;
-  --news-muted: #5c574c;
-  --news-rule: rgba(23, 21, 15, 0.28);
+  --news-paper: #f5f5f5;
+  --news-ink: #0d0c09;
+  --news-muted: #3b3934;
+  --news-rule: rgba(0, 0, 0, 0.28);
   --news-rule-strong: rgba(23, 21, 15, 0.75);
 }
 
 [data-theme='dark'] .news-page {
-  --news-paper: #16130f;
-  --news-ink: #efe9db;
-  --news-muted: #a49d8d;
-  --news-rule: rgba(239, 233, 219, 0.24);
-  --news-rule-strong: rgba(239, 233, 219, 0.7);
+  --news-paper: #000000;
+  --news-ink: #f1f1f1;
+  --news-muted: #d3d3d3;
+  --news-rule: rgba(63, 63, 63, 0.24);
+  --news-rule-strong: rgba(240, 240, 240, 0.7);
 }
