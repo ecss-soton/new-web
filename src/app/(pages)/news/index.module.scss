@@ -87,16 +87,3 @@
   line-height: 1.5;
   color: var(--news-muted);
 }
-
-.readMore {
-  font-family: var(--font-body);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--news-ink);
-}
-
-.issueLink:hover .readMore {
-  color: var(--ecss-red);
-}
