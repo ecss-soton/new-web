@@ -215,6 +215,55 @@ export const SUMMER_PARTY_BLOCK = `
 }
 `
 
+export const ARTICLE = `
+...on Article {
+  blockType
+  headline
+  byline
+  body
+  image {
+    ${MEDIA_FIELDS}
+  }
+  imagePosition
+  articleSpan
+  featured
+}
+`
+
+export const FIGURE = `
+...on Figure {
+  blockType
+  image {
+    ${MEDIA_FIELDS}
+  }
+  caption
+  figureSpan
+}
+`
+
+export const BRIEFS = `
+...on Briefs {
+  blockType
+  heading
+  entries {
+    title
+    text
+    url
+    linkLabel
+  }
+  briefsSpan
+}
+`
+
+export const SECTION_RULE = `
+...on SectionRule {
+  blockType
+  heading
+  subheading
+  sectionRuleSpan
+}
+`
+
 export const HERO_FIELDS = `
 hero {
   type

@@ -1,7 +1,7 @@
 import type { Field } from 'payload/types'
 
 import deepMerge from '../utilities/deepMerge'
-import { isHTTPS } from '../validate/isHTTPS'
+import { isInternalOrHTTPS } from '../validate/isInternalOrHTTPS'
 
 export const appearanceOptions = {
   primary: {
@@ -89,9 +89,10 @@ const link: LinkType = ({ appearances, disableLabel = false, overrides = {} } = 
       label: 'Custom URL',
       type: 'text',
       required: true,
-      validate: isHTTPS,
+      validate: isInternalOrHTTPS,
       admin: {
         condition: (_, siblingData) => siblingData?.type === 'custom',
+        description: 'An internal /path (e.g. /news) or a full https:// URL.',
       },
     },
   ]

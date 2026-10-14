@@ -1,0 +1,79 @@
+.article {
+  break-inside: avoid;
+}
+
+.featured .headline {
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  letter-spacing: -0.02em;
+}
+
+.kicker {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ecss-red);
+}
+
+.headline {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--news-ink);
+}
+
+.byline {
+  margin: 0 0 1rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--news-ink);
+}
+
+.figure {
+  margin: 0 0 1rem;
+}
+
+.figure img {
+  width: 100%;
+}
+
+.figure--left {
+  float: left;
+  width: 45%;
+  margin: 0.25rem 1rem 0.75rem 0;
+}
+
+.figure--right {
+  float: right;
+  width: 45%;
+  margin: 0.25rem 0 0.75rem 1rem;
+}
+
+.body {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--news-ink);
+}
+
+.featured .body p:first-child::first-letter {
+  float: left;
+  padding-right: 0.4rem;
+  font-size: 3.4rem;
+  font-weight: 700;
+  line-height: 0.8;
+}
+
+@media (max-width: 600px) {
+  .figure--left,
+  .figure--right {
+    float: none;
+    width: 100%;
+    margin: 0 0 1rem;
+  }
+}

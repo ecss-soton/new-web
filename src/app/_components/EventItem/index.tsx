@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import moment from 'moment-timezone'
 import Image from 'next/image'
-import Link from 'next/link'
 
 import { Event, Media } from '../../../payload/payload-types'
 import { inter } from '../../_utilities/font'
 import { getMonthName } from '../../_utilities/getMonthName'
+import { EventLinks } from '../EventLinks'
 import RichText from '../RichText'
 import { InterestedButton } from './InterestedButton'
 
@@ -32,7 +32,7 @@ export const EventItem: React.FC<{
   event?: Event
   onEventClick?: (event: Event | null) => void // Kept for backwards compatibility but not really needed
 }> = ({ event }) => {
-  const { name, date, location, description, link, image } = event || {}
+  const { name, date, location, description, image } = event || {}
   const [isExpanded, setIsExpanded] = useState(false)
 
   const localDate = date ? moment.utc(date).tz('Europe/London').format('YYYY-MM-DD HH:mm') : null
@@ -160,18 +160,12 @@ export const EventItem: React.FC<{
             </div>
           )}
 
-          {link && (
-            <div className={classes.actions}>
-              <Link
-                href={link}
-                className={classes.linkButton}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Event Link
-              </Link>
-            </div>
-          )}
+          <EventLinks
+            event={event}
+            wrapperClassName={classes.actions}
+            linkClassName={classes.linkButton}
+            discordCountClassName={classes.discordCount}
+          />
         </div>
       </div>
     </div>

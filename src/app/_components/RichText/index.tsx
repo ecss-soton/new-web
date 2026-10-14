@@ -5,13 +5,17 @@ import serialize from './serialize'
 
 import classes from './index.module.scss'
 
-const RichText: React.FC<{ className?: string; content: any }> = ({ className, content }) => {
+const RichText: React.FC<{
+  className?: string
+  content: any
+  fontClassName?: string
+}> = ({ className, content, fontClassName = inter.className }) => {
   if (!content) {
     return null
   }
 
   return (
-    <div className={[classes.richText, className, inter.className].filter(Boolean).join(' ')}>
+    <div className={[classes.richText, className, fontClassName].filter(Boolean).join(' ')}>
       {serialize(content)}
     </div>
   )

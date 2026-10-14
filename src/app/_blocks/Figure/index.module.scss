@@ -1,0 +1,16 @@
+.figure {
+  margin: 0;
+}
+
+.imageWrap img {
+  width: 100%;
+}
+
+.caption {
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--news-rule);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--news-muted);
+}

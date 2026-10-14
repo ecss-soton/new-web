@@ -11,6 +11,7 @@ export interface Config {
     pages: Page;
     posts: Post;
     projects: Project;
+    newsletters: Newsletter;
     media: Media;
     'member-imports': MemberImport;
     categories: Category;
@@ -771,6 +772,13 @@ export interface Event {
   longitude?: number | null;
   interestedCount?: number | null;
   interestedUsers?: (string | User)[] | null;
+  lumaUrl?: string | null;
+  discordUrl?: string | null;
+  discordGuildId?: string | null;
+  discordEventId?: string | null;
+  discordInterestedCount?: number | null;
+  discordLastSyncedAt?: string | null;
+  discordSyncError?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -1105,6 +1113,76 @@ export interface Merch {
   link: string;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletters".
+ */
+export interface Newsletter {
+  id: string;
+  title: string;
+  issueNumber?: number | null;
+  publishedAt?: string | null;
+  summary?: string | null;
+  coverImage?: string | Media | null;
+  printEdition?: string | Media | null;
+  layout: (
+    | {
+        headline: string;
+        byline?: string | null;
+        body: {
+          [k: string]: unknown;
+        }[];
+        image?: string | Media | null;
+        imagePosition?: ('top' | 'left' | 'right') | null;
+        articleSpan?: ('full' | 'twoThirds' | 'half' | 'oneThird') | null;
+        featured?: boolean | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'article';
+      }
+    | {
+        image: string | Media;
+        caption?: string | null;
+        figureSpan?: ('full' | 'twoThirds' | 'half' | 'oneThird') | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'figure';
+      }
+    | {
+        heading: string;
+        entries?:
+          | {
+              title?: string | null;
+              text?: string | null;
+              url?: string | null;
+              linkLabel?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        briefsSpan?: ('full' | 'twoThirds' | 'half' | 'oneThird') | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'briefs';
+      }
+    | {
+        heading: string;
+        subheading?: string | null;
+        sectionRuleSpan?: ('full' | 'twoThirds' | 'half' | 'oneThird') | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'sectionRule';
+      }
+  )[];
+  slug?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: string | Media | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1616,6 +1694,14 @@ export interface Settings {
         id?: string | null;
       }[]
     | null;
+  newsMastheadTitle?: string | null;
+  newsMastheadEyebrow?: string | null;
+  newsArchiveTagline?: string | null;
+  newsEmptyState?: string | null;
+  newsCoverPlaceholder?: string | null;
+  newsPrintEditionLabel?: string | null;
+  newsSeoTitle?: string | null;
+  newsSeoDescription?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }

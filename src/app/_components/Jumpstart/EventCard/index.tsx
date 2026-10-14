@@ -5,10 +5,10 @@ import moment from 'moment-timezone'
 
 import type { Event } from '../../../../payload/payload-types'
 import { type EventCategory, isEventCategory } from '../../../../utilities/eventCategories'
+import { EventLinks } from '../../../_components/EventLinks'
 import { Media } from '../../../_components/Media'
 import RichText from '../../../_components/RichText'
 import { bungee, inter } from '../../../_utilities/font'
-import { getSafeHref } from '../../../_utilities/getSafeHref'
 
 import classes from './index.module.scss'
 
@@ -53,11 +53,9 @@ function getDescriptionLength(desc: unknown): number {
 }
 
 export const JumpstartEventCard: React.FC<Props> = ({ event, index }) => {
-  const { name, date, endTime, location, description, mapsUrl, link, image, category } = event
+  const { name, date, endTime, location, description, mapsUrl, image, category } = event
 
   const [isExpanded, setIsExpanded] = useState(false)
-
-  const safeLink = getSafeHref(link)
 
   const catKey = isEventCategory(category) ? category : null
   const catColor = catKey ? CATEGORY_COLORS[catKey] : 'var(--jumpstart-neon-magenta)'
@@ -121,16 +119,12 @@ export const JumpstartEventCard: React.FC<Props> = ({ event, index }) => {
               GET ME THERE
             </a>
           )}
-          {safeLink && (
-            <a
-              href={safeLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={[classes.linkButton, bungee.className].join(' ')}
-            >
-              EVENT LINK
-            </a>
-          )}
+          <EventLinks
+            event={event}
+            linkClassName={[classes.linkButton, bungee.className].join(' ')}
+            labels={{ link: 'EVENT LINK', luma: 'LUMA', discord: 'DISCORD' }}
+            discordCountClassName={classes.discordCount}
+          />
         </div>
       </div>
     </div>

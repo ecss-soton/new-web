@@ -1,16 +1,19 @@
 import type { Metadata } from 'next'
 
-import type { Page, Post, Project } from '../../payload/payload-types'
+import type { Media, Newsletter, Page, Post, Project } from '../../payload/payload-types'
 import { mergeOpenGraph } from './mergeOpenGraph'
 
-export const generateMeta = async (args: { doc: Page | Project | Post }): Promise<Metadata> => {
-  const { doc } = args || {}
+export const generateMeta = async (args: {
+  doc: Newsletter | Page | Project | Post
+  fallbackImage?: string | Media | null
+}): Promise<Metadata> => {
+  const { doc, fallbackImage } = args || {}
 
-  const ogImage =
-    typeof doc?.meta?.image === 'object' &&
-    doc?.meta?.image !== null &&
-    'url' in doc?.meta?.image &&
-    `${process.env.NEXT_PUBLIC_SERVER_URL}${doc.meta.image.url}`
+  const image = doc?.meta?.image ?? fallbackImage
+  const imageUrl =
+    typeof image === 'object' && image !== null && 'url' in image ? image.url : undefined
+
+  const ogImage = imageUrl ? `${process.env.NEXT_PUBLIC_SERVER_URL}${imageUrl}` : undefined
 
   return {
     title: doc?.meta?.title || 'Payload',

@@ -25,12 +25,12 @@ export const revalidate = async (args: {
   }
 }
 
-export const revalidateGlobal = async (args: {
+export const revalidateTag = async (args: {
   tag: string
-  globalLabel: string
   payload: Payload
+  label?: string
 }): Promise<void> => {
-  const { tag, globalLabel, payload } = args
+  const { tag, payload, label = tag } = args
 
   try {
     const res = await fetch(
@@ -38,16 +38,31 @@ export const revalidateGlobal = async (args: {
     )
 
     if (res.ok) {
-      payload.logger.info(`Revalidated global '${globalLabel}' (tag: ${tag})`)
+      payload.logger.info(`Revalidated '${label}' (tag: ${tag})`)
     } else {
-      payload.logger.error(
-        `Error revalidating global '${globalLabel}' (tag: ${tag}): ${res.status}`,
-      )
+      payload.logger.error(`Error revalidating '${label}' (tag: ${tag}):` + res.status)
     }
   } catch (err: unknown) {
-    payload.logger.error(
-      `Error hitting revalidate route for global '${globalLabel}' (tag: ${tag}): ${err}`,
-    )
+    payload.logger.error(`Error hitting revalidate route for '${label}' (tag: ${tag}): ${err}`)
+  }
+}
+
+export const revalidateGlobal = async (args: {
+  tag: string
+  globalLabel: string
+  payload: Payload
+}): Promise<void> => {
+  const { tag, globalLabel, payload } = args
+  return revalidateTag({ tag, payload, label: `global '${globalLabel}'` })
+}
+
+// Revalidates a plain tag (e.g. a collection archive listing) after a document is published.
+export const createRevalidateTagHook = (tag: string, label?: string): AfterChangeHook => {
+  return ({ doc, req: { payload } }) => {
+    if (doc._status === 'published') {
+      revalidateTag({ tag, payload, label })
+    }
+    return doc
   }
 }
 

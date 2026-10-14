@@ -221,6 +221,15 @@
   margin-top: 1rem;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.discordCount {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--theme-elevation-700);
 }
 
 .linkButton {

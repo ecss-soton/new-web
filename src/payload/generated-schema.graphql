@@ -17,6 +17,12 @@ type Query {
   docAccessProject(id: String!): projectsDocAccess
   versionProject(id: String): ProjectVersion
   versionsProjects(where: versionsProject_where, limit: Int, page: Int, sort: String): versionsProjects
+  Newsletter(id: String!, draft: Boolean): Newsletter
+  Newsletters(draft: Boolean, where: Newsletter_where, limit: Int, page: Int, sort: String): Newsletters
+  countNewsletters(draft: Boolean, where: Newsletter_where): countNewsletters
+  docAccessNewsletter(id: String!): newslettersDocAccess
+  versionNewsletter(id: String): NewsletterVersion
+  versionsNewsletters(where: versionsNewsletter_where, limit: Int, page: Int, sort: String): versionsNewsletters
   Media(id: String!): Media
   allMedia(where: Media_where, limit: Int, page: Int, sort: String): allMedia
   countallMedia(where: Media_where): countallMedia
@@ -838,6 +844,13 @@ type Event {
   longitude: Float
   interestedCount: Float
   interestedUsers: [User!]
+  lumaUrl: String
+  discordUrl: String
+  discordGuildId: String
+  discordEventId: String
+  discordInterestedCount: Float
+  discordLastSyncedAt: DateTime
+  discordSyncError: String
   updatedAt: DateTime
   createdAt: DateTime
   _status: Event__status
@@ -10999,6 +11012,2522 @@ input versionsProject_where_or {
   OR: [versionsProject_where_or]
 }
 
+type Newsletter {
+  id: String
+  title: String
+  issueNumber: Float
+  publishedAt: DateTime
+  summary: String
+  coverImage(where: Newsletter_CoverImage_where): Media
+  printEdition(where: Newsletter_PrintEdition_where): Media
+  layout: [Newsletter_Layout!]!
+  slug: String
+  meta: Newsletter_Meta
+  updatedAt: DateTime
+  createdAt: DateTime
+  _status: Newsletter__status
+}
+
+input Newsletter_CoverImage_where {
+  alt: Newsletter_CoverImage_alt_operator
+  caption: Newsletter_CoverImage_caption_operator
+  updatedAt: Newsletter_CoverImage_updatedAt_operator
+  createdAt: Newsletter_CoverImage_createdAt_operator
+  url: Newsletter_CoverImage_url_operator
+  filename: Newsletter_CoverImage_filename_operator
+  mimeType: Newsletter_CoverImage_mimeType_operator
+  filesize: Newsletter_CoverImage_filesize_operator
+  width: Newsletter_CoverImage_width_operator
+  height: Newsletter_CoverImage_height_operator
+  focalX: Newsletter_CoverImage_focalX_operator
+  focalY: Newsletter_CoverImage_focalY_operator
+  id: Newsletter_CoverImage_id_operator
+  AND: [Newsletter_CoverImage_where_and]
+  OR: [Newsletter_CoverImage_where_or]
+}
+
+input Newsletter_CoverImage_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Newsletter_CoverImage_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Newsletter_CoverImage_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Newsletter_CoverImage_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Newsletter_CoverImage_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_CoverImage_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_CoverImage_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_CoverImage_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_CoverImage_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_CoverImage_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_CoverImage_focalX_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_CoverImage_focalY_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_CoverImage_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_CoverImage_where_and {
+  alt: Newsletter_CoverImage_alt_operator
+  caption: Newsletter_CoverImage_caption_operator
+  updatedAt: Newsletter_CoverImage_updatedAt_operator
+  createdAt: Newsletter_CoverImage_createdAt_operator
+  url: Newsletter_CoverImage_url_operator
+  filename: Newsletter_CoverImage_filename_operator
+  mimeType: Newsletter_CoverImage_mimeType_operator
+  filesize: Newsletter_CoverImage_filesize_operator
+  width: Newsletter_CoverImage_width_operator
+  height: Newsletter_CoverImage_height_operator
+  focalX: Newsletter_CoverImage_focalX_operator
+  focalY: Newsletter_CoverImage_focalY_operator
+  id: Newsletter_CoverImage_id_operator
+  AND: [Newsletter_CoverImage_where_and]
+  OR: [Newsletter_CoverImage_where_or]
+}
+
+input Newsletter_CoverImage_where_or {
+  alt: Newsletter_CoverImage_alt_operator
+  caption: Newsletter_CoverImage_caption_operator
+  updatedAt: Newsletter_CoverImage_updatedAt_operator
+  createdAt: Newsletter_CoverImage_createdAt_operator
+  url: Newsletter_CoverImage_url_operator
+  filename: Newsletter_CoverImage_filename_operator
+  mimeType: Newsletter_CoverImage_mimeType_operator
+  filesize: Newsletter_CoverImage_filesize_operator
+  width: Newsletter_CoverImage_width_operator
+  height: Newsletter_CoverImage_height_operator
+  focalX: Newsletter_CoverImage_focalX_operator
+  focalY: Newsletter_CoverImage_focalY_operator
+  id: Newsletter_CoverImage_id_operator
+  AND: [Newsletter_CoverImage_where_and]
+  OR: [Newsletter_CoverImage_where_or]
+}
+
+input Newsletter_PrintEdition_where {
+  alt: Newsletter_PrintEdition_alt_operator
+  caption: Newsletter_PrintEdition_caption_operator
+  updatedAt: Newsletter_PrintEdition_updatedAt_operator
+  createdAt: Newsletter_PrintEdition_createdAt_operator
+  url: Newsletter_PrintEdition_url_operator
+  filename: Newsletter_PrintEdition_filename_operator
+  mimeType: Newsletter_PrintEdition_mimeType_operator
+  filesize: Newsletter_PrintEdition_filesize_operator
+  width: Newsletter_PrintEdition_width_operator
+  height: Newsletter_PrintEdition_height_operator
+  focalX: Newsletter_PrintEdition_focalX_operator
+  focalY: Newsletter_PrintEdition_focalY_operator
+  id: Newsletter_PrintEdition_id_operator
+  AND: [Newsletter_PrintEdition_where_and]
+  OR: [Newsletter_PrintEdition_where_or]
+}
+
+input Newsletter_PrintEdition_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Newsletter_PrintEdition_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Newsletter_PrintEdition_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Newsletter_PrintEdition_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Newsletter_PrintEdition_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_PrintEdition_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_PrintEdition_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_PrintEdition_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_PrintEdition_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_PrintEdition_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_PrintEdition_focalX_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_PrintEdition_focalY_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_PrintEdition_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_PrintEdition_where_and {
+  alt: Newsletter_PrintEdition_alt_operator
+  caption: Newsletter_PrintEdition_caption_operator
+  updatedAt: Newsletter_PrintEdition_updatedAt_operator
+  createdAt: Newsletter_PrintEdition_createdAt_operator
+  url: Newsletter_PrintEdition_url_operator
+  filename: Newsletter_PrintEdition_filename_operator
+  mimeType: Newsletter_PrintEdition_mimeType_operator
+  filesize: Newsletter_PrintEdition_filesize_operator
+  width: Newsletter_PrintEdition_width_operator
+  height: Newsletter_PrintEdition_height_operator
+  focalX: Newsletter_PrintEdition_focalX_operator
+  focalY: Newsletter_PrintEdition_focalY_operator
+  id: Newsletter_PrintEdition_id_operator
+  AND: [Newsletter_PrintEdition_where_and]
+  OR: [Newsletter_PrintEdition_where_or]
+}
+
+input Newsletter_PrintEdition_where_or {
+  alt: Newsletter_PrintEdition_alt_operator
+  caption: Newsletter_PrintEdition_caption_operator
+  updatedAt: Newsletter_PrintEdition_updatedAt_operator
+  createdAt: Newsletter_PrintEdition_createdAt_operator
+  url: Newsletter_PrintEdition_url_operator
+  filename: Newsletter_PrintEdition_filename_operator
+  mimeType: Newsletter_PrintEdition_mimeType_operator
+  filesize: Newsletter_PrintEdition_filesize_operator
+  width: Newsletter_PrintEdition_width_operator
+  height: Newsletter_PrintEdition_height_operator
+  focalX: Newsletter_PrintEdition_focalX_operator
+  focalY: Newsletter_PrintEdition_focalY_operator
+  id: Newsletter_PrintEdition_id_operator
+  AND: [Newsletter_PrintEdition_where_and]
+  OR: [Newsletter_PrintEdition_where_or]
+}
+
+union Newsletter_Layout = Article | Figure | Briefs | SectionRule
+
+type Article {
+  headline: String
+  byline: String
+  body(depth: Int): JSON
+  image(where: Article_Image_where): Media
+  imagePosition: Article_imagePosition
+  articleSpan: Article_articleSpan
+  featured: Boolean
+  id: String
+  blockName: String
+  blockType: String
+}
+
+input Article_Image_where {
+  alt: Article_Image_alt_operator
+  caption: Article_Image_caption_operator
+  updatedAt: Article_Image_updatedAt_operator
+  createdAt: Article_Image_createdAt_operator
+  url: Article_Image_url_operator
+  filename: Article_Image_filename_operator
+  mimeType: Article_Image_mimeType_operator
+  filesize: Article_Image_filesize_operator
+  width: Article_Image_width_operator
+  height: Article_Image_height_operator
+  focalX: Article_Image_focalX_operator
+  focalY: Article_Image_focalY_operator
+  id: Article_Image_id_operator
+  AND: [Article_Image_where_and]
+  OR: [Article_Image_where_or]
+}
+
+input Article_Image_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Article_Image_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Article_Image_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Article_Image_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Article_Image_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Article_Image_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Article_Image_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Article_Image_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Article_Image_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Article_Image_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Article_Image_focalX_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Article_Image_focalY_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Article_Image_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Article_Image_where_and {
+  alt: Article_Image_alt_operator
+  caption: Article_Image_caption_operator
+  updatedAt: Article_Image_updatedAt_operator
+  createdAt: Article_Image_createdAt_operator
+  url: Article_Image_url_operator
+  filename: Article_Image_filename_operator
+  mimeType: Article_Image_mimeType_operator
+  filesize: Article_Image_filesize_operator
+  width: Article_Image_width_operator
+  height: Article_Image_height_operator
+  focalX: Article_Image_focalX_operator
+  focalY: Article_Image_focalY_operator
+  id: Article_Image_id_operator
+  AND: [Article_Image_where_and]
+  OR: [Article_Image_where_or]
+}
+
+input Article_Image_where_or {
+  alt: Article_Image_alt_operator
+  caption: Article_Image_caption_operator
+  updatedAt: Article_Image_updatedAt_operator
+  createdAt: Article_Image_createdAt_operator
+  url: Article_Image_url_operator
+  filename: Article_Image_filename_operator
+  mimeType: Article_Image_mimeType_operator
+  filesize: Article_Image_filesize_operator
+  width: Article_Image_width_operator
+  height: Article_Image_height_operator
+  focalX: Article_Image_focalX_operator
+  focalY: Article_Image_focalY_operator
+  id: Article_Image_id_operator
+  AND: [Article_Image_where_and]
+  OR: [Article_Image_where_or]
+}
+
+enum Article_imagePosition {
+  top
+  left
+  right
+}
+
+enum Article_articleSpan {
+  full
+  twoThirds
+  half
+  oneThird
+}
+
+type Figure {
+  image(where: Figure_Image_where): Media
+  caption: String
+  figureSpan: Figure_figureSpan
+  id: String
+  blockName: String
+  blockType: String
+}
+
+input Figure_Image_where {
+  alt: Figure_Image_alt_operator
+  caption: Figure_Image_caption_operator
+  updatedAt: Figure_Image_updatedAt_operator
+  createdAt: Figure_Image_createdAt_operator
+  url: Figure_Image_url_operator
+  filename: Figure_Image_filename_operator
+  mimeType: Figure_Image_mimeType_operator
+  filesize: Figure_Image_filesize_operator
+  width: Figure_Image_width_operator
+  height: Figure_Image_height_operator
+  focalX: Figure_Image_focalX_operator
+  focalY: Figure_Image_focalY_operator
+  id: Figure_Image_id_operator
+  AND: [Figure_Image_where_and]
+  OR: [Figure_Image_where_or]
+}
+
+input Figure_Image_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Figure_Image_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Figure_Image_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Figure_Image_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Figure_Image_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Figure_Image_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Figure_Image_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Figure_Image_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Figure_Image_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Figure_Image_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Figure_Image_focalX_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Figure_Image_focalY_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Figure_Image_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Figure_Image_where_and {
+  alt: Figure_Image_alt_operator
+  caption: Figure_Image_caption_operator
+  updatedAt: Figure_Image_updatedAt_operator
+  createdAt: Figure_Image_createdAt_operator
+  url: Figure_Image_url_operator
+  filename: Figure_Image_filename_operator
+  mimeType: Figure_Image_mimeType_operator
+  filesize: Figure_Image_filesize_operator
+  width: Figure_Image_width_operator
+  height: Figure_Image_height_operator
+  focalX: Figure_Image_focalX_operator
+  focalY: Figure_Image_focalY_operator
+  id: Figure_Image_id_operator
+  AND: [Figure_Image_where_and]
+  OR: [Figure_Image_where_or]
+}
+
+input Figure_Image_where_or {
+  alt: Figure_Image_alt_operator
+  caption: Figure_Image_caption_operator
+  updatedAt: Figure_Image_updatedAt_operator
+  createdAt: Figure_Image_createdAt_operator
+  url: Figure_Image_url_operator
+  filename: Figure_Image_filename_operator
+  mimeType: Figure_Image_mimeType_operator
+  filesize: Figure_Image_filesize_operator
+  width: Figure_Image_width_operator
+  height: Figure_Image_height_operator
+  focalX: Figure_Image_focalX_operator
+  focalY: Figure_Image_focalY_operator
+  id: Figure_Image_id_operator
+  AND: [Figure_Image_where_and]
+  OR: [Figure_Image_where_or]
+}
+
+enum Figure_figureSpan {
+  full
+  twoThirds
+  half
+  oneThird
+}
+
+type Briefs {
+  heading: String
+  entries: [Briefs_Entries!]
+  briefsSpan: Briefs_briefsSpan
+  id: String
+  blockName: String
+  blockType: String
+}
+
+type Briefs_Entries {
+  title: String
+  text: String
+  url: String
+  linkLabel: String
+  id: String
+}
+
+enum Briefs_briefsSpan {
+  full
+  twoThirds
+  half
+  oneThird
+}
+
+type SectionRule {
+  heading: String
+  subheading: String
+  sectionRuleSpan: SectionRule_sectionRuleSpan
+  id: String
+  blockName: String
+  blockType: String
+}
+
+enum SectionRule_sectionRuleSpan {
+  full
+  twoThirds
+  half
+  oneThird
+}
+
+type Newsletter_Meta {
+  title: String
+  description: String
+  image(where: Newsletter_Meta_Image_where): Media
+}
+
+input Newsletter_Meta_Image_where {
+  alt: Newsletter_Meta_Image_alt_operator
+  caption: Newsletter_Meta_Image_caption_operator
+  updatedAt: Newsletter_Meta_Image_updatedAt_operator
+  createdAt: Newsletter_Meta_Image_createdAt_operator
+  url: Newsletter_Meta_Image_url_operator
+  filename: Newsletter_Meta_Image_filename_operator
+  mimeType: Newsletter_Meta_Image_mimeType_operator
+  filesize: Newsletter_Meta_Image_filesize_operator
+  width: Newsletter_Meta_Image_width_operator
+  height: Newsletter_Meta_Image_height_operator
+  focalX: Newsletter_Meta_Image_focalX_operator
+  focalY: Newsletter_Meta_Image_focalY_operator
+  id: Newsletter_Meta_Image_id_operator
+  AND: [Newsletter_Meta_Image_where_and]
+  OR: [Newsletter_Meta_Image_where_or]
+}
+
+input Newsletter_Meta_Image_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Newsletter_Meta_Image_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Newsletter_Meta_Image_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Newsletter_Meta_Image_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Newsletter_Meta_Image_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_Meta_Image_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_Meta_Image_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_Meta_Image_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_Meta_Image_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_Meta_Image_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_Meta_Image_focalX_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_Meta_Image_focalY_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_Meta_Image_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_Meta_Image_where_and {
+  alt: Newsletter_Meta_Image_alt_operator
+  caption: Newsletter_Meta_Image_caption_operator
+  updatedAt: Newsletter_Meta_Image_updatedAt_operator
+  createdAt: Newsletter_Meta_Image_createdAt_operator
+  url: Newsletter_Meta_Image_url_operator
+  filename: Newsletter_Meta_Image_filename_operator
+  mimeType: Newsletter_Meta_Image_mimeType_operator
+  filesize: Newsletter_Meta_Image_filesize_operator
+  width: Newsletter_Meta_Image_width_operator
+  height: Newsletter_Meta_Image_height_operator
+  focalX: Newsletter_Meta_Image_focalX_operator
+  focalY: Newsletter_Meta_Image_focalY_operator
+  id: Newsletter_Meta_Image_id_operator
+  AND: [Newsletter_Meta_Image_where_and]
+  OR: [Newsletter_Meta_Image_where_or]
+}
+
+input Newsletter_Meta_Image_where_or {
+  alt: Newsletter_Meta_Image_alt_operator
+  caption: Newsletter_Meta_Image_caption_operator
+  updatedAt: Newsletter_Meta_Image_updatedAt_operator
+  createdAt: Newsletter_Meta_Image_createdAt_operator
+  url: Newsletter_Meta_Image_url_operator
+  filename: Newsletter_Meta_Image_filename_operator
+  mimeType: Newsletter_Meta_Image_mimeType_operator
+  filesize: Newsletter_Meta_Image_filesize_operator
+  width: Newsletter_Meta_Image_width_operator
+  height: Newsletter_Meta_Image_height_operator
+  focalX: Newsletter_Meta_Image_focalX_operator
+  focalY: Newsletter_Meta_Image_focalY_operator
+  id: Newsletter_Meta_Image_id_operator
+  AND: [Newsletter_Meta_Image_where_and]
+  OR: [Newsletter_Meta_Image_where_or]
+}
+
+enum Newsletter__status {
+  draft
+  published
+}
+
+type Newsletters {
+  docs: [Newsletter]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input Newsletter_where {
+  title: Newsletter_title_operator
+  issueNumber: Newsletter_issueNumber_operator
+  publishedAt: Newsletter_publishedAt_operator
+  summary: Newsletter_summary_operator
+  coverImage: Newsletter_coverImage_operator
+  printEdition: Newsletter_printEdition_operator
+  slug: Newsletter_slug_operator
+  meta__title: Newsletter_meta__title_operator
+  meta__description: Newsletter_meta__description_operator
+  meta__image: Newsletter_meta__image_operator
+  updatedAt: Newsletter_updatedAt_operator
+  createdAt: Newsletter_createdAt_operator
+  _status: Newsletter__status_operator
+  id: Newsletter_id_operator
+  AND: [Newsletter_where_and]
+  OR: [Newsletter_where_or]
+}
+
+input Newsletter_title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Newsletter_issueNumber_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Newsletter_publishedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Newsletter_summary_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  exists: Boolean
+}
+
+input Newsletter_coverImage_operator {
+  equals: String
+  not_equals: String
+  exists: Boolean
+}
+
+input Newsletter_printEdition_operator {
+  equals: String
+  not_equals: String
+  exists: Boolean
+}
+
+input Newsletter_slug_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_meta__title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_meta__description_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  exists: Boolean
+}
+
+input Newsletter_meta__image_operator {
+  equals: String
+  not_equals: String
+  exists: Boolean
+}
+
+input Newsletter_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Newsletter_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Newsletter__status_operator {
+  equals: Newsletter__status_Input
+  not_equals: Newsletter__status_Input
+  in: [Newsletter__status_Input]
+  not_in: [Newsletter__status_Input]
+  all: [Newsletter__status_Input]
+  exists: Boolean
+}
+
+enum Newsletter__status_Input {
+  draft
+  published
+}
+
+input Newsletter_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Newsletter_where_and {
+  title: Newsletter_title_operator
+  issueNumber: Newsletter_issueNumber_operator
+  publishedAt: Newsletter_publishedAt_operator
+  summary: Newsletter_summary_operator
+  coverImage: Newsletter_coverImage_operator
+  printEdition: Newsletter_printEdition_operator
+  slug: Newsletter_slug_operator
+  meta__title: Newsletter_meta__title_operator
+  meta__description: Newsletter_meta__description_operator
+  meta__image: Newsletter_meta__image_operator
+  updatedAt: Newsletter_updatedAt_operator
+  createdAt: Newsletter_createdAt_operator
+  _status: Newsletter__status_operator
+  id: Newsletter_id_operator
+  AND: [Newsletter_where_and]
+  OR: [Newsletter_where_or]
+}
+
+input Newsletter_where_or {
+  title: Newsletter_title_operator
+  issueNumber: Newsletter_issueNumber_operator
+  publishedAt: Newsletter_publishedAt_operator
+  summary: Newsletter_summary_operator
+  coverImage: Newsletter_coverImage_operator
+  printEdition: Newsletter_printEdition_operator
+  slug: Newsletter_slug_operator
+  meta__title: Newsletter_meta__title_operator
+  meta__description: Newsletter_meta__description_operator
+  meta__image: Newsletter_meta__image_operator
+  updatedAt: Newsletter_updatedAt_operator
+  createdAt: Newsletter_createdAt_operator
+  _status: Newsletter__status_operator
+  id: Newsletter_id_operator
+  AND: [Newsletter_where_and]
+  OR: [Newsletter_where_or]
+}
+
+type countNewsletters {
+  totalDocs: Int
+}
+
+type newslettersDocAccess {
+  fields: NewslettersDocAccessFields
+  create: NewslettersCreateDocAccess
+  read: NewslettersReadDocAccess
+  update: NewslettersUpdateDocAccess
+  delete: NewslettersDeleteDocAccess
+  readVersions: NewslettersReadVersionsDocAccess
+}
+
+type NewslettersDocAccessFields {
+  title: NewslettersDocAccessFields_title
+  issueNumber: NewslettersDocAccessFields_issueNumber
+  publishedAt: NewslettersDocAccessFields_publishedAt
+  summary: NewslettersDocAccessFields_summary
+  coverImage: NewslettersDocAccessFields_coverImage
+  printEdition: NewslettersDocAccessFields_printEdition
+  layout: NewslettersDocAccessFields_layout
+  slug: NewslettersDocAccessFields_slug
+  meta: NewslettersDocAccessFields_meta
+  updatedAt: NewslettersDocAccessFields_updatedAt
+  createdAt: NewslettersDocAccessFields_createdAt
+  _status: NewslettersDocAccessFields__status
+}
+
+type NewslettersDocAccessFields_title {
+  create: NewslettersDocAccessFields_title_Create
+  read: NewslettersDocAccessFields_title_Read
+  update: NewslettersDocAccessFields_title_Update
+  delete: NewslettersDocAccessFields_title_Delete
+}
+
+type NewslettersDocAccessFields_title_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_title_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_title_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_title_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_issueNumber {
+  create: NewslettersDocAccessFields_issueNumber_Create
+  read: NewslettersDocAccessFields_issueNumber_Read
+  update: NewslettersDocAccessFields_issueNumber_Update
+  delete: NewslettersDocAccessFields_issueNumber_Delete
+}
+
+type NewslettersDocAccessFields_issueNumber_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_issueNumber_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_issueNumber_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_issueNumber_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_publishedAt {
+  create: NewslettersDocAccessFields_publishedAt_Create
+  read: NewslettersDocAccessFields_publishedAt_Read
+  update: NewslettersDocAccessFields_publishedAt_Update
+  delete: NewslettersDocAccessFields_publishedAt_Delete
+}
+
+type NewslettersDocAccessFields_publishedAt_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_publishedAt_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_publishedAt_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_publishedAt_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_summary {
+  create: NewslettersDocAccessFields_summary_Create
+  read: NewslettersDocAccessFields_summary_Read
+  update: NewslettersDocAccessFields_summary_Update
+  delete: NewslettersDocAccessFields_summary_Delete
+}
+
+type NewslettersDocAccessFields_summary_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_summary_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_summary_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_summary_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_coverImage {
+  create: NewslettersDocAccessFields_coverImage_Create
+  read: NewslettersDocAccessFields_coverImage_Read
+  update: NewslettersDocAccessFields_coverImage_Update
+  delete: NewslettersDocAccessFields_coverImage_Delete
+}
+
+type NewslettersDocAccessFields_coverImage_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_coverImage_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_coverImage_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_coverImage_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_printEdition {
+  create: NewslettersDocAccessFields_printEdition_Create
+  read: NewslettersDocAccessFields_printEdition_Read
+  update: NewslettersDocAccessFields_printEdition_Update
+  delete: NewslettersDocAccessFields_printEdition_Delete
+}
+
+type NewslettersDocAccessFields_printEdition_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_printEdition_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_printEdition_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_printEdition_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_layout {
+  create: NewslettersDocAccessFields_layout_Create
+  read: NewslettersDocAccessFields_layout_Read
+  update: NewslettersDocAccessFields_layout_Update
+  delete: NewslettersDocAccessFields_layout_Delete
+}
+
+type NewslettersDocAccessFields_layout_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_layout_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_layout_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_layout_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_slug {
+  create: NewslettersDocAccessFields_slug_Create
+  read: NewslettersDocAccessFields_slug_Read
+  update: NewslettersDocAccessFields_slug_Update
+  delete: NewslettersDocAccessFields_slug_Delete
+}
+
+type NewslettersDocAccessFields_slug_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_slug_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_slug_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_slug_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta {
+  create: NewslettersDocAccessFields_meta_Create
+  read: NewslettersDocAccessFields_meta_Read
+  update: NewslettersDocAccessFields_meta_Update
+  delete: NewslettersDocAccessFields_meta_Delete
+  fields: NewslettersDocAccessFields_meta_Fields
+}
+
+type NewslettersDocAccessFields_meta_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_Fields {
+  title: NewslettersDocAccessFields_meta_title
+  description: NewslettersDocAccessFields_meta_description
+  image: NewslettersDocAccessFields_meta_image
+}
+
+type NewslettersDocAccessFields_meta_title {
+  create: NewslettersDocAccessFields_meta_title_Create
+  read: NewslettersDocAccessFields_meta_title_Read
+  update: NewslettersDocAccessFields_meta_title_Update
+  delete: NewslettersDocAccessFields_meta_title_Delete
+}
+
+type NewslettersDocAccessFields_meta_title_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_title_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_title_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_title_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_description {
+  create: NewslettersDocAccessFields_meta_description_Create
+  read: NewslettersDocAccessFields_meta_description_Read
+  update: NewslettersDocAccessFields_meta_description_Update
+  delete: NewslettersDocAccessFields_meta_description_Delete
+}
+
+type NewslettersDocAccessFields_meta_description_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_description_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_description_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_description_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_image {
+  create: NewslettersDocAccessFields_meta_image_Create
+  read: NewslettersDocAccessFields_meta_image_Read
+  update: NewslettersDocAccessFields_meta_image_Update
+  delete: NewslettersDocAccessFields_meta_image_Delete
+}
+
+type NewslettersDocAccessFields_meta_image_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_image_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_image_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_meta_image_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_updatedAt {
+  create: NewslettersDocAccessFields_updatedAt_Create
+  read: NewslettersDocAccessFields_updatedAt_Read
+  update: NewslettersDocAccessFields_updatedAt_Update
+  delete: NewslettersDocAccessFields_updatedAt_Delete
+}
+
+type NewslettersDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_createdAt {
+  create: NewslettersDocAccessFields_createdAt_Create
+  read: NewslettersDocAccessFields_createdAt_Read
+  update: NewslettersDocAccessFields_createdAt_Update
+  delete: NewslettersDocAccessFields_createdAt_Delete
+}
+
+type NewslettersDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields__status {
+  create: NewslettersDocAccessFields__status_Create
+  read: NewslettersDocAccessFields__status_Read
+  update: NewslettersDocAccessFields__status_Update
+  delete: NewslettersDocAccessFields__status_Delete
+}
+
+type NewslettersDocAccessFields__status_Create {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields__status_Read {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields__status_Update {
+  permission: Boolean!
+}
+
+type NewslettersDocAccessFields__status_Delete {
+  permission: Boolean!
+}
+
+type NewslettersCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NewslettersReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NewslettersUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NewslettersDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NewslettersReadVersionsDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NewsletterVersion {
+  parent(draft: Boolean): Newsletter
+  version: NewsletterVersion_Version
+  createdAt: DateTime
+  updatedAt: DateTime
+  latest: Boolean
+  id: String
+}
+
+type NewsletterVersion_Version {
+  title: String
+  issueNumber: Float
+  publishedAt: DateTime
+  summary: String
+  coverImage(where: NewsletterVersion_Version_CoverImage_where): Media
+  printEdition(where: NewsletterVersion_Version_PrintEdition_where): Media
+  layout: [NewsletterVersion_Version_Layout!]!
+  slug: String
+  meta: NewsletterVersion_Version_Meta
+  updatedAt: DateTime
+  createdAt: DateTime
+  _status: NewsletterVersion_Version__status
+}
+
+input NewsletterVersion_Version_CoverImage_where {
+  alt: NewsletterVersion_Version_CoverImage_alt_operator
+  caption: NewsletterVersion_Version_CoverImage_caption_operator
+  updatedAt: NewsletterVersion_Version_CoverImage_updatedAt_operator
+  createdAt: NewsletterVersion_Version_CoverImage_createdAt_operator
+  url: NewsletterVersion_Version_CoverImage_url_operator
+  filename: NewsletterVersion_Version_CoverImage_filename_operator
+  mimeType: NewsletterVersion_Version_CoverImage_mimeType_operator
+  filesize: NewsletterVersion_Version_CoverImage_filesize_operator
+  width: NewsletterVersion_Version_CoverImage_width_operator
+  height: NewsletterVersion_Version_CoverImage_height_operator
+  focalX: NewsletterVersion_Version_CoverImage_focalX_operator
+  focalY: NewsletterVersion_Version_CoverImage_focalY_operator
+  id: NewsletterVersion_Version_CoverImage_id_operator
+  AND: [NewsletterVersion_Version_CoverImage_where_and]
+  OR: [NewsletterVersion_Version_CoverImage_where_or]
+}
+
+input NewsletterVersion_Version_CoverImage_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input NewsletterVersion_Version_CoverImage_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_CoverImage_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_CoverImage_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_CoverImage_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_CoverImage_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_CoverImage_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_CoverImage_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_CoverImage_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_CoverImage_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_CoverImage_focalX_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_CoverImage_focalY_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_CoverImage_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_CoverImage_where_and {
+  alt: NewsletterVersion_Version_CoverImage_alt_operator
+  caption: NewsletterVersion_Version_CoverImage_caption_operator
+  updatedAt: NewsletterVersion_Version_CoverImage_updatedAt_operator
+  createdAt: NewsletterVersion_Version_CoverImage_createdAt_operator
+  url: NewsletterVersion_Version_CoverImage_url_operator
+  filename: NewsletterVersion_Version_CoverImage_filename_operator
+  mimeType: NewsletterVersion_Version_CoverImage_mimeType_operator
+  filesize: NewsletterVersion_Version_CoverImage_filesize_operator
+  width: NewsletterVersion_Version_CoverImage_width_operator
+  height: NewsletterVersion_Version_CoverImage_height_operator
+  focalX: NewsletterVersion_Version_CoverImage_focalX_operator
+  focalY: NewsletterVersion_Version_CoverImage_focalY_operator
+  id: NewsletterVersion_Version_CoverImage_id_operator
+  AND: [NewsletterVersion_Version_CoverImage_where_and]
+  OR: [NewsletterVersion_Version_CoverImage_where_or]
+}
+
+input NewsletterVersion_Version_CoverImage_where_or {
+  alt: NewsletterVersion_Version_CoverImage_alt_operator
+  caption: NewsletterVersion_Version_CoverImage_caption_operator
+  updatedAt: NewsletterVersion_Version_CoverImage_updatedAt_operator
+  createdAt: NewsletterVersion_Version_CoverImage_createdAt_operator
+  url: NewsletterVersion_Version_CoverImage_url_operator
+  filename: NewsletterVersion_Version_CoverImage_filename_operator
+  mimeType: NewsletterVersion_Version_CoverImage_mimeType_operator
+  filesize: NewsletterVersion_Version_CoverImage_filesize_operator
+  width: NewsletterVersion_Version_CoverImage_width_operator
+  height: NewsletterVersion_Version_CoverImage_height_operator
+  focalX: NewsletterVersion_Version_CoverImage_focalX_operator
+  focalY: NewsletterVersion_Version_CoverImage_focalY_operator
+  id: NewsletterVersion_Version_CoverImage_id_operator
+  AND: [NewsletterVersion_Version_CoverImage_where_and]
+  OR: [NewsletterVersion_Version_CoverImage_where_or]
+}
+
+input NewsletterVersion_Version_PrintEdition_where {
+  alt: NewsletterVersion_Version_PrintEdition_alt_operator
+  caption: NewsletterVersion_Version_PrintEdition_caption_operator
+  updatedAt: NewsletterVersion_Version_PrintEdition_updatedAt_operator
+  createdAt: NewsletterVersion_Version_PrintEdition_createdAt_operator
+  url: NewsletterVersion_Version_PrintEdition_url_operator
+  filename: NewsletterVersion_Version_PrintEdition_filename_operator
+  mimeType: NewsletterVersion_Version_PrintEdition_mimeType_operator
+  filesize: NewsletterVersion_Version_PrintEdition_filesize_operator
+  width: NewsletterVersion_Version_PrintEdition_width_operator
+  height: NewsletterVersion_Version_PrintEdition_height_operator
+  focalX: NewsletterVersion_Version_PrintEdition_focalX_operator
+  focalY: NewsletterVersion_Version_PrintEdition_focalY_operator
+  id: NewsletterVersion_Version_PrintEdition_id_operator
+  AND: [NewsletterVersion_Version_PrintEdition_where_and]
+  OR: [NewsletterVersion_Version_PrintEdition_where_or]
+}
+
+input NewsletterVersion_Version_PrintEdition_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input NewsletterVersion_Version_PrintEdition_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_PrintEdition_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_PrintEdition_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_PrintEdition_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_PrintEdition_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_PrintEdition_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_PrintEdition_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_PrintEdition_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_PrintEdition_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_PrintEdition_focalX_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_PrintEdition_focalY_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_PrintEdition_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_PrintEdition_where_and {
+  alt: NewsletterVersion_Version_PrintEdition_alt_operator
+  caption: NewsletterVersion_Version_PrintEdition_caption_operator
+  updatedAt: NewsletterVersion_Version_PrintEdition_updatedAt_operator
+  createdAt: NewsletterVersion_Version_PrintEdition_createdAt_operator
+  url: NewsletterVersion_Version_PrintEdition_url_operator
+  filename: NewsletterVersion_Version_PrintEdition_filename_operator
+  mimeType: NewsletterVersion_Version_PrintEdition_mimeType_operator
+  filesize: NewsletterVersion_Version_PrintEdition_filesize_operator
+  width: NewsletterVersion_Version_PrintEdition_width_operator
+  height: NewsletterVersion_Version_PrintEdition_height_operator
+  focalX: NewsletterVersion_Version_PrintEdition_focalX_operator
+  focalY: NewsletterVersion_Version_PrintEdition_focalY_operator
+  id: NewsletterVersion_Version_PrintEdition_id_operator
+  AND: [NewsletterVersion_Version_PrintEdition_where_and]
+  OR: [NewsletterVersion_Version_PrintEdition_where_or]
+}
+
+input NewsletterVersion_Version_PrintEdition_where_or {
+  alt: NewsletterVersion_Version_PrintEdition_alt_operator
+  caption: NewsletterVersion_Version_PrintEdition_caption_operator
+  updatedAt: NewsletterVersion_Version_PrintEdition_updatedAt_operator
+  createdAt: NewsletterVersion_Version_PrintEdition_createdAt_operator
+  url: NewsletterVersion_Version_PrintEdition_url_operator
+  filename: NewsletterVersion_Version_PrintEdition_filename_operator
+  mimeType: NewsletterVersion_Version_PrintEdition_mimeType_operator
+  filesize: NewsletterVersion_Version_PrintEdition_filesize_operator
+  width: NewsletterVersion_Version_PrintEdition_width_operator
+  height: NewsletterVersion_Version_PrintEdition_height_operator
+  focalX: NewsletterVersion_Version_PrintEdition_focalX_operator
+  focalY: NewsletterVersion_Version_PrintEdition_focalY_operator
+  id: NewsletterVersion_Version_PrintEdition_id_operator
+  AND: [NewsletterVersion_Version_PrintEdition_where_and]
+  OR: [NewsletterVersion_Version_PrintEdition_where_or]
+}
+
+union NewsletterVersion_Version_Layout = Article | Figure | Briefs | SectionRule
+
+type NewsletterVersion_Version_Meta {
+  title: String
+  description: String
+  image(where: NewsletterVersion_Version_Meta_Image_where): Media
+}
+
+input NewsletterVersion_Version_Meta_Image_where {
+  alt: NewsletterVersion_Version_Meta_Image_alt_operator
+  caption: NewsletterVersion_Version_Meta_Image_caption_operator
+  updatedAt: NewsletterVersion_Version_Meta_Image_updatedAt_operator
+  createdAt: NewsletterVersion_Version_Meta_Image_createdAt_operator
+  url: NewsletterVersion_Version_Meta_Image_url_operator
+  filename: NewsletterVersion_Version_Meta_Image_filename_operator
+  mimeType: NewsletterVersion_Version_Meta_Image_mimeType_operator
+  filesize: NewsletterVersion_Version_Meta_Image_filesize_operator
+  width: NewsletterVersion_Version_Meta_Image_width_operator
+  height: NewsletterVersion_Version_Meta_Image_height_operator
+  focalX: NewsletterVersion_Version_Meta_Image_focalX_operator
+  focalY: NewsletterVersion_Version_Meta_Image_focalY_operator
+  id: NewsletterVersion_Version_Meta_Image_id_operator
+  AND: [NewsletterVersion_Version_Meta_Image_where_and]
+  OR: [NewsletterVersion_Version_Meta_Image_where_or]
+}
+
+input NewsletterVersion_Version_Meta_Image_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input NewsletterVersion_Version_Meta_Image_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_Meta_Image_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_Meta_Image_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_Meta_Image_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_Meta_Image_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_Meta_Image_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_Meta_Image_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_Meta_Image_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_Meta_Image_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_Meta_Image_focalX_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_Meta_Image_focalY_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_Meta_Image_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input NewsletterVersion_Version_Meta_Image_where_and {
+  alt: NewsletterVersion_Version_Meta_Image_alt_operator
+  caption: NewsletterVersion_Version_Meta_Image_caption_operator
+  updatedAt: NewsletterVersion_Version_Meta_Image_updatedAt_operator
+  createdAt: NewsletterVersion_Version_Meta_Image_createdAt_operator
+  url: NewsletterVersion_Version_Meta_Image_url_operator
+  filename: NewsletterVersion_Version_Meta_Image_filename_operator
+  mimeType: NewsletterVersion_Version_Meta_Image_mimeType_operator
+  filesize: NewsletterVersion_Version_Meta_Image_filesize_operator
+  width: NewsletterVersion_Version_Meta_Image_width_operator
+  height: NewsletterVersion_Version_Meta_Image_height_operator
+  focalX: NewsletterVersion_Version_Meta_Image_focalX_operator
+  focalY: NewsletterVersion_Version_Meta_Image_focalY_operator
+  id: NewsletterVersion_Version_Meta_Image_id_operator
+  AND: [NewsletterVersion_Version_Meta_Image_where_and]
+  OR: [NewsletterVersion_Version_Meta_Image_where_or]
+}
+
+input NewsletterVersion_Version_Meta_Image_where_or {
+  alt: NewsletterVersion_Version_Meta_Image_alt_operator
+  caption: NewsletterVersion_Version_Meta_Image_caption_operator
+  updatedAt: NewsletterVersion_Version_Meta_Image_updatedAt_operator
+  createdAt: NewsletterVersion_Version_Meta_Image_createdAt_operator
+  url: NewsletterVersion_Version_Meta_Image_url_operator
+  filename: NewsletterVersion_Version_Meta_Image_filename_operator
+  mimeType: NewsletterVersion_Version_Meta_Image_mimeType_operator
+  filesize: NewsletterVersion_Version_Meta_Image_filesize_operator
+  width: NewsletterVersion_Version_Meta_Image_width_operator
+  height: NewsletterVersion_Version_Meta_Image_height_operator
+  focalX: NewsletterVersion_Version_Meta_Image_focalX_operator
+  focalY: NewsletterVersion_Version_Meta_Image_focalY_operator
+  id: NewsletterVersion_Version_Meta_Image_id_operator
+  AND: [NewsletterVersion_Version_Meta_Image_where_and]
+  OR: [NewsletterVersion_Version_Meta_Image_where_or]
+}
+
+enum NewsletterVersion_Version__status {
+  draft
+  published
+}
+
+type versionsNewsletters {
+  docs: [NewsletterVersion]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input versionsNewsletter_where {
+  parent: versionsNewsletter_parent_operator
+  version__title: versionsNewsletter_version__title_operator
+  version__issueNumber: versionsNewsletter_version__issueNumber_operator
+  version__publishedAt: versionsNewsletter_version__publishedAt_operator
+  version__summary: versionsNewsletter_version__summary_operator
+  version__coverImage: versionsNewsletter_version__coverImage_operator
+  version__printEdition: versionsNewsletter_version__printEdition_operator
+  version__slug: versionsNewsletter_version__slug_operator
+  version__meta__title: versionsNewsletter_version__meta__title_operator
+  version__meta__description: versionsNewsletter_version__meta__description_operator
+  version__meta__image: versionsNewsletter_version__meta__image_operator
+  version__updatedAt: versionsNewsletter_version__updatedAt_operator
+  version__createdAt: versionsNewsletter_version__createdAt_operator
+  version___status: versionsNewsletter_version___status_operator
+  createdAt: versionsNewsletter_createdAt_operator
+  updatedAt: versionsNewsletter_updatedAt_operator
+  latest: versionsNewsletter_latest_operator
+  id: versionsNewsletter_id_operator
+  AND: [versionsNewsletter_where_and]
+  OR: [versionsNewsletter_where_or]
+}
+
+input versionsNewsletter_parent_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input versionsNewsletter_version__title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsNewsletter_version__issueNumber_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input versionsNewsletter_version__publishedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsNewsletter_version__summary_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  exists: Boolean
+}
+
+input versionsNewsletter_version__coverImage_operator {
+  equals: String
+  not_equals: String
+  exists: Boolean
+}
+
+input versionsNewsletter_version__printEdition_operator {
+  equals: String
+  not_equals: String
+  exists: Boolean
+}
+
+input versionsNewsletter_version__slug_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsNewsletter_version__meta__title_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsNewsletter_version__meta__description_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  exists: Boolean
+}
+
+input versionsNewsletter_version__meta__image_operator {
+  equals: String
+  not_equals: String
+  exists: Boolean
+}
+
+input versionsNewsletter_version__updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsNewsletter_version__createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsNewsletter_version___status_operator {
+  equals: versionsNewsletter_version___status_Input
+  not_equals: versionsNewsletter_version___status_Input
+  in: [versionsNewsletter_version___status_Input]
+  not_in: [versionsNewsletter_version___status_Input]
+  all: [versionsNewsletter_version___status_Input]
+  exists: Boolean
+}
+
+enum versionsNewsletter_version___status_Input {
+  draft
+  published
+}
+
+input versionsNewsletter_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsNewsletter_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsNewsletter_latest_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsNewsletter_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsNewsletter_where_and {
+  parent: versionsNewsletter_parent_operator
+  version__title: versionsNewsletter_version__title_operator
+  version__issueNumber: versionsNewsletter_version__issueNumber_operator
+  version__publishedAt: versionsNewsletter_version__publishedAt_operator
+  version__summary: versionsNewsletter_version__summary_operator
+  version__coverImage: versionsNewsletter_version__coverImage_operator
+  version__printEdition: versionsNewsletter_version__printEdition_operator
+  version__slug: versionsNewsletter_version__slug_operator
+  version__meta__title: versionsNewsletter_version__meta__title_operator
+  version__meta__description: versionsNewsletter_version__meta__description_operator
+  version__meta__image: versionsNewsletter_version__meta__image_operator
+  version__updatedAt: versionsNewsletter_version__updatedAt_operator
+  version__createdAt: versionsNewsletter_version__createdAt_operator
+  version___status: versionsNewsletter_version___status_operator
+  createdAt: versionsNewsletter_createdAt_operator
+  updatedAt: versionsNewsletter_updatedAt_operator
+  latest: versionsNewsletter_latest_operator
+  id: versionsNewsletter_id_operator
+  AND: [versionsNewsletter_where_and]
+  OR: [versionsNewsletter_where_or]
+}
+
+input versionsNewsletter_where_or {
+  parent: versionsNewsletter_parent_operator
+  version__title: versionsNewsletter_version__title_operator
+  version__issueNumber: versionsNewsletter_version__issueNumber_operator
+  version__publishedAt: versionsNewsletter_version__publishedAt_operator
+  version__summary: versionsNewsletter_version__summary_operator
+  version__coverImage: versionsNewsletter_version__coverImage_operator
+  version__printEdition: versionsNewsletter_version__printEdition_operator
+  version__slug: versionsNewsletter_version__slug_operator
+  version__meta__title: versionsNewsletter_version__meta__title_operator
+  version__meta__description: versionsNewsletter_version__meta__description_operator
+  version__meta__image: versionsNewsletter_version__meta__image_operator
+  version__updatedAt: versionsNewsletter_version__updatedAt_operator
+  version__createdAt: versionsNewsletter_version__createdAt_operator
+  version___status: versionsNewsletter_version___status_operator
+  createdAt: versionsNewsletter_createdAt_operator
+  updatedAt: versionsNewsletter_updatedAt_operator
+  latest: versionsNewsletter_latest_operator
+  id: versionsNewsletter_id_operator
+  AND: [versionsNewsletter_where_and]
+  OR: [versionsNewsletter_where_or]
+}
+
 type allMedia {
   docs: [Media]
   hasNextPage: Boolean
@@ -19588,6 +22117,13 @@ input Event_where {
   longitude: Event_longitude_operator
   interestedCount: Event_interestedCount_operator
   interestedUsers: Event_interestedUsers_operator
+  lumaUrl: Event_lumaUrl_operator
+  discordUrl: Event_discordUrl_operator
+  discordGuildId: Event_discordGuildId_operator
+  discordEventId: Event_discordEventId_operator
+  discordInterestedCount: Event_discordInterestedCount_operator
+  discordLastSyncedAt: Event_discordLastSyncedAt_operator
+  discordSyncError: Event_discordSyncError_operator
   updatedAt: Event_updatedAt_operator
   createdAt: Event_createdAt_operator
   _status: Event__status_operator
@@ -19754,6 +22290,82 @@ input Event_interestedUsers_operator {
   exists: Boolean
 }
 
+input Event_lumaUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_discordUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_discordGuildId_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_discordEventId_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_discordInterestedCount_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Event_discordLastSyncedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Event_discordSyncError_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
 input Event_updatedAt_operator {
   equals: DateTime
   not_equals: DateTime
@@ -19807,6 +22419,13 @@ input Event_where_and {
   longitude: Event_longitude_operator
   interestedCount: Event_interestedCount_operator
   interestedUsers: Event_interestedUsers_operator
+  lumaUrl: Event_lumaUrl_operator
+  discordUrl: Event_discordUrl_operator
+  discordGuildId: Event_discordGuildId_operator
+  discordEventId: Event_discordEventId_operator
+  discordInterestedCount: Event_discordInterestedCount_operator
+  discordLastSyncedAt: Event_discordLastSyncedAt_operator
+  discordSyncError: Event_discordSyncError_operator
   updatedAt: Event_updatedAt_operator
   createdAt: Event_createdAt_operator
   _status: Event__status_operator
@@ -19831,6 +22450,13 @@ input Event_where_or {
   longitude: Event_longitude_operator
   interestedCount: Event_interestedCount_operator
   interestedUsers: Event_interestedUsers_operator
+  lumaUrl: Event_lumaUrl_operator
+  discordUrl: Event_discordUrl_operator
+  discordGuildId: Event_discordGuildId_operator
+  discordEventId: Event_discordEventId_operator
+  discordInterestedCount: Event_discordInterestedCount_operator
+  discordLastSyncedAt: Event_discordLastSyncedAt_operator
+  discordSyncError: Event_discordSyncError_operator
   updatedAt: Event_updatedAt_operator
   createdAt: Event_createdAt_operator
   _status: Event__status_operator
@@ -19868,6 +22494,13 @@ type EventsDocAccessFields {
   longitude: EventsDocAccessFields_longitude
   interestedCount: EventsDocAccessFields_interestedCount
   interestedUsers: EventsDocAccessFields_interestedUsers
+  lumaUrl: EventsDocAccessFields_lumaUrl
+  discordUrl: EventsDocAccessFields_discordUrl
+  discordGuildId: EventsDocAccessFields_discordGuildId
+  discordEventId: EventsDocAccessFields_discordEventId
+  discordInterestedCount: EventsDocAccessFields_discordInterestedCount
+  discordLastSyncedAt: EventsDocAccessFields_discordLastSyncedAt
+  discordSyncError: EventsDocAccessFields_discordSyncError
   updatedAt: EventsDocAccessFields_updatedAt
   createdAt: EventsDocAccessFields_createdAt
   _status: EventsDocAccessFields__status
@@ -20241,6 +22874,167 @@ type EventsDocAccessFields_interestedUsers_Delete {
   permission: Boolean!
 }
 
+type EventsDocAccessFields_lumaUrl {
+  create: EventsDocAccessFields_lumaUrl_Create
+  read: EventsDocAccessFields_lumaUrl_Read
+  update: EventsDocAccessFields_lumaUrl_Update
+  delete: EventsDocAccessFields_lumaUrl_Delete
+}
+
+type EventsDocAccessFields_lumaUrl_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_lumaUrl_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_lumaUrl_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_lumaUrl_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordUrl {
+  create: EventsDocAccessFields_discordUrl_Create
+  read: EventsDocAccessFields_discordUrl_Read
+  update: EventsDocAccessFields_discordUrl_Update
+  delete: EventsDocAccessFields_discordUrl_Delete
+}
+
+type EventsDocAccessFields_discordUrl_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordUrl_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordUrl_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordUrl_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordGuildId {
+  create: EventsDocAccessFields_discordGuildId_Create
+  read: EventsDocAccessFields_discordGuildId_Read
+  update: EventsDocAccessFields_discordGuildId_Update
+  delete: EventsDocAccessFields_discordGuildId_Delete
+}
+
+type EventsDocAccessFields_discordGuildId_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordGuildId_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordGuildId_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordGuildId_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordEventId {
+  create: EventsDocAccessFields_discordEventId_Create
+  read: EventsDocAccessFields_discordEventId_Read
+  update: EventsDocAccessFields_discordEventId_Update
+  delete: EventsDocAccessFields_discordEventId_Delete
+}
+
+type EventsDocAccessFields_discordEventId_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordEventId_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordEventId_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordEventId_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordInterestedCount {
+  create: EventsDocAccessFields_discordInterestedCount_Create
+  read: EventsDocAccessFields_discordInterestedCount_Read
+  update: EventsDocAccessFields_discordInterestedCount_Update
+  delete: EventsDocAccessFields_discordInterestedCount_Delete
+}
+
+type EventsDocAccessFields_discordInterestedCount_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordInterestedCount_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordInterestedCount_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordInterestedCount_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordLastSyncedAt {
+  create: EventsDocAccessFields_discordLastSyncedAt_Create
+  read: EventsDocAccessFields_discordLastSyncedAt_Read
+  update: EventsDocAccessFields_discordLastSyncedAt_Update
+  delete: EventsDocAccessFields_discordLastSyncedAt_Delete
+}
+
+type EventsDocAccessFields_discordLastSyncedAt_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordLastSyncedAt_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordLastSyncedAt_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordLastSyncedAt_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordSyncError {
+  create: EventsDocAccessFields_discordSyncError_Create
+  read: EventsDocAccessFields_discordSyncError_Read
+  update: EventsDocAccessFields_discordSyncError_Update
+  delete: EventsDocAccessFields_discordSyncError_Delete
+}
+
+type EventsDocAccessFields_discordSyncError_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordSyncError_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordSyncError_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordSyncError_Delete {
+  permission: Boolean!
+}
+
 type EventsDocAccessFields_updatedAt {
   create: EventsDocAccessFields_updatedAt_Create
   read: EventsDocAccessFields_updatedAt_Read
@@ -20360,6 +23154,13 @@ type EventVersion_Version {
   longitude: Float
   interestedCount: Float
   interestedUsers: [User!]
+  lumaUrl: String
+  discordUrl: String
+  discordGuildId: String
+  discordEventId: String
+  discordInterestedCount: Float
+  discordLastSyncedAt: DateTime
+  discordSyncError: String
   updatedAt: DateTime
   createdAt: DateTime
   _status: EventVersion_Version__status
@@ -20596,6 +23397,13 @@ input versionsEvent_where {
   version__longitude: versionsEvent_version__longitude_operator
   version__interestedCount: versionsEvent_version__interestedCount_operator
   version__interestedUsers: versionsEvent_version__interestedUsers_operator
+  version__lumaUrl: versionsEvent_version__lumaUrl_operator
+  version__discordUrl: versionsEvent_version__discordUrl_operator
+  version__discordGuildId: versionsEvent_version__discordGuildId_operator
+  version__discordEventId: versionsEvent_version__discordEventId_operator
+  version__discordInterestedCount: versionsEvent_version__discordInterestedCount_operator
+  version__discordLastSyncedAt: versionsEvent_version__discordLastSyncedAt_operator
+  version__discordSyncError: versionsEvent_version__discordSyncError_operator
   version__updatedAt: versionsEvent_version__updatedAt_operator
   version__createdAt: versionsEvent_version__createdAt_operator
   version___status: versionsEvent_version___status_operator
@@ -20765,6 +23573,82 @@ input versionsEvent_version__interestedUsers_operator {
   exists: Boolean
 }
 
+input versionsEvent_version__lumaUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsEvent_version__discordUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsEvent_version__discordGuildId_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsEvent_version__discordEventId_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsEvent_version__discordInterestedCount_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input versionsEvent_version__discordLastSyncedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsEvent_version__discordSyncError_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
 input versionsEvent_version__updatedAt_operator {
   equals: DateTime
   not_equals: DateTime
@@ -20857,6 +23741,13 @@ input versionsEvent_where_and {
   version__longitude: versionsEvent_version__longitude_operator
   version__interestedCount: versionsEvent_version__interestedCount_operator
   version__interestedUsers: versionsEvent_version__interestedUsers_operator
+  version__lumaUrl: versionsEvent_version__lumaUrl_operator
+  version__discordUrl: versionsEvent_version__discordUrl_operator
+  version__discordGuildId: versionsEvent_version__discordGuildId_operator
+  version__discordEventId: versionsEvent_version__discordEventId_operator
+  version__discordInterestedCount: versionsEvent_version__discordInterestedCount_operator
+  version__discordLastSyncedAt: versionsEvent_version__discordLastSyncedAt_operator
+  version__discordSyncError: versionsEvent_version__discordSyncError_operator
   version__updatedAt: versionsEvent_version__updatedAt_operator
   version__createdAt: versionsEvent_version__createdAt_operator
   version___status: versionsEvent_version___status_operator
@@ -20885,6 +23776,13 @@ input versionsEvent_where_or {
   version__longitude: versionsEvent_version__longitude_operator
   version__interestedCount: versionsEvent_version__interestedCount_operator
   version__interestedUsers: versionsEvent_version__interestedUsers_operator
+  version__lumaUrl: versionsEvent_version__lumaUrl_operator
+  version__discordUrl: versionsEvent_version__discordUrl_operator
+  version__discordGuildId: versionsEvent_version__discordGuildId_operator
+  version__discordEventId: versionsEvent_version__discordEventId_operator
+  version__discordInterestedCount: versionsEvent_version__discordInterestedCount_operator
+  version__discordLastSyncedAt: versionsEvent_version__discordLastSyncedAt_operator
+  version__discordSyncError: versionsEvent_version__discordSyncError_operator
   version__updatedAt: versionsEvent_version__updatedAt_operator
   version__createdAt: versionsEvent_version__createdAt_operator
   version___status: versionsEvent_version___status_operator
@@ -25894,6 +28792,14 @@ type Settings {
   jumpstartFaqTitle: String
   jumpstartFaqJumpLabel: String
   jumpstartFaqs: [Settings_JumpstartFaqs!]
+  newsMastheadTitle: String
+  newsMastheadEyebrow: String
+  newsArchiveTagline: String
+  newsEmptyState: String
+  newsCoverPlaceholder: String
+  newsPrintEditionLabel: String
+  newsSeoTitle: String
+  newsSeoDescription: String
   updatedAt: DateTime
   createdAt: DateTime
 }
@@ -26678,6 +29584,14 @@ type SettingsDocAccessFields {
   jumpstartFaqTitle: SettingsDocAccessFields_jumpstartFaqTitle
   jumpstartFaqJumpLabel: SettingsDocAccessFields_jumpstartFaqJumpLabel
   jumpstartFaqs: SettingsDocAccessFields_jumpstartFaqs
+  newsMastheadTitle: SettingsDocAccessFields_newsMastheadTitle
+  newsMastheadEyebrow: SettingsDocAccessFields_newsMastheadEyebrow
+  newsArchiveTagline: SettingsDocAccessFields_newsArchiveTagline
+  newsEmptyState: SettingsDocAccessFields_newsEmptyState
+  newsCoverPlaceholder: SettingsDocAccessFields_newsCoverPlaceholder
+  newsPrintEditionLabel: SettingsDocAccessFields_newsPrintEditionLabel
+  newsSeoTitle: SettingsDocAccessFields_newsSeoTitle
+  newsSeoDescription: SettingsDocAccessFields_newsSeoDescription
   updatedAt: SettingsDocAccessFields_updatedAt
   createdAt: SettingsDocAccessFields_createdAt
 }
@@ -27100,6 +30014,190 @@ type SettingsDocAccessFields_jumpstartFaqs_id_Update {
 }
 
 type SettingsDocAccessFields_jumpstartFaqs_id_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsMastheadTitle {
+  create: SettingsDocAccessFields_newsMastheadTitle_Create
+  read: SettingsDocAccessFields_newsMastheadTitle_Read
+  update: SettingsDocAccessFields_newsMastheadTitle_Update
+  delete: SettingsDocAccessFields_newsMastheadTitle_Delete
+}
+
+type SettingsDocAccessFields_newsMastheadTitle_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsMastheadTitle_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsMastheadTitle_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsMastheadTitle_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsMastheadEyebrow {
+  create: SettingsDocAccessFields_newsMastheadEyebrow_Create
+  read: SettingsDocAccessFields_newsMastheadEyebrow_Read
+  update: SettingsDocAccessFields_newsMastheadEyebrow_Update
+  delete: SettingsDocAccessFields_newsMastheadEyebrow_Delete
+}
+
+type SettingsDocAccessFields_newsMastheadEyebrow_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsMastheadEyebrow_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsMastheadEyebrow_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsMastheadEyebrow_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsArchiveTagline {
+  create: SettingsDocAccessFields_newsArchiveTagline_Create
+  read: SettingsDocAccessFields_newsArchiveTagline_Read
+  update: SettingsDocAccessFields_newsArchiveTagline_Update
+  delete: SettingsDocAccessFields_newsArchiveTagline_Delete
+}
+
+type SettingsDocAccessFields_newsArchiveTagline_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsArchiveTagline_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsArchiveTagline_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsArchiveTagline_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsEmptyState {
+  create: SettingsDocAccessFields_newsEmptyState_Create
+  read: SettingsDocAccessFields_newsEmptyState_Read
+  update: SettingsDocAccessFields_newsEmptyState_Update
+  delete: SettingsDocAccessFields_newsEmptyState_Delete
+}
+
+type SettingsDocAccessFields_newsEmptyState_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsEmptyState_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsEmptyState_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsEmptyState_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsCoverPlaceholder {
+  create: SettingsDocAccessFields_newsCoverPlaceholder_Create
+  read: SettingsDocAccessFields_newsCoverPlaceholder_Read
+  update: SettingsDocAccessFields_newsCoverPlaceholder_Update
+  delete: SettingsDocAccessFields_newsCoverPlaceholder_Delete
+}
+
+type SettingsDocAccessFields_newsCoverPlaceholder_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsCoverPlaceholder_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsCoverPlaceholder_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsCoverPlaceholder_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsPrintEditionLabel {
+  create: SettingsDocAccessFields_newsPrintEditionLabel_Create
+  read: SettingsDocAccessFields_newsPrintEditionLabel_Read
+  update: SettingsDocAccessFields_newsPrintEditionLabel_Update
+  delete: SettingsDocAccessFields_newsPrintEditionLabel_Delete
+}
+
+type SettingsDocAccessFields_newsPrintEditionLabel_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsPrintEditionLabel_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsPrintEditionLabel_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsPrintEditionLabel_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsSeoTitle {
+  create: SettingsDocAccessFields_newsSeoTitle_Create
+  read: SettingsDocAccessFields_newsSeoTitle_Read
+  update: SettingsDocAccessFields_newsSeoTitle_Update
+  delete: SettingsDocAccessFields_newsSeoTitle_Delete
+}
+
+type SettingsDocAccessFields_newsSeoTitle_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsSeoTitle_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsSeoTitle_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsSeoTitle_Delete {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsSeoDescription {
+  create: SettingsDocAccessFields_newsSeoDescription_Create
+  read: SettingsDocAccessFields_newsSeoDescription_Read
+  update: SettingsDocAccessFields_newsSeoDescription_Update
+  delete: SettingsDocAccessFields_newsSeoDescription_Delete
+}
+
+type SettingsDocAccessFields_newsSeoDescription_Create {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsSeoDescription_Read {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsSeoDescription_Update {
+  permission: Boolean!
+}
+
+type SettingsDocAccessFields_newsSeoDescription_Delete {
   permission: Boolean!
 }
 
@@ -27981,6 +31079,7 @@ type Access {
   pages: pagesAccess
   posts: postsAccess
   projects: projectsAccess
+  newsletters: newslettersAccess
   media: mediaAccess
   member_imports: member_importsAccess
   categories: categoriesAccess
@@ -30212,6 +33311,407 @@ type ProjectsDeleteAccess {
 }
 
 type ProjectsReadVersionsAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type newslettersAccess {
+  fields: NewslettersFields
+  create: NewslettersCreateAccess
+  read: NewslettersReadAccess
+  update: NewslettersUpdateAccess
+  delete: NewslettersDeleteAccess
+  readVersions: NewslettersReadVersionsAccess
+}
+
+type NewslettersFields {
+  title: NewslettersFields_title
+  issueNumber: NewslettersFields_issueNumber
+  publishedAt: NewslettersFields_publishedAt
+  summary: NewslettersFields_summary
+  coverImage: NewslettersFields_coverImage
+  printEdition: NewslettersFields_printEdition
+  layout: NewslettersFields_layout
+  slug: NewslettersFields_slug
+  meta: NewslettersFields_meta
+  updatedAt: NewslettersFields_updatedAt
+  createdAt: NewslettersFields_createdAt
+  _status: NewslettersFields__status
+}
+
+type NewslettersFields_title {
+  create: NewslettersFields_title_Create
+  read: NewslettersFields_title_Read
+  update: NewslettersFields_title_Update
+  delete: NewslettersFields_title_Delete
+}
+
+type NewslettersFields_title_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_title_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_title_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_title_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields_issueNumber {
+  create: NewslettersFields_issueNumber_Create
+  read: NewslettersFields_issueNumber_Read
+  update: NewslettersFields_issueNumber_Update
+  delete: NewslettersFields_issueNumber_Delete
+}
+
+type NewslettersFields_issueNumber_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_issueNumber_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_issueNumber_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_issueNumber_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields_publishedAt {
+  create: NewslettersFields_publishedAt_Create
+  read: NewslettersFields_publishedAt_Read
+  update: NewslettersFields_publishedAt_Update
+  delete: NewslettersFields_publishedAt_Delete
+}
+
+type NewslettersFields_publishedAt_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_publishedAt_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_publishedAt_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_publishedAt_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields_summary {
+  create: NewslettersFields_summary_Create
+  read: NewslettersFields_summary_Read
+  update: NewslettersFields_summary_Update
+  delete: NewslettersFields_summary_Delete
+}
+
+type NewslettersFields_summary_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_summary_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_summary_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_summary_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields_coverImage {
+  create: NewslettersFields_coverImage_Create
+  read: NewslettersFields_coverImage_Read
+  update: NewslettersFields_coverImage_Update
+  delete: NewslettersFields_coverImage_Delete
+}
+
+type NewslettersFields_coverImage_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_coverImage_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_coverImage_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_coverImage_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields_printEdition {
+  create: NewslettersFields_printEdition_Create
+  read: NewslettersFields_printEdition_Read
+  update: NewslettersFields_printEdition_Update
+  delete: NewslettersFields_printEdition_Delete
+}
+
+type NewslettersFields_printEdition_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_printEdition_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_printEdition_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_printEdition_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields_layout {
+  create: NewslettersFields_layout_Create
+  read: NewslettersFields_layout_Read
+  update: NewslettersFields_layout_Update
+  delete: NewslettersFields_layout_Delete
+}
+
+type NewslettersFields_layout_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_layout_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_layout_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_layout_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields_slug {
+  create: NewslettersFields_slug_Create
+  read: NewslettersFields_slug_Read
+  update: NewslettersFields_slug_Update
+  delete: NewslettersFields_slug_Delete
+}
+
+type NewslettersFields_slug_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_slug_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_slug_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_slug_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta {
+  create: NewslettersFields_meta_Create
+  read: NewslettersFields_meta_Read
+  update: NewslettersFields_meta_Update
+  delete: NewslettersFields_meta_Delete
+  fields: NewslettersFields_meta_Fields
+}
+
+type NewslettersFields_meta_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_Fields {
+  title: NewslettersFields_meta_title
+  description: NewslettersFields_meta_description
+  image: NewslettersFields_meta_image
+}
+
+type NewslettersFields_meta_title {
+  create: NewslettersFields_meta_title_Create
+  read: NewslettersFields_meta_title_Read
+  update: NewslettersFields_meta_title_Update
+  delete: NewslettersFields_meta_title_Delete
+}
+
+type NewslettersFields_meta_title_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_title_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_title_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_title_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_description {
+  create: NewslettersFields_meta_description_Create
+  read: NewslettersFields_meta_description_Read
+  update: NewslettersFields_meta_description_Update
+  delete: NewslettersFields_meta_description_Delete
+}
+
+type NewslettersFields_meta_description_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_description_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_description_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_description_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_image {
+  create: NewslettersFields_meta_image_Create
+  read: NewslettersFields_meta_image_Read
+  update: NewslettersFields_meta_image_Update
+  delete: NewslettersFields_meta_image_Delete
+}
+
+type NewslettersFields_meta_image_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_image_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_image_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_meta_image_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields_updatedAt {
+  create: NewslettersFields_updatedAt_Create
+  read: NewslettersFields_updatedAt_Read
+  update: NewslettersFields_updatedAt_Update
+  delete: NewslettersFields_updatedAt_Delete
+}
+
+type NewslettersFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields_createdAt {
+  create: NewslettersFields_createdAt_Create
+  read: NewslettersFields_createdAt_Read
+  update: NewslettersFields_createdAt_Update
+  delete: NewslettersFields_createdAt_Delete
+}
+
+type NewslettersFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type NewslettersFields__status {
+  create: NewslettersFields__status_Create
+  read: NewslettersFields__status_Read
+  update: NewslettersFields__status_Update
+  delete: NewslettersFields__status_Delete
+}
+
+type NewslettersFields__status_Create {
+  permission: Boolean!
+}
+
+type NewslettersFields__status_Read {
+  permission: Boolean!
+}
+
+type NewslettersFields__status_Update {
+  permission: Boolean!
+}
+
+type NewslettersFields__status_Delete {
+  permission: Boolean!
+}
+
+type NewslettersCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NewslettersReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NewslettersUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NewslettersDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type NewslettersReadVersionsAccess {
   permission: Boolean!
   where: JSONObject
 }
@@ -34851,6 +38351,13 @@ type EventsFields {
   longitude: EventsFields_longitude
   interestedCount: EventsFields_interestedCount
   interestedUsers: EventsFields_interestedUsers
+  lumaUrl: EventsFields_lumaUrl
+  discordUrl: EventsFields_discordUrl
+  discordGuildId: EventsFields_discordGuildId
+  discordEventId: EventsFields_discordEventId
+  discordInterestedCount: EventsFields_discordInterestedCount
+  discordLastSyncedAt: EventsFields_discordLastSyncedAt
+  discordSyncError: EventsFields_discordSyncError
   updatedAt: EventsFields_updatedAt
   createdAt: EventsFields_createdAt
   _status: EventsFields__status
@@ -35221,6 +38728,167 @@ type EventsFields_interestedUsers_Update {
 }
 
 type EventsFields_interestedUsers_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_lumaUrl {
+  create: EventsFields_lumaUrl_Create
+  read: EventsFields_lumaUrl_Read
+  update: EventsFields_lumaUrl_Update
+  delete: EventsFields_lumaUrl_Delete
+}
+
+type EventsFields_lumaUrl_Create {
+  permission: Boolean!
+}
+
+type EventsFields_lumaUrl_Read {
+  permission: Boolean!
+}
+
+type EventsFields_lumaUrl_Update {
+  permission: Boolean!
+}
+
+type EventsFields_lumaUrl_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_discordUrl {
+  create: EventsFields_discordUrl_Create
+  read: EventsFields_discordUrl_Read
+  update: EventsFields_discordUrl_Update
+  delete: EventsFields_discordUrl_Delete
+}
+
+type EventsFields_discordUrl_Create {
+  permission: Boolean!
+}
+
+type EventsFields_discordUrl_Read {
+  permission: Boolean!
+}
+
+type EventsFields_discordUrl_Update {
+  permission: Boolean!
+}
+
+type EventsFields_discordUrl_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_discordGuildId {
+  create: EventsFields_discordGuildId_Create
+  read: EventsFields_discordGuildId_Read
+  update: EventsFields_discordGuildId_Update
+  delete: EventsFields_discordGuildId_Delete
+}
+
+type EventsFields_discordGuildId_Create {
+  permission: Boolean!
+}
+
+type EventsFields_discordGuildId_Read {
+  permission: Boolean!
+}
+
+type EventsFields_discordGuildId_Update {
+  permission: Boolean!
+}
+
+type EventsFields_discordGuildId_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_discordEventId {
+  create: EventsFields_discordEventId_Create
+  read: EventsFields_discordEventId_Read
+  update: EventsFields_discordEventId_Update
+  delete: EventsFields_discordEventId_Delete
+}
+
+type EventsFields_discordEventId_Create {
+  permission: Boolean!
+}
+
+type EventsFields_discordEventId_Read {
+  permission: Boolean!
+}
+
+type EventsFields_discordEventId_Update {
+  permission: Boolean!
+}
+
+type EventsFields_discordEventId_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_discordInterestedCount {
+  create: EventsFields_discordInterestedCount_Create
+  read: EventsFields_discordInterestedCount_Read
+  update: EventsFields_discordInterestedCount_Update
+  delete: EventsFields_discordInterestedCount_Delete
+}
+
+type EventsFields_discordInterestedCount_Create {
+  permission: Boolean!
+}
+
+type EventsFields_discordInterestedCount_Read {
+  permission: Boolean!
+}
+
+type EventsFields_discordInterestedCount_Update {
+  permission: Boolean!
+}
+
+type EventsFields_discordInterestedCount_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_discordLastSyncedAt {
+  create: EventsFields_discordLastSyncedAt_Create
+  read: EventsFields_discordLastSyncedAt_Read
+  update: EventsFields_discordLastSyncedAt_Update
+  delete: EventsFields_discordLastSyncedAt_Delete
+}
+
+type EventsFields_discordLastSyncedAt_Create {
+  permission: Boolean!
+}
+
+type EventsFields_discordLastSyncedAt_Read {
+  permission: Boolean!
+}
+
+type EventsFields_discordLastSyncedAt_Update {
+  permission: Boolean!
+}
+
+type EventsFields_discordLastSyncedAt_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_discordSyncError {
+  create: EventsFields_discordSyncError_Create
+  read: EventsFields_discordSyncError_Read
+  update: EventsFields_discordSyncError_Update
+  delete: EventsFields_discordSyncError_Delete
+}
+
+type EventsFields_discordSyncError_Create {
+  permission: Boolean!
+}
+
+type EventsFields_discordSyncError_Read {
+  permission: Boolean!
+}
+
+type EventsFields_discordSyncError_Update {
+  permission: Boolean!
+}
+
+type EventsFields_discordSyncError_Delete {
   permission: Boolean!
 }
 
@@ -38229,6 +41897,14 @@ type SettingsFields {
   jumpstartFaqTitle: SettingsFields_jumpstartFaqTitle
   jumpstartFaqJumpLabel: SettingsFields_jumpstartFaqJumpLabel
   jumpstartFaqs: SettingsFields_jumpstartFaqs
+  newsMastheadTitle: SettingsFields_newsMastheadTitle
+  newsMastheadEyebrow: SettingsFields_newsMastheadEyebrow
+  newsArchiveTagline: SettingsFields_newsArchiveTagline
+  newsEmptyState: SettingsFields_newsEmptyState
+  newsCoverPlaceholder: SettingsFields_newsCoverPlaceholder
+  newsPrintEditionLabel: SettingsFields_newsPrintEditionLabel
+  newsSeoTitle: SettingsFields_newsSeoTitle
+  newsSeoDescription: SettingsFields_newsSeoDescription
   updatedAt: SettingsFields_updatedAt
   createdAt: SettingsFields_createdAt
 }
@@ -38651,6 +42327,190 @@ type SettingsFields_jumpstartFaqs_id_Update {
 }
 
 type SettingsFields_jumpstartFaqs_id_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_newsMastheadTitle {
+  create: SettingsFields_newsMastheadTitle_Create
+  read: SettingsFields_newsMastheadTitle_Read
+  update: SettingsFields_newsMastheadTitle_Update
+  delete: SettingsFields_newsMastheadTitle_Delete
+}
+
+type SettingsFields_newsMastheadTitle_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_newsMastheadTitle_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_newsMastheadTitle_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_newsMastheadTitle_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_newsMastheadEyebrow {
+  create: SettingsFields_newsMastheadEyebrow_Create
+  read: SettingsFields_newsMastheadEyebrow_Read
+  update: SettingsFields_newsMastheadEyebrow_Update
+  delete: SettingsFields_newsMastheadEyebrow_Delete
+}
+
+type SettingsFields_newsMastheadEyebrow_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_newsMastheadEyebrow_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_newsMastheadEyebrow_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_newsMastheadEyebrow_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_newsArchiveTagline {
+  create: SettingsFields_newsArchiveTagline_Create
+  read: SettingsFields_newsArchiveTagline_Read
+  update: SettingsFields_newsArchiveTagline_Update
+  delete: SettingsFields_newsArchiveTagline_Delete
+}
+
+type SettingsFields_newsArchiveTagline_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_newsArchiveTagline_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_newsArchiveTagline_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_newsArchiveTagline_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_newsEmptyState {
+  create: SettingsFields_newsEmptyState_Create
+  read: SettingsFields_newsEmptyState_Read
+  update: SettingsFields_newsEmptyState_Update
+  delete: SettingsFields_newsEmptyState_Delete
+}
+
+type SettingsFields_newsEmptyState_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_newsEmptyState_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_newsEmptyState_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_newsEmptyState_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_newsCoverPlaceholder {
+  create: SettingsFields_newsCoverPlaceholder_Create
+  read: SettingsFields_newsCoverPlaceholder_Read
+  update: SettingsFields_newsCoverPlaceholder_Update
+  delete: SettingsFields_newsCoverPlaceholder_Delete
+}
+
+type SettingsFields_newsCoverPlaceholder_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_newsCoverPlaceholder_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_newsCoverPlaceholder_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_newsCoverPlaceholder_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_newsPrintEditionLabel {
+  create: SettingsFields_newsPrintEditionLabel_Create
+  read: SettingsFields_newsPrintEditionLabel_Read
+  update: SettingsFields_newsPrintEditionLabel_Update
+  delete: SettingsFields_newsPrintEditionLabel_Delete
+}
+
+type SettingsFields_newsPrintEditionLabel_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_newsPrintEditionLabel_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_newsPrintEditionLabel_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_newsPrintEditionLabel_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_newsSeoTitle {
+  create: SettingsFields_newsSeoTitle_Create
+  read: SettingsFields_newsSeoTitle_Read
+  update: SettingsFields_newsSeoTitle_Update
+  delete: SettingsFields_newsSeoTitle_Delete
+}
+
+type SettingsFields_newsSeoTitle_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_newsSeoTitle_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_newsSeoTitle_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_newsSeoTitle_Delete {
+  permission: Boolean!
+}
+
+type SettingsFields_newsSeoDescription {
+  create: SettingsFields_newsSeoDescription_Create
+  read: SettingsFields_newsSeoDescription_Read
+  update: SettingsFields_newsSeoDescription_Update
+  delete: SettingsFields_newsSeoDescription_Delete
+}
+
+type SettingsFields_newsSeoDescription_Create {
+  permission: Boolean!
+}
+
+type SettingsFields_newsSeoDescription_Read {
+  permission: Boolean!
+}
+
+type SettingsFields_newsSeoDescription_Update {
+  permission: Boolean!
+}
+
+type SettingsFields_newsSeoDescription_Delete {
   permission: Boolean!
 }
 
@@ -39281,6 +43141,10 @@ type Mutation {
   updateProject(id: String!, autosave: Boolean, data: mutationProjectUpdateInput!, draft: Boolean): Project
   deleteProject(id: String!): Project
   restoreVersionProject(id: String): Project
+  createNewsletter(data: mutationNewsletterInput!, draft: Boolean): Newsletter
+  updateNewsletter(id: String!, autosave: Boolean, data: mutationNewsletterUpdateInput!, draft: Boolean): Newsletter
+  deleteNewsletter(id: String!): Newsletter
+  restoreVersionNewsletter(id: String): Newsletter
   createMedia(data: mutationMediaInput!): Media
   updateMedia(id: String!, autosave: Boolean, data: mutationMediaUpdateInput!): Media
   deleteMedia(id: String!): Media
@@ -39797,6 +43661,58 @@ input mutationProjectUpdate_MetaInput {
 }
 
 enum ProjectUpdate__status_MutationInput {
+  draft
+  published
+}
+
+input mutationNewsletterInput {
+  title: String!
+  issueNumber: Float
+  publishedAt: String
+  summary: String
+  coverImage: String
+  printEdition: String
+  layout: JSON
+  slug: String
+  meta: mutationNewsletter_MetaInput
+  updatedAt: String
+  createdAt: String
+  _status: Newsletter__status_MutationInput
+}
+
+input mutationNewsletter_MetaInput {
+  title: String
+  description: String
+  image: String
+}
+
+enum Newsletter__status_MutationInput {
+  draft
+  published
+}
+
+input mutationNewsletterUpdateInput {
+  title: String
+  issueNumber: Float
+  publishedAt: String
+  summary: String
+  coverImage: String
+  printEdition: String
+  layout: JSON
+  slug: String
+  meta: mutationNewsletterUpdate_MetaInput
+  updatedAt: String
+  createdAt: String
+  _status: NewsletterUpdate__status_MutationInput
+}
+
+input mutationNewsletterUpdate_MetaInput {
+  title: String
+  description: String
+  image: String
+}
+
+enum NewsletterUpdate__status_MutationInput {
   draft
   published
 }
@@ -40528,6 +44444,13 @@ input mutationEventInput {
   longitude: Float
   interestedCount: Float
   interestedUsers: [String]
+  lumaUrl: String
+  discordUrl: String
+  discordGuildId: String
+  discordEventId: String
+  discordInterestedCount: Float
+  discordLastSyncedAt: String
+  discordSyncError: String
   updatedAt: String
   createdAt: String
   _status: Event__status_MutationInput
@@ -40561,6 +44484,13 @@ input mutationEventUpdateInput {
   longitude: Float
   interestedCount: Float
   interestedUsers: [String]
+  lumaUrl: String
+  discordUrl: String
+  discordGuildId: String
+  discordEventId: String
+  discordInterestedCount: Float
+  discordLastSyncedAt: String
+  discordSyncError: String
   updatedAt: String
   createdAt: String
   _status: EventUpdate__status_MutationInput
@@ -40960,6 +44890,14 @@ input mutationSettingsInput {
   jumpstartFaqTitle: String
   jumpstartFaqJumpLabel: String
   jumpstartFaqs: [mutationSettings_JumpstartFaqsInput]
+  newsMastheadTitle: String
+  newsMastheadEyebrow: String
+  newsArchiveTagline: String
+  newsEmptyState: String
+  newsCoverPlaceholder: String
+  newsPrintEditionLabel: String
+  newsSeoTitle: String
+  newsSeoDescription: String
   updatedAt: String
   createdAt: String
 }

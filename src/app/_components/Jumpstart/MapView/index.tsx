@@ -10,6 +10,7 @@ import {
   type EventCategory,
   isEventCategory,
 } from '../../../../utilities/eventCategories'
+import { getEventLinks } from '../../../_components/EventLinks'
 
 import 'leaflet/dist/leaflet.css'
 
@@ -109,6 +110,24 @@ const createPopupContent = (event: Event, time: string, categoryLabel: string): 
     } catch {
       // The CMS validator prevents invalid URLs; ignore legacy invalid data.
     }
+  }
+
+  getEventLinks(event).forEach(({ key, href }) => {
+    const link = document.createElement('a')
+    link.className = classes.popupLink
+    link.href = href
+    link.target = '_blank'
+    link.rel = 'noopener noreferrer'
+    const label = key === 'link' ? 'Event link' : key === 'luma' ? 'Luma' : 'Discord'
+    link.textContent = `${label} →`
+    popup.append(link)
+  })
+
+  if ((event.discordInterestedCount ?? 0) > 0) {
+    const count = document.createElement('span')
+    count.className = classes.popupCount
+    count.textContent = `${event.discordInterestedCount} interested on Discord`
+    popup.append(count)
   }
 
   return popup
