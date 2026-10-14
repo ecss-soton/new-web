@@ -42,6 +42,7 @@
     "archiver": "^7.0.1",
     "async-mutex": "^0.4.1",
     "chart.js": "^4.4.2",
+    "chrono-node": "^2.10.3",
     "connect-mongo": "^6.0.0",
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",

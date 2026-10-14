@@ -5,9 +5,12 @@ import type { CollectionConfig, Validate, Where } from 'payload/types'
 import { EVENT_CATEGORIES, isEventCategory } from '../../utilities/eventCategories'
 import { admins } from '../access/admins'
 import { adminsOrPublished } from '../access/adminsOrPublished'
+import { isAdmin } from '../access/isAdmin'
 import { withEndpointErrorHandler } from '../utilities/endpointHandler'
+import { isDiscordUrl, isLumaUrl, parseDiscordUrl } from '../validate/eventLinks'
 import { isHTTPS } from '../validate/isHTTPS'
 import { isSafeLink } from '../validate/isSafeLink'
+import { ParseEventFromPaste } from './Events/react/ParseEventFromPaste'
 
 const validateCoordinate =
   (minimum: number, maximum: number, label: string): Validate =>
@@ -58,11 +61,29 @@ const Events: CollectionConfig = {
           // Override the garbage Payload date with the mathematically correct date
           data.endTime = actualEndDate.toISOString()
         }
+
+        // Keep the Discord metadata in sync with the pasted link.
+        if (data.discordUrl !== undefined) {
+          const ids = parseDiscordUrl(data.discordUrl)
+          data.discordGuildId = ids?.guildId ?? null
+          data.discordEventId = ids?.eventId ?? null
+        }
+
         return data
       },
     ],
   },
   fields: [
+    {
+      name: 'parseFromPaste',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: ParseEventFromPaste,
+        },
+        condition: data => !data?.id,
+      },
+    },
     {
       name: 'id',
       label: 'id',
@@ -199,8 +220,103 @@ const Events: CollectionConfig = {
         update: () => false,
       },
     },
+    {
+      type: 'collapsible',
+      label: 'External links & Discord',
+      admin: {
+        initCollapsed: true,
+      },
+      fields: [
+        {
+          name: 'lumaUrl',
+          label: 'Luma link',
+          type: 'text',
+          validate: isLumaUrl,
+          admin: {
+            description: 'Optional lu.ma / luma.com event link.',
+          },
+        },
+        {
+          name: 'discordUrl',
+          label: 'Discord event link',
+          type: 'text',
+          validate: isDiscordUrl,
+          admin: {
+            description:
+              'Optional Discord scheduled event link (discord.com/events/… or discord.gg/…?event=…).',
+          },
+        },
+        {
+          name: 'discordGuildId',
+          type: 'text',
+          access: {
+            read: admins,
+          },
+          admin: {
+            readOnly: true,
+            hidden: true,
+          },
+        },
+        {
+          name: 'discordEventId',
+          type: 'text',
+          access: {
+            read: admins,
+          },
+          admin: {
+            readOnly: true,
+            hidden: true,
+          },
+        },
+        {
+          name: 'discordInterestedCount',
+          label: 'Discord interested count',
+          type: 'number',
+          defaultValue: 0,
+          admin: {
+            readOnly: true,
+            description: 'Number of people interested on Discord, synced automatically.',
+          },
+        },
+        {
+          name: 'discordLastSyncedAt',
+          label: 'Discord last synced',
+          type: 'date',
+          access: {
+            read: admins,
+          },
+          admin: {
+            readOnly: true,
+          },
+        },
+        {
+          name: 'discordSyncError',
+          label: 'Discord sync error',
+          type: 'text',
+          access: {
+            read: admins,
+          },
+          admin: {
+            readOnly: true,
+          },
+        },
+      ],
+    },
   ],
   endpoints: [
+    {
+      path: '/parse',
+      method: 'post',
+      handler: withEndpointErrorHandler(async (req, res) => {
+        if (!isAdmin(req.user)) return res.status(403).json({ error: 'Forbidden' })
+
+        const text = typeof req.body?.text === 'string' ? req.body.text.slice(0, 10_000) : ''
+        if (!text.trim()) return res.status(400).json({ error: 'Missing text' })
+
+        const { parseEventText } = await import('../../utilities/parseEventText')
+        return res.json(parseEventText(text))
+      }),
+    },
     {
       path: '/ics',
       method: 'get',

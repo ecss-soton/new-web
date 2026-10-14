@@ -772,6 +772,13 @@ export interface Event {
   longitude?: number | null;
   interestedCount?: number | null;
   interestedUsers?: (string | User)[] | null;
+  lumaUrl?: string | null;
+  discordUrl?: string | null;
+  discordGuildId?: string | null;
+  discordEventId?: string | null;
+  discordInterestedCount?: number | null;
+  discordLastSyncedAt?: string | null;
+  discordSyncError?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;

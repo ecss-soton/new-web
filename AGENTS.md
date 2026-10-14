@@ -96,6 +96,21 @@ Do not hand-edit generated files when the generation commands are available. If 
 - Map popup data must be created with DOM APIs/`textContent`, not interpolated into HTML strings.
 - `jumpstartAbout` is the CMS-managed “What is Jumpstart?” sidebar content.
 
+### Events
+
+- Collection: `events`. The public listing is the CMS `events` page (Archive block) rendered by `src/app/_components/CollectionArchive/` and `EventItem/`; Jumpstart uses `src/app/_components/Jumpstart/`.
+- External links are validated: `link` (`isSafeLink`), `lumaUrl` (`isLumaUrl`), `discordUrl` (`isDiscordUrl`) in `src/payload/validate/eventLinks.ts`. `discordGuildId`/`discordEventId` are derived from `discordUrl` in the collection `beforeChange` hook — never set them by hand.
+- Paste-to-prefill: `src/utilities/parseEventText.ts` (chrono-node, interpreted in `Europe/London`) parses Discord announcements; `POST /api/events/parse` is admin-only and `Events/react/ParseEventFromPaste.tsx` fills the create form. Treat parsed text/URLs as untrusted; render only via `getSafeHref`/`RichText`.
+- Discord interest sync: `src/payload/utilities/discordSync.ts` writes Discord `user_count` to `discordInterestedCount` (separate from the site `interestedCount`/`interestedUsers`). `scheduleDiscordSync.ts` runs the recurring job from `server.ts` `onInit` and no-ops without `DISCORD_BOT_TOKEN`.
+- `EventLinks` (`src/app/_components/EventLinks/`) is the single source for rendering event link buttons; use it rather than re-deriving links.
+
+#### Discord event sync — operations
+
+- Set `DISCORD_BOT_TOKEN` (bot in the society guild) and `DISCORD_GUILD_ID` (needed for invite-style links) as deployment secrets; leave blank to disable syncing. Optional `DISCORD_SYNC_CRON` (default `*/20 * * * *`). Never commit real tokens.
+- The scheduler is in-process with no distributed lock (single-instance assumption); add a lock before running multiple instances.
+- Polling reads only upcoming events with a Discord link. `discordSyncError` surfaces failures; alert on it and on stale `discordLastSyncedAt`.
+- Auto-creating events from announcement messages is intentionally not implemented yet (separate phase; needs a privileged Message Content intent and an idempotency/index decision).
+
 ## Security and correctness rules
 
 - Treat every CMS string and custom URL as untrusted at render time.

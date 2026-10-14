@@ -11,6 +11,8 @@ export const EVENTS = `
                 location
                 description
                 link
+                lumaUrl
+                discordUrl
                 isJumpstart
                 category
                 sortOrder
@@ -18,6 +20,7 @@ export const EVENTS = `
                 latitude
                 longitude
                 interestedCount
+                discordInterestedCount
                 image {
                     ${MEDIA_FIELDS}
                 }

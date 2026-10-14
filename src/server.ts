@@ -14,6 +14,7 @@ import payload from 'payload'
 import { seed } from './payload/seed'
 import { getRedirectRules, matchRedirectRule } from './payload/utilities/redirects'
 import restartJobs from './payload/utilities/restartJobs'
+import { scheduleDiscordSync } from './payload/utilities/scheduleDiscordSync'
 
 const app = express()
 
@@ -35,6 +36,7 @@ const start = async (): Promise<void> => {
     onInit: async () => {
       payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`)
       await restartJobs(payload)
+      scheduleDiscordSync(payload)
     },
   })
 

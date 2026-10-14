@@ -844,6 +844,13 @@ type Event {
   longitude: Float
   interestedCount: Float
   interestedUsers: [User!]
+  lumaUrl: String
+  discordUrl: String
+  discordGuildId: String
+  discordEventId: String
+  discordInterestedCount: Float
+  discordLastSyncedAt: DateTime
+  discordSyncError: String
   updatedAt: DateTime
   createdAt: DateTime
   _status: Event__status
@@ -22110,6 +22117,13 @@ input Event_where {
   longitude: Event_longitude_operator
   interestedCount: Event_interestedCount_operator
   interestedUsers: Event_interestedUsers_operator
+  lumaUrl: Event_lumaUrl_operator
+  discordUrl: Event_discordUrl_operator
+  discordGuildId: Event_discordGuildId_operator
+  discordEventId: Event_discordEventId_operator
+  discordInterestedCount: Event_discordInterestedCount_operator
+  discordLastSyncedAt: Event_discordLastSyncedAt_operator
+  discordSyncError: Event_discordSyncError_operator
   updatedAt: Event_updatedAt_operator
   createdAt: Event_createdAt_operator
   _status: Event__status_operator
@@ -22276,6 +22290,82 @@ input Event_interestedUsers_operator {
   exists: Boolean
 }
 
+input Event_lumaUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_discordUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_discordGuildId_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_discordEventId_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Event_discordInterestedCount_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Event_discordLastSyncedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Event_discordSyncError_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
 input Event_updatedAt_operator {
   equals: DateTime
   not_equals: DateTime
@@ -22329,6 +22419,13 @@ input Event_where_and {
   longitude: Event_longitude_operator
   interestedCount: Event_interestedCount_operator
   interestedUsers: Event_interestedUsers_operator
+  lumaUrl: Event_lumaUrl_operator
+  discordUrl: Event_discordUrl_operator
+  discordGuildId: Event_discordGuildId_operator
+  discordEventId: Event_discordEventId_operator
+  discordInterestedCount: Event_discordInterestedCount_operator
+  discordLastSyncedAt: Event_discordLastSyncedAt_operator
+  discordSyncError: Event_discordSyncError_operator
   updatedAt: Event_updatedAt_operator
   createdAt: Event_createdAt_operator
   _status: Event__status_operator
@@ -22353,6 +22450,13 @@ input Event_where_or {
   longitude: Event_longitude_operator
   interestedCount: Event_interestedCount_operator
   interestedUsers: Event_interestedUsers_operator
+  lumaUrl: Event_lumaUrl_operator
+  discordUrl: Event_discordUrl_operator
+  discordGuildId: Event_discordGuildId_operator
+  discordEventId: Event_discordEventId_operator
+  discordInterestedCount: Event_discordInterestedCount_operator
+  discordLastSyncedAt: Event_discordLastSyncedAt_operator
+  discordSyncError: Event_discordSyncError_operator
   updatedAt: Event_updatedAt_operator
   createdAt: Event_createdAt_operator
   _status: Event__status_operator
@@ -22390,6 +22494,13 @@ type EventsDocAccessFields {
   longitude: EventsDocAccessFields_longitude
   interestedCount: EventsDocAccessFields_interestedCount
   interestedUsers: EventsDocAccessFields_interestedUsers
+  lumaUrl: EventsDocAccessFields_lumaUrl
+  discordUrl: EventsDocAccessFields_discordUrl
+  discordGuildId: EventsDocAccessFields_discordGuildId
+  discordEventId: EventsDocAccessFields_discordEventId
+  discordInterestedCount: EventsDocAccessFields_discordInterestedCount
+  discordLastSyncedAt: EventsDocAccessFields_discordLastSyncedAt
+  discordSyncError: EventsDocAccessFields_discordSyncError
   updatedAt: EventsDocAccessFields_updatedAt
   createdAt: EventsDocAccessFields_createdAt
   _status: EventsDocAccessFields__status
@@ -22763,6 +22874,167 @@ type EventsDocAccessFields_interestedUsers_Delete {
   permission: Boolean!
 }
 
+type EventsDocAccessFields_lumaUrl {
+  create: EventsDocAccessFields_lumaUrl_Create
+  read: EventsDocAccessFields_lumaUrl_Read
+  update: EventsDocAccessFields_lumaUrl_Update
+  delete: EventsDocAccessFields_lumaUrl_Delete
+}
+
+type EventsDocAccessFields_lumaUrl_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_lumaUrl_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_lumaUrl_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_lumaUrl_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordUrl {
+  create: EventsDocAccessFields_discordUrl_Create
+  read: EventsDocAccessFields_discordUrl_Read
+  update: EventsDocAccessFields_discordUrl_Update
+  delete: EventsDocAccessFields_discordUrl_Delete
+}
+
+type EventsDocAccessFields_discordUrl_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordUrl_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordUrl_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordUrl_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordGuildId {
+  create: EventsDocAccessFields_discordGuildId_Create
+  read: EventsDocAccessFields_discordGuildId_Read
+  update: EventsDocAccessFields_discordGuildId_Update
+  delete: EventsDocAccessFields_discordGuildId_Delete
+}
+
+type EventsDocAccessFields_discordGuildId_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordGuildId_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordGuildId_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordGuildId_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordEventId {
+  create: EventsDocAccessFields_discordEventId_Create
+  read: EventsDocAccessFields_discordEventId_Read
+  update: EventsDocAccessFields_discordEventId_Update
+  delete: EventsDocAccessFields_discordEventId_Delete
+}
+
+type EventsDocAccessFields_discordEventId_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordEventId_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordEventId_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordEventId_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordInterestedCount {
+  create: EventsDocAccessFields_discordInterestedCount_Create
+  read: EventsDocAccessFields_discordInterestedCount_Read
+  update: EventsDocAccessFields_discordInterestedCount_Update
+  delete: EventsDocAccessFields_discordInterestedCount_Delete
+}
+
+type EventsDocAccessFields_discordInterestedCount_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordInterestedCount_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordInterestedCount_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordInterestedCount_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordLastSyncedAt {
+  create: EventsDocAccessFields_discordLastSyncedAt_Create
+  read: EventsDocAccessFields_discordLastSyncedAt_Read
+  update: EventsDocAccessFields_discordLastSyncedAt_Update
+  delete: EventsDocAccessFields_discordLastSyncedAt_Delete
+}
+
+type EventsDocAccessFields_discordLastSyncedAt_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordLastSyncedAt_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordLastSyncedAt_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordLastSyncedAt_Delete {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordSyncError {
+  create: EventsDocAccessFields_discordSyncError_Create
+  read: EventsDocAccessFields_discordSyncError_Read
+  update: EventsDocAccessFields_discordSyncError_Update
+  delete: EventsDocAccessFields_discordSyncError_Delete
+}
+
+type EventsDocAccessFields_discordSyncError_Create {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordSyncError_Read {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordSyncError_Update {
+  permission: Boolean!
+}
+
+type EventsDocAccessFields_discordSyncError_Delete {
+  permission: Boolean!
+}
+
 type EventsDocAccessFields_updatedAt {
   create: EventsDocAccessFields_updatedAt_Create
   read: EventsDocAccessFields_updatedAt_Read
@@ -22882,6 +23154,13 @@ type EventVersion_Version {
   longitude: Float
   interestedCount: Float
   interestedUsers: [User!]
+  lumaUrl: String
+  discordUrl: String
+  discordGuildId: String
+  discordEventId: String
+  discordInterestedCount: Float
+  discordLastSyncedAt: DateTime
+  discordSyncError: String
   updatedAt: DateTime
   createdAt: DateTime
   _status: EventVersion_Version__status
@@ -23118,6 +23397,13 @@ input versionsEvent_where {
   version__longitude: versionsEvent_version__longitude_operator
   version__interestedCount: versionsEvent_version__interestedCount_operator
   version__interestedUsers: versionsEvent_version__interestedUsers_operator
+  version__lumaUrl: versionsEvent_version__lumaUrl_operator
+  version__discordUrl: versionsEvent_version__discordUrl_operator
+  version__discordGuildId: versionsEvent_version__discordGuildId_operator
+  version__discordEventId: versionsEvent_version__discordEventId_operator
+  version__discordInterestedCount: versionsEvent_version__discordInterestedCount_operator
+  version__discordLastSyncedAt: versionsEvent_version__discordLastSyncedAt_operator
+  version__discordSyncError: versionsEvent_version__discordSyncError_operator
   version__updatedAt: versionsEvent_version__updatedAt_operator
   version__createdAt: versionsEvent_version__createdAt_operator
   version___status: versionsEvent_version___status_operator
@@ -23287,6 +23573,82 @@ input versionsEvent_version__interestedUsers_operator {
   exists: Boolean
 }
 
+input versionsEvent_version__lumaUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsEvent_version__discordUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsEvent_version__discordGuildId_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsEvent_version__discordEventId_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsEvent_version__discordInterestedCount_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input versionsEvent_version__discordLastSyncedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsEvent_version__discordSyncError_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
 input versionsEvent_version__updatedAt_operator {
   equals: DateTime
   not_equals: DateTime
@@ -23379,6 +23741,13 @@ input versionsEvent_where_and {
   version__longitude: versionsEvent_version__longitude_operator
   version__interestedCount: versionsEvent_version__interestedCount_operator
   version__interestedUsers: versionsEvent_version__interestedUsers_operator
+  version__lumaUrl: versionsEvent_version__lumaUrl_operator
+  version__discordUrl: versionsEvent_version__discordUrl_operator
+  version__discordGuildId: versionsEvent_version__discordGuildId_operator
+  version__discordEventId: versionsEvent_version__discordEventId_operator
+  version__discordInterestedCount: versionsEvent_version__discordInterestedCount_operator
+  version__discordLastSyncedAt: versionsEvent_version__discordLastSyncedAt_operator
+  version__discordSyncError: versionsEvent_version__discordSyncError_operator
   version__updatedAt: versionsEvent_version__updatedAt_operator
   version__createdAt: versionsEvent_version__createdAt_operator
   version___status: versionsEvent_version___status_operator
@@ -23407,6 +23776,13 @@ input versionsEvent_where_or {
   version__longitude: versionsEvent_version__longitude_operator
   version__interestedCount: versionsEvent_version__interestedCount_operator
   version__interestedUsers: versionsEvent_version__interestedUsers_operator
+  version__lumaUrl: versionsEvent_version__lumaUrl_operator
+  version__discordUrl: versionsEvent_version__discordUrl_operator
+  version__discordGuildId: versionsEvent_version__discordGuildId_operator
+  version__discordEventId: versionsEvent_version__discordEventId_operator
+  version__discordInterestedCount: versionsEvent_version__discordInterestedCount_operator
+  version__discordLastSyncedAt: versionsEvent_version__discordLastSyncedAt_operator
+  version__discordSyncError: versionsEvent_version__discordSyncError_operator
   version__updatedAt: versionsEvent_version__updatedAt_operator
   version__createdAt: versionsEvent_version__createdAt_operator
   version___status: versionsEvent_version___status_operator
@@ -37975,6 +38351,13 @@ type EventsFields {
   longitude: EventsFields_longitude
   interestedCount: EventsFields_interestedCount
   interestedUsers: EventsFields_interestedUsers
+  lumaUrl: EventsFields_lumaUrl
+  discordUrl: EventsFields_discordUrl
+  discordGuildId: EventsFields_discordGuildId
+  discordEventId: EventsFields_discordEventId
+  discordInterestedCount: EventsFields_discordInterestedCount
+  discordLastSyncedAt: EventsFields_discordLastSyncedAt
+  discordSyncError: EventsFields_discordSyncError
   updatedAt: EventsFields_updatedAt
   createdAt: EventsFields_createdAt
   _status: EventsFields__status
@@ -38345,6 +38728,167 @@ type EventsFields_interestedUsers_Update {
 }
 
 type EventsFields_interestedUsers_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_lumaUrl {
+  create: EventsFields_lumaUrl_Create
+  read: EventsFields_lumaUrl_Read
+  update: EventsFields_lumaUrl_Update
+  delete: EventsFields_lumaUrl_Delete
+}
+
+type EventsFields_lumaUrl_Create {
+  permission: Boolean!
+}
+
+type EventsFields_lumaUrl_Read {
+  permission: Boolean!
+}
+
+type EventsFields_lumaUrl_Update {
+  permission: Boolean!
+}
+
+type EventsFields_lumaUrl_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_discordUrl {
+  create: EventsFields_discordUrl_Create
+  read: EventsFields_discordUrl_Read
+  update: EventsFields_discordUrl_Update
+  delete: EventsFields_discordUrl_Delete
+}
+
+type EventsFields_discordUrl_Create {
+  permission: Boolean!
+}
+
+type EventsFields_discordUrl_Read {
+  permission: Boolean!
+}
+
+type EventsFields_discordUrl_Update {
+  permission: Boolean!
+}
+
+type EventsFields_discordUrl_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_discordGuildId {
+  create: EventsFields_discordGuildId_Create
+  read: EventsFields_discordGuildId_Read
+  update: EventsFields_discordGuildId_Update
+  delete: EventsFields_discordGuildId_Delete
+}
+
+type EventsFields_discordGuildId_Create {
+  permission: Boolean!
+}
+
+type EventsFields_discordGuildId_Read {
+  permission: Boolean!
+}
+
+type EventsFields_discordGuildId_Update {
+  permission: Boolean!
+}
+
+type EventsFields_discordGuildId_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_discordEventId {
+  create: EventsFields_discordEventId_Create
+  read: EventsFields_discordEventId_Read
+  update: EventsFields_discordEventId_Update
+  delete: EventsFields_discordEventId_Delete
+}
+
+type EventsFields_discordEventId_Create {
+  permission: Boolean!
+}
+
+type EventsFields_discordEventId_Read {
+  permission: Boolean!
+}
+
+type EventsFields_discordEventId_Update {
+  permission: Boolean!
+}
+
+type EventsFields_discordEventId_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_discordInterestedCount {
+  create: EventsFields_discordInterestedCount_Create
+  read: EventsFields_discordInterestedCount_Read
+  update: EventsFields_discordInterestedCount_Update
+  delete: EventsFields_discordInterestedCount_Delete
+}
+
+type EventsFields_discordInterestedCount_Create {
+  permission: Boolean!
+}
+
+type EventsFields_discordInterestedCount_Read {
+  permission: Boolean!
+}
+
+type EventsFields_discordInterestedCount_Update {
+  permission: Boolean!
+}
+
+type EventsFields_discordInterestedCount_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_discordLastSyncedAt {
+  create: EventsFields_discordLastSyncedAt_Create
+  read: EventsFields_discordLastSyncedAt_Read
+  update: EventsFields_discordLastSyncedAt_Update
+  delete: EventsFields_discordLastSyncedAt_Delete
+}
+
+type EventsFields_discordLastSyncedAt_Create {
+  permission: Boolean!
+}
+
+type EventsFields_discordLastSyncedAt_Read {
+  permission: Boolean!
+}
+
+type EventsFields_discordLastSyncedAt_Update {
+  permission: Boolean!
+}
+
+type EventsFields_discordLastSyncedAt_Delete {
+  permission: Boolean!
+}
+
+type EventsFields_discordSyncError {
+  create: EventsFields_discordSyncError_Create
+  read: EventsFields_discordSyncError_Read
+  update: EventsFields_discordSyncError_Update
+  delete: EventsFields_discordSyncError_Delete
+}
+
+type EventsFields_discordSyncError_Create {
+  permission: Boolean!
+}
+
+type EventsFields_discordSyncError_Read {
+  permission: Boolean!
+}
+
+type EventsFields_discordSyncError_Update {
+  permission: Boolean!
+}
+
+type EventsFields_discordSyncError_Delete {
   permission: Boolean!
 }
 
@@ -43900,6 +44444,13 @@ input mutationEventInput {
   longitude: Float
   interestedCount: Float
   interestedUsers: [String]
+  lumaUrl: String
+  discordUrl: String
+  discordGuildId: String
+  discordEventId: String
+  discordInterestedCount: Float
+  discordLastSyncedAt: String
+  discordSyncError: String
   updatedAt: String
   createdAt: String
   _status: Event__status_MutationInput
@@ -43933,6 +44484,13 @@ input mutationEventUpdateInput {
   longitude: Float
   interestedCount: Float
   interestedUsers: [String]
+  lumaUrl: String
+  discordUrl: String
+  discordGuildId: String
+  discordEventId: String
+  discordInterestedCount: Float
+  discordLastSyncedAt: String
+  discordSyncError: String
   updatedAt: String
   createdAt: String
   _status: EventUpdate__status_MutationInput

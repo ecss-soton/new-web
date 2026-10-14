@@ -206,6 +206,13 @@
   flex-wrap: wrap;
 }
 
+.discordCount {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--jumpstart-muted);
+}
+
 .mapsButton {
   align-self: flex-start;
   display: inline-flex;
