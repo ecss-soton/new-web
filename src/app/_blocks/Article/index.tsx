@@ -3,7 +3,7 @@ import React from 'react'
 import { Newsletter } from '../../../payload/payload-types'
 import { Media } from '../../_components/Media'
 import RichText from '../../_components/RichText'
-import { bricolage } from '../../_utilities/font'
+import { newsreader, spectral } from '../../_utilities/font'
 
 import classes from './index.module.scss'
 
@@ -27,7 +27,7 @@ export const Article: React.FC<Props> = ({
       data-span={articleSpan}
     >
       {featured && <p className={classes.kicker}>Feature</p>}
-      <h2 className={[classes.headline, bricolage.className].join(' ')}>{headline}</h2>
+      <h2 className={[classes.headline, newsreader.className].join(' ')}>{headline}</h2>
       {byline && <p className={classes.byline}>{byline}</p>}
       {hasImage && !inlineImage && (
         <figure className={classes.figure}>
@@ -40,7 +40,7 @@ export const Article: React.FC<Props> = ({
             <Media resource={image} />
           </figure>
         )}
-        <RichText content={body} />
+        <RichText content={body} fontClassName={spectral.className} />
       </div>
     </article>
   )

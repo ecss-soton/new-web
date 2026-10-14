@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Newsletter } from '../../../payload/payload-types'
-import { bricolage, inter } from '../../_utilities/font'
+import { newsreader, spectral } from '../../_utilities/font'
 import { getSafeHref } from '../../_utilities/getSafeHref'
 
 import classes from './index.module.scss'
@@ -12,8 +12,8 @@ export const Briefs: React.FC<Props> = ({ heading, entries, briefsSpan = 'full' 
   if (!entries?.length) return null
 
   return (
-    <section className={[classes.briefs, inter.className].join(' ')} data-span={briefsSpan}>
-      <h3 className={[classes.heading, bricolage.className].join(' ')}>{heading}</h3>
+    <section className={[classes.briefs, spectral.className].join(' ')} data-span={briefsSpan}>
+      <h3 className={[classes.heading, newsreader.className].join(' ')}>{heading}</h3>
       <ul className={classes.list}>
         {entries.map((entry, index) => {
           const href = getSafeHref(entry.url)

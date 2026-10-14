@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Newsletter } from '../../../payload/payload-types'
 import { Media } from '../../_components/Media'
-import { inter } from '../../_utilities/font'
+import { spectral } from '../../_utilities/font'
 
 import classes from './index.module.scss'
 
@@ -15,7 +15,9 @@ export const Figure: React.FC<Props> = ({ image, caption, figureSpan = 'full' })
         <Media resource={image} />
       </div>
       {caption && (
-        <figcaption className={[classes.caption, inter.className].join(' ')}>{caption}</figcaption>
+        <figcaption className={[classes.caption, spectral.className].join(' ')}>
+          {caption}
+        </figcaption>
       )}
     </figure>
   )

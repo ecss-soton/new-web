@@ -7,7 +7,7 @@ import { fetchDocs } from '../../_api/fetchDoc'
 import { fetchSettings } from '../../_api/fetchGlobals'
 import { Gutter } from '../../_components/Gutter'
 import { Media } from '../../_components/Media'
-import { bricolage, inter } from '../../_utilities/font'
+import { newsreader, spectral } from '../../_utilities/font'
 import { Masthead } from './Masthead'
 
 import classes from './index.module.scss'
@@ -42,7 +42,7 @@ export default async function NewsPage() {
         <Masthead title={mastheadTitle} eyebrow={mastheadEyebrow} tagline={tagline} />
 
         {newsletters.length === 0 ? (
-          <p className={[classes.empty, inter.className].join(' ')}>{emptyState}</p>
+          <p className={[classes.empty, spectral.className].join(' ')}>{emptyState}</p>
         ) : (
           <ul className={classes.archive}>
             {newsletters.map(issue => {
@@ -61,7 +61,9 @@ export default async function NewsPage() {
                       {coverImage && typeof coverImage === 'object' ? (
                         <Media resource={coverImage} />
                       ) : (
-                        <span className={[classes.coverPlaceholder, bricolage.className].join(' ')}>
+                        <span
+                          className={[classes.coverPlaceholder, newsreader.className].join(' ')}
+                        >
                           {issueNumber ? `Issue ${issueNumber}` : coverPlaceholder}
                         </span>
                       )}
@@ -71,11 +73,11 @@ export default async function NewsPage() {
                         {issueNumber ? `Issue ${issueNumber}` : 'Newsletter'}
                         {date ? ` · ${date}` : null}
                       </p>
-                      <h2 className={[classes.issueTitle, bricolage.className].join(' ')}>
+                      <h2 className={[classes.issueTitle, newsreader.className].join(' ')}>
                         {title}
                       </h2>
                       {summary && (
-                        <p className={[classes.issueSummary, inter.className].join(' ')}>
+                        <p className={[classes.issueSummary, spectral.className].join(' ')}>
                           {summary}
                         </p>
                       )}
