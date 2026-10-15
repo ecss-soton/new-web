@@ -1420,6 +1420,7 @@ export interface Table {
   seatPositions?:
     | {
         seatIndex: number;
+        userId?: (string | null) | User;
         name: string;
         id?: string | null;
       }[]
@@ -1437,12 +1438,6 @@ export interface TicketHolder {
   sotonId: string;
   name: string;
   plusOneCount?: number | null;
-  plusOneNames?:
-    | {
-        name: string;
-        id?: string | null;
-      }[]
-    | null;
   dietaryRequirements?: string | null;
   updatedAt: string;
   createdAt: string;

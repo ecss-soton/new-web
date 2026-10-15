@@ -1,16 +1,32 @@
 'use client'
 
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+
+import type { SeatAssignment } from '../../_api/fetchBooking'
 
 import classes from './index.module.scss'
 
+export type SeatSlot = { userId: string | null; name: string } | null
+
 type SeatLayoutProps = {
-  seats: (string | null)[]
+  seats: SeatSlot[]
   members: { id: string; name: string }[]
-  yourTable: boolean
   joinCode: string
   eventSlug: string
-  onSave: (seats: { seatIndex: number; name: string }[]) => Promise<void>
+  onSave: (seats: SeatAssignment[]) => Promise<void>
+  /** Used to flag the viewer's own name in the guest picker. */
+  currentUserId?: string
+  /** A member of this table, so the plan is theirs to arrange. */
+  isMember: boolean
+  /** Members can edit only while the owner's lock is off. */
+  canEdit: boolean
+  locked: boolean
+  /** Signed in but not at this table yet. */
+  canJoin: boolean
+  onJoin?: () => void
+  joining?: boolean
+  /** Why joining is unavailable, when it is. */
+  joinBlockedReason?: string | null
 }
 
 const TABLE_RADIUS = 140 // px
@@ -19,15 +35,31 @@ const SEAT_SIZE = 100 // px
 export const SeatLayout: React.FC<SeatLayoutProps> = ({
   seats,
   members,
-  yourTable,
   joinCode,
   eventSlug,
   onSave,
+  currentUserId,
+  isMember,
+  canEdit,
+  locked,
+  canJoin,
+  onJoin,
+  joining,
+  joinBlockedReason,
 }) => {
   const [editingSeat, setEditingSeat] = useState<number | null>(null)
-  const [localSeats, setLocalSeats] = useState<(string | null)[]>(seats)
+  const [localSeats, setLocalSeats] = useState<SeatSlot[]>(seats)
+  const [dirty, setDirty] = useState(false)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+
+  // The page polls every few seconds. Adopt server changes unless the viewer has
+  // unsaved edits, so another member's update appears without clobbering theirs.
+  useEffect(() => {
+    if (!dirty) {
+      setLocalSeats(seats)
+    }
+  }, [seats, dirty])
 
   const getSeatPosition = useCallback((index: number, total: number) => {
     const angle = (360 / total) * index - 90
@@ -37,34 +69,47 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
     return { x, y, angle }
   }, [])
 
-  const unassigned = members.filter(m => !localSeats.some(s => s === m.name))
+  const isSeated = useCallback(
+    (member: { id: string; name: string }): boolean =>
+      localSeats.some(
+        seat =>
+          seat !== null &&
+          (seat.userId !== null ? seat.userId === member.id : seat.name === member.name),
+      ),
+    [localSeats],
+  )
+
+  const unassigned = members.filter(member => !isSeated(member))
 
   const handleSeatClick = (index: number) => {
-    if (!yourTable) return
-    if (editingSeat === index) {
-      setEditingSeat(null)
-    } else {
-      setEditingSeat(index)
-    }
+    if (!canEdit) return
+    setEditingSeat(current => (current === index ? null : index))
   }
 
-  const handleAssign = (index: number, name: string) => {
-    const updated = [...localSeats]
-    // Clear this person from any other seat they occupy
-    for (let i = 0; i < updated.length; i++) {
-      if (updated[i] === name) {
-        updated[i] = null
+  const handleAssign = (index: number, member: { id: string; name: string }) => {
+    setLocalSeats(current => {
+      const updated = [...current]
+      // Clear this guest from any other seat they occupy.
+      for (let i = 0; i < updated.length; i++) {
+        const seat = updated[i]
+        if (seat && (seat.userId === member.id || seat.name === member.name)) {
+          updated[i] = null
+        }
       }
-    }
-    updated[index] = name
-    setLocalSeats(updated)
+      updated[index] = { userId: member.id, name: member.name }
+      return updated
+    })
+    setDirty(true)
     setEditingSeat(null)
   }
 
   const handleClear = (index: number) => {
-    const updated = [...localSeats]
-    updated[index] = null
-    setLocalSeats(updated)
+    setLocalSeats(current => {
+      const updated = [...current]
+      updated[index] = null
+      return updated
+    })
+    setDirty(true)
     setEditingSeat(null)
   }
 
@@ -72,10 +117,19 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
     setSaving(true)
     setMessage(null)
     try {
-      const seatPositions = localSeats
-        .map((name, i) => ({ seatIndex: i, name: name || '' }))
-        .filter(s => s.name !== '')
+      const seatPositions: SeatAssignment[] = []
+      localSeats.forEach((seat, index) => {
+        if (!seat) return
+        // Rows written before seats were keyed by user still carry a name only.
+        seatPositions.push(
+          seat.userId
+            ? { seatIndex: index, userId: seat.userId }
+            : { seatIndex: index, name: seat.name },
+        )
+      })
+
       await onSave(seatPositions)
+      setDirty(false)
       setMessage({ type: 'success', text: 'Seats saved!' })
       setTimeout(() => setMessage(null), 2000)
     } catch (err) {
@@ -95,6 +149,25 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
         </a>
       </div>
       <h2 className={classes.title}>Table {joinCode} - Seat Plan</h2>
+
+      <div className={classes.statusNotice}>
+        {isMember ? (
+          locked ? (
+            <span>🔒 This table is locked. The owner can unlock it to make changes.</span>
+          ) : (
+            <span>You&apos;re at this table. Click a seat to assign a guest.</span>
+          )
+        ) : canJoin ? (
+          <span className={classes.joinRow}>
+            <span>This table has space — join it to take a seat.</span>
+            <button className={classes.saveBtn} onClick={onJoin} disabled={joining}>
+              {joining ? 'Joining...' : 'Join Table'}
+            </button>
+          </span>
+        ) : (
+          <span>{joinBlockedReason || 'You cannot join this table.'}</span>
+        )}
+      </div>
 
       <div className={classes.tableContainer}>
         <div className={classes.table}>
@@ -130,13 +203,13 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
                 >
                   <span className={classes.seatIndex}>#{index + 1}</span>
                   {isOccupied ? (
-                    <span className={classes.seatName}>{seat}</span>
+                    <span className={classes.seatName}>{seat?.name}</span>
                   ) : (
                     <span className={classes.seatFree}>Free</span>
                   )}
                 </div>
 
-                {isEditing && yourTable && (
+                {isEditing && canEdit && (
                   <div
                     className={classes.seatEditor}
                     style={{ transform: `rotate(-${pos.angle + 90}deg)` }}
@@ -148,9 +221,10 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
                           <button
                             key={m.id}
                             className={classes.assignBtn}
-                            onClick={() => handleAssign(index, m.name)}
+                            onClick={() => handleAssign(index, m)}
                           >
                             {m.name}
+                            {m.id === currentUserId ? ' (you)' : ''}
                           </button>
                         ))}
                         {isOccupied && (
@@ -174,20 +248,21 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
         </div>
       </div>
 
-      {unassigned.length > 0 && yourTable && (
+      {unassigned.length > 0 && isMember && (
         <div className={classes.unassigned}>
           <h4>Not yet seated:</h4>
           <div className={classes.unassignedList}>
             {unassigned.map(m => (
               <span key={m.id} className={classes.unassignedName}>
                 {m.name}
+                {m.id === currentUserId ? ' (you)' : ''}
               </span>
             ))}
           </div>
         </div>
       )}
 
-      {yourTable && (
+      {canEdit && (
         <div className={classes.saveRow}>
           {message && (
             <span className={message.type === 'success' ? classes.successMsg : classes.errorMsg}>

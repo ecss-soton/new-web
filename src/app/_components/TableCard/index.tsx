@@ -46,6 +46,9 @@ export const TableCard: React.FC<TableCardProps> = ({
   const currentSeats = memberCount || 0
   const full = currentSeats >= capacity
   const canJoin = !full && !locked && (bookingOpen || isAdmin)
+  // The lock is the owner's freeze control: it stops joins, leaves and seat edits.
+  const canLeave = (bookingOpen || isAdmin) && (!locked || isAdmin)
+  const plusOneSeats = Math.max(0, currentSeats - members.length)
 
   const shareLink = `${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${eventSlug || ''}/${joinCode}`
 
@@ -71,7 +74,8 @@ export const TableCard: React.FC<TableCardProps> = ({
           {locked && <span className={classes.lockIcon}> 🔒</span>}
         </h3>
         <span className={classes.capacity}>
-          {currentSeats}/{capacity} seats
+          {currentSeats}/{capacity} seats reserved
+          {plusOneSeats > 0 ? ` (${members.length} + ${plusOneSeats} plus-ones)` : ''}
         </span>
       </div>
 
@@ -96,7 +100,8 @@ export const TableCard: React.FC<TableCardProps> = ({
             <button
               className={[classes.button, classes.secondary].join(' ')}
               onClick={onLeave}
-              disabled={loading || !(bookingOpen || isAdmin)}
+              disabled={loading || !canLeave}
+              title={!canLeave && locked ? 'Unlock the table to leave' : undefined}
             >
               {loading ? 'Leaving...' : 'Leave'}
             </button>

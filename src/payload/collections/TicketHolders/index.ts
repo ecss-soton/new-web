@@ -2,7 +2,46 @@ import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../../access/admins'
 import { isAdmin } from '../../access/isAdmin'
+import { normalizeSotonId } from '../../utilities/sotonId'
 import Groups from '../groups'
+
+/**
+ * Splits one CSV row, honouring double-quoted fields (including escaped `""`).
+ * Guest names are the reason this exists — a name like `Lovelace, Ada` would
+ * otherwise shift every later column.
+ */
+const splitCsvLine = (line: string): string[] => {
+  const fields: string[] = []
+  let current = ''
+  let inQuotes = false
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i]
+
+    if (inQuotes) {
+      if (char === '"') {
+        if (line[i + 1] === '"') {
+          current += '"'
+          i++
+        } else {
+          inQuotes = false
+        }
+      } else {
+        current += char
+      }
+    } else if (char === '"') {
+      inQuotes = true
+    } else if (char === ',') {
+      fields.push(current)
+      current = ''
+    } else {
+      current += char
+    }
+  }
+
+  fields.push(current)
+  return fields.map(field => field.trim())
+}
 
 export const TicketHolders: CollectionConfig = {
   slug: 'ticket-holders',
@@ -32,15 +71,21 @@ export const TicketHolders: CollectionConfig = {
         description: 'The event this ticket is for.',
       },
     },
+    // Guest-list uniqueness is per event, not global: the same person attends
+    // multiple balls. A field-level `unique: true` here created a global Mongo
+    // index that rejected every returning guest on import. The replacement
+    // compound `{ sotonId, event }` unique index is created by
+    // `src/scripts/migrateBookingIndexes.ts` — the Payload adapter only ever
+    // *adds* indexes, so the old global index has to be dropped by that script
+    // (see the file for details).
     {
       name: 'sotonId',
       type: 'text',
       label: 'University Username',
       required: true,
-      unique: true,
       admin: {
         description:
-          'The university username (e.g. "ab1c23") — must match the Azure AD mailNickname.',
+          'The university username (e.g. "ab1c23") — must match the Azure AD mailNickname. Unique per event.',
       },
     },
     {
@@ -59,21 +104,6 @@ export const TicketHolders: CollectionConfig = {
       admin: {
         description: 'How many plus-ones this ticket holder can bring. Each plus-one takes a seat.',
       },
-    },
-    {
-      name: 'plusOneNames',
-      type: 'array',
-      label: 'Plus-One Names',
-      admin: {
-        description: 'Names of the plus-ones (for seat assignment).',
-      },
-      fields: [
-        {
-          name: 'name',
-          type: 'text',
-          required: true,
-        },
-      ],
     },
     {
       name: 'dietaryRequirements',
@@ -102,9 +132,11 @@ export const TicketHolders: CollectionConfig = {
           return res.status(400).json({ error: 'Missing "eventId" field' })
         }
 
-        // Verify event exists
+        // Verify event exists, and keep it so rows can be validated against the
+        // event's seat allocation.
+        let event
         try {
-          await payload.findByID({
+          event = await payload.findByID({
             collection: 'booking-events',
             id: eventId,
             depth: 0,
@@ -112,6 +144,8 @@ export const TicketHolders: CollectionConfig = {
         } catch {
           return res.status(400).json({ error: 'Event not found' })
         }
+
+        const seatsPerTable = event.seatsPerTable || 10
 
         const lines = csv
           .split('\n')
@@ -122,11 +156,8 @@ export const TicketHolders: CollectionConfig = {
           return res.status(400).json({ error: 'CSV is empty' })
         }
 
-        // First line is header: sotonId,name,plusOneCount,dietaryRequirements,plusOne1,plusOne2,...
-        const header = lines[0]
-          .toLowerCase()
-          .split(',')
-          .map(h => h.trim())
+        // First line is header: sotonId,name,plusOneCount,dietaryRequirements
+        const header = splitCsvLine(lines[0]).map(h => h.toLowerCase())
         const rows = lines.slice(1)
 
         let created = 0
@@ -134,7 +165,7 @@ export const TicketHolders: CollectionConfig = {
         const errors: string[] = []
 
         for (let i = 0; i < rows.length; i++) {
-          const cols = rows[i].split(',').map(c => c.trim())
+          const cols = splitCsvLine(rows[i])
           const record: Record<string, string> = {}
           for (let j = 0; j < header.length; j++) {
             record[header[j]] = cols[j] || ''
@@ -143,7 +174,7 @@ export const TicketHolders: CollectionConfig = {
           // Accept either a university username ("ab1c23") or an email
           // ("ab1c23@soton.ac.uk"); guest-list checks compare against the
           // Azure AD mailNickname.
-          const sotonId = (record.sotonid || '').split('@')[0].trim().toLowerCase()
+          const sotonId = normalizeSotonId(record.sotonid)
           const name = record.name
 
           if (!sotonId || !name) {
@@ -151,14 +182,17 @@ export const TicketHolders: CollectionConfig = {
             continue
           }
 
-          const plusOneCount = parseInt(record.plusonecount, 10) || 0
+          const plusOneCount = Math.max(0, parseInt(record.plusonecount, 10) || 0)
           const dietary = record.dietaryrequirements || ''
 
-          const plusOneNames: Array<{ name: string }> = []
-          let pIdx = 1
-          while (record[`plusone${pIdx}`]) {
-            plusOneNames.push({ name: record[`plusone${pIdx}`] })
-            pIdx++
+          // A guest who cannot fit at an empty table can never be seated.
+          if (1 + plusOneCount > seatsPerTable) {
+            errors.push(
+              `Row ${i + 1} (${sotonId}): needs ${
+                1 + plusOneCount
+              } seats but a table only has ${seatsPerTable}`,
+            )
+            continue
           }
 
           try {
@@ -179,7 +213,6 @@ export const TicketHolders: CollectionConfig = {
                   event: eventId,
                   name,
                   plusOneCount,
-                  plusOneNames,
                   dietaryRequirements: dietary || undefined,
                 },
               })
@@ -192,7 +225,6 @@ export const TicketHolders: CollectionConfig = {
                   sotonId,
                   name,
                   plusOneCount,
-                  plusOneNames,
                   dietaryRequirements: dietary || undefined,
                 },
               })
@@ -205,7 +237,7 @@ export const TicketHolders: CollectionConfig = {
         }
 
         return res.json({
-          success: true,
+          success: errors.length === 0,
           summary: `Created ${created}, updated ${updated}, errors ${errors.length}`,
           created,
           updated,

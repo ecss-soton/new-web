@@ -1,7 +1,18 @@
 import type { PayloadHandler } from 'payload/config'
 
 import { isAdmin } from '../../../access/isAdmin'
+import { withKeyedLock } from '../../../utilities/keyedMutex'
+import { relationshipId, relationshipIds } from '../../../utilities/relationships'
 import { getTableByJoinCode } from './getTableByJoinCode'
+
+interface IncomingSeat {
+  seatIndex?: unknown
+  userId?: unknown
+  name?: unknown
+}
+
+const displayName = (user: { name?: string | null; username?: string | null }): string =>
+  user.name || user.username || 'Unknown'
 
 export const manageSeats: PayloadHandler = async (req, res) => {
   const { user, payload } = req
@@ -16,17 +27,7 @@ export const manageSeats: PayloadHandler = async (req, res) => {
     return res.status(404).json({ error: 'Table not found' })
   }
 
-  const isMember =
-    Array.isArray(table.members) &&
-    table.members.some((m: string | { id: string }) => {
-      return typeof m === 'string' ? m === user.id : m.id === user.id
-    })
-
-  if (!isMember && !isAdmin(user)) {
-    return res.status(403).json({ error: 'Only table members can manage seats' })
-  }
-
-  const eventId = typeof table.event === 'string' ? table.event : table.event?.id
+  const eventId = relationshipId(table.event)
   if (!eventId) {
     return res.status(500).json({ error: 'Table has no event' })
   }
@@ -42,50 +43,121 @@ export const manageSeats: PayloadHandler = async (req, res) => {
     return res.status(500).json({ error: 'Event not found' })
   }
 
-  if (!event.isOpen && !isAdmin(user)) {
-    return res.status(403).json({ error: 'Table booking is currently closed' })
-  }
+  const { seatPositions: incoming } = (req.body as { seatPositions?: IncomingSeat[] }) || {}
 
-  const { seatPositions } = req.body as {
-    seatPositions?: Array<{ seatIndex: number; name: string }>
-  }
-
-  if (!Array.isArray(seatPositions)) {
+  if (!Array.isArray(incoming)) {
     return res.status(400).json({ error: 'seatPositions must be an array' })
   }
 
-  const seatsPerTable = event.seatsPerTable || 10
-  if (seatPositions.length > seatsPerTable) {
-    return res.status(400).json({ error: `A table has at most ${seatsPerTable} seats` })
-  }
+  return withKeyedLock(`table:${table.id}`, async () => {
+    const current = await payload.findByID({
+      collection: 'tables',
+      id: table.id,
+      depth: 0,
+      overrideAccess: true,
+    })
 
-  const assignedSeats = new Set<number>()
-  for (const s of seatPositions) {
-    if (
-      !Number.isInteger(s.seatIndex) ||
-      s.seatIndex < 0 ||
-      s.seatIndex >= seatsPerTable ||
-      typeof s.name !== 'string' ||
-      !s.name.trim() ||
-      s.name.length > 100
-    ) {
-      return res.status(400).json({
-        error: 'Each seat must have a unique valid index and a name of up to 100 characters',
+    if (!current) {
+      return res.status(404).json({ error: 'Table not found' })
+    }
+
+    const admin = isAdmin(user)
+    const members = relationshipIds(current.members)
+    const isMember = members.includes(user.id)
+
+    if (!isMember && !admin) {
+      return res.status(403).json({ error: 'Only table members can manage seats' })
+    }
+
+    // Editing seats stays available after booking closes; only the table lock
+    // freezes the plan.
+    if (current.locked && !admin) {
+      return res
+        .status(403)
+        .json({ error: 'This table is locked. Ask the table owner to unlock it.' })
+    }
+
+    const seatsPerTable = event.seatsPerTable || 10
+
+    const usersResult = await payload.find({
+      collection: 'users',
+      where: { id: { in: members } },
+      pagination: false,
+      depth: 0,
+      overrideAccess: true,
+    })
+    const nameById = new Map(
+      usersResult.docs.map(u => [
+        u.id,
+        displayName(u as { name?: string | null; username?: string | null }),
+      ]),
+    )
+
+    const assignedSeats = new Set<number>()
+    const seatPositions: Array<{ seatIndex: number; userId?: string; name: string }> = []
+
+    for (const seat of incoming) {
+      const seatIndex = seat?.seatIndex
+
+      if (
+        !Number.isInteger(seatIndex) ||
+        (seatIndex as number) < 0 ||
+        (seatIndex as number) >= seatsPerTable
+      ) {
+        return res.status(400).json({
+          error: `Seat numbers must be whole numbers between 1 and ${seatsPerTable}`,
+        })
+      }
+
+      if (assignedSeats.has(seatIndex as number)) {
+        return res.status(400).json({ error: 'A seat can only be assigned once' })
+      }
+      assignedSeats.add(seatIndex as number)
+
+      const seatUserId = relationshipId(seat?.userId)
+
+      if (seatUserId) {
+        if (!members.includes(seatUserId)) {
+          return res.status(400).json({
+            error: 'Seats can only be assigned to guests at this table',
+          })
+        }
+
+        seatPositions.push({
+          seatIndex: seatIndex as number,
+          userId: seatUserId,
+          // Display names are derived server-side so a client cannot write
+          // arbitrary text into the seating chart.
+          name: nameById.get(seatUserId) ?? 'Unknown',
+        })
+        continue
+      }
+
+      // Legacy payloads (and pre-`userId` rows) carry a display name only.
+      const name = typeof seat?.name === 'string' ? seat.name.trim() : ''
+      if (!name || name.length > 100) {
+        return res.status(400).json({
+          error: 'Each seat needs a guest of up to 100 characters',
+        })
+      }
+
+      seatPositions.push({ seatIndex: seatIndex as number, name })
+    }
+
+    try {
+      await payload.update({
+        collection: 'tables',
+        id: current.id,
+        data: {
+          seatPositions,
+        },
       })
+    } catch (err: unknown) {
+      // Custom endpoints have no async rejection guard — respond rather than throw.
+      const message = err instanceof Error ? err.message : 'Unable to save seats'
+      return res.status(400).json({ error: message })
     }
-    if (assignedSeats.has(s.seatIndex)) {
-      return res.status(400).json({ error: 'A seat can only be assigned once' })
-    }
-    assignedSeats.add(s.seatIndex)
-  }
 
-  await payload.update({
-    collection: 'tables',
-    id: table.id,
-    data: {
-      seatPositions,
-    },
+    return res.json({ success: true })
   })
-
-  return res.json({ success: true })
 }

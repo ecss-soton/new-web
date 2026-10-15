@@ -3,6 +3,7 @@ import { Button } from 'payload/components'
 import { useDocumentInfo } from 'payload/dist/admin/components/utilities/DocumentInfo'
 
 type ImportResult = {
+  success?: boolean
   summary?: string
   created?: number
   updated?: number
@@ -55,9 +56,9 @@ export const ImportTicketHolders: React.FC = () => {
     <div style={{ marginBottom: '1.5rem' }}>
       <h3 style={{ marginTop: 0 }}>Bulk import ticket holders</h3>
       <p style={{ marginTop: 0 }}>
-        Paste CSV with the header{' '}
-        <code>sotonId,name,plusOneCount,dietaryRequirements,plusOne1,…</code>. Emails are accepted
-        in the sotonId column. Rows already present for this event are updated.
+        Paste CSV with the header <code>sotonId,name,plusOneCount,dietaryRequirements</code>. Emails
+        are accepted in the sotonId column. Rows already present for this event are updated, and the
+        same guest can be imported for other events.
       </p>
       <textarea
         value={csv}
@@ -78,7 +79,9 @@ export const ImportTicketHolders: React.FC = () => {
 
       {result && (
         <div style={{ marginTop: '0.5rem' }}>
-          <p style={{ margin: 0 }}>{result.summary || 'Import complete.'}</p>
+          <p style={{ margin: 0, color: result.success ? undefined : 'var(--theme-warning-500)' }}>
+            {result.summary || 'Import complete.'}
+          </p>
           {result.errors && result.errors.length > 0 && (
             <ul>
               {result.errors.map((row, index) => (

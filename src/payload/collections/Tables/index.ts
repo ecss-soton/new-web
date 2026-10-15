@@ -1,8 +1,8 @@
-import { randomInt } from 'crypto'
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../../access/admins'
 import { isAdmin } from '../../access/isAdmin'
+import { relationshipId, relationshipIds } from '../../utilities/relationships'
 import Groups from '../groups'
 import { createTable } from './endpoints/createTable'
 import { getTableByJoinCode } from './endpoints/getTableByJoinCode'
@@ -10,17 +10,7 @@ import { joinTable } from './endpoints/joinTable'
 import { leaveTable } from './endpoints/leaveTable'
 import { manageSeats } from './endpoints/manageSeats'
 import { toggleLock } from './endpoints/toggleLock'
-
-const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-
-const generateJoinCode = (): string => {
-  let result = ''
-  for (let i = 0; i < 8; i++) {
-    const index = randomInt(0, CHARS.length)
-    result += CHARS[index]
-  }
-  return result
-}
+import { beforeTableChange } from './hooks/beforeTableChange'
 
 export const Tables: CollectionConfig = {
   slug: 'tables',
@@ -40,14 +30,7 @@ export const Tables: CollectionConfig = {
     delete: admins,
   },
   hooks: {
-    beforeChange: [
-      ({ data }) => {
-        if (!data.joinCode) {
-          data.joinCode = generateJoinCode()
-        }
-        return data
-      },
-    ],
+    beforeChange: [beforeTableChange],
   },
   fields: [
     {
@@ -86,7 +69,8 @@ export const Tables: CollectionConfig = {
       label: 'Locked',
       defaultValue: false,
       admin: {
-        description: 'When locked, new members cannot join.',
+        description:
+          'When locked, nobody can join, leave or change seats. Only the owner (or an admin) can unlock.',
       },
     },
     {
@@ -107,7 +91,8 @@ export const Tables: CollectionConfig = {
       min: 0,
       admin: {
         readOnly: true,
-        description: 'Total seat usage including members and their plus-ones.',
+        description:
+          'Total seat usage including members and their plus-ones. Derived from the member list.',
       },
     },
     {
@@ -122,6 +107,15 @@ export const Tables: CollectionConfig = {
           name: 'seatIndex',
           type: 'number',
           required: true,
+        },
+        {
+          name: 'userId',
+          type: 'relationship',
+          relationTo: 'users',
+          admin: {
+            readOnly: true,
+            description: 'The member this seat belongs to. Display names are derived from it.',
+          },
         },
         {
           name: 'name',
@@ -166,16 +160,16 @@ export const Tables: CollectionConfig = {
         })
 
         const yourTable = tables.docs.find(t => {
-          return (t.members as Array<{ id: string }>)?.some(m => m.id === user.id)
+          return relationshipIds(t.members).includes(user.id)
         })
 
         const formattedTables = tables.docs
-          .filter(t => (t.members as unknown[]).length > 0 || (isAdmin(user) && event.isOpen))
+          .filter(t => relationshipIds(t.members).length > 0 || (isAdmin(user) && event.isOpen))
           .map(t => ({
             id: t.id,
             joinCode: t.joinCode,
             locked: t.locked,
-            isOwner: typeof t.owner === 'string' ? t.owner === user.id : t.owner?.id === user.id,
+            isOwner: relationshipId(t.owner) === user.id,
             members: Array.isArray(t.members)
               ? t.members.map(m => {
                   if (typeof m === 'string') return { id: m, name: 'Unknown' }
@@ -195,10 +189,7 @@ export const Tables: CollectionConfig = {
                 id: yourTable.id,
                 joinCode: yourTable.joinCode,
                 locked: yourTable.locked,
-                isOwner:
-                  typeof yourTable.owner === 'string'
-                    ? yourTable.owner === user.id
-                    : yourTable.owner?.id === user.id,
+                isOwner: relationshipId(yourTable.owner) === user.id,
                 memberCount: yourTable.memberCount,
               }
             : null,
@@ -251,13 +242,7 @@ export const Tables: CollectionConfig = {
           return res.status(404).json({ error: 'Table not found' })
         }
 
-        const memberIds = (Array.isArray(table.members) ? table.members : []) as string[]
-        const isMember = memberIds.some(id => id === user.id)
-        if (!isMember && !isAdmin(user)) {
-          return res.status(403).json({ error: 'Only table members can view seating' })
-        }
-
-        const eventId = typeof table.event === 'string' ? table.event : table.event?.id
+        const eventId = relationshipId(table.event)
         if (!eventId) {
           return res.status(500).json({ error: 'Table has no event' })
         }
@@ -273,17 +258,27 @@ export const Tables: CollectionConfig = {
           return res.status(500).json({ error: 'Event not found' })
         }
 
-        const seatCount = event.seatsPerTable || 10
+        const memberIds = relationshipIds(table.members)
+        const isMember = memberIds.includes(user.id)
+        const seatsPerTable = event.seatsPerTable || 10
+        const memberCount = table.memberCount || 0
+        const full = memberCount >= seatsPerTable
 
-        const filledSeats: Array<string | null> = Array(seatCount).fill(null)
+        const filledSeats: Array<{ userId: string | null; name: string } | null> =
+          Array(seatsPerTable).fill(null)
         const seatPositions = table.seatPositions as
-          | Array<{ seatIndex: number; name: string }>
+          | Array<{ seatIndex: number; userId?: string | { id: string } | null; name: string }>
           | undefined
         if (seatPositions) {
           for (const s of seatPositions) {
-            if (s.seatIndex >= 0 && s.seatIndex < seatCount) {
-              filledSeats[s.seatIndex] = s.name
-            }
+            if (s.seatIndex < 0 || s.seatIndex >= seatsPerTable) continue
+
+            // A seat pointing at someone who has since left the table is stale
+            // and is dropped from the rendered plan (the next save prunes it).
+            const seatUserId = relationshipId(s.userId)
+            if (seatUserId && !memberIds.includes(seatUserId)) continue
+
+            filledSeats[s.seatIndex] = { userId: seatUserId ?? null, name: s.name }
           }
         }
 
@@ -305,12 +300,23 @@ export const Tables: CollectionConfig = {
           }
         }
 
+        // Any signed-in user may view a table's seat plan so a shared link works
+        // as an invite; joining is still gated by the guest list, the lock, the
+        // booking window and the remaining capacity.
         return res.json({
           seats: filledSeats,
           members,
           yourTable: isMember,
+          isMember,
+          isAdmin: isAdmin(user),
+          locked: Boolean(table.locked),
+          full,
+          bookingOpen: Boolean(event.isOpen),
+          canJoin: !isMember && !table.locked && Boolean(event.isOpen) && !full,
           joinCode: table.joinCode,
           eventSlug: event.slug,
+          seatsPerTable,
+          memberCount,
         })
       },
     },

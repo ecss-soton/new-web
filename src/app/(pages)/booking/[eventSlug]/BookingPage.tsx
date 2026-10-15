@@ -39,9 +39,18 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
     const resolveEvent = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/booking-events?where[slug][equals]=${eventSlug}&depth=0`,
+          `${
+            process.env.NEXT_PUBLIC_SERVER_URL
+          }/api/booking-events?where[slug][equals]=${encodeURIComponent(eventSlug)}&depth=0`,
           { headers: { Authorization: `JWT ${token}` }, cache: 'no-store' },
         )
+
+        if (!res.ok) {
+          setError(`Failed to load event (${res.status})`)
+          setLoading(false)
+          return
+        }
+
         const json = await res.json()
         if (json.docs?.length > 0) {
           setEventId(json.docs[0].id)
