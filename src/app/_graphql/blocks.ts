@@ -122,6 +122,12 @@ export const ARCHIVE_BLOCK = `
         title
         ${META}
       }
+      ...on Hackathon {
+        id
+        name
+        type
+        startDate
+      }
     }
   }
   populatedDocs {
@@ -140,6 +146,15 @@ export const ARCHIVE_BLOCK = `
         title
         ${CATEGORIES}
         ${META}
+      }
+      ...on Hackathon {
+        id
+        name
+        type
+        startDate
+        endDate
+        featured
+        sortOrder
       }
     }
   }

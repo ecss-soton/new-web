@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import type { Payload } from 'payload'
 
+import { hackathonsPage } from './hackathons-page'
 import { home } from './home'
 import { image1 } from './image-1'
 import { image2 } from './image-2'
@@ -14,7 +15,7 @@ import { project2 } from './project-2'
 import { project3 } from './project-3'
 import { projectsPage } from './projects-page'
 
-const collections = ['categories', 'media', 'pages', 'posts', 'projects', 'comments']
+const collections = ['categories', 'media', 'pages', 'posts', 'projects', 'comments', 'hackathons']
 const globals = ['header', 'settings', 'footer']
 
 // Next.js revalidation errors are normal when seeding the database without a server running
@@ -312,6 +313,13 @@ export const seed = async (payload: Payload): Promise<void> => {
     data: JSON.parse(JSON.stringify(projectsPage).replace(/"\{\{IMAGE\}\}"/g, image1ID)),
   })
 
+  payload.logger.info(`— Seeding hackathons page...`)
+
+  const hackathonsPageDoc = await payload.create({
+    collection: 'pages',
+    data: JSON.parse(JSON.stringify(hackathonsPage)),
+  })
+
   let postsPageID = postsPageDoc.id
   let projectsPageID = projectsPageDoc.id
 
@@ -367,6 +375,16 @@ export const seed = async (payload: Payload): Promise<void> => {
               value: projectsPageDoc.id,
             },
             label: 'Projects',
+          },
+        },
+        {
+          link: {
+            type: 'reference',
+            reference: {
+              relationTo: 'pages',
+              value: hackathonsPageDoc.id,
+            },
+            label: 'Hackathons',
           },
         },
       ],

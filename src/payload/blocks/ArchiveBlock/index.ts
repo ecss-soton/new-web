@@ -62,6 +62,10 @@ export const Archive: Block = {
           label: 'Events',
           value: 'events',
         },
+        {
+          label: 'Hackathons',
+          value: 'hackathons',
+        },
       ],
     },
     {
@@ -93,7 +97,15 @@ export const Archive: Block = {
       type: 'relationship',
       name: 'selectedDocs',
       label: 'Selection',
-      relationTo: ['posts', 'projects', 'sponsors', 'societies', 'committee', 'events'],
+      relationTo: [
+        'posts',
+        'projects',
+        'sponsors',
+        'societies',
+        'committee',
+        'events',
+        'hackathons',
+      ],
       hasMany: true,
       admin: {
         condition: (_, siblingData) => siblingData.populateBy === 'selection',
@@ -103,7 +115,15 @@ export const Archive: Block = {
       type: 'relationship',
       name: 'populatedDocs',
       label: 'Populated Docs',
-      relationTo: ['posts', 'projects', 'sponsors', 'societies', 'committee', 'events'],
+      relationTo: [
+        'posts',
+        'projects',
+        'sponsors',
+        'societies',
+        'committee',
+        'events',
+        'hackathons',
+      ],
       hasMany: true,
       admin: {
         disabled: true,

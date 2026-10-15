@@ -28,6 +28,7 @@ export interface Config {
     societies: Society;
     committee: Committee;
     events: Event;
+    hackathons: Hackathon;
     'booking-events': BookingEvent;
     tables: Table;
     'ticket-holders': TicketHolder;
@@ -149,7 +150,7 @@ export interface Page {
             }[]
           | null;
         populateBy?: ('collection' | 'selection') | null;
-        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events') | null;
+        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events' | 'hackathons') | null;
         isJumpstart?: boolean | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
@@ -179,6 +180,10 @@ export interface Page {
                   relationTo: 'events';
                   value: string | Event;
                 }
+              | {
+                  relationTo: 'hackathons';
+                  value: string | Hackathon;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -206,6 +211,10 @@ export interface Page {
               | {
                   relationTo: 'events';
                   value: string | Event;
+                }
+              | {
+                  relationTo: 'hackathons';
+                  value: string | Hackathon;
                 }
             )[]
           | null;
@@ -526,7 +535,7 @@ export interface Post {
             }[]
           | null;
         populateBy?: ('collection' | 'selection') | null;
-        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events') | null;
+        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events' | 'hackathons') | null;
         isJumpstart?: boolean | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
@@ -556,6 +565,10 @@ export interface Post {
                   relationTo: 'events';
                   value: string | Event;
                 }
+              | {
+                  relationTo: 'hackathons';
+                  value: string | Hackathon;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -583,6 +596,10 @@ export interface Post {
               | {
                   relationTo: 'events';
                   value: string | Event;
+                }
+              | {
+                  relationTo: 'hackathons';
+                  value: string | Hackathon;
                 }
             )[]
           | null;
@@ -662,7 +679,9 @@ export interface Post {
                 }[]
               | null;
             populateBy?: ('collection' | 'selection') | null;
-            relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events') | null;
+            relationTo?:
+              | ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events' | 'hackathons')
+              | null;
             isJumpstart?: boolean | null;
             categories?: (string | Category)[] | null;
             limit?: number | null;
@@ -692,6 +711,10 @@ export interface Post {
                       relationTo: 'events';
                       value: string | Event;
                     }
+                  | {
+                      relationTo: 'hackathons';
+                      value: string | Hackathon;
+                    }
                 )[]
               | null;
             populatedDocs?:
@@ -719,6 +742,10 @@ export interface Post {
                   | {
                       relationTo: 'events';
                       value: string | Event;
+                    }
+                  | {
+                      relationTo: 'hackathons';
+                      value: string | Hackathon;
                     }
                 )[]
               | null;
@@ -893,7 +920,7 @@ export interface Project {
             }[]
           | null;
         populateBy?: ('collection' | 'selection') | null;
-        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events') | null;
+        relationTo?: ('posts' | 'projects' | 'sponsors' | 'committee' | 'societies' | 'events' | 'hackathons') | null;
         isJumpstart?: boolean | null;
         categories?: (string | Category)[] | null;
         limit?: number | null;
@@ -923,6 +950,10 @@ export interface Project {
                   relationTo: 'events';
                   value: string | Event;
                 }
+              | {
+                  relationTo: 'hackathons';
+                  value: string | Hackathon;
+                }
             )[]
           | null;
         populatedDocs?:
@@ -950,6 +981,10 @@ export interface Project {
               | {
                   relationTo: 'events';
                   value: string | Event;
+                }
+              | {
+                  relationTo: 'hackathons';
+                  value: string | Hackathon;
                 }
             )[]
           | null;
@@ -1103,6 +1138,36 @@ export interface Position {
   importance: number;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hackathons".
+ */
+export interface Hackathon {
+  id: string;
+  name: string;
+  type: 'internal' | 'external' | 'other-society';
+  startDate: string;
+  endDate?: string | null;
+  location?: string | null;
+  mapsUrl?: string | null;
+  description?:
+    | {
+        [k: string]: unknown;
+      }[]
+    | null;
+  image?: string | Media | null;
+  organiser?: string | null;
+  prize?: string | null;
+  featured?: boolean | null;
+  sortOrder?: number | null;
+  websiteUrl?: string | null;
+  applyUrl?: string | null;
+  lumaUrl?: string | null;
+  discordUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
