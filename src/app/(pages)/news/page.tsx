@@ -2,12 +2,14 @@ import React from 'react'
 import { Metadata } from 'next'
 import Link from 'next/link'
 
+import { isAdmin } from '../../../payload/access/isAdmin'
 import type { Newsletter, Settings } from '../../../payload/payload-types'
 import { fetchDocs } from '../../_api/fetchDoc'
 import { fetchSettings } from '../../_api/fetchGlobals'
 import { Gutter } from '../../_components/Gutter'
 import { Media } from '../../_components/Media'
 import { newsreader, spectral } from '../../_utilities/font'
+import { getMeUser } from '../../_utilities/getMeUser'
 import { Masthead } from './Masthead'
 
 import classes from './index.module.scss'
@@ -15,9 +17,17 @@ import classes from './index.module.scss'
 export default async function NewsPage() {
   let newsletters: Newsletter[] = []
   let settings: Settings | null = null
+  let canSeeDrafts = false
 
   try {
-    newsletters = await fetchDocs<Newsletter>('newsletters')
+    const { user } = await getMeUser()
+    canSeeDrafts = isAdmin(user)
+  } catch (error) {
+    console.error(error) // eslint-disable-line no-console
+  }
+
+  try {
+    newsletters = await fetchDocs<Newsletter>('newsletters', canSeeDrafts)
   } catch (error) {
     console.error(error) // eslint-disable-line no-console
   }
@@ -34,7 +44,6 @@ export default async function NewsPage() {
     'University of Southampton Electronics & Computer Science Society'
   const tagline = settings?.newsArchiveTagline || ''
   const emptyState = settings?.newsEmptyState || ''
-  const coverPlaceholder = settings?.newsCoverPlaceholder || ''
 
   return (
     <div className="news-page">
@@ -46,29 +55,26 @@ export default async function NewsPage() {
         ) : (
           <ul className={classes.archive}>
             {newsletters.map(issue => {
-              const { id, slug, title, issueNumber, publishedAt, summary, coverImage } = issue
+              const { id, slug, title, issueNumber, publishedAt, summary, coverImage, _status } =
+                issue
               const date = publishedAt
                 ? new Date(publishedAt).toLocaleDateString('en-GB', {
                     month: 'long',
                     year: 'numeric',
                   })
                 : null
+              const isDraft = _status === 'draft'
 
               return (
                 <li key={id} className={classes.issue}>
                   <Link href={`/news/${slug}`} className={classes.issueLink}>
-                    <div className={classes.cover}>
-                      {coverImage && typeof coverImage === 'object' ? (
+                    {coverImage && typeof coverImage === 'object' && (
+                      <div className={classes.cover}>
                         <Media resource={coverImage} />
-                      ) : (
-                        <span
-                          className={[classes.coverPlaceholder, newsreader.className].join(' ')}
-                        >
-                          {issueNumber ? `Issue ${issueNumber}` : coverPlaceholder}
-                        </span>
-                      )}
-                    </div>
+                      </div>
+                    )}
                     <div className={classes.issueMeta}>
+                      {isDraft && <span className={classes.draftBadge}>Draft</span>}
                       <p className={classes.issueKicker}>
                         {issueNumber ? `Issue ${issueNumber}` : 'Newsletter'}
                         {date ? ` · ${date}` : null}

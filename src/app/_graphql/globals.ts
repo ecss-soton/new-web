@@ -58,7 +58,6 @@ export const SETTINGS = `
     newsMastheadEyebrow
     newsArchiveTagline
     newsEmptyState
-    newsCoverPlaceholder
     newsPrintEditionLabel
     newsSeoTitle
     newsSeoDescription

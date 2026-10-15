@@ -1698,7 +1698,6 @@ export interface Settings {
   newsMastheadEyebrow?: string | null;
   newsArchiveTagline?: string | null;
   newsEmptyState?: string | null;
-  newsCoverPlaceholder?: string | null;
   newsPrintEditionLabel?: string | null;
   newsSeoTitle?: string | null;
   newsSeoDescription?: string | null;

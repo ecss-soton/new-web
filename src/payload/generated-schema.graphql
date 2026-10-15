@@ -28796,7 +28796,6 @@ type Settings {
   newsMastheadEyebrow: String
   newsArchiveTagline: String
   newsEmptyState: String
-  newsCoverPlaceholder: String
   newsPrintEditionLabel: String
   newsSeoTitle: String
   newsSeoDescription: String
@@ -29588,7 +29587,6 @@ type SettingsDocAccessFields {
   newsMastheadEyebrow: SettingsDocAccessFields_newsMastheadEyebrow
   newsArchiveTagline: SettingsDocAccessFields_newsArchiveTagline
   newsEmptyState: SettingsDocAccessFields_newsEmptyState
-  newsCoverPlaceholder: SettingsDocAccessFields_newsCoverPlaceholder
   newsPrintEditionLabel: SettingsDocAccessFields_newsPrintEditionLabel
   newsSeoTitle: SettingsDocAccessFields_newsSeoTitle
   newsSeoDescription: SettingsDocAccessFields_newsSeoDescription
@@ -30106,29 +30104,6 @@ type SettingsDocAccessFields_newsEmptyState_Update {
 }
 
 type SettingsDocAccessFields_newsEmptyState_Delete {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_newsCoverPlaceholder {
-  create: SettingsDocAccessFields_newsCoverPlaceholder_Create
-  read: SettingsDocAccessFields_newsCoverPlaceholder_Read
-  update: SettingsDocAccessFields_newsCoverPlaceholder_Update
-  delete: SettingsDocAccessFields_newsCoverPlaceholder_Delete
-}
-
-type SettingsDocAccessFields_newsCoverPlaceholder_Create {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_newsCoverPlaceholder_Read {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_newsCoverPlaceholder_Update {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_newsCoverPlaceholder_Delete {
   permission: Boolean!
 }
 
@@ -41901,7 +41876,6 @@ type SettingsFields {
   newsMastheadEyebrow: SettingsFields_newsMastheadEyebrow
   newsArchiveTagline: SettingsFields_newsArchiveTagline
   newsEmptyState: SettingsFields_newsEmptyState
-  newsCoverPlaceholder: SettingsFields_newsCoverPlaceholder
   newsPrintEditionLabel: SettingsFields_newsPrintEditionLabel
   newsSeoTitle: SettingsFields_newsSeoTitle
   newsSeoDescription: SettingsFields_newsSeoDescription
@@ -42419,29 +42393,6 @@ type SettingsFields_newsEmptyState_Update {
 }
 
 type SettingsFields_newsEmptyState_Delete {
-  permission: Boolean!
-}
-
-type SettingsFields_newsCoverPlaceholder {
-  create: SettingsFields_newsCoverPlaceholder_Create
-  read: SettingsFields_newsCoverPlaceholder_Read
-  update: SettingsFields_newsCoverPlaceholder_Update
-  delete: SettingsFields_newsCoverPlaceholder_Delete
-}
-
-type SettingsFields_newsCoverPlaceholder_Create {
-  permission: Boolean!
-}
-
-type SettingsFields_newsCoverPlaceholder_Read {
-  permission: Boolean!
-}
-
-type SettingsFields_newsCoverPlaceholder_Update {
-  permission: Boolean!
-}
-
-type SettingsFields_newsCoverPlaceholder_Delete {
   permission: Boolean!
 }
 
@@ -44894,7 +44845,6 @@ input mutationSettingsInput {
   newsMastheadEyebrow: String
   newsArchiveTagline: String
   newsEmptyState: String
-  newsCoverPlaceholder: String
   newsPrintEditionLabel: String
   newsSeoTitle: String
   newsSeoDescription: String

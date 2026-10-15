@@ -12,6 +12,7 @@ export const NEWSLETTERS = `
         issueNumber
         publishedAt
         summary
+        _status
         coverImage {
           ${MEDIA_FIELDS}
         }
@@ -30,6 +31,7 @@ export const NEWSLETTER = `
         issueNumber
         publishedAt
         summary
+        _status
         coverImage {
           ${MEDIA_FIELDS}
         }

@@ -3,11 +3,13 @@ import { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 
+import { isAdmin } from '../../../../payload/access/isAdmin'
 import type { Newsletter, Settings } from '../../../../payload/payload-types'
 import { fetchDoc, fetchDocs } from '../../../_api/fetchDoc'
 import { fetchSettings } from '../../../_api/fetchGlobals'
 import { Gutter } from '../../../_components/Gutter'
 import { generateMeta } from '../../../_utilities/generateMeta'
+import { getMeUser } from '../../../_utilities/getMeUser'
 import { Masthead } from '../Masthead'
 import { NewsletterLayout } from './NewsletterLayout'
 
@@ -16,13 +18,22 @@ import classes from './index.module.scss'
 export default async function NewsletterPage({ params: { slug } }) {
   const { isEnabled: isDraftMode } = draftMode()
 
+  let canSeeDrafts = isDraftMode
+
+  try {
+    const { user } = await getMeUser()
+    if (isAdmin(user)) canSeeDrafts = true
+  } catch (error) {
+    console.error(error) // eslint-disable-line no-console
+  }
+
   let newsletter: Newsletter | null = null
 
   try {
     newsletter = await fetchDoc<Newsletter>({
       collection: 'newsletters',
       slug,
-      draft: isDraftMode,
+      draft: canSeeDrafts,
     })
   } catch (error) {
     console.error(error) // eslint-disable-line no-console
@@ -32,7 +43,7 @@ export default async function NewsletterPage({ params: { slug } }) {
     notFound()
   }
 
-  const { issueNumber, publishedAt, printEdition, layout } = newsletter
+  const { issueNumber, publishedAt, printEdition, layout, _status } = newsletter
 
   const date = publishedAt
     ? new Date(publishedAt).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
@@ -61,6 +72,7 @@ export default async function NewsletterPage({ params: { slug } }) {
           title={mastheadTitle}
           eyebrow={mastheadEyebrow}
           href="/news"
+          isDraft={_status === 'draft'}
           issueNumber={issueNumber}
           date={date}
         />
@@ -93,15 +105,22 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
   const { isEnabled: isDraftMode } = draftMode()
 
+  let canSeeDrafts = isDraftMode
+
+  try {
+    const { user } = await getMeUser()
+    if (isAdmin(user)) canSeeDrafts = true
+  } catch (error) {} // eslint-disable-line no-empty
+
   let newsletter: Newsletter | null = null
 
   try {
     newsletter = await fetchDoc<Newsletter>({
       collection: 'newsletters',
       slug,
-      draft: isDraftMode,
+      draft: canSeeDrafts,
     })
   } catch (error) {} // eslint-disable-line no-empty
 
-  return generateMeta({ doc: newsletter, fallbackImage: newsletter.coverImage })
+  return generateMeta({ doc: newsletter, fallbackImage: newsletter?.coverImage })
 }
