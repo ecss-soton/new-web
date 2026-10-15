@@ -3,8 +3,8 @@ import moment from 'moment-timezone'
 import Image from 'next/image'
 
 import { Hackathon, Media } from '../../../payload/payload-types'
-import { getSafeHref } from '../../_utilities/getSafeHref'
 import { inter } from '../../_utilities/font'
+import { getSafeHref } from '../../_utilities/getSafeHref'
 import RichText from '../RichText'
 
 import classes from './index.module.scss'
