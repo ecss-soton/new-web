@@ -23,6 +23,7 @@ import DiscordAnnouncements from './collections/DiscordAnnouncements'
 import { ElectionResults } from './collections/ElectionResults'
 import Elections from './collections/Elections'
 import Events from './collections/Events'
+import Hackathons from './collections/Hackathons'
 import { Media } from './collections/Media'
 import { MemberImports } from './collections/MemberImports'
 import Merch from './collections/Merch'
@@ -147,6 +148,7 @@ export default buildConfig({
     Societies,
     Committee,
     Events,
+    Hackathons,
     BookingEvents,
     Tables,
     TicketHolders,

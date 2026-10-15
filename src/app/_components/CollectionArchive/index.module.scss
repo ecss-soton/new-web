@@ -128,7 +128,6 @@
   }
 }
 
-
 .committeegrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -163,16 +162,14 @@
   }
 }
 
-
 /* Override column spans for societygrid only */
 .societygrid .column {
   grid-column-end: span 1; /* Takes 1 of 2 columns = 2 per row on desktop */
-  
+
   @include small-break {
     grid-column-end: span 2; /* Takes both columns = 1 per row on mobile */
   }
 }
-
 
 .columnEvents {
   grid-column-end: span 12;
@@ -285,7 +282,7 @@
       }
     }
   }
-  
+
   @include small-break {
     flex-direction: column;
     gap: 0;
@@ -295,6 +292,21 @@
 .subscribeButton {
   background-color: var(--theme-bg);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.hackathonGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--base) 40px;
+
+  @include mid-break {
+    grid-template-columns: repeat(2, 1fr);
+    gap: calc(var(--base) / 2) var(--base);
+  }
+
+  @include small-break {
+    grid-template-columns: 1fr;
+  }
 }
 
 .modalBackdrop {

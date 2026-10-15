@@ -5,6 +5,7 @@ import {
   CONTENT,
   HOME_TOP,
   INTRO,
+  LATEST_NEWSLETTER,
   MEDIA_BLOCK,
   MERCH_BLOCK,
   NEXT_EVENT,
@@ -47,6 +48,7 @@ export const PAGE = `
           ${HOME_TOP}
           ${INTRO}
           ${NEXT_EVENT}
+          ${LATEST_NEWSLETTER}
           ${BUTTON}
           ${MERCH_BLOCK}
           ${SUMMER_PARTY_BLOCK}

@@ -1,0 +1,122 @@
+@import '../../_css/common';
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--theme-elevation-50);
+  border: 1px solid var(--theme-elevation-100);
+  border-radius: 6px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: var(--theme-elevation-100);
+  flex-shrink: 0;
+}
+
+.image {
+  object-fit: cover;
+  object-position: center;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.25rem 1.5rem;
+
+  @include extra-small-break {
+    padding: 1rem;
+  }
+}
+
+.name {
+  margin: 0;
+  color: var(--theme-elevation-1000);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--theme-elevation-700);
+  font-size: 15px;
+
+  a {
+    color: inherit;
+  }
+}
+
+.prize {
+  font-weight: 600;
+  color: var(--theme-elevation-900);
+}
+
+.description {
+  color: var(--theme-elevation-700);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.truncated {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.expandButton {
+  margin-top: 0.4rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--theme-elevation-800);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--theme-elevation-1000);
+  }
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.linkButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.1rem;
+  border-radius: 4px;
+  background-color: var(--theme-elevation-1000);
+  color: var(--theme-bg);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--theme-elevation-800);
+  }
+}

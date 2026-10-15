@@ -1,0 +1,81 @@
+@import '../../_css/common';
+
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.subheading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f87171;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 2px;
+    background: linear-gradient(90deg, #ff4b4b, #a01b1b);
+    flex-shrink: 0;
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--theme-elevation-1000);
+}
+
+// Override the global `h[1-6] a` theme rule, which tints heading links.
+.block .title a,
+.block .title a:visited {
+  color: var(--theme-elevation-1000);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.block .title a:hover {
+  color: #f87171;
+}
+
+.summary {
+  max-width: 60ch;
+  margin: 0.25rem 0 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--theme-elevation-600);
+}
+
+.link {
+  @extend %label;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 0.5rem;
+  padding: 12px 22px;
+  background: var(--theme-elevation-0);
+  color: var(--theme-elevation-1000);
+  border: 1px solid var(--theme-elevation-200);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: rgba(160, 27, 27, 0.85);
+    border-color: rgba(160, 27, 27, 0.9);
+    color: #fca5a5;
+    transform: translateY(-2px);
+  }
+}

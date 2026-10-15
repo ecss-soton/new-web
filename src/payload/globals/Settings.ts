@@ -196,12 +196,6 @@ export const Settings: GlobalConfig = {
               defaultValue: 'No newsletters have been published yet.',
             },
             {
-              name: 'newsCoverPlaceholder',
-              type: 'text',
-              label: 'Cover placeholder text',
-              defaultValue: 'ECSS Times',
-            },
-            {
               name: 'newsPrintEditionLabel',
               type: 'text',
               label: 'Print edition link label',

@@ -33,27 +33,14 @@
 }
 
 .cover {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 4 / 5;
   overflow: hidden;
   border-bottom: 1px solid var(--news-rule);
-  background: color-mix(in srgb, var(--news-ink) 6%, transparent);
 }
 
 .cover img {
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.coverPlaceholder {
-  padding: 1rem;
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-align: center;
-  color: var(--news-muted);
+  height: auto;
 }
 
 .issueMeta {
@@ -61,6 +48,19 @@
   flex-direction: column;
   flex: 1;
   padding: 1rem 1.1rem 1.3rem;
+}
+
+.draftBadge {
+  align-self: flex-start;
+  margin-bottom: 0.4rem;
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--ecss-red);
+  color: var(--ecss-red);
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 .issueKicker {

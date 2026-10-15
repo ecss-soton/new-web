@@ -97,6 +97,12 @@ type Query {
   docAccessEvent(id: String!): eventsDocAccess
   versionEvent(id: String): EventVersion
   versionsEvents(where: versionsEvent_where, limit: Int, page: Int, sort: String): versionsEvents
+  Hackathon(id: String!, draft: Boolean): Hackathon
+  Hackathons(draft: Boolean, where: Hackathon_where, limit: Int, page: Int, sort: String): Hackathons
+  countHackathons(draft: Boolean, where: Hackathon_where): countHackathons
+  docAccessHackathon(id: String!): hackathonsDocAccess
+  versionHackathon(id: String): HackathonVersion
+  versionsHackathons(where: versionsHackathon_where, limit: Int, page: Int, sort: String): versionsHackathons
   BookingEvent(id: String!): BookingEvent
   BookingEvents(where: BookingEvent_where, limit: Int, page: Int, sort: String): BookingEvents
   countBookingEvents(where: BookingEvent_where): countBookingEvents
@@ -428,7 +434,7 @@ input Page_Hero_Media_where_or {
   OR: [Page_Hero_Media_where_or]
 }
 
-union Page_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent | Button | MerchBlock | PartyBlock
+union Page_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent | LatestNewsletter | Button | MerchBlock | PartyBlock
 
 type Cta {
   invertBackground: Boolean
@@ -757,6 +763,7 @@ enum Archive_relationTo {
   committee
   societies
   events
+  hackathons
 }
 
 type Category {
@@ -787,9 +794,10 @@ enum Archive_SelectedDocs_RelationTo {
   societies
   committee
   events
+  hackathons
 }
 
-union Archive_SelectedDocs = Post | Project | Sponsor | Society | Committee | Event
+union Archive_SelectedDocs = Post | Project | Sponsor | Society | Committee | Event | Hackathon
 
 type Post {
   id: String
@@ -2688,6 +2696,228 @@ input Committee_Logo_where_or {
   OR: [Committee_Logo_where_or]
 }
 
+type Hackathon {
+  id: String
+  name: String
+  type: Hackathon_type
+  startDate: DateTime
+  endDate: DateTime
+  location: String
+  mapsUrl: String
+  description(depth: Int): JSON
+  image(where: Hackathon_Image_where): Media
+  organiser: String
+  prize: String
+  featured: Boolean
+  sortOrder: Float
+  websiteUrl: String
+  applyUrl: String
+  lumaUrl: String
+  discordUrl: String
+  updatedAt: DateTime
+  createdAt: DateTime
+  _status: Hackathon__status
+}
+
+enum Hackathon_type {
+  internal
+  external
+  other_society
+}
+
+input Hackathon_Image_where {
+  alt: Hackathon_Image_alt_operator
+  caption: Hackathon_Image_caption_operator
+  updatedAt: Hackathon_Image_updatedAt_operator
+  createdAt: Hackathon_Image_createdAt_operator
+  url: Hackathon_Image_url_operator
+  filename: Hackathon_Image_filename_operator
+  mimeType: Hackathon_Image_mimeType_operator
+  filesize: Hackathon_Image_filesize_operator
+  width: Hackathon_Image_width_operator
+  height: Hackathon_Image_height_operator
+  focalX: Hackathon_Image_focalX_operator
+  focalY: Hackathon_Image_focalY_operator
+  id: Hackathon_Image_id_operator
+  AND: [Hackathon_Image_where_and]
+  OR: [Hackathon_Image_where_or]
+}
+
+input Hackathon_Image_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Hackathon_Image_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Hackathon_Image_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Hackathon_Image_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Hackathon_Image_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Hackathon_Image_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Hackathon_Image_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Hackathon_Image_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Hackathon_Image_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Hackathon_Image_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Hackathon_Image_focalX_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Hackathon_Image_focalY_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Hackathon_Image_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Hackathon_Image_where_and {
+  alt: Hackathon_Image_alt_operator
+  caption: Hackathon_Image_caption_operator
+  updatedAt: Hackathon_Image_updatedAt_operator
+  createdAt: Hackathon_Image_createdAt_operator
+  url: Hackathon_Image_url_operator
+  filename: Hackathon_Image_filename_operator
+  mimeType: Hackathon_Image_mimeType_operator
+  filesize: Hackathon_Image_filesize_operator
+  width: Hackathon_Image_width_operator
+  height: Hackathon_Image_height_operator
+  focalX: Hackathon_Image_focalX_operator
+  focalY: Hackathon_Image_focalY_operator
+  id: Hackathon_Image_id_operator
+  AND: [Hackathon_Image_where_and]
+  OR: [Hackathon_Image_where_or]
+}
+
+input Hackathon_Image_where_or {
+  alt: Hackathon_Image_alt_operator
+  caption: Hackathon_Image_caption_operator
+  updatedAt: Hackathon_Image_updatedAt_operator
+  createdAt: Hackathon_Image_createdAt_operator
+  url: Hackathon_Image_url_operator
+  filename: Hackathon_Image_filename_operator
+  mimeType: Hackathon_Image_mimeType_operator
+  filesize: Hackathon_Image_filesize_operator
+  width: Hackathon_Image_width_operator
+  height: Hackathon_Image_height_operator
+  focalX: Hackathon_Image_focalX_operator
+  focalY: Hackathon_Image_focalY_operator
+  id: Hackathon_Image_id_operator
+  AND: [Hackathon_Image_where_and]
+  OR: [Hackathon_Image_where_or]
+}
+
+enum Hackathon__status {
+  draft
+  published
+}
+
 type Archive_PopulatedDocs_Relationship {
   relationTo: Archive_PopulatedDocs_RelationTo
   value: Archive_PopulatedDocs
@@ -2700,9 +2930,10 @@ enum Archive_PopulatedDocs_RelationTo {
   societies
   committee
   events
+  hackathons
 }
 
-union Archive_PopulatedDocs = Post | Project | Sponsor | Society | Committee | Event
+union Archive_PopulatedDocs = Post | Project | Sponsor | Society | Committee | Event | Hackathon
 
 type HomeTop {
   heading: String
@@ -3317,6 +3548,14 @@ input NextEvent_Media_where_or {
   id: NextEvent_Media_id_operator
   AND: [NextEvent_Media_where_and]
   OR: [NextEvent_Media_where_or]
+}
+
+type LatestNewsletter {
+  subheading: String
+  linkText: String
+  id: String
+  blockName: String
+  blockType: String
 }
 
 type Button {
@@ -6430,7 +6669,7 @@ input PageVersion_Version_Hero_Media_where_or {
   OR: [PageVersion_Version_Hero_Media_where_or]
 }
 
-union PageVersion_Version_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent | Button | MerchBlock | PartyBlock
+union PageVersion_Version_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent | LatestNewsletter | Button | MerchBlock | PartyBlock
 
 type PageVersion_Version_Meta {
   title: String
@@ -23794,6 +24033,1380 @@ input versionsEvent_where_or {
   OR: [versionsEvent_where_or]
 }
 
+type Hackathons {
+  docs: [Hackathon]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input Hackathon_where {
+  name: Hackathon_name_operator
+  type: Hackathon_type_operator
+  startDate: Hackathon_startDate_operator
+  endDate: Hackathon_endDate_operator
+  location: Hackathon_location_operator
+  mapsUrl: Hackathon_mapsUrl_operator
+  description: Hackathon_description_operator
+  image: Hackathon_image_operator
+  organiser: Hackathon_organiser_operator
+  prize: Hackathon_prize_operator
+  featured: Hackathon_featured_operator
+  sortOrder: Hackathon_sortOrder_operator
+  websiteUrl: Hackathon_websiteUrl_operator
+  applyUrl: Hackathon_applyUrl_operator
+  lumaUrl: Hackathon_lumaUrl_operator
+  discordUrl: Hackathon_discordUrl_operator
+  updatedAt: Hackathon_updatedAt_operator
+  createdAt: Hackathon_createdAt_operator
+  _status: Hackathon__status_operator
+  id: Hackathon_id_operator
+  AND: [Hackathon_where_and]
+  OR: [Hackathon_where_or]
+}
+
+input Hackathon_name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input Hackathon_type_operator {
+  equals: Hackathon_type_Input
+  not_equals: Hackathon_type_Input
+  in: [Hackathon_type_Input]
+  not_in: [Hackathon_type_Input]
+  all: [Hackathon_type_Input]
+}
+
+enum Hackathon_type_Input {
+  internal
+  external
+  other_society
+}
+
+input Hackathon_startDate_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input Hackathon_endDate_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Hackathon_location_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Hackathon_mapsUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Hackathon_description_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input Hackathon_image_operator {
+  equals: String
+  not_equals: String
+  exists: Boolean
+}
+
+input Hackathon_organiser_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Hackathon_prize_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Hackathon_featured_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input Hackathon_sortOrder_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input Hackathon_websiteUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Hackathon_applyUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Hackathon_lumaUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Hackathon_discordUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Hackathon_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Hackathon_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input Hackathon__status_operator {
+  equals: Hackathon__status_Input
+  not_equals: Hackathon__status_Input
+  in: [Hackathon__status_Input]
+  not_in: [Hackathon__status_Input]
+  all: [Hackathon__status_Input]
+  exists: Boolean
+}
+
+enum Hackathon__status_Input {
+  draft
+  published
+}
+
+input Hackathon_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input Hackathon_where_and {
+  name: Hackathon_name_operator
+  type: Hackathon_type_operator
+  startDate: Hackathon_startDate_operator
+  endDate: Hackathon_endDate_operator
+  location: Hackathon_location_operator
+  mapsUrl: Hackathon_mapsUrl_operator
+  description: Hackathon_description_operator
+  image: Hackathon_image_operator
+  organiser: Hackathon_organiser_operator
+  prize: Hackathon_prize_operator
+  featured: Hackathon_featured_operator
+  sortOrder: Hackathon_sortOrder_operator
+  websiteUrl: Hackathon_websiteUrl_operator
+  applyUrl: Hackathon_applyUrl_operator
+  lumaUrl: Hackathon_lumaUrl_operator
+  discordUrl: Hackathon_discordUrl_operator
+  updatedAt: Hackathon_updatedAt_operator
+  createdAt: Hackathon_createdAt_operator
+  _status: Hackathon__status_operator
+  id: Hackathon_id_operator
+  AND: [Hackathon_where_and]
+  OR: [Hackathon_where_or]
+}
+
+input Hackathon_where_or {
+  name: Hackathon_name_operator
+  type: Hackathon_type_operator
+  startDate: Hackathon_startDate_operator
+  endDate: Hackathon_endDate_operator
+  location: Hackathon_location_operator
+  mapsUrl: Hackathon_mapsUrl_operator
+  description: Hackathon_description_operator
+  image: Hackathon_image_operator
+  organiser: Hackathon_organiser_operator
+  prize: Hackathon_prize_operator
+  featured: Hackathon_featured_operator
+  sortOrder: Hackathon_sortOrder_operator
+  websiteUrl: Hackathon_websiteUrl_operator
+  applyUrl: Hackathon_applyUrl_operator
+  lumaUrl: Hackathon_lumaUrl_operator
+  discordUrl: Hackathon_discordUrl_operator
+  updatedAt: Hackathon_updatedAt_operator
+  createdAt: Hackathon_createdAt_operator
+  _status: Hackathon__status_operator
+  id: Hackathon_id_operator
+  AND: [Hackathon_where_and]
+  OR: [Hackathon_where_or]
+}
+
+type countHackathons {
+  totalDocs: Int
+}
+
+type hackathonsDocAccess {
+  fields: HackathonsDocAccessFields
+  create: HackathonsCreateDocAccess
+  read: HackathonsReadDocAccess
+  update: HackathonsUpdateDocAccess
+  delete: HackathonsDeleteDocAccess
+  readVersions: HackathonsReadVersionsDocAccess
+}
+
+type HackathonsDocAccessFields {
+  name: HackathonsDocAccessFields_name
+  type: HackathonsDocAccessFields_type
+  startDate: HackathonsDocAccessFields_startDate
+  endDate: HackathonsDocAccessFields_endDate
+  location: HackathonsDocAccessFields_location
+  mapsUrl: HackathonsDocAccessFields_mapsUrl
+  description: HackathonsDocAccessFields_description
+  image: HackathonsDocAccessFields_image
+  organiser: HackathonsDocAccessFields_organiser
+  prize: HackathonsDocAccessFields_prize
+  featured: HackathonsDocAccessFields_featured
+  sortOrder: HackathonsDocAccessFields_sortOrder
+  websiteUrl: HackathonsDocAccessFields_websiteUrl
+  applyUrl: HackathonsDocAccessFields_applyUrl
+  lumaUrl: HackathonsDocAccessFields_lumaUrl
+  discordUrl: HackathonsDocAccessFields_discordUrl
+  updatedAt: HackathonsDocAccessFields_updatedAt
+  createdAt: HackathonsDocAccessFields_createdAt
+  _status: HackathonsDocAccessFields__status
+}
+
+type HackathonsDocAccessFields_name {
+  create: HackathonsDocAccessFields_name_Create
+  read: HackathonsDocAccessFields_name_Read
+  update: HackathonsDocAccessFields_name_Update
+  delete: HackathonsDocAccessFields_name_Delete
+}
+
+type HackathonsDocAccessFields_name_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_name_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_name_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_name_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_type {
+  create: HackathonsDocAccessFields_type_Create
+  read: HackathonsDocAccessFields_type_Read
+  update: HackathonsDocAccessFields_type_Update
+  delete: HackathonsDocAccessFields_type_Delete
+}
+
+type HackathonsDocAccessFields_type_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_type_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_type_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_type_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_startDate {
+  create: HackathonsDocAccessFields_startDate_Create
+  read: HackathonsDocAccessFields_startDate_Read
+  update: HackathonsDocAccessFields_startDate_Update
+  delete: HackathonsDocAccessFields_startDate_Delete
+}
+
+type HackathonsDocAccessFields_startDate_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_startDate_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_startDate_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_startDate_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_endDate {
+  create: HackathonsDocAccessFields_endDate_Create
+  read: HackathonsDocAccessFields_endDate_Read
+  update: HackathonsDocAccessFields_endDate_Update
+  delete: HackathonsDocAccessFields_endDate_Delete
+}
+
+type HackathonsDocAccessFields_endDate_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_endDate_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_endDate_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_endDate_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_location {
+  create: HackathonsDocAccessFields_location_Create
+  read: HackathonsDocAccessFields_location_Read
+  update: HackathonsDocAccessFields_location_Update
+  delete: HackathonsDocAccessFields_location_Delete
+}
+
+type HackathonsDocAccessFields_location_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_location_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_location_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_location_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_mapsUrl {
+  create: HackathonsDocAccessFields_mapsUrl_Create
+  read: HackathonsDocAccessFields_mapsUrl_Read
+  update: HackathonsDocAccessFields_mapsUrl_Update
+  delete: HackathonsDocAccessFields_mapsUrl_Delete
+}
+
+type HackathonsDocAccessFields_mapsUrl_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_mapsUrl_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_mapsUrl_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_mapsUrl_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_description {
+  create: HackathonsDocAccessFields_description_Create
+  read: HackathonsDocAccessFields_description_Read
+  update: HackathonsDocAccessFields_description_Update
+  delete: HackathonsDocAccessFields_description_Delete
+}
+
+type HackathonsDocAccessFields_description_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_description_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_description_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_description_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_image {
+  create: HackathonsDocAccessFields_image_Create
+  read: HackathonsDocAccessFields_image_Read
+  update: HackathonsDocAccessFields_image_Update
+  delete: HackathonsDocAccessFields_image_Delete
+}
+
+type HackathonsDocAccessFields_image_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_image_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_image_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_image_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_organiser {
+  create: HackathonsDocAccessFields_organiser_Create
+  read: HackathonsDocAccessFields_organiser_Read
+  update: HackathonsDocAccessFields_organiser_Update
+  delete: HackathonsDocAccessFields_organiser_Delete
+}
+
+type HackathonsDocAccessFields_organiser_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_organiser_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_organiser_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_organiser_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_prize {
+  create: HackathonsDocAccessFields_prize_Create
+  read: HackathonsDocAccessFields_prize_Read
+  update: HackathonsDocAccessFields_prize_Update
+  delete: HackathonsDocAccessFields_prize_Delete
+}
+
+type HackathonsDocAccessFields_prize_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_prize_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_prize_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_prize_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_featured {
+  create: HackathonsDocAccessFields_featured_Create
+  read: HackathonsDocAccessFields_featured_Read
+  update: HackathonsDocAccessFields_featured_Update
+  delete: HackathonsDocAccessFields_featured_Delete
+}
+
+type HackathonsDocAccessFields_featured_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_featured_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_featured_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_featured_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_sortOrder {
+  create: HackathonsDocAccessFields_sortOrder_Create
+  read: HackathonsDocAccessFields_sortOrder_Read
+  update: HackathonsDocAccessFields_sortOrder_Update
+  delete: HackathonsDocAccessFields_sortOrder_Delete
+}
+
+type HackathonsDocAccessFields_sortOrder_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_sortOrder_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_sortOrder_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_sortOrder_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_websiteUrl {
+  create: HackathonsDocAccessFields_websiteUrl_Create
+  read: HackathonsDocAccessFields_websiteUrl_Read
+  update: HackathonsDocAccessFields_websiteUrl_Update
+  delete: HackathonsDocAccessFields_websiteUrl_Delete
+}
+
+type HackathonsDocAccessFields_websiteUrl_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_websiteUrl_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_websiteUrl_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_websiteUrl_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_applyUrl {
+  create: HackathonsDocAccessFields_applyUrl_Create
+  read: HackathonsDocAccessFields_applyUrl_Read
+  update: HackathonsDocAccessFields_applyUrl_Update
+  delete: HackathonsDocAccessFields_applyUrl_Delete
+}
+
+type HackathonsDocAccessFields_applyUrl_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_applyUrl_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_applyUrl_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_applyUrl_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_lumaUrl {
+  create: HackathonsDocAccessFields_lumaUrl_Create
+  read: HackathonsDocAccessFields_lumaUrl_Read
+  update: HackathonsDocAccessFields_lumaUrl_Update
+  delete: HackathonsDocAccessFields_lumaUrl_Delete
+}
+
+type HackathonsDocAccessFields_lumaUrl_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_lumaUrl_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_lumaUrl_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_lumaUrl_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_discordUrl {
+  create: HackathonsDocAccessFields_discordUrl_Create
+  read: HackathonsDocAccessFields_discordUrl_Read
+  update: HackathonsDocAccessFields_discordUrl_Update
+  delete: HackathonsDocAccessFields_discordUrl_Delete
+}
+
+type HackathonsDocAccessFields_discordUrl_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_discordUrl_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_discordUrl_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_discordUrl_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_updatedAt {
+  create: HackathonsDocAccessFields_updatedAt_Create
+  read: HackathonsDocAccessFields_updatedAt_Read
+  update: HackathonsDocAccessFields_updatedAt_Update
+  delete: HackathonsDocAccessFields_updatedAt_Delete
+}
+
+type HackathonsDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_createdAt {
+  create: HackathonsDocAccessFields_createdAt_Create
+  read: HackathonsDocAccessFields_createdAt_Read
+  update: HackathonsDocAccessFields_createdAt_Update
+  delete: HackathonsDocAccessFields_createdAt_Delete
+}
+
+type HackathonsDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields__status {
+  create: HackathonsDocAccessFields__status_Create
+  read: HackathonsDocAccessFields__status_Read
+  update: HackathonsDocAccessFields__status_Update
+  delete: HackathonsDocAccessFields__status_Delete
+}
+
+type HackathonsDocAccessFields__status_Create {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields__status_Read {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields__status_Update {
+  permission: Boolean!
+}
+
+type HackathonsDocAccessFields__status_Delete {
+  permission: Boolean!
+}
+
+type HackathonsCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type HackathonsReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type HackathonsUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type HackathonsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type HackathonsReadVersionsDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type HackathonVersion {
+  parent(draft: Boolean): Hackathon
+  version: HackathonVersion_Version
+  createdAt: DateTime
+  updatedAt: DateTime
+  latest: Boolean
+  id: String
+}
+
+type HackathonVersion_Version {
+  name: String
+  type: HackathonVersion_Version_type
+  startDate: DateTime
+  endDate: DateTime
+  location: String
+  mapsUrl: String
+  description(depth: Int): JSON
+  image(where: HackathonVersion_Version_Image_where): Media
+  organiser: String
+  prize: String
+  featured: Boolean
+  sortOrder: Float
+  websiteUrl: String
+  applyUrl: String
+  lumaUrl: String
+  discordUrl: String
+  updatedAt: DateTime
+  createdAt: DateTime
+  _status: HackathonVersion_Version__status
+}
+
+enum HackathonVersion_Version_type {
+  internal
+  external
+  other_society
+}
+
+input HackathonVersion_Version_Image_where {
+  alt: HackathonVersion_Version_Image_alt_operator
+  caption: HackathonVersion_Version_Image_caption_operator
+  updatedAt: HackathonVersion_Version_Image_updatedAt_operator
+  createdAt: HackathonVersion_Version_Image_createdAt_operator
+  url: HackathonVersion_Version_Image_url_operator
+  filename: HackathonVersion_Version_Image_filename_operator
+  mimeType: HackathonVersion_Version_Image_mimeType_operator
+  filesize: HackathonVersion_Version_Image_filesize_operator
+  width: HackathonVersion_Version_Image_width_operator
+  height: HackathonVersion_Version_Image_height_operator
+  focalX: HackathonVersion_Version_Image_focalX_operator
+  focalY: HackathonVersion_Version_Image_focalY_operator
+  id: HackathonVersion_Version_Image_id_operator
+  AND: [HackathonVersion_Version_Image_where_and]
+  OR: [HackathonVersion_Version_Image_where_or]
+}
+
+input HackathonVersion_Version_Image_alt_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input HackathonVersion_Version_Image_caption_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input HackathonVersion_Version_Image_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input HackathonVersion_Version_Image_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input HackathonVersion_Version_Image_url_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input HackathonVersion_Version_Image_filename_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input HackathonVersion_Version_Image_mimeType_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input HackathonVersion_Version_Image_filesize_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input HackathonVersion_Version_Image_width_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input HackathonVersion_Version_Image_height_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input HackathonVersion_Version_Image_focalX_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input HackathonVersion_Version_Image_focalY_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input HackathonVersion_Version_Image_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input HackathonVersion_Version_Image_where_and {
+  alt: HackathonVersion_Version_Image_alt_operator
+  caption: HackathonVersion_Version_Image_caption_operator
+  updatedAt: HackathonVersion_Version_Image_updatedAt_operator
+  createdAt: HackathonVersion_Version_Image_createdAt_operator
+  url: HackathonVersion_Version_Image_url_operator
+  filename: HackathonVersion_Version_Image_filename_operator
+  mimeType: HackathonVersion_Version_Image_mimeType_operator
+  filesize: HackathonVersion_Version_Image_filesize_operator
+  width: HackathonVersion_Version_Image_width_operator
+  height: HackathonVersion_Version_Image_height_operator
+  focalX: HackathonVersion_Version_Image_focalX_operator
+  focalY: HackathonVersion_Version_Image_focalY_operator
+  id: HackathonVersion_Version_Image_id_operator
+  AND: [HackathonVersion_Version_Image_where_and]
+  OR: [HackathonVersion_Version_Image_where_or]
+}
+
+input HackathonVersion_Version_Image_where_or {
+  alt: HackathonVersion_Version_Image_alt_operator
+  caption: HackathonVersion_Version_Image_caption_operator
+  updatedAt: HackathonVersion_Version_Image_updatedAt_operator
+  createdAt: HackathonVersion_Version_Image_createdAt_operator
+  url: HackathonVersion_Version_Image_url_operator
+  filename: HackathonVersion_Version_Image_filename_operator
+  mimeType: HackathonVersion_Version_Image_mimeType_operator
+  filesize: HackathonVersion_Version_Image_filesize_operator
+  width: HackathonVersion_Version_Image_width_operator
+  height: HackathonVersion_Version_Image_height_operator
+  focalX: HackathonVersion_Version_Image_focalX_operator
+  focalY: HackathonVersion_Version_Image_focalY_operator
+  id: HackathonVersion_Version_Image_id_operator
+  AND: [HackathonVersion_Version_Image_where_and]
+  OR: [HackathonVersion_Version_Image_where_or]
+}
+
+enum HackathonVersion_Version__status {
+  draft
+  published
+}
+
+type versionsHackathons {
+  docs: [HackathonVersion]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input versionsHackathon_where {
+  parent: versionsHackathon_parent_operator
+  version__name: versionsHackathon_version__name_operator
+  version__type: versionsHackathon_version__type_operator
+  version__startDate: versionsHackathon_version__startDate_operator
+  version__endDate: versionsHackathon_version__endDate_operator
+  version__location: versionsHackathon_version__location_operator
+  version__mapsUrl: versionsHackathon_version__mapsUrl_operator
+  version__description: versionsHackathon_version__description_operator
+  version__image: versionsHackathon_version__image_operator
+  version__organiser: versionsHackathon_version__organiser_operator
+  version__prize: versionsHackathon_version__prize_operator
+  version__featured: versionsHackathon_version__featured_operator
+  version__sortOrder: versionsHackathon_version__sortOrder_operator
+  version__websiteUrl: versionsHackathon_version__websiteUrl_operator
+  version__applyUrl: versionsHackathon_version__applyUrl_operator
+  version__lumaUrl: versionsHackathon_version__lumaUrl_operator
+  version__discordUrl: versionsHackathon_version__discordUrl_operator
+  version__updatedAt: versionsHackathon_version__updatedAt_operator
+  version__createdAt: versionsHackathon_version__createdAt_operator
+  version___status: versionsHackathon_version___status_operator
+  createdAt: versionsHackathon_createdAt_operator
+  updatedAt: versionsHackathon_updatedAt_operator
+  latest: versionsHackathon_latest_operator
+  id: versionsHackathon_id_operator
+  AND: [versionsHackathon_where_and]
+  OR: [versionsHackathon_where_or]
+}
+
+input versionsHackathon_parent_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input versionsHackathon_version__name_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input versionsHackathon_version__type_operator {
+  equals: versionsHackathon_version__type_Input
+  not_equals: versionsHackathon_version__type_Input
+  in: [versionsHackathon_version__type_Input]
+  not_in: [versionsHackathon_version__type_Input]
+  all: [versionsHackathon_version__type_Input]
+}
+
+enum versionsHackathon_version__type_Input {
+  internal
+  external
+  other_society
+}
+
+input versionsHackathon_version__startDate_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+}
+
+input versionsHackathon_version__endDate_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsHackathon_version__location_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsHackathon_version__mapsUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsHackathon_version__description_operator {
+  equals: JSON
+  not_equals: JSON
+  like: JSON
+  contains: JSON
+  exists: Boolean
+}
+
+input versionsHackathon_version__image_operator {
+  equals: String
+  not_equals: String
+  exists: Boolean
+}
+
+input versionsHackathon_version__organiser_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsHackathon_version__prize_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsHackathon_version__featured_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsHackathon_version__sortOrder_operator {
+  equals: Float
+  not_equals: Float
+  greater_than_equal: Float
+  greater_than: Float
+  less_than_equal: Float
+  less_than: Float
+  exists: Boolean
+}
+
+input versionsHackathon_version__websiteUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsHackathon_version__applyUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsHackathon_version__lumaUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsHackathon_version__discordUrl_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsHackathon_version__updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsHackathon_version__createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsHackathon_version___status_operator {
+  equals: versionsHackathon_version___status_Input
+  not_equals: versionsHackathon_version___status_Input
+  in: [versionsHackathon_version___status_Input]
+  not_in: [versionsHackathon_version___status_Input]
+  all: [versionsHackathon_version___status_Input]
+  exists: Boolean
+}
+
+enum versionsHackathon_version___status_Input {
+  draft
+  published
+}
+
+input versionsHackathon_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsHackathon_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input versionsHackathon_latest_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input versionsHackathon_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input versionsHackathon_where_and {
+  parent: versionsHackathon_parent_operator
+  version__name: versionsHackathon_version__name_operator
+  version__type: versionsHackathon_version__type_operator
+  version__startDate: versionsHackathon_version__startDate_operator
+  version__endDate: versionsHackathon_version__endDate_operator
+  version__location: versionsHackathon_version__location_operator
+  version__mapsUrl: versionsHackathon_version__mapsUrl_operator
+  version__description: versionsHackathon_version__description_operator
+  version__image: versionsHackathon_version__image_operator
+  version__organiser: versionsHackathon_version__organiser_operator
+  version__prize: versionsHackathon_version__prize_operator
+  version__featured: versionsHackathon_version__featured_operator
+  version__sortOrder: versionsHackathon_version__sortOrder_operator
+  version__websiteUrl: versionsHackathon_version__websiteUrl_operator
+  version__applyUrl: versionsHackathon_version__applyUrl_operator
+  version__lumaUrl: versionsHackathon_version__lumaUrl_operator
+  version__discordUrl: versionsHackathon_version__discordUrl_operator
+  version__updatedAt: versionsHackathon_version__updatedAt_operator
+  version__createdAt: versionsHackathon_version__createdAt_operator
+  version___status: versionsHackathon_version___status_operator
+  createdAt: versionsHackathon_createdAt_operator
+  updatedAt: versionsHackathon_updatedAt_operator
+  latest: versionsHackathon_latest_operator
+  id: versionsHackathon_id_operator
+  AND: [versionsHackathon_where_and]
+  OR: [versionsHackathon_where_or]
+}
+
+input versionsHackathon_where_or {
+  parent: versionsHackathon_parent_operator
+  version__name: versionsHackathon_version__name_operator
+  version__type: versionsHackathon_version__type_operator
+  version__startDate: versionsHackathon_version__startDate_operator
+  version__endDate: versionsHackathon_version__endDate_operator
+  version__location: versionsHackathon_version__location_operator
+  version__mapsUrl: versionsHackathon_version__mapsUrl_operator
+  version__description: versionsHackathon_version__description_operator
+  version__image: versionsHackathon_version__image_operator
+  version__organiser: versionsHackathon_version__organiser_operator
+  version__prize: versionsHackathon_version__prize_operator
+  version__featured: versionsHackathon_version__featured_operator
+  version__sortOrder: versionsHackathon_version__sortOrder_operator
+  version__websiteUrl: versionsHackathon_version__websiteUrl_operator
+  version__applyUrl: versionsHackathon_version__applyUrl_operator
+  version__lumaUrl: versionsHackathon_version__lumaUrl_operator
+  version__discordUrl: versionsHackathon_version__discordUrl_operator
+  version__updatedAt: versionsHackathon_version__updatedAt_operator
+  version__createdAt: versionsHackathon_version__createdAt_operator
+  version___status: versionsHackathon_version___status_operator
+  createdAt: versionsHackathon_createdAt_operator
+  updatedAt: versionsHackathon_updatedAt_operator
+  latest: versionsHackathon_latest_operator
+  id: versionsHackathon_id_operator
+  AND: [versionsHackathon_where_and]
+  OR: [versionsHackathon_where_or]
+}
+
 type BookingEvent {
   id: String
   name: String!
@@ -28796,7 +30409,6 @@ type Settings {
   newsMastheadEyebrow: String
   newsArchiveTagline: String
   newsEmptyState: String
-  newsCoverPlaceholder: String
   newsPrintEditionLabel: String
   newsSeoTitle: String
   newsSeoDescription: String
@@ -29588,7 +31200,6 @@ type SettingsDocAccessFields {
   newsMastheadEyebrow: SettingsDocAccessFields_newsMastheadEyebrow
   newsArchiveTagline: SettingsDocAccessFields_newsArchiveTagline
   newsEmptyState: SettingsDocAccessFields_newsEmptyState
-  newsCoverPlaceholder: SettingsDocAccessFields_newsCoverPlaceholder
   newsPrintEditionLabel: SettingsDocAccessFields_newsPrintEditionLabel
   newsSeoTitle: SettingsDocAccessFields_newsSeoTitle
   newsSeoDescription: SettingsDocAccessFields_newsSeoDescription
@@ -30106,29 +31717,6 @@ type SettingsDocAccessFields_newsEmptyState_Update {
 }
 
 type SettingsDocAccessFields_newsEmptyState_Delete {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_newsCoverPlaceholder {
-  create: SettingsDocAccessFields_newsCoverPlaceholder_Create
-  read: SettingsDocAccessFields_newsCoverPlaceholder_Read
-  update: SettingsDocAccessFields_newsCoverPlaceholder_Update
-  delete: SettingsDocAccessFields_newsCoverPlaceholder_Delete
-}
-
-type SettingsDocAccessFields_newsCoverPlaceholder_Create {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_newsCoverPlaceholder_Read {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_newsCoverPlaceholder_Update {
-  permission: Boolean!
-}
-
-type SettingsDocAccessFields_newsCoverPlaceholder_Delete {
   permission: Boolean!
 }
 
@@ -31096,6 +32684,7 @@ type Access {
   societies: societiesAccess
   committee: committeeAccess
   events: eventsAccess
+  hackathons: hackathonsAccess
   booking_events: booking_eventsAccess
   tables: tablesAccess
   ticket_holders: ticket_holdersAccess
@@ -38986,6 +40575,499 @@ type EventsReadVersionsAccess {
   where: JSONObject
 }
 
+type hackathonsAccess {
+  fields: HackathonsFields
+  create: HackathonsCreateAccess
+  read: HackathonsReadAccess
+  update: HackathonsUpdateAccess
+  delete: HackathonsDeleteAccess
+  readVersions: HackathonsReadVersionsAccess
+}
+
+type HackathonsFields {
+  name: HackathonsFields_name
+  type: HackathonsFields_type
+  startDate: HackathonsFields_startDate
+  endDate: HackathonsFields_endDate
+  location: HackathonsFields_location
+  mapsUrl: HackathonsFields_mapsUrl
+  description: HackathonsFields_description
+  image: HackathonsFields_image
+  organiser: HackathonsFields_organiser
+  prize: HackathonsFields_prize
+  featured: HackathonsFields_featured
+  sortOrder: HackathonsFields_sortOrder
+  websiteUrl: HackathonsFields_websiteUrl
+  applyUrl: HackathonsFields_applyUrl
+  lumaUrl: HackathonsFields_lumaUrl
+  discordUrl: HackathonsFields_discordUrl
+  updatedAt: HackathonsFields_updatedAt
+  createdAt: HackathonsFields_createdAt
+  _status: HackathonsFields__status
+}
+
+type HackathonsFields_name {
+  create: HackathonsFields_name_Create
+  read: HackathonsFields_name_Read
+  update: HackathonsFields_name_Update
+  delete: HackathonsFields_name_Delete
+}
+
+type HackathonsFields_name_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_name_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_name_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_name_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_type {
+  create: HackathonsFields_type_Create
+  read: HackathonsFields_type_Read
+  update: HackathonsFields_type_Update
+  delete: HackathonsFields_type_Delete
+}
+
+type HackathonsFields_type_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_type_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_type_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_type_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_startDate {
+  create: HackathonsFields_startDate_Create
+  read: HackathonsFields_startDate_Read
+  update: HackathonsFields_startDate_Update
+  delete: HackathonsFields_startDate_Delete
+}
+
+type HackathonsFields_startDate_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_startDate_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_startDate_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_startDate_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_endDate {
+  create: HackathonsFields_endDate_Create
+  read: HackathonsFields_endDate_Read
+  update: HackathonsFields_endDate_Update
+  delete: HackathonsFields_endDate_Delete
+}
+
+type HackathonsFields_endDate_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_endDate_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_endDate_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_endDate_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_location {
+  create: HackathonsFields_location_Create
+  read: HackathonsFields_location_Read
+  update: HackathonsFields_location_Update
+  delete: HackathonsFields_location_Delete
+}
+
+type HackathonsFields_location_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_location_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_location_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_location_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_mapsUrl {
+  create: HackathonsFields_mapsUrl_Create
+  read: HackathonsFields_mapsUrl_Read
+  update: HackathonsFields_mapsUrl_Update
+  delete: HackathonsFields_mapsUrl_Delete
+}
+
+type HackathonsFields_mapsUrl_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_mapsUrl_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_mapsUrl_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_mapsUrl_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_description {
+  create: HackathonsFields_description_Create
+  read: HackathonsFields_description_Read
+  update: HackathonsFields_description_Update
+  delete: HackathonsFields_description_Delete
+}
+
+type HackathonsFields_description_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_description_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_description_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_description_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_image {
+  create: HackathonsFields_image_Create
+  read: HackathonsFields_image_Read
+  update: HackathonsFields_image_Update
+  delete: HackathonsFields_image_Delete
+}
+
+type HackathonsFields_image_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_image_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_image_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_image_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_organiser {
+  create: HackathonsFields_organiser_Create
+  read: HackathonsFields_organiser_Read
+  update: HackathonsFields_organiser_Update
+  delete: HackathonsFields_organiser_Delete
+}
+
+type HackathonsFields_organiser_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_organiser_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_organiser_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_organiser_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_prize {
+  create: HackathonsFields_prize_Create
+  read: HackathonsFields_prize_Read
+  update: HackathonsFields_prize_Update
+  delete: HackathonsFields_prize_Delete
+}
+
+type HackathonsFields_prize_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_prize_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_prize_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_prize_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_featured {
+  create: HackathonsFields_featured_Create
+  read: HackathonsFields_featured_Read
+  update: HackathonsFields_featured_Update
+  delete: HackathonsFields_featured_Delete
+}
+
+type HackathonsFields_featured_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_featured_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_featured_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_featured_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_sortOrder {
+  create: HackathonsFields_sortOrder_Create
+  read: HackathonsFields_sortOrder_Read
+  update: HackathonsFields_sortOrder_Update
+  delete: HackathonsFields_sortOrder_Delete
+}
+
+type HackathonsFields_sortOrder_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_sortOrder_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_sortOrder_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_sortOrder_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_websiteUrl {
+  create: HackathonsFields_websiteUrl_Create
+  read: HackathonsFields_websiteUrl_Read
+  update: HackathonsFields_websiteUrl_Update
+  delete: HackathonsFields_websiteUrl_Delete
+}
+
+type HackathonsFields_websiteUrl_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_websiteUrl_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_websiteUrl_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_websiteUrl_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_applyUrl {
+  create: HackathonsFields_applyUrl_Create
+  read: HackathonsFields_applyUrl_Read
+  update: HackathonsFields_applyUrl_Update
+  delete: HackathonsFields_applyUrl_Delete
+}
+
+type HackathonsFields_applyUrl_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_applyUrl_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_applyUrl_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_applyUrl_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_lumaUrl {
+  create: HackathonsFields_lumaUrl_Create
+  read: HackathonsFields_lumaUrl_Read
+  update: HackathonsFields_lumaUrl_Update
+  delete: HackathonsFields_lumaUrl_Delete
+}
+
+type HackathonsFields_lumaUrl_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_lumaUrl_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_lumaUrl_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_lumaUrl_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_discordUrl {
+  create: HackathonsFields_discordUrl_Create
+  read: HackathonsFields_discordUrl_Read
+  update: HackathonsFields_discordUrl_Update
+  delete: HackathonsFields_discordUrl_Delete
+}
+
+type HackathonsFields_discordUrl_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_discordUrl_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_discordUrl_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_discordUrl_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_updatedAt {
+  create: HackathonsFields_updatedAt_Create
+  read: HackathonsFields_updatedAt_Read
+  update: HackathonsFields_updatedAt_Update
+  delete: HackathonsFields_updatedAt_Delete
+}
+
+type HackathonsFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields_createdAt {
+  create: HackathonsFields_createdAt_Create
+  read: HackathonsFields_createdAt_Read
+  update: HackathonsFields_createdAt_Update
+  delete: HackathonsFields_createdAt_Delete
+}
+
+type HackathonsFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type HackathonsFields__status {
+  create: HackathonsFields__status_Create
+  read: HackathonsFields__status_Read
+  update: HackathonsFields__status_Update
+  delete: HackathonsFields__status_Delete
+}
+
+type HackathonsFields__status_Create {
+  permission: Boolean!
+}
+
+type HackathonsFields__status_Read {
+  permission: Boolean!
+}
+
+type HackathonsFields__status_Update {
+  permission: Boolean!
+}
+
+type HackathonsFields__status_Delete {
+  permission: Boolean!
+}
+
+type HackathonsCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type HackathonsReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type HackathonsUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type HackathonsDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type HackathonsReadVersionsAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type booking_eventsAccess {
   fields: BookingEventsFields
   create: BookingEventsCreateAccess
@@ -41901,7 +43983,6 @@ type SettingsFields {
   newsMastheadEyebrow: SettingsFields_newsMastheadEyebrow
   newsArchiveTagline: SettingsFields_newsArchiveTagline
   newsEmptyState: SettingsFields_newsEmptyState
-  newsCoverPlaceholder: SettingsFields_newsCoverPlaceholder
   newsPrintEditionLabel: SettingsFields_newsPrintEditionLabel
   newsSeoTitle: SettingsFields_newsSeoTitle
   newsSeoDescription: SettingsFields_newsSeoDescription
@@ -42419,29 +44500,6 @@ type SettingsFields_newsEmptyState_Update {
 }
 
 type SettingsFields_newsEmptyState_Delete {
-  permission: Boolean!
-}
-
-type SettingsFields_newsCoverPlaceholder {
-  create: SettingsFields_newsCoverPlaceholder_Create
-  read: SettingsFields_newsCoverPlaceholder_Read
-  update: SettingsFields_newsCoverPlaceholder_Update
-  delete: SettingsFields_newsCoverPlaceholder_Delete
-}
-
-type SettingsFields_newsCoverPlaceholder_Create {
-  permission: Boolean!
-}
-
-type SettingsFields_newsCoverPlaceholder_Read {
-  permission: Boolean!
-}
-
-type SettingsFields_newsCoverPlaceholder_Update {
-  permission: Boolean!
-}
-
-type SettingsFields_newsCoverPlaceholder_Delete {
   permission: Boolean!
 }
 
@@ -43199,6 +45257,10 @@ type Mutation {
   updateEvent(id: String!, autosave: Boolean, data: mutationEventUpdateInput!, draft: Boolean): Event
   deleteEvent(id: String!): Event
   restoreVersionEvent(id: String): Event
+  createHackathon(data: mutationHackathonInput!, draft: Boolean): Hackathon
+  updateHackathon(id: String!, autosave: Boolean, data: mutationHackathonUpdateInput!, draft: Boolean): Hackathon
+  deleteHackathon(id: String!): Hackathon
+  restoreVersionHackathon(id: String): Hackathon
   createBookingEvent(data: mutationBookingEventInput!): BookingEvent
   updateBookingEvent(id: String!, autosave: Boolean, data: mutationBookingEventUpdateInput!): BookingEvent
   deleteBookingEvent(id: String!): BookingEvent
@@ -44508,6 +46570,72 @@ enum EventUpdate__status_MutationInput {
   published
 }
 
+input mutationHackathonInput {
+  name: String!
+  type: Hackathon_type_MutationInput!
+  startDate: String!
+  endDate: String
+  location: String
+  mapsUrl: String
+  description: JSON
+  image: String
+  organiser: String
+  prize: String
+  featured: Boolean
+  sortOrder: Float
+  websiteUrl: String
+  applyUrl: String
+  lumaUrl: String
+  discordUrl: String
+  updatedAt: String
+  createdAt: String
+  _status: Hackathon__status_MutationInput
+}
+
+enum Hackathon_type_MutationInput {
+  internal
+  external
+  other_society
+}
+
+enum Hackathon__status_MutationInput {
+  draft
+  published
+}
+
+input mutationHackathonUpdateInput {
+  name: String
+  type: HackathonUpdate_type_MutationInput
+  startDate: String
+  endDate: String
+  location: String
+  mapsUrl: String
+  description: JSON
+  image: String
+  organiser: String
+  prize: String
+  featured: Boolean
+  sortOrder: Float
+  websiteUrl: String
+  applyUrl: String
+  lumaUrl: String
+  discordUrl: String
+  updatedAt: String
+  createdAt: String
+  _status: HackathonUpdate__status_MutationInput
+}
+
+enum HackathonUpdate_type_MutationInput {
+  internal
+  external
+  other_society
+}
+
+enum HackathonUpdate__status_MutationInput {
+  draft
+  published
+}
+
 input mutationBookingEventInput {
   name: String!
   slug: String
@@ -44894,7 +47022,6 @@ input mutationSettingsInput {
   newsMastheadEyebrow: String
   newsArchiveTagline: String
   newsEmptyState: String
-  newsCoverPlaceholder: String
   newsPrintEditionLabel: String
   newsSeoTitle: String
   newsSeoDescription: String

@@ -1,6 +1,14 @@
 import React from 'react'
 
-import { Committee, Event, Post, Project, Society, Sponsor } from '../../../payload/payload-types'
+import {
+  Committee,
+  Event,
+  Hackathon,
+  Post,
+  Project,
+  Society,
+  Sponsor,
+} from '../../../payload/payload-types'
 import { CollectionArchive } from '../../_components/CollectionArchive'
 import { Gutter } from '../../_components/Gutter'
 import RichText from '../../_components/RichText'
@@ -33,6 +41,7 @@ export const ArchiveBlock: React.FC<
     | { relationTo: 'societies'; value: string | Society }
     | { relationTo: 'committee'; value: string | Committee }
     | { relationTo: 'events'; value: string | Event }
+    | { relationTo: 'hackathons'; value: string | Hackathon }
   )[] = populatedDocs.filter(Boolean) as (
     | { relationTo: 'posts'; value: string | Post }
     | { relationTo: 'projects'; value: string | Project }
@@ -40,6 +49,7 @@ export const ArchiveBlock: React.FC<
     | { relationTo: 'societies'; value: string | Society }
     | { relationTo: 'committee'; value: string | Committee }
     | { relationTo: 'events'; value: string | Event }
+    | { relationTo: 'hackathons'; value: string | Hackathon }
   )[]
 
   return (

@@ -61,7 +61,8 @@ const fetchGraphQL = async <T>(
       'Content-Type': 'application/json',
       ...(token?.value && draft ? { Authorization: `JWT ${token.value}` } : {}),
     },
-    next: { tags: [tag], revalidate: 60 },
+    // Draft responses are user-specific and must never enter the shared cache.
+    ...(draft ? { cache: 'no-store' } : { next: { tags: [tag], revalidate: 60 } }),
     body: JSON.stringify({ query, variables }),
   })
 

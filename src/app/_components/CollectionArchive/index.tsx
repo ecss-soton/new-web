@@ -7,6 +7,7 @@ import qs from 'qs'
 import type {
   Committee,
   Event,
+  Hackathon,
   Media,
   Post,
   Project,
@@ -22,6 +23,7 @@ import { CommitteeItem } from '../CommitteeItem'
 import { CommitteePopUp } from '../CommitteePopUp'
 import { EventItem } from '../EventItem'
 import { Gutter } from '../Gutter'
+import { HackathonItem } from '../HackathonItem'
 import { Pagination } from '../Pagination'
 import { SocietyItem } from '../SocietyItem'
 import { SponsorItem } from '../SponsorItem'
@@ -39,7 +41,7 @@ function shuffleArray<T>(arr: T[]): T[] {
 }
 
 type Result = {
-  docs: (Post | Project | Sponsor | Society | Committee | Event | string)[]
+  docs: (Post | Project | Sponsor | Society | Committee | Event | Hackathon | string)[]
   hasNextPage: boolean
   hasPrevPage: boolean
   nextPage: number
@@ -57,7 +59,14 @@ export type Props = {
   populateBy?: 'collection' | 'selection'
   populatedDocs?: ArchiveBlockProps['populatedDocs']
   populatedDocsTotal?: ArchiveBlockProps['populatedDocsTotal']
-  relationTo?: 'posts' | 'projects' | 'committee' | 'sponsors' | 'societies' | 'events'
+  relationTo?:
+    | 'posts'
+    | 'projects'
+    | 'committee'
+    | 'sponsors'
+    | 'societies'
+    | 'events'
+    | 'hackathons'
   selectedDocs?: ArchiveBlockProps['selectedDocs']
   sort?: string
   isJumpstart?: boolean | null
@@ -137,7 +146,10 @@ export const CollectionArchive: React.FC<Props> = props => {
       const searchQuery = qs.stringify(
         {
           depth: 1,
-          limit: relationTo === 'events' || relationTo === 'societies' ? 300 : limit,
+          limit:
+            relationTo === 'events' || relationTo === 'societies' || relationTo === 'hackathons'
+              ? 300
+              : limit,
           page,
           sort:
             relationTo === 'committee'
@@ -146,6 +158,8 @@ export const CollectionArchive: React.FC<Props> = props => {
               ? 'date'
               : relationTo === 'societies'
               ? 'name'
+              : relationTo === 'hackathons'
+              ? 'startDate'
               : 'level',
           where: {
             ...(categories
@@ -381,6 +395,45 @@ export const CollectionArchive: React.FC<Props> = props => {
                 return <div className={classes.timelineGrid}>{nodes}</div>
               })()}
             </div>
+          ) : relationTo === 'hackathons' ? (
+            <div className={classes.eventsViewWrapper}>
+              {(() => {
+                const hackathons = (results.docs || []).filter(
+                  (doc): doc is Hackathon =>
+                    typeof doc === 'object' && doc !== null && 'type' in doc && 'startDate' in doc,
+                )
+
+                const sorted = [...hackathons].sort((a, b) => {
+                  const featuredDiff = Number(Boolean(b.featured)) - Number(Boolean(a.featured))
+                  if (featuredDiff !== 0) return featuredDiff
+                  const orderDiff = (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
+                  return new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+                })
+
+                if (isDataReady && sorted.length === 0) {
+                  return (
+                    <div className={classes.emptyState}>
+                      <p className={[classes.emptyHeading, inter.className].join(' ')}>
+                        No hackathons yet
+                      </p>
+                      <p className={classes.emptySubtext}>
+                        Check back soon for upcoming hackathons.
+                      </p>
+                    </div>
+                  )
+                }
+
+                return (
+                  <div className={classes.hackathonGrid}>
+                    {sorted.map(hackathon => (
+                      <div className={classes.fadeIn} key={hackathon.id}>
+                        <HackathonItem hackathon={hackathon} />
+                      </div>
+                    ))}
+                  </div>
+                )
+              })()}
+            </div>
           ) : (
             <div
               className={
@@ -435,14 +488,17 @@ export const CollectionArchive: React.FC<Props> = props => {
                 })}
             </div>
           )}
-          {results.totalPages > 1 && populateBy !== 'selection' && relationTo !== 'events' && (
-            <Pagination
-              className={classes.pagination}
-              onClick={setPage}
-              page={results.page}
-              totalPages={results.totalPages}
-            />
-          )}
+          {results.totalPages > 1 &&
+            populateBy !== 'selection' &&
+            relationTo !== 'events' &&
+            relationTo !== 'hackathons' && (
+              <Pagination
+                className={classes.pagination}
+                onClick={setPage}
+                page={results.page}
+                totalPages={results.totalPages}
+              />
+            )}
         </Gutter>
       </Fragment>
       {isPopUpVisible && ('position' in isPopUpVisible || 'positionRef' in isPopUpVisible) && (
