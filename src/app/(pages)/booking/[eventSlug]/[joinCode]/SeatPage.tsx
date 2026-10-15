@@ -3,10 +3,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { User } from '../../../../../payload/payload-types'
-import { fetchTableSeats, updateSeats } from '../../../../_api/fetchBooking'
+import type { SeatAssignment, TableSeatData } from '../../../../_api/fetchBooking'
+import { fetchTableSeats, joinTable, updateSeats } from '../../../../_api/fetchBooking'
 import { SeatLayout } from '../../../../_components/SeatLayout'
-
-type SeatData = Awaited<ReturnType<typeof fetchTableSeats>>
 
 export const SeatPage: React.FC<{
   joinCode: string
@@ -14,9 +13,10 @@ export const SeatPage: React.FC<{
   user: User
   token: string
 }> = ({ joinCode, eventSlug, user, token }) => {
-  const [data, setData] = useState<SeatData | null>(null)
+  const [data, setData] = useState<TableSeatData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [joining, setJoining] = useState(false)
   const seatRequestRef = useRef(0)
 
   const loadSeats = useCallback(async () => {
@@ -41,9 +41,22 @@ export const SeatPage: React.FC<{
     return () => clearInterval(interval)
   }, [loadSeats])
 
-  const handleSave = async (seatPositions: Array<{ seatIndex: number; name: string }>) => {
+  const handleSave = async (seatPositions: SeatAssignment[]) => {
     await updateSeats(joinCode, seatPositions, token)
     await loadSeats()
+  }
+
+  const handleJoin = async () => {
+    setJoining(true)
+    setError(null)
+    try {
+      await joinTable(joinCode, token)
+      await loadSeats()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to join table')
+    } finally {
+      setJoining(false)
+    }
   }
 
   if (loading) {
@@ -56,11 +69,16 @@ export const SeatPage: React.FC<{
     )
   }
 
-  if (error) {
+  if (error && !data) {
     return (
       <div className="page-container">
         <div className="status-screen">
           <p style={{ color: 'var(--color-error-400)' }}>{error}</p>
+          <p>
+            <a href={`/booking/${eventSlug}`} style={{ color: 'var(--color-base-400)' }}>
+              &#8592; Back to Tables
+            </a>
+          </p>
         </div>
       </div>
     )
@@ -76,14 +94,57 @@ export const SeatPage: React.FC<{
     )
   }
 
+  const joinBlockedReason = data.full
+    ? 'This table is full.'
+    : data.locked
+    ? 'This table is locked.'
+    : !data.bookingOpen
+    ? 'Booking is currently closed.'
+    : 'You need to be on the guest list to join this table.'
+
   return (
     <div className="page-container">
+      {error && (
+        <div
+          style={{
+            maxWidth: 900,
+            margin: '1rem auto 0',
+            background: 'var(--color-error-900)',
+            color: 'var(--color-error-200)',
+            padding: '0.75rem 1rem',
+            borderRadius: 8,
+          }}
+        >
+          {error}
+          <button
+            style={{
+              marginLeft: '1rem',
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--color-error-300)',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+            }}
+            onClick={() => setError(null)}
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       <SeatLayout
         seats={data.seats}
         members={data.members}
-        yourTable={data.yourTable}
+        currentUserId={user?.id}
         joinCode={data.joinCode}
-        eventSlug={eventSlug}
+        eventSlug={data.eventSlug || eventSlug}
+        isMember={data.isMember}
+        canEdit={data.isMember && (!data.locked || data.isAdmin)}
+        locked={data.locked}
+        canJoin={data.canJoin}
+        onJoin={handleJoin}
+        joining={joining}
+        joinBlockedReason={joinBlockedReason}
         onSave={handleSave}
       />
     </div>

@@ -25844,6 +25844,7 @@ type Table {
 
 type Table_SeatPositions {
   seatIndex: Float
+  userId: User
   name: String
   id: String
 }
@@ -25870,6 +25871,7 @@ input Table_where {
   members: Table_members_operator
   memberCount: Table_memberCount_operator
   seatPositions__seatIndex: Table_seatPositions__seatIndex_operator
+  seatPositions__userId: Table_seatPositions__userId_operator
   seatPositions__name: Table_seatPositions__name_operator
   seatPositions__id: Table_seatPositions__id_operator
   updatedAt: Table_updatedAt_operator
@@ -25939,6 +25941,15 @@ input Table_seatPositions__seatIndex_operator {
   less_than: Float
 }
 
+input Table_seatPositions__userId_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
 input Table_seatPositions__name_operator {
   equals: String
   not_equals: String
@@ -26001,6 +26012,7 @@ input Table_where_and {
   members: Table_members_operator
   memberCount: Table_memberCount_operator
   seatPositions__seatIndex: Table_seatPositions__seatIndex_operator
+  seatPositions__userId: Table_seatPositions__userId_operator
   seatPositions__name: Table_seatPositions__name_operator
   seatPositions__id: Table_seatPositions__id_operator
   updatedAt: Table_updatedAt_operator
@@ -26018,6 +26030,7 @@ input Table_where_or {
   members: Table_members_operator
   memberCount: Table_memberCount_operator
   seatPositions__seatIndex: Table_seatPositions__seatIndex_operator
+  seatPositions__userId: Table_seatPositions__userId_operator
   seatPositions__name: Table_seatPositions__name_operator
   seatPositions__id: Table_seatPositions__id_operator
   updatedAt: Table_updatedAt_operator
@@ -26215,6 +26228,7 @@ type TablesDocAccessFields_seatPositions_Delete {
 
 type TablesDocAccessFields_seatPositions_Fields {
   seatIndex: TablesDocAccessFields_seatPositions_seatIndex
+  userId: TablesDocAccessFields_seatPositions_userId
   name: TablesDocAccessFields_seatPositions_name
   id: TablesDocAccessFields_seatPositions_id
 }
@@ -26239,6 +26253,29 @@ type TablesDocAccessFields_seatPositions_seatIndex_Update {
 }
 
 type TablesDocAccessFields_seatPositions_seatIndex_Delete {
+  permission: Boolean!
+}
+
+type TablesDocAccessFields_seatPositions_userId {
+  create: TablesDocAccessFields_seatPositions_userId_Create
+  read: TablesDocAccessFields_seatPositions_userId_Read
+  update: TablesDocAccessFields_seatPositions_userId_Update
+  delete: TablesDocAccessFields_seatPositions_userId_Delete
+}
+
+type TablesDocAccessFields_seatPositions_userId_Create {
+  permission: Boolean!
+}
+
+type TablesDocAccessFields_seatPositions_userId_Read {
+  permission: Boolean!
+}
+
+type TablesDocAccessFields_seatPositions_userId_Update {
+  permission: Boolean!
+}
+
+type TablesDocAccessFields_seatPositions_userId_Delete {
   permission: Boolean!
 }
 
@@ -26360,15 +26397,9 @@ type TicketHolder {
   sotonId: String!
   name: String!
   plusOneCount: Float
-  plusOneNames: [TicketHolder_PlusOneNames!]
   dietaryRequirements: String
   updatedAt: DateTime
   createdAt: DateTime
-}
-
-type TicketHolder_PlusOneNames {
-  name: String
-  id: String
 }
 
 type TicketHolders {
@@ -26390,8 +26421,6 @@ input TicketHolder_where {
   sotonId: TicketHolder_sotonId_operator
   name: TicketHolder_name_operator
   plusOneCount: TicketHolder_plusOneCount_operator
-  plusOneNames__name: TicketHolder_plusOneNames__name_operator
-  plusOneNames__id: TicketHolder_plusOneNames__id_operator
   dietaryRequirements: TicketHolder_dietaryRequirements_operator
   updatedAt: TicketHolder_updatedAt_operator
   createdAt: TicketHolder_createdAt_operator
@@ -26435,27 +26464,6 @@ input TicketHolder_plusOneCount_operator {
   greater_than: Float
   less_than_equal: Float
   less_than: Float
-  exists: Boolean
-}
-
-input TicketHolder_plusOneNames__name_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
-}
-
-input TicketHolder_plusOneNames__id_operator {
-  equals: String
-  not_equals: String
-  like: String
-  contains: String
-  in: [String]
-  not_in: [String]
-  all: [String]
   exists: Boolean
 }
 
@@ -26508,8 +26516,6 @@ input TicketHolder_where_and {
   sotonId: TicketHolder_sotonId_operator
   name: TicketHolder_name_operator
   plusOneCount: TicketHolder_plusOneCount_operator
-  plusOneNames__name: TicketHolder_plusOneNames__name_operator
-  plusOneNames__id: TicketHolder_plusOneNames__id_operator
   dietaryRequirements: TicketHolder_dietaryRequirements_operator
   updatedAt: TicketHolder_updatedAt_operator
   createdAt: TicketHolder_createdAt_operator
@@ -26523,8 +26529,6 @@ input TicketHolder_where_or {
   sotonId: TicketHolder_sotonId_operator
   name: TicketHolder_name_operator
   plusOneCount: TicketHolder_plusOneCount_operator
-  plusOneNames__name: TicketHolder_plusOneNames__name_operator
-  plusOneNames__id: TicketHolder_plusOneNames__id_operator
   dietaryRequirements: TicketHolder_dietaryRequirements_operator
   updatedAt: TicketHolder_updatedAt_operator
   createdAt: TicketHolder_createdAt_operator
@@ -26550,7 +26554,6 @@ type TicketHoldersDocAccessFields {
   sotonId: TicketHoldersDocAccessFields_sotonId
   name: TicketHoldersDocAccessFields_name
   plusOneCount: TicketHoldersDocAccessFields_plusOneCount
-  plusOneNames: TicketHoldersDocAccessFields_plusOneNames
   dietaryRequirements: TicketHoldersDocAccessFields_dietaryRequirements
   updatedAt: TicketHoldersDocAccessFields_updatedAt
   createdAt: TicketHoldersDocAccessFields_createdAt
@@ -26645,81 +26648,6 @@ type TicketHoldersDocAccessFields_plusOneCount_Update {
 }
 
 type TicketHoldersDocAccessFields_plusOneCount_Delete {
-  permission: Boolean!
-}
-
-type TicketHoldersDocAccessFields_plusOneNames {
-  create: TicketHoldersDocAccessFields_plusOneNames_Create
-  read: TicketHoldersDocAccessFields_plusOneNames_Read
-  update: TicketHoldersDocAccessFields_plusOneNames_Update
-  delete: TicketHoldersDocAccessFields_plusOneNames_Delete
-  fields: TicketHoldersDocAccessFields_plusOneNames_Fields
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_Create {
-  permission: Boolean!
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_Read {
-  permission: Boolean!
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_Update {
-  permission: Boolean!
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_Delete {
-  permission: Boolean!
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_Fields {
-  name: TicketHoldersDocAccessFields_plusOneNames_name
-  id: TicketHoldersDocAccessFields_plusOneNames_id
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_name {
-  create: TicketHoldersDocAccessFields_plusOneNames_name_Create
-  read: TicketHoldersDocAccessFields_plusOneNames_name_Read
-  update: TicketHoldersDocAccessFields_plusOneNames_name_Update
-  delete: TicketHoldersDocAccessFields_plusOneNames_name_Delete
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_name_Create {
-  permission: Boolean!
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_name_Read {
-  permission: Boolean!
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_name_Update {
-  permission: Boolean!
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_name_Delete {
-  permission: Boolean!
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_id {
-  create: TicketHoldersDocAccessFields_plusOneNames_id_Create
-  read: TicketHoldersDocAccessFields_plusOneNames_id_Read
-  update: TicketHoldersDocAccessFields_plusOneNames_id_Update
-  delete: TicketHoldersDocAccessFields_plusOneNames_id_Delete
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_id_Create {
-  permission: Boolean!
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_id_Read {
-  permission: Boolean!
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_id_Update {
-  permission: Boolean!
-}
-
-type TicketHoldersDocAccessFields_plusOneNames_id_Delete {
   permission: Boolean!
 }
 
@@ -41499,6 +41427,7 @@ type TablesFields_seatPositions_Delete {
 
 type TablesFields_seatPositions_Fields {
   seatIndex: TablesFields_seatPositions_seatIndex
+  userId: TablesFields_seatPositions_userId
   name: TablesFields_seatPositions_name
   id: TablesFields_seatPositions_id
 }
@@ -41523,6 +41452,29 @@ type TablesFields_seatPositions_seatIndex_Update {
 }
 
 type TablesFields_seatPositions_seatIndex_Delete {
+  permission: Boolean!
+}
+
+type TablesFields_seatPositions_userId {
+  create: TablesFields_seatPositions_userId_Create
+  read: TablesFields_seatPositions_userId_Read
+  update: TablesFields_seatPositions_userId_Update
+  delete: TablesFields_seatPositions_userId_Delete
+}
+
+type TablesFields_seatPositions_userId_Create {
+  permission: Boolean!
+}
+
+type TablesFields_seatPositions_userId_Read {
+  permission: Boolean!
+}
+
+type TablesFields_seatPositions_userId_Update {
+  permission: Boolean!
+}
+
+type TablesFields_seatPositions_userId_Delete {
   permission: Boolean!
 }
 
@@ -41651,7 +41603,6 @@ type TicketHoldersFields {
   sotonId: TicketHoldersFields_sotonId
   name: TicketHoldersFields_name
   plusOneCount: TicketHoldersFields_plusOneCount
-  plusOneNames: TicketHoldersFields_plusOneNames
   dietaryRequirements: TicketHoldersFields_dietaryRequirements
   updatedAt: TicketHoldersFields_updatedAt
   createdAt: TicketHoldersFields_createdAt
@@ -41746,81 +41697,6 @@ type TicketHoldersFields_plusOneCount_Update {
 }
 
 type TicketHoldersFields_plusOneCount_Delete {
-  permission: Boolean!
-}
-
-type TicketHoldersFields_plusOneNames {
-  create: TicketHoldersFields_plusOneNames_Create
-  read: TicketHoldersFields_plusOneNames_Read
-  update: TicketHoldersFields_plusOneNames_Update
-  delete: TicketHoldersFields_plusOneNames_Delete
-  fields: TicketHoldersFields_plusOneNames_Fields
-}
-
-type TicketHoldersFields_plusOneNames_Create {
-  permission: Boolean!
-}
-
-type TicketHoldersFields_plusOneNames_Read {
-  permission: Boolean!
-}
-
-type TicketHoldersFields_plusOneNames_Update {
-  permission: Boolean!
-}
-
-type TicketHoldersFields_plusOneNames_Delete {
-  permission: Boolean!
-}
-
-type TicketHoldersFields_plusOneNames_Fields {
-  name: TicketHoldersFields_plusOneNames_name
-  id: TicketHoldersFields_plusOneNames_id
-}
-
-type TicketHoldersFields_plusOneNames_name {
-  create: TicketHoldersFields_plusOneNames_name_Create
-  read: TicketHoldersFields_plusOneNames_name_Read
-  update: TicketHoldersFields_plusOneNames_name_Update
-  delete: TicketHoldersFields_plusOneNames_name_Delete
-}
-
-type TicketHoldersFields_plusOneNames_name_Create {
-  permission: Boolean!
-}
-
-type TicketHoldersFields_plusOneNames_name_Read {
-  permission: Boolean!
-}
-
-type TicketHoldersFields_plusOneNames_name_Update {
-  permission: Boolean!
-}
-
-type TicketHoldersFields_plusOneNames_name_Delete {
-  permission: Boolean!
-}
-
-type TicketHoldersFields_plusOneNames_id {
-  create: TicketHoldersFields_plusOneNames_id_Create
-  read: TicketHoldersFields_plusOneNames_id_Read
-  update: TicketHoldersFields_plusOneNames_id_Update
-  delete: TicketHoldersFields_plusOneNames_id_Delete
-}
-
-type TicketHoldersFields_plusOneNames_id_Create {
-  permission: Boolean!
-}
-
-type TicketHoldersFields_plusOneNames_id_Read {
-  permission: Boolean!
-}
-
-type TicketHoldersFields_plusOneNames_id_Update {
-  permission: Boolean!
-}
-
-type TicketHoldersFields_plusOneNames_id_Delete {
   permission: Boolean!
 }
 
@@ -46674,6 +46550,7 @@ input mutationTableInput {
 
 input mutationTable_SeatPositionsInput {
   seatIndex: Float!
+  userId: String
   name: String!
   id: String
 }
@@ -46692,6 +46569,7 @@ input mutationTableUpdateInput {
 
 input mutationTableUpdate_SeatPositionsInput {
   seatIndex: Float!
+  userId: String
   name: String!
   id: String
 }
@@ -46701,15 +46579,9 @@ input mutationTicketHolderInput {
   sotonId: String!
   name: String!
   plusOneCount: Float
-  plusOneNames: [mutationTicketHolder_PlusOneNamesInput]
   dietaryRequirements: String
   updatedAt: String
   createdAt: String
-}
-
-input mutationTicketHolder_PlusOneNamesInput {
-  name: String!
-  id: String
 }
 
 input mutationTicketHolderUpdateInput {
@@ -46717,15 +46589,9 @@ input mutationTicketHolderUpdateInput {
   sotonId: String
   name: String
   plusOneCount: Float
-  plusOneNames: [mutationTicketHolderUpdate_PlusOneNamesInput]
   dietaryRequirements: String
   updatedAt: String
   createdAt: String
-}
-
-input mutationTicketHolderUpdate_PlusOneNamesInput {
-  name: String!
-  id: String
 }
 
 input mutationWordleOverrideInput {

@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 
 import { isAdmin } from '../../../../payload/access/isAdmin'
 import type { Newsletter, Settings } from '../../../../payload/payload-types'
-import { fetchDoc, fetchDocs } from '../../../_api/fetchDoc'
+import { fetchDoc } from '../../../_api/fetchDoc'
 import { fetchSettings } from '../../../_api/fetchGlobals'
 import { Gutter } from '../../../_components/Gutter'
 import { generateMeta } from '../../../_utilities/generateMeta'
@@ -15,17 +15,18 @@ import { NewsletterLayout } from './NewsletterLayout'
 
 import classes from './index.module.scss'
 
+// This route reads cookies (draft mode + admin draft preview), so it can never
+// be statically generated. Without this, a production build fails at runtime
+// with "Page changed from static to dynamic at runtime ... reason: cookies".
+export const dynamic = 'force-dynamic'
+
 export default async function NewsletterPage({ params: { slug } }) {
   const { isEnabled: isDraftMode } = draftMode()
 
   let canSeeDrafts = isDraftMode
 
-  try {
-    const { user } = await getMeUser()
-    if (isAdmin(user)) canSeeDrafts = true
-  } catch (error) {
-    console.error(error) // eslint-disable-line no-console
-  }
+  const { user } = await getMeUser({ tolerateRequestErrors: true })
+  if (isAdmin(user)) canSeeDrafts = true
 
   let newsletter: Newsletter | null = null
 
@@ -93,24 +94,13 @@ export default async function NewsletterPage({ params: { slug } }) {
   )
 }
 
-export async function generateStaticParams() {
-  try {
-    const newsletters = await fetchDocs<Newsletter>('newsletters')
-    return newsletters.flatMap(issue => (issue.slug ? [{ slug: issue.slug }] : []))
-  } catch (error) {
-    return []
-  }
-}
-
 export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
   const { isEnabled: isDraftMode } = draftMode()
 
   let canSeeDrafts = isDraftMode
 
-  try {
-    const { user } = await getMeUser()
-    if (isAdmin(user)) canSeeDrafts = true
-  } catch (error) {} // eslint-disable-line no-empty
+  const { user } = await getMeUser({ tolerateRequestErrors: true })
+  if (isAdmin(user)) canSeeDrafts = true
 
   let newsletter: Newsletter | null = null
 
