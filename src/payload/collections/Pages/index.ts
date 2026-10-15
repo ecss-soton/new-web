@@ -8,6 +8,7 @@ import { CallToAction } from '../../blocks/CallToAction'
 import { Content } from '../../blocks/Content'
 import { HomeTop } from '../../blocks/HomeTop'
 import { Intro } from '../../blocks/Intro'
+import { LatestNewsletter } from '../../blocks/LatestNewsletter'
 import { MediaBlock } from '../../blocks/MediaBlock'
 import { MerchBlock } from '../../blocks/MerchBlock'
 import { NextEvent } from '../../blocks/NextEvent'
@@ -78,6 +79,7 @@ export const Pages: CollectionConfig = {
                 HomeTop,
                 Intro,
                 NextEvent,
+                LatestNewsletter,
                 Button,
                 MerchBlock,
                 PartyBlock,

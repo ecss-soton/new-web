@@ -259,6 +259,13 @@ export interface Page {
         blockType: 'nextEvent';
       }
     | {
+        subheading?: string | null;
+        linkText?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'latestNewsletter';
+      }
+    | {
         text: string;
         link?: string | null;
         appearance?: ('default' | 'primary' | 'secondary' | 'none') | null;

@@ -428,7 +428,7 @@ input Page_Hero_Media_where_or {
   OR: [Page_Hero_Media_where_or]
 }
 
-union Page_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent | Button | MerchBlock | PartyBlock
+union Page_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent | LatestNewsletter | Button | MerchBlock | PartyBlock
 
 type Cta {
   invertBackground: Boolean
@@ -3317,6 +3317,14 @@ input NextEvent_Media_where_or {
   id: NextEvent_Media_id_operator
   AND: [NextEvent_Media_where_and]
   OR: [NextEvent_Media_where_or]
+}
+
+type LatestNewsletter {
+  subheading: String
+  linkText: String
+  id: String
+  blockName: String
+  blockType: String
 }
 
 type Button {
@@ -6430,7 +6438,7 @@ input PageVersion_Version_Hero_Media_where_or {
   OR: [PageVersion_Version_Hero_Media_where_or]
 }
 
-union PageVersion_Version_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent | Button | MerchBlock | PartyBlock
+union PageVersion_Version_Layout = Cta | Content | MediaBlock | Archive | HomeTop | Intro | NextEvent | LatestNewsletter | Button | MerchBlock | PartyBlock
 
 type PageVersion_Version_Meta {
   title: String

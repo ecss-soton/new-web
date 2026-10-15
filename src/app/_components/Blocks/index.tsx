@@ -8,6 +8,7 @@ import { CommentsBlock, type CommentsBlockProps } from '../../_blocks/Comments/i
 import { ContentBlock } from '../../_blocks/Content'
 import { HomeTopBlock } from '../../_blocks/HomeTop/'
 import { IntroBlock } from '../../_blocks/Intro/'
+import { LatestNewsletterBlock } from '../../_blocks/LatestNewsletter'
 import { MediaBlock } from '../../_blocks/MediaBlock/'
 import { MerchBlock } from '../../_blocks/MerchBlock'
 import { NextEventBlock } from '../../_blocks/NextEvent'
@@ -24,6 +25,7 @@ const blockComponents = {
   archive: ArchiveBlock,
   homeTop: HomeTopBlock,
   intro: IntroBlock,
+  latestNewsletter: LatestNewsletterBlock,
   relatedPosts: RelatedPosts,
   comments: CommentsBlock,
   nextEvent: NextEventBlock,

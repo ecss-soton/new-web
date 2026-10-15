@@ -87,6 +87,14 @@ export const NEXT_EVENT = `
   timezone
 }
 `
+
+export const LATEST_NEWSLETTER = `
+...on LatestNewsletter {
+  blockType
+  subheading
+  linkText
+}
+`
 // adding sponsors and societies exectra breaks shit
 // this needs to be fixed by changing sponsors and scoieties to have title not name
 // or like implement them here properly idk
