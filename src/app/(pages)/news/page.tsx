@@ -14,17 +14,16 @@ import { Masthead } from './Masthead'
 
 import classes from './index.module.scss'
 
+// This page reads cookies to show drafts to admins, so it must be rendered on
+// demand rather than prerendered.
+export const dynamic = 'force-dynamic'
+
 export default async function NewsPage() {
   let newsletters: Newsletter[] = []
   let settings: Settings | null = null
-  let canSeeDrafts = false
 
-  try {
-    const { user } = await getMeUser()
-    canSeeDrafts = isAdmin(user)
-  } catch (error) {
-    console.error(error) // eslint-disable-line no-console
-  }
+  const { user } = await getMeUser({ tolerateRequestErrors: true })
+  const canSeeDrafts = isAdmin(user)
 
   try {
     newsletters = await fetchDocs<Newsletter>('newsletters', canSeeDrafts)
