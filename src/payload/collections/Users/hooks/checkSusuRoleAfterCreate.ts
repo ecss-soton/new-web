@@ -20,8 +20,16 @@ export const checkSusuRoleAfterCreate: AfterChangeHook = async ({ doc, req, oper
     }
 
     const csv = latest.docs[0]
-
     const filename = csv.filename
+
+    // A failed or still-running import must not be used to grant access.
+    if (csv.runStatus !== 'completed' || !filename) {
+      req.payload.logger.warn(
+        `Latest member-import '${csv.id}' is not completed; skipping susu role check for new user '${doc.id}'.`,
+      )
+      return doc
+    }
+
     const csvFilePath = path.join(memberImportUploadDir, filename)
 
     try {

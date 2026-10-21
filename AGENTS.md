@@ -76,6 +76,16 @@ Do not hand-edit generated files when the generation commands are available. If 
 - Avoid weakening vote uniqueness or result consistency. Database-level indexes/migrations require explicit production-data planning.
 - Results are hidden from the public election UI unless the Election Result CMS checkbox `showOnMainPage` is enabled. New and existing results should remain hidden by default.
 
+### Membership imports (voting eligibility)
+
+- Collection: `member-imports` (`src/payload/collections/MemberImports/`). The `susu` role is what `votes` create-access checks, so this import is the voting-eligibility source of truth.
+- Uploads are admin-only CSVs. The collection intentionally has **no `mimeTypes` allow-list** (mobile browsers report `.csv` as `text/plain`/`application/octet-stream`); `validateCsvUpload.ts` enforces the `.csv` extension instead.
+- Parser: `src/payload/utilities/memberCsv.ts`. It is header-driven and supports both SUSU exports: one row per membership (`Status`, `Membership Type`) and the roll-up (`Membership Statuses`, `Membership Types`, `|`-separated lists). Emails are optional — the exports received have an empty `Email` column, so do not make it required.
+- Matching (`checkCsvAccounts.ts`): email/username first, then a **unique** normalized full-name match (with a first/last-token fallback for middle names). Ambiguous names (2+ accounts) and incomplete names (placeholder last names such as `.`/`-`) are skipped and listed in the import summary; never fall back to first-name-only matching.
+- Add-only: importing grants `susu` and never revokes it. Removing roles is a separate, destructive change.
+- Any membership row marked `active` counts; membership type and dates are not used.
+- Tests: `npm run test:member-import` (Node's `node:test` via `ts-node`).
+
 ### Booking
 
 - Collections: `booking-events`, `tables`, `ticket-holders`.
@@ -128,6 +138,7 @@ Do not hand-edit generated files when the generation commands are available. If 
 
 - Use TypeScript, React function components, and colocated `index.module.scss`.
 - Shared colours and Jumpstart variables are in `src/app/_css/colors.scss`.
+- Fonts are self-hosted in `src/app/_utilities/fonts/` and loaded with `next/font/local` from `src/app/_utilities/font.ts`. Do not add `next/font/google`: the Google loader in Next 14.2 crashes on the extensionless font URLs Google sometimes returns, which made CI builds flaky.
 - Keep existing design tokens and breakpoints; avoid inline HTML/event-handler strings.
 - Dynamic route components may be server or client components; check surrounding imports before adding hooks.
 - Preserve accessible loading, empty, and failure states rather than silently rendering empty content.

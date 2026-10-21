@@ -1,67 +1,243 @@
 import fs from 'fs'
 import type { Payload } from 'payload'
 
-interface PayloadLike {
+import {
+  fullNameEndpointKey,
+  fullNameKey,
+  isPlaceholderNamePart,
+  type MemberCsvFormat,
+  type MemberCsvMember,
+  normalizePersonName,
+  parseMemberCsv,
+} from './memberCsv'
+import { normalizeSotonId } from './sotonId'
+
+type MemberRole = 'admin' | 'user' | 'susu'
+
+export interface PayloadLike {
   find: Payload['find']
   update: Payload['update']
   logger: Payload['logger']
 }
 
-interface UserFindResult {
-  docs: Array<{ id: string | number; roles?: Array<'admin' | 'user' | 'susu'> }>
-  totalDocs: number
-}
-
-interface UserDocLike {
+interface UserRecord {
   id: string | number
+  name?: string | null
   email?: string | null
   username?: string | null
-  roles?: Array<'admin' | 'user' | 'susu'> | null
+  roles?: MemberRole[] | null
+}
+
+export interface UserDocLike {
+  id: string | number
+  name?: string | null
+  email?: string | null
+  username?: string | null
+  roles?: MemberRole[] | null
 }
 
 export interface CsvAccountCheckStats {
-  totalProcessed: number
-  matchedRows: number
+  dataRows: number
+  invalidRows: number
+  duplicateRows: number
+  members: number
+  activeMembers: number
+  inactiveSkipped: number
+  matchedByEmail: number
+  matchedByName: number
   rolesAdded: number
   alreadyHadRole: number
+  ambiguousNames: number
+  incompleteNames: number
   noMatch: number
-  invalidRows: number
+  emailColumnPresent: boolean
+  emailColumnEmpty: boolean
 }
 
 export interface CsvAccountCheckResult {
   stats: CsvAccountCheckStats
+  summary: string
+  format: MemberCsvFormat
+  headers: string[]
+  ambiguousNames: string[]
+  incompleteNames: string[]
 }
 
-const parseCsvRow = (line: string): string[] => {
-  const columns: string[] = []
-  let current = ''
-  let inQuotes = false
+const MAX_LISTED_NAMES = 25
 
-  for (let index = 0; index < line.length; index++) {
-    const char = line[index]
-    const nextChar = line[index + 1]
+/** Decodes UTF-8 exports, falling back to latin1 for Excel's "CSV (Windows)". */
+export const decodeCsvBuffer = (buffer: Buffer): string => {
+  try {
+    return new TextDecoder('utf-8', { fatal: true }).decode(buffer)
+  } catch {
+    return buffer.toString('latin1')
+  }
+}
 
-    if (char === '"') {
-      if (inQuotes && nextChar === '"') {
-        current += '"'
-        index++
-      } else {
-        inQuotes = !inQuotes
-      }
-      continue
-    }
+const displayName = (member: MemberCsvMember): string =>
+  `${member.firstName} ${member.lastName}`.trim() || member.userId || '(unnamed row)'
 
-    if (char === ',' && !inQuotes) {
-      columns.push(current.trim())
-      current = ''
-      continue
-    }
+const addToIndex = (index: Map<string, UserRecord[]>, key: string, user: UserRecord): void => {
+  if (!key) return
 
-    current += char
+  const existing = index.get(key)
+  if (!existing) {
+    index.set(key, [user])
+    return
   }
 
-  columns.push(current.trim())
-  return columns
+  const alreadyListed = existing.some(candidate => String(candidate.id) === String(user.id))
+  if (!alreadyListed) existing.push(user)
+}
+
+interface UserIndex {
+  byEmail: Map<string, UserRecord[]>
+  byUsername: Map<string, UserRecord[]>
+  byExactName: Map<string, UserRecord[]>
+  byNameEndpoints: Map<string, UserRecord[]>
+}
+
+/**
+ * Reads every user once and indexes them by the identifiers a SUSU export can
+ * offer. The exports we receive have no email column values and no website
+ * username, so the name indexes are what make matching possible at all.
+ */
+const loadUserIndex = async (payload: PayloadLike): Promise<UserIndex> => {
+  const result = await payload.find({
+    collection: 'users',
+    depth: 0,
+    pagination: false,
+    overrideAccess: true,
+  })
+
+  const docs = (result as unknown as { docs?: UserRecord[] }).docs ?? []
+  const index: UserIndex = {
+    byEmail: new Map(),
+    byUsername: new Map(),
+    byExactName: new Map(),
+    byNameEndpoints: new Map(),
+  }
+
+  for (const user of docs) {
+    addToIndex(index.byEmail, user.email?.trim().toLowerCase() ?? '', user)
+    addToIndex(index.byUsername, normalizeSotonId(user.username), user)
+    addToIndex(index.byExactName, normalizePersonName(user.name), user)
+    addToIndex(index.byNameEndpoints, fullNameEndpointKey(user.name), user)
+  }
+
+  return index
+}
+
+const uniqueUser = (users?: UserRecord[]): { user?: UserRecord; ambiguous?: boolean } => {
+  if (!users || users.length === 0) return {}
+  if (users.length === 1) return { user: users[0] }
+
+  return { ambiguous: true }
+}
+
+interface Resolution {
+  user?: UserRecord
+  via?: 'email' | 'name'
+  ambiguous?: boolean
+  incomplete?: boolean
+}
+
+const resolveMember = (index: UserIndex, member: MemberCsvMember): Resolution => {
+  const email = member.email.trim().toLowerCase()
+
+  if (email) {
+    const byEmail = uniqueUser(index.byEmail.get(email))
+    if (byEmail.user) return { user: byEmail.user, via: 'email' }
+    if (byEmail.ambiguous) return { ambiguous: true }
+
+    const byUsername = uniqueUser(index.byUsername.get(normalizeSotonId(email)))
+    if (byUsername.user) return { user: byUsername.user, via: 'email' }
+    if (byUsername.ambiguous) return { ambiguous: true }
+  }
+
+  if (isPlaceholderNamePart(member.firstName) || isPlaceholderNamePart(member.lastName)) {
+    return { incomplete: true }
+  }
+
+  const exactKey = fullNameKey(member.firstName, member.lastName)
+  if (exactKey) {
+    const exact = uniqueUser(index.byExactName.get(exactKey))
+    if (exact.user) return { user: exact.user, via: 'name' }
+    if (exact.ambiguous) return { ambiguous: true }
+
+    const endpointKey = fullNameEndpointKey(exactKey)
+    if (endpointKey) {
+      const endpoints = uniqueUser(index.byNameEndpoints.get(endpointKey))
+      if (endpoints.user) return { user: endpoints.user, via: 'name' }
+      if (endpoints.ambiguous) return { ambiguous: true }
+    }
+  }
+
+  return {}
+}
+
+export const formatCsvAccountCheckSummary = (result: CsvAccountCheckResult): string => {
+  const { stats } = result
+  const lines: string[] = [
+    `CSV format: ${
+      result.format === 'members' ? 'one row per member (roll-up)' : 'one row per membership'
+    }`,
+    `Columns: ${result.headers.join(', ')}`,
+    `Rows read: ${stats.dataRows} (${stats.invalidRows} unusable, ${stats.duplicateRows} duplicate membership rows merged)`,
+    `Unique members: ${stats.members}`,
+    `Active members: ${stats.activeMembers}`,
+    `Inactive members skipped: ${stats.inactiveSkipped}`,
+  ]
+
+  if (!stats.emailColumnPresent) {
+    lines.push('Email column: not present - accounts matched by name')
+  } else if (stats.emailColumnEmpty) {
+    lines.push('Email column: present but empty in every row - accounts matched by name')
+  } else {
+    lines.push('Email column: present')
+  }
+
+  lines.push(
+    `Matched by email/username: ${stats.matchedByEmail}`,
+    `Matched by unique name: ${stats.matchedByName}`,
+    `New 'susu' roles added: ${stats.rolesAdded}`,
+    `Accounts that already had 'susu': ${stats.alreadyHadRole}`,
+    `No website account found: ${stats.noMatch}`,
+    `Ambiguous names (2+ accounts, nothing changed): ${stats.ambiguousNames}`,
+    `Incomplete names (no usable last name, nothing changed): ${stats.incompleteNames}`,
+  )
+
+  const appendNames = (label: string, names: string[]): void => {
+    if (names.length === 0) return
+
+    lines.push('', `${label}:`)
+    for (const name of names.slice(0, MAX_LISTED_NAMES)) lines.push(`- ${name}`)
+    if (names.length > MAX_LISTED_NAMES)
+      lines.push(`- ...and ${names.length - MAX_LISTED_NAMES} more`)
+  }
+
+  appendNames('Ambiguous names needing manual review', result.ambiguousNames)
+  appendNames('Incomplete names needing manual review', result.incompleteNames)
+
+  if (stats.activeMembers === 0) {
+    lines.push('', 'No active memberships were found in this file; no roles were changed.')
+  } else if (stats.matchedByName + stats.matchedByEmail === 0) {
+    lines.push(
+      '',
+      'Active members were found, but none matched a website account. Members are matched when they first log in, if their name matches.',
+    )
+  }
+
+  return lines.join('\n')
+}
+
+export const logCsvAccountCheckResult = (
+  payload: Pick<PayloadLike, 'logger'>,
+  result: CsvAccountCheckResult,
+): void => {
+  payload.logger.info('\n--- Member import summary ---')
+  for (const line of result.summary.split('\n')) payload.logger.info(line)
+  payload.logger.info('----------------------------\n')
 }
 
 export const checkCsvAccountsFromContent = async ({
@@ -71,90 +247,97 @@ export const checkCsvAccountsFromContent = async ({
 }: {
   payload: PayloadLike
   csvContent: string
-  role?: 'admin' | 'user' | 'susu'
+  role?: MemberRole
 }): Promise<CsvAccountCheckResult> => {
-  const lines = csvContent.split(/\r?\n/)
+  const parsed = parseMemberCsv(csvContent)
 
-  payload.logger.info(`Analyzing ${lines.length} rows...`)
+  payload.logger.info(
+    `Analyzing ${parsed.dataRows} rows (${parsed.members.length} unique members) from a ${parsed.format} export...`,
+  )
+
+  const index = await loadUserIndex(payload)
+  const grantedUsers = new Set<string>()
+  const ambiguousNames: string[] = []
+  const incompleteNames: string[] = []
 
   const stats: CsvAccountCheckStats = {
-    totalProcessed: 0,
-    matchedRows: 0,
+    dataRows: parsed.dataRows,
+    invalidRows: parsed.invalidRows,
+    duplicateRows: parsed.duplicateRows,
+    members: parsed.members.length,
+    activeMembers: 0,
+    inactiveSkipped: 0,
+    matchedByEmail: 0,
+    matchedByName: 0,
     rolesAdded: 0,
     alreadyHadRole: 0,
+    ambiguousNames: 0,
+    incompleteNames: 0,
     noMatch: 0,
-    invalidRows: 0,
+    emailColumnPresent: parsed.emailColumnPresent,
+    emailColumnEmpty: parsed.emailColumnEmpty,
   }
 
-  for (let lineIndex = 1; lineIndex < lines.length; lineIndex++) {
-    const line = lines[lineIndex]
-
-    if (!line.trim()) {
+  for (const member of parsed.members) {
+    if (!member.active) {
+      stats.inactiveSkipped++
       continue
     }
 
-    const columns = parseCsvRow(line)
-    // 0: User ID, 1: First Name, 2: Last Name, 3: Email, 4: Membership ID, 5: Membership Type, 6: Status
-    const emailCol = columns[3]?.toLowerCase().trim()
-    const statusCol = columns[6]?.toLowerCase().trim()
+    stats.activeMembers++
 
-    if (!emailCol) {
-      stats.invalidRows++
-      continue
-    }
+    const resolution = resolveMember(index, member)
 
-    // Only process rows where the member is active
-    if (statusCol !== 'active') {
-      stats.totalProcessed++
-      stats.noMatch++
-      continue
-    }
-
-    stats.totalProcessed++
-
-    // Derive username from the email's local part (e.g. ab1c23@soton.ac.uk → ab1c23)
-    const csvUsername = emailCol.split('@')[0]
-
-    // Try to find a user matching by email first, then by username
-    const matchedUsers = (await payload.find({
-      collection: 'users',
-      where: {
-        or: [{ email: { equals: emailCol } }, { username: { equals: csvUsername } }],
-      },
-      limit: 10,
-    })) as UserFindResult
-
-    if (matchedUsers.totalDocs === 0) {
-      stats.noMatch++
-      continue
-    }
-
-    stats.matchedRows++
-
-    for (const user of matchedUsers.docs) {
-      const currentRoles = user.roles || []
-
-      if (currentRoles.includes(role)) {
-        stats.alreadyHadRole++
-        continue
+    if (!resolution.user) {
+      if (resolution.ambiguous) {
+        ambiguousNames.push(displayName(member))
+      } else if (resolution.incomplete) {
+        incompleteNames.push(displayName(member))
+      } else {
+        stats.noMatch++
       }
-
-      await payload.update({
-        collection: 'users',
-        id: user.id,
-        data: {
-          roles: [...currentRoles, role],
-        },
-        overrideAccess: true,
-      })
-
-      stats.rolesAdded++
+      continue
     }
+
+    if (resolution.via === 'email') stats.matchedByEmail++
+    else stats.matchedByName++
+
+    const userId = String(resolution.user.id)
+    if (grantedUsers.has(userId)) continue
+    grantedUsers.add(userId)
+
+    const currentRoles = resolution.user.roles ?? []
+    if (currentRoles.includes(role)) {
+      stats.alreadyHadRole++
+      continue
+    }
+
+    await payload.update({
+      collection: 'users',
+      id: resolution.user.id,
+      data: {
+        roles: [...currentRoles, role],
+      },
+      overrideAccess: true,
+    })
+
+    resolution.user.roles = [...currentRoles, role]
+    stats.rolesAdded++
   }
 
-  return {
+  stats.ambiguousNames = ambiguousNames.length
+  stats.incompleteNames = incompleteNames.length
+
+  const result: CsvAccountCheckResult = {
     stats,
+    summary: '',
+    format: parsed.format,
+    headers: parsed.headers,
+    ambiguousNames,
+    incompleteNames,
   }
+
+  return { ...result, summary: formatCsvAccountCheckSummary(result) }
 }
 
 export const runCheckCsvAccountsFromFile = async ({
@@ -164,16 +347,21 @@ export const runCheckCsvAccountsFromFile = async ({
 }: {
   payload: PayloadLike
   csvFilePath: string
-  role?: 'admin' | 'user' | 'susu'
+  role?: MemberRole
 }): Promise<CsvAccountCheckResult> => {
   if (!fs.existsSync(csvFilePath)) {
     throw new Error(`Could not find CSV file at ${csvFilePath}`)
   }
 
-  const fileContent = fs.readFileSync(csvFilePath, 'utf-8')
+  const fileContent = decodeCsvBuffer(fs.readFileSync(csvFilePath))
   return checkCsvAccountsFromContent({ payload, csvContent: fileContent, role })
 }
 
+/**
+ * Used when a user is created (first Azure AD login): checks the most recent
+ * import for this one account instead of walking the whole file against the
+ * whole user collection.
+ */
 export const runCheckSingleUserFromCsvFile = async ({
   payload,
   csvFilePath,
@@ -183,65 +371,61 @@ export const runCheckSingleUserFromCsvFile = async ({
   payload: PayloadLike
   csvFilePath: string
   userDoc: UserDocLike
-  role?: 'admin' | 'user' | 'susu'
-}): Promise<void> => {
+  role?: MemberRole
+}): Promise<boolean> => {
   if (!fs.existsSync(csvFilePath)) {
     throw new Error(`Could not find CSV file at ${csvFilePath}`)
   }
 
-  const fileContent = fs.readFileSync(csvFilePath, 'utf-8')
-  const lines = fileContent.split(/\r?\n/)
+  const parsed = parseMemberCsv(decodeCsvBuffer(fs.readFileSync(csvFilePath)))
 
-  const userEmail = typeof userDoc.email === 'string' ? userDoc.email.toLowerCase().trim() : ''
-  const userUsername =
-    typeof userDoc.username === 'string' ? userDoc.username.toLowerCase().trim() : ''
+  const currentRoles = userDoc.roles ?? []
+  if (currentRoles.includes(role)) return false
 
-  if (!userEmail && !userUsername) return
+  const userEmail = userDoc.email?.trim().toLowerCase() ?? ''
+  const userUsername = normalizeSotonId(userDoc.username)
+  const userName = normalizePersonName(userDoc.name)
+  const userNameTokenCount = userName.split(' ').filter(Boolean).length
+  const userEndpoint = fullNameEndpointKey(userDoc.name)
 
-  for (let lineIndex = 1; lineIndex < lines.length; lineIndex++) {
-    const line = lines[lineIndex]
-    if (!line.trim()) continue
+  if (!userEmail && !userUsername && !userName) return false
 
-    const columns = parseCsvRow(line)
-    // 0: User ID, 1: First Name, 2: Last Name, 3: Email, 4: Membership ID, 5: Membership Type, 6: Status
-    const emailCol = columns[3]?.toLowerCase().trim()
-    const statusCol = columns[6]?.toLowerCase().trim()
+  const matchesUser = (member: MemberCsvMember): boolean => {
+    const memberEmail = member.email.trim().toLowerCase()
+    const memberUsername = normalizeSotonId(memberEmail)
 
-    // If there is no email in the CSV, fallback to username matching via soton domain
-    const csvUsername = emailCol ? emailCol.split('@')[0] : ''
+    if (userEmail && memberEmail && memberEmail === userEmail) return true
+    if (userUsername && memberUsername && memberUsername === userUsername) return true
 
-    const isMatch =
-      (emailCol && emailCol === userEmail) || (csvUsername && csvUsername === userUsername)
-    const isActive = statusCol === 'active'
-
-    if (isMatch && isActive) {
-      const currentRoles = userDoc.roles || []
-      if (!currentRoles.includes(role)) {
-        await payload.update({
-          collection: 'users',
-          id: userDoc.id,
-          data: {
-            roles: [...currentRoles, role],
-          },
-          overrideAccess: true,
-        })
-        payload.logger.info(`Assigned role '${role}' to user ${userEmail || userUsername}`)
-      }
-      return
+    // Never fall back to a first-name-only match: the exports contain rows such
+    // as `Tharun .` where the last name carries no information.
+    if (userNameTokenCount < 2 || !userEndpoint) return false
+    if (isPlaceholderNamePart(member.firstName) || isPlaceholderNamePart(member.lastName)) {
+      return false
     }
-  }
-}
 
-export const logCsvAccountCheckResult = (
-  payload: Pick<PayloadLike, 'logger'>,
-  result: CsvAccountCheckResult,
-): void => {
-  payload.logger.info('\n--- Finished checking CSV against users ---')
-  payload.logger.info(`Rows processed: ${result.stats.totalProcessed}`)
-  payload.logger.info(`Rows with at least one match: ${result.stats.matchedRows}`)
-  payload.logger.info(`New 'susu' roles added: ${result.stats.rolesAdded}`)
-  payload.logger.info(`Users who already had role: ${result.stats.alreadyHadRole}`)
-  payload.logger.info(`No match found: ${result.stats.noMatch}`)
-  payload.logger.info(`Invalid rows skipped: ${result.stats.invalidRows}`)
-  payload.logger.info('------------------------------------------\n')
+    const memberFullName = fullNameKey(member.firstName, member.lastName)
+    if (!memberFullName) return false
+    if (memberFullName === userName) return true
+
+    return fullNameEndpointKey(memberFullName) === userEndpoint
+  }
+
+  const matchedMembers = parsed.members.filter(matchesUser)
+  if (!matchedMembers.some(member => member.active)) return false
+
+  await payload.update({
+    collection: 'users',
+    id: userDoc.id,
+    data: {
+      roles: [...currentRoles, role],
+    },
+    overrideAccess: true,
+  })
+
+  payload.logger.info(
+    `Assigned role '${role}' to user ${userEmail || userUsername || String(userDoc.id)}`,
+  )
+
+  return true
 }
