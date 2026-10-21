@@ -8,24 +8,6 @@ import {
 
 const memberImportUploadDir = path.resolve(__dirname, '../../../../../media/member-imports')
 
-const formatSummary = (stats: {
-  totalProcessed: number
-  matchedRows: number
-  rolesAdded: number
-  alreadyHadRole: number
-  noMatch: number
-  invalidRows: number
-}): string => {
-  return [
-    `Rows processed: ${stats.totalProcessed}`,
-    `Rows with at least one match: ${stats.matchedRows}`,
-    `New 'susu' roles added: ${stats.rolesAdded}`,
-    `Users who already had role: ${stats.alreadyHadRole}`,
-    `No match found: ${stats.noMatch}`,
-    `Invalid rows skipped: ${stats.invalidRows}`,
-  ].join('\n')
-}
-
 export const processCsvImport: AfterChangeHook = async ({ doc, req, operation }) => {
   if (operation !== 'create') {
     return doc
@@ -57,13 +39,15 @@ export const processCsvImport: AfterChangeHook = async ({ doc, req, operation })
 
     logCsvAccountCheckResult(req.payload, result)
 
-    await req.payload.update({
+    // Returning the updated document lets the admin create response show the
+    // finished status and summary without a manual refresh.
+    return await req.payload.update({
       collection: 'member-imports',
       id: doc.id,
       data: {
         runStatus: 'completed',
         processedAt: new Date().toISOString(),
-        summary: formatSummary(result.stats),
+        summary: result.summary,
       },
       overrideAccess: true,
     })
@@ -72,7 +56,7 @@ export const processCsvImport: AfterChangeHook = async ({ doc, req, operation })
 
     req.payload.logger.error(`Failed to process member import '${doc.id}': ${message}`)
 
-    await req.payload.update({
+    return await req.payload.update({
       collection: 'member-imports',
       id: doc.id,
       data: {
@@ -83,6 +67,4 @@ export const processCsvImport: AfterChangeHook = async ({ doc, req, operation })
       overrideAccess: true,
     })
   }
-
-  return doc
 }

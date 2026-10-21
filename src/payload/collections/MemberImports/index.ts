@@ -3,12 +3,15 @@ import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../../access/admins'
 import { processCsvImport } from './hooks/processCsvImport'
+import { validateCsvUpload } from './hooks/validateCsvUpload'
 
 export const MemberImports: CollectionConfig = {
   slug: 'member-imports',
   admin: {
     useAsTitle: 'filename',
     defaultColumns: ['filename', 'runStatus', 'processedAt', 'updatedAt'],
+    description:
+      'Upload a SUSU membership export (.csv). Both the one-row-per-membership export and the one-row-per-member roll-up are supported; the Email column is optional. Active members are matched to website accounts by email/username or by a unique full name, and are given the susu role that allows voting.',
   },
   access: {
     read: admins,
@@ -18,9 +21,9 @@ export const MemberImports: CollectionConfig = {
   },
   upload: {
     staticDir: path.resolve(__dirname, '../../../../media/member-imports'),
-    mimeTypes: ['text/csv', 'application/vnd.ms-excel'],
   },
   hooks: {
+    beforeValidate: [validateCsvUpload],
     afterChange: [processCsvImport],
   },
   fields: [
