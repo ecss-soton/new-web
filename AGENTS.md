@@ -138,6 +138,7 @@ Do not hand-edit generated files when the generation commands are available. If 
 
 - Use TypeScript, React function components, and colocated `index.module.scss`.
 - Shared colours and Jumpstart variables are in `src/app/_css/colors.scss`.
+- Fonts are self-hosted in `src/app/_utilities/fonts/` and loaded with `next/font/local` from `src/app/_utilities/font.ts`. Do not add `next/font/google`: the Google loader in Next 14.2 crashes on the extensionless font URLs Google sometimes returns, which made CI builds flaky.
 - Keep existing design tokens and breakpoints; avoid inline HTML/event-handler strings.
 - Dynamic route components may be server or client components; check surrounding imports before adding hooks.
 - Preserve accessible loading, empty, and failure states rather than silently rendering empty content.

@@ -1,18 +1,12 @@
 'use client'
 
 import React from 'react'
-import { Poppins } from 'next/font/google'
 
 import { Committee, Position } from '../../../payload/payload-types'
+import { poppins } from '../../_utilities/font'
 import { Media as MediaComp } from '../Media'
 
 import classes from './index.module.scss'
-
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal'],
-})
 
 export const CommitteeItem: React.FC<{
   committee?: Committee
