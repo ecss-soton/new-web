@@ -8,7 +8,7 @@ This repository is the University of Southampton Electronics and Computer Scienc
 - Payload CMS 2 backed by MongoDB (`src/payload`)
 - Custom Express server (`src/server.ts`)
 - Azure AD OAuth login
-- Election/STV, booking, membership-import, Wordle, and CMS features
+- Election/STV, booking, membership-import, games (ECSSle), and CMS features
 
 Use this guide before broad exploration. Read only the files relevant to the requested domain.
 
@@ -21,6 +21,7 @@ Use this guide before broad exploration. Read only the files relevant to the req
 | CMS schemas and business logic | `src/payload/collections/` |
 | Global CMS content | `src/payload/globals/` |
 | Next routes and server components | `src/app/(pages)/` |
+| Games hub, game routes and game registry | `src/app/(pages)/games/`, `src/utilities/games/` |
 | Client UI components | `src/app/_components/` |
 | CMS page-block renderers | `src/app/_blocks/` |
 | GraphQL query strings | `src/app/_graphql/` |
@@ -120,6 +121,16 @@ Do not hand-edit generated files when the generation commands are available. If 
 - The scheduler is in-process with no distributed lock (single-instance assumption); add a lock before running multiple instances.
 - Polling reads only upcoming events with a Discord link. `discordSyncError` surfaces failures; alert on it and on stale `discordLastSyncedAt`.
 - Auto-creating events from announcement messages is intentionally not implemented yet (separate phase; needs a privileged Message Content intent and an idempotency/index decision).
+
+### Games
+
+- `/games` is the hub (`src/app/(pages)/games/page.tsx`). Games live at `src/app/(pages)/games/<slug>/`; ECSSle is `/games/wordle` (login-gated) with `/games/wordle/leaderboard`.
+- The game list is code-defined in `src/utilities/games/registry.ts`; adding a game means adding a route plus a registry entry. There is no CMS collection for games.
+- Word data: `src/utilities/games/wordleWords.ts` is server-only (`getDailyWord` must never reach a `'use client'` component); `validWords.json` is shared by the client and the `/api/wordle-scores/guess` endpoint.
+- ECSSle scores/leaderboard use the `wordle-scores` collection and `/api/wordle-scores/*` endpoints unchanged.
+- Arcade games are client-only and keep personal bests in `localStorage` via `src/utilities/games/bestScore.ts` — no accounts, no server-side scores. Never store client-reported scores in a leaderboard without server validation.
+- **No link embeds for game pages.** `src/app/robots.txt` blocks `Discordbot` from `/wordle` and `/games/wordle`, and wordle/game pages omit `description`/OpenGraph/Twitter metadata. Discord falls back to `<title>`/`<meta name="description">` when OG tags are absent, so keep both patterns when adding games. The `/games` hub itself keeps a normal description + OpenGraph card.
+- Old URLs `/wordle` and `/wordle/leaderboard` redirect (308) to `/games/*` via `redirects.js`; the Payload redirects collection works too but is not required.
 
 ## Security and correctness rules
 

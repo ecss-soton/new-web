@@ -1,10 +1,11 @@
 import React from 'react'
 import { Metadata } from 'next'
 
-import { Gutter } from '../../_components/Gutter'
-import { LowImpactHero } from '../../_heros/LowImpact'
-import { getMeUser } from '../../_utilities/getMeUser'
-import { getPuzzleNumber, getTodayDate } from './techWords'
+import { Gutter } from '../../../_components/Gutter'
+import { LowImpactHero } from '../../../_heros/LowImpact'
+import { getMeUser } from '../../../_utilities/getMeUser'
+import { getPuzzleNumber, getTodayDate } from '../../../../utilities/games/wordleWords'
+import { GameBackLink } from '../_components/GameBackLink'
 import { WordleGame } from './WordleGame'
 
 export const dynamic = 'force-dynamic'
@@ -13,7 +14,7 @@ export default async function WordlePage() {
   const { user, token } = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to play ECSSle.',
-    )}&redirect=${encodeURIComponent('/wordle')}`,
+    )}&redirect=${encodeURIComponent('/games/wordle')}`,
   })
 
   const todayDate = getTodayDate()
@@ -68,6 +69,7 @@ export default async function WordlePage() {
           todayScore={todayScore}
           existingDisplayName={existingDisplayName}
         />
+        <GameBackLink />
       </Gutter>
     </>
   )
@@ -75,7 +77,6 @@ export default async function WordlePage() {
 
 export const metadata: Metadata = {
   title: 'ECSSle',
-  description: 'A daily tech-themed word puzzle for ECSS members.',
   openGraph: null,
   twitter: null,
 }

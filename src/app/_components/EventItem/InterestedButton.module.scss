@@ -1,20 +1,29 @@
 .interestedBtn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 100%;
   gap: 0.5rem;
   background-color: transparent;
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid var(--theme-elevation-300);
   padding: 0.5rem 1rem;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
   font-size: 0.875rem;
-  color: var(--color-gray-600);
+  color: var(--theme-elevation-700);
+  white-space: nowrap;
 
   &:hover {
-    background-color: var(--color-gray-100);
-    border-color: var(--color-gray-400);
+    background-color: var(--theme-elevation-100);
+    border-color: var(--theme-elevation-400);
+    color: var(--theme-elevation-900);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ecss-red);
+    outline-offset: 2px;
   }
 
   &:disabled {
@@ -23,17 +32,17 @@
   }
 
   &.active {
-    background-color: var(--color-base-1000);
-    color: var(--color-base-0);
-    border-color: var(--color-base-1000);
+    background-color: var(--theme-elevation-1000);
+    color: var(--theme-bg);
+    border-color: var(--theme-elevation-1000);
 
     .icon {
       color: gold;
     }
-    
+
     &:hover {
-        background-color: var(--color-base-800);
-        border-color: var(--color-base-800);
+      background-color: var(--theme-elevation-800);
+      border-color: var(--theme-elevation-800);
     }
   }
 

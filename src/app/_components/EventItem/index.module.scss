@@ -54,8 +54,9 @@
   width: calc(100% - 60px);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  /* so image respects border-radius */
+  /* The per-event "Add to calendar" menu may extend past the card, so the card
+     must not clip its own content. The image keeps its own rounding below. */
+  overflow: visible;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
@@ -80,6 +81,7 @@
   overflow: hidden;
   background-color: var(--theme-elevation-100);
   flex-shrink: 0;
+  border-radius: 16px 16px 0 0;
 }
 
 .eventImage {

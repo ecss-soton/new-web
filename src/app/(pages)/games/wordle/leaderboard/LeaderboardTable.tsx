@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react'
 
-import { inter } from '../../../_utilities/font'
+import { inter } from '../../../../_utilities/font'
 
 import classes from './index.module.scss'
 

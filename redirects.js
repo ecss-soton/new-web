@@ -12,5 +12,10 @@ module.exports = async () => {
     destination: '/ie-incompatible.html',
   }
 
-  return [internetExplorerRedirect]
+  const movedGameRoutes = [
+    { source: '/wordle', destination: '/games/wordle', permanent: true },
+    { source: '/wordle/leaderboard', destination: '/games/wordle/leaderboard', permanent: true },
+  ]
+
+  return [internetExplorerRedirect, ...movedGameRoutes]
 }

@@ -7,6 +7,7 @@ import { inter } from '../../_utilities/font'
 import { getMonthName } from '../../_utilities/getMonthName'
 import { EventLinks } from '../EventLinks'
 import RichText from '../RichText'
+import { AddToCalendar } from './AddToCalendar'
 import { InterestedButton } from './InterestedButton'
 
 import classes from './index.module.scss'
@@ -133,6 +134,7 @@ export const EventItem: React.FC<{
                   initialInterestedCount={(event as any).interestedCount || 0}
                 />
               )}
+              {event.id && <AddToCalendar event={event} />}
             </div>
           </div>
 

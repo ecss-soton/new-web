@@ -1,0 +1,20 @@
+@import '../../../../_css/common';
+
+.backLink {
+  @extend %body;
+  display: inline-block;
+  margin-top: calc(var(--base) * 2);
+  color: var(--theme-elevation-600);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+
+  &:hover {
+    color: var(--theme-elevation-1000);
+    border-bottom-color: currentColor;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ecss-red);
+    outline-offset: 2px;
+  }
+}

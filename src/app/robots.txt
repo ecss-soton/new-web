@@ -1,4 +1,9 @@
 User-agent: *
 Disallow: /admin
 
+User-agent: Discordbot
+Disallow: /admin
+Disallow: /wordle
+Disallow: /games/wordle
+
 Sitemap: https://society.ecs.soton.ac.uk/sitemap.xml

@@ -1,11 +1,12 @@
 import ical from 'ical-generator'
-import moment from 'moment-timezone'
 import type { CollectionConfig, Validate, Where } from 'payload/types'
 
+import { getEventTimes, getIcsDescription, LONDON_TIME_ZONE } from '../../utilities/eventCalendar'
 import { EVENT_CATEGORIES, isEventCategory } from '../../utilities/eventCategories'
 import { admins } from '../access/admins'
 import { adminsOrPublished } from '../access/adminsOrPublished'
 import { isAdmin } from '../access/isAdmin'
+import type { Event } from '../payload-types'
 import { withEndpointErrorHandler } from '../utilities/endpointHandler'
 import { isDiscordUrl, isLumaUrl, parseDiscordUrl } from '../validate/eventLinks'
 import { isHTTPS } from '../validate/isHTTPS'
@@ -26,6 +27,43 @@ const validateCoordinate =
     }
     return true
   }
+
+const buildCalendar = (events: Event[]): string => {
+  const calendar = ical({
+    name: 'ECSS Events',
+    timezone: LONDON_TIME_ZONE,
+  })
+
+  events.forEach(event => {
+    const times = getEventTimes(event)
+    if (!times) return
+
+    calendar.createEvent({
+      id: event.id,
+      // Pass the London wall-clock moments directly
+      start: times.start,
+      end: times.end,
+      timezone: LONDON_TIME_ZONE,
+      summary: event.name,
+      description: getIcsDescription(event),
+      location: event.location || '',
+      url: event.link || '',
+    })
+  })
+
+  return calendar.toString()
+}
+
+const getEventFilename = (name?: string | null): string => {
+  const slug = (name || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60)
+    .replace(/-+$/g, '')
+
+  return `${slug || 'event'}.ics`
+}
 
 const Events: CollectionConfig = {
   slug: 'events',
@@ -323,6 +361,44 @@ const Events: CollectionConfig = {
       handler: async (req, res) => {
         const { payload } = req
 
+        // `event` returns a single event as a downloadable .ics file, which is
+        // what the per-event "Add to calendar" action links to.
+        const rawEvent = req.query?.event
+        const requestedEventId = Array.isArray(rawEvent) ? rawEvent[0] : rawEvent
+
+        if (requestedEventId !== undefined) {
+          // Event ids are a custom text field on this collection (not Mongo
+          // ObjectIds), so accept any trimmed non-empty value of sane length.
+          const eventId = typeof requestedEventId === 'string' ? requestedEventId.trim() : ''
+          if (!eventId || eventId.length > 256) {
+            return res.status(400).json({ error: 'Invalid event id' })
+          }
+
+          const where: Where = { id: { equals: eventId } }
+
+          // Drafts stay private, but admins previewing a draft can still add it.
+          if (!isAdmin(req.user)) {
+            where._status = { equals: 'published' }
+          }
+
+          const { docs } = await payload.find({
+            collection: 'events',
+            where,
+            limit: 1,
+            depth: 0,
+          })
+
+          const event = docs[0]
+          if (!event) return res.status(404).json({ error: 'Event not found' })
+
+          res.setHeader('Content-Type', 'text/calendar; charset=utf-8')
+          res.setHeader(
+            'Content-Disposition',
+            `attachment; filename="${getEventFilename(event.name)}"`,
+          )
+          return res.send(buildCalendar([event]))
+        }
+
         // `categories` accepts a comma-separated list (or repeated query params)
         // of category values. Unknown values are ignored. With no valid category
         // selected the feed contains every published event.
@@ -359,46 +435,9 @@ const Events: CollectionConfig = {
           sort: '-date',
         })
 
-        const calendar = ical({
-          name: 'ECSS Events',
-          timezone: 'Europe/London',
-        })
-
-        events.forEach(event => {
-          // 1. Convert UTC from database to London Wall-Clock time (matches your frontend)
-          const start = moment.utc(event.date).tz('Europe/London')
-
-          let end
-          if (event.endTime) {
-            // 2. Do the same for the end time
-            const endT = moment.utc(event.endTime).tz('Europe/London')
-
-            // 3. Take the start date and apply the hours/minutes from the end time
-            end = start.clone().hour(endT.hour()).minute(endT.minute()).second(0)
-
-            // 4. Handle events that end after midnight
-            if (end.isSameOrBefore(start)) {
-              end.add(1, 'day')
-            }
-          } else {
-            end = start.clone().add(1, 'hour')
-          }
-
-          calendar.createEvent({
-            id: event.id,
-            // Pass the moment objects directly
-            start: start,
-            end: end,
-            timezone: 'Europe/London',
-            summary: event.name,
-            description: typeof event.description === 'string' ? event.description : '',
-            location: event.location || '',
-            url: event.link || '',
-          })
-        })
         res.setHeader('Content-Type', 'text/calendar; charset=utf-8')
         res.setHeader('Content-Disposition', 'attachment; filename="events.ics"')
-        return res.send(calendar.toString())
+        return res.send(buildCalendar(events))
       },
     },
     {

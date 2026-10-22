@@ -17,6 +17,7 @@
     "generate:graphQLSchema": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload generate:graphQLSchema",
     "check-susu": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/checkCsvAccounts.ts",
     "test:member-import": "ts-node src/payload/utilities/memberCsv.test.ts && ts-node src/payload/utilities/checkCsvAccounts.test.ts",
+    "test:event-calendar": "ts-node src/utilities/richText.test.ts && ts-node src/utilities/eventCalendar.test.ts",
     "migrate:event-categories": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/migrateEventCategories.ts",
     "migrate:wordle-scores": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/migrateWordleScores.ts",
     "migrate:booking-indexes": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/migrateBookingIndexes.ts",
