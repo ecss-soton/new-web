@@ -32,6 +32,8 @@ export interface TableSeatData {
   members: Array<{ id: string; name: string }>
   yourTable: boolean
   isMember: boolean
+  /** The viewer owns the table, so they may rearrange every seat. */
+  isOwner: boolean
   isAdmin: boolean
   locked: boolean
   full: boolean

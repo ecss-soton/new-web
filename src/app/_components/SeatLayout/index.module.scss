@@ -43,7 +43,7 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   color: var(--color-base-300);
   font-size: 0.95rem;
 }
@@ -56,10 +56,54 @@
   gap: 1rem;
 }
 
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.8rem;
+  color: var(--color-base-400);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.swatch {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.swatchFree {
+  background: var(--color-base-950);
+  border: 2px dashed var(--color-base-600);
+}
+
+.swatchTaken {
+  background: var(--color-success-800);
+  border: 2px solid var(--color-success-500);
+}
+
+.swatchMine {
+  background: var(--color-base-800);
+  border: 2px solid var(--color-base-100);
+}
+
+// The ring is laid out entirely in percentages of this square box, so seats
+// scale with the container instead of overflowing. `container-type` makes `cqw`
+// resolve against this box, which is what keeps the text scaling with the
+// circles too.
 .table {
   position: relative;
-  width: 400px;
-  height: 400px;
+  width: 100%;
+  max-width: 620px;
+  aspect-ratio: 1 / 1;
+  container-type: inline-size;
 }
 
 .tableInner {
@@ -67,8 +111,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 160px;
-  height: 160px;
+  width: 34%;
+  height: 34%;
   border-radius: 50%;
   background: var(--color-base-800);
   border: 2px solid var(--color-base-600);
@@ -77,99 +121,136 @@
   align-items: center;
   justify-content: center;
   z-index: 2;
+  font-size: 1rem;
+
+  @supports (font-size: 1cqw) {
+    font-size: 2.2cqw;
+  }
 }
 
 .tableLabel {
-  font-size: 0.8rem;
+  font-size: 0.8em;
   color: var(--color-base-400);
 }
 
 .tableCode {
-  font-size: 1.1rem;
+  font-size: 1.4em;
   font-weight: 700;
   color: var(--color-base-100);
 }
 
 .seat {
   position: absolute;
-  width: 90px;
-  height: 90px;
+  transform: translate(-50%, -50%);
   border-radius: 50%;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-weight: inherit;
+  line-height: inherit;
   cursor: pointer;
-  transition: all 0.2s;
-  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid transparent;
+  overflow: hidden;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
 
-  &:hover {
-    transform: scale(1.1);
+  &:focus-visible {
+    outline: 2px solid var(--color-base-100);
+    outline-offset: 3px;
   }
 }
 
+.readOnly {
+  cursor: default;
+}
+
 .free {
-  background: var(--color-base-850);
-  border-color: var(--color-base-600);
+  background: var(--color-base-950);
+  border: 2px dashed var(--color-base-600);
+  color: var(--color-base-400);
 
   &:hover {
-    border-color: var(--color-base-400);
-    background: var(--color-base-750);
+    border-color: var(--color-base-300);
+    background: var(--color-base-900);
+    color: var(--color-base-200);
   }
 }
 
 .occupied {
-  background: var(--color-success-900);
-  border-color: var(--color-success-600);
+  background: var(--color-success-850);
+  border: 3px solid var(--color-success-500);
   color: var(--color-success-100);
+  box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.35);
 
   &:hover {
+    background: var(--color-success-800);
     border-color: var(--color-success-400);
   }
 }
 
+// The viewer's own seat gets a neutral ring so it reads differently from both
+// "free" and "someone else's".
+.mine {
+  border-color: var(--color-base-100) !important;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22), inset 0 0 0 3px rgba(0, 0, 0, 0.35);
+}
+
 .editing {
-  border-color: var(--color-base-200) !important;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+  border-color: var(--color-base-50) !important;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.3), 0 0 18px rgba(255, 255, 255, 0.25);
 }
 
 .seatInner {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  justify-content: center;
+  gap: 0.08em;
+  width: 100%;
+  height: 100%;
+  padding: 12%;
+  box-sizing: border-box;
   text-align: center;
-  padding: 4px;
+  overflow: hidden;
 }
 
 .seatIndex {
-  font-size: 0.7rem;
-  color: var(--color-base-400);
-  font-weight: 600;
+  font-size: 0.68em;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.65;
 }
 
 .seatName {
-  font-size: 0.75rem;
-  color: var(--color-base-100);
-  font-weight: 500;
-  line-height: 1.2;
-  word-break: break-word;
-  max-width: 80px;
+  font-size: 1em;
+  font-weight: 700;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .seatFree {
-  font-size: 0.7rem;
-  color: var(--color-base-500);
+  font-size: 0.78em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.6;
 }
 
+// Sized as a fraction of the table box (not in px) so the popover always stays
+// within the plan; the anchor is clamped in the component to match.
 .seatEditor {
   position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  margin-top: 8px;
-  min-width: 200px;
+  z-index: 20;
+  width: max-content;
+  min-width: 40%;
+  max-width: 46%;
 }
 
 .editorInner {
@@ -264,6 +345,12 @@
   font-size: 0.85rem;
 }
 
+.unassignedHint {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-base-400);
+}
+
 .saveRow {
   display: flex;
   align-items: center;
@@ -300,5 +387,10 @@
 
 .errorMsg {
   color: var(--color-error-400);
+  font-size: 0.9rem;
+}
+
+.infoMsg {
+  color: var(--color-warning-400);
   font-size: 0.9rem;
 }

@@ -64,6 +64,7 @@ export const manageSeats: PayloadHandler = async (req, res) => {
     const admin = isAdmin(user)
     const members = relationshipIds(current.members)
     const isMember = members.includes(user.id)
+    const isOwner = relationshipId(current.owner) === user.id
 
     if (!isMember && !admin) {
       return res.status(403).json({ error: 'Only table members can manage seats' })
@@ -142,6 +143,62 @@ export const manageSeats: PayloadHandler = async (req, res) => {
       }
 
       seatPositions.push({ seatIndex: seatIndex as number, name })
+    }
+
+    // A guest holds at most one seat. The UI already moves people rather than
+    // cloning them, but the API has to enforce it.
+    const seatedUsers = new Set<string>()
+    for (const seat of seatPositions) {
+      if (!seat.userId) continue
+      if (seatedUsers.has(seat.userId)) {
+        return res.status(400).json({ error: 'A guest can only hold one seat' })
+      }
+      seatedUsers.add(seat.userId)
+    }
+
+    // Members may only move their own seat; the table owner (or an admin) can
+    // rearrange everyone. Without this, any member could shuffle the whole table.
+    if (!isOwner && !admin) {
+      const myName = (user.name as string) || (user.username as string) || ''
+
+      const signature = (entry?: {
+        userId?: string | null
+        name?: string | null
+      }): string | null => {
+        if (!entry) return null
+        if (entry.userId) return `user:${entry.userId}`
+        // Legacy rows carry only a display name; treat the viewer's own name as theirs.
+        if (entry.name && entry.name === myName) return `user:${user.id}`
+        return entry.name ? `name:${entry.name}` : null
+      }
+
+      const existing = new Map<number, { userId?: string | null; name?: string | null }>()
+      for (const seat of current.seatPositions ?? []) {
+        existing.set(seat.seatIndex, {
+          userId: relationshipId((seat as { userId?: unknown }).userId),
+          name: typeof seat.name === 'string' ? seat.name.trim() : null,
+        })
+      }
+
+      const submitted = new Map<number, { userId?: string | null; name?: string | null }>()
+      for (const seat of seatPositions) {
+        submitted.set(seat.seatIndex, { userId: seat.userId, name: seat.name })
+      }
+
+      const indexes = new Set<number>([...existing.keys(), ...submitted.keys()])
+      for (const index of indexes) {
+        const before = signature(existing.get(index))
+        const after = signature(submitted.get(index))
+        if (before === after) continue
+
+        const mineBefore = before === null || before === `user:${user.id}`
+        const mineAfter = after === null || after === `user:${user.id}`
+        if (!mineBefore || !mineAfter) {
+          return res.status(403).json({
+            error: 'You can only move your own seat. Ask the table owner to rearrange the others.',
+          })
+        }
+      }
     }
 
     try {
