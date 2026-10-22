@@ -38,6 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   add('/games', 0.7, 'weekly')
   add('/games/base-blitz', 0.5, 'monthly')
   add('/games/tech-match', 0.5, 'monthly')
+  add('/games/logic-gate-lab', 0.5, 'daily')
 
   pages.forEach(page => {
     if (page.slug && page.slug !== 'home') add(`/${page.slug}`, 0.7, 'monthly')

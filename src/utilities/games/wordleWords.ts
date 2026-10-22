@@ -1,3 +1,5 @@
+import { getDayKey } from './daily'
+
 const TECH_WORDS = [
   'ABORT',
   'ADMIN',
@@ -175,12 +177,7 @@ export function getDailyWord(): string {
 }
 
 export function getTodayDate(): string {
-  return new Date().toISOString().split('T')[0]
+  return getDayKey()
 }
 
-export function getPuzzleNumber(): number {
-  const epoch = new Date('2026-01-01')
-  const today = new Date()
-  const diff = Math.floor((today.getTime() - epoch.getTime()) / (1000 * 60 * 60 * 24))
-  return diff + 1
-}
+export { getPuzzleNumber } from './daily'

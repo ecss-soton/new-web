@@ -30,6 +30,14 @@ export const GAMES: GameDefinition[] = [
     order: 1,
   },
   {
+    slug: 'logic-gate-lab',
+    title: 'Logic Gate Lab',
+    tagline: 'Build a circuit to match today’s truth table.',
+    href: '/games/logic-gate-lab',
+    section: 'daily',
+    order: 2,
+  },
+  {
     slug: 'base-blitz',
     title: 'Base Blitz',
     tagline: 'Binary, decimal, hex — sixty seconds.',
