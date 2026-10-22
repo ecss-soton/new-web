@@ -270,9 +270,10 @@ export const LogicGateLab: React.FC<{ puzzle: DailyPuzzle }> = ({ puzzle }) => {
           </button>
         </div>
         <div className={classes.children}>
-          {node.children.map((child, index) =>
-            renderNode(child, [...path, index], slotLabel(node.op, index)),
-          )}
+          {node.children.map((child, index) => {
+            const childPath = [...path, index]
+            return renderNode(child, childPath, slotLabel(node.op, index))
+          })}
         </div>
       </div>
     )
@@ -289,7 +290,7 @@ export const LogicGateLab: React.FC<{ puzzle: DailyPuzzle }> = ({ puzzle }) => {
       <div className={classes.game}>
         <div className={classes.meta}>
           <span className={classes.puzzleNumber}>Puzzle #{puzzle.number}</span>
-          <span className={classes.metaHint}>New puzzle at midnight UTC</span>
+          <span className={classes.metaHint}>New puzzle at midnight UK time</span>
         </div>
 
         <div className={classes.layout}>

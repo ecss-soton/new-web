@@ -1,5 +1,6 @@
 import type { PayloadHandler } from 'payload/config'
 
+import { addDays, getDayKey, isNextDay, toDayKey } from '../../../../utilities/games/daily'
 import type { WordleScore } from '../../../payload-types'
 
 interface UserStats {
@@ -12,13 +13,6 @@ interface UserStats {
   maxStreak: number
   avgGuesses: number
   rating: number
-}
-
-const isNextDay = (prev: string, next: string): boolean => {
-  const p = new Date(prev)
-  const n = new Date(next)
-  const day = 1000 * 60 * 60 * 24
-  return Math.round((n.getTime() - p.getTime()) / day) === 1
 }
 
 const computeRating = (
@@ -36,8 +30,6 @@ const computeRating = (
     avgGuesses * 30
   )
 }
-
-const toYYYYMMDD = (iso: string): string => iso.split('T')[0]
 
 export const leaderboard: PayloadHandler = async (req, res): Promise<void> => {
   const { payload } = req
@@ -83,23 +75,21 @@ export const leaderboard: PayloadHandler = async (req, res): Promise<void> => {
       let prevDate = ''
 
       const reversed = [...sorted].reverse()
-      const today = toYYYYMMDD(new Date().toISOString())
+      const today = getDayKey()
       let expectedDate = today
 
       for (const score of reversed) {
-        const scoreDate = typeof score.date === 'string' ? score.date : toYYYYMMDD(score.date)
+        const scoreDate = toDayKey(score.date)
         if (score.solved && (expectedDate === today || scoreDate === expectedDate)) {
           currentStreak++
-          const next = new Date(scoreDate)
-          next.setDate(next.getDate() - 1)
-          expectedDate = toYYYYMMDD(next.toISOString())
+          expectedDate = addDays(scoreDate, -1)
         } else {
           break
         }
       }
 
       for (const score of sorted) {
-        const scoreDate = typeof score.date === 'string' ? score.date : toYYYYMMDD(score.date)
+        const scoreDate = toDayKey(score.date)
         if (score.solved) {
           if (!prevDate || isNextDay(prevDate, scoreDate)) {
             streak++

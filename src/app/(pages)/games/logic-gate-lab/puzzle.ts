@@ -1,7 +1,7 @@
 import {
   createSeededRandom,
   getDayKey,
-  getPuzzleNumber,
+  getPuzzleNumberForDay,
   hashString,
 } from '../../../../utilities/games/daily'
 import { type DailyPuzzle, INPUT_NAMES, ROW_COUNT, truthTable } from './logic'
@@ -86,11 +86,9 @@ const OFFSET = 41
 
 export const createDailyPuzzle = (now: Date = new Date()): DailyPuzzle => {
   const date = getDayKey(now)
-  const dayStart = new Date(`${date}T00:00:00.000Z`)
-  const number = getPuzzleNumber(dayStart)
-  const dayIndex = Math.floor(dayStart.getTime() / (1000 * 60 * 60 * 24))
+  const number = getPuzzleNumberForDay(date)
   const index =
-    (((dayIndex * STRIDE + OFFSET) % CANDIDATES.length) + CANDIDATES.length) % CANDIDATES.length
+    (((number * STRIDE + OFFSET) % CANDIDATES.length) + CANDIDATES.length) % CANDIDATES.length
   const mask = CANDIDATES[index]
 
   return {

@@ -167,8 +167,8 @@ const TECH_WORDS = [
 // deployment configuration is strictly required. Only ever read server-side.
 const getDailyWordSalt = (): string => process.env.WORDLE_SECRET || process.env.PAYLOAD_SECRET || ''
 
-export function getDailyWord(): string {
-  const input = `${new Date().toISOString().split('T')[0]}:${getDailyWordSalt()}`
+export function getDailyWord(now: Date = new Date()): string {
+  const input = `${getDayKey(now)}:${getDailyWordSalt()}`
   let hash = 5381
   for (let i = 0; i < input.length; i++) {
     hash = ((hash << 5) + hash + input.charCodeAt(i)) | 0

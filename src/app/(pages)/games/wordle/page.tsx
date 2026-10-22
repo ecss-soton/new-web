@@ -1,10 +1,10 @@
 import React from 'react'
 import { Metadata } from 'next'
 
+import { getPuzzleNumber, getTodayDate } from '../../../../utilities/games/wordleWords'
 import { Gutter } from '../../../_components/Gutter'
 import { LowImpactHero } from '../../../_heros/LowImpact'
 import { getMeUser } from '../../../_utilities/getMeUser'
-import { getPuzzleNumber, getTodayDate } from '../../../../utilities/games/wordleWords'
 import { GameBackLink } from '../_components/GameBackLink'
 import { WordleGame } from './WordleGame'
 

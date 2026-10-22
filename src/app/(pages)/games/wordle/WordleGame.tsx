@@ -3,8 +3,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 
-import { inter } from '../../../_utilities/font'
 import VALID_WORDS from '../../../../utilities/games/validWords.json'
+import { inter } from '../../../_utilities/font'
 
 import classes from './index.module.scss'
 
