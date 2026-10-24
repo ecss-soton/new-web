@@ -23,6 +23,8 @@ import DiscordAnnouncements from './collections/DiscordAnnouncements'
 import { ElectionResults } from './collections/ElectionResults'
 import Elections from './collections/Elections'
 import Events from './collections/Events'
+import GamePrefs from './collections/GamePrefs'
+import GameScores from './collections/GameScores'
 import Hackathons from './collections/Hackathons'
 import { Media } from './collections/Media'
 import { MemberImports } from './collections/MemberImports'
@@ -39,6 +41,7 @@ import {
 } from './collections/Redirects/hooks/invalidateRedirects'
 import Societies from './collections/Societies'
 import Sponsors from './collections/Sponsors'
+import { SusuMembers } from './collections/SusuMembers'
 import { Tables } from './collections/Tables'
 import { TicketHolders } from './collections/TicketHolders'
 import Users from './collections/Users'
@@ -134,6 +137,7 @@ export default buildConfig({
     Newsletters,
     Media,
     MemberImports,
+    SusuMembers,
     Categories,
     Users,
     Comments,
@@ -154,6 +158,8 @@ export default buildConfig({
     TicketHolders,
     WordleOverrides,
     WordleScores,
+    GameScores,
+    GamePrefs,
     CityChallengeLocations,
     CityChallengeTeams,
   ],

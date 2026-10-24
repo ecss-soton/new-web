@@ -8,7 +8,7 @@ This repository is the University of Southampton Electronics and Computer Scienc
 - Payload CMS 2 backed by MongoDB (`src/payload`)
 - Custom Express server (`src/server.ts`)
 - Azure AD OAuth login
-- Election/STV, booking, membership-import, Wordle, and CMS features
+- Election/STV, booking, membership-import, games (ECSSle), and CMS features
 
 Use this guide before broad exploration. Read only the files relevant to the requested domain.
 
@@ -21,6 +21,7 @@ Use this guide before broad exploration. Read only the files relevant to the req
 | CMS schemas and business logic | `src/payload/collections/` |
 | Global CMS content | `src/payload/globals/` |
 | Next routes and server components | `src/app/(pages)/` |
+| Games hub, game routes and game registry | `src/app/(pages)/games/`, `src/utilities/games/` |
 | Client UI components | `src/app/_components/` |
 | CMS page-block renderers | `src/app/_blocks/` |
 | GraphQL query strings | `src/app/_graphql/` |
@@ -78,12 +79,14 @@ Do not hand-edit generated files when the generation commands are available. If 
 
 ### Membership imports (voting eligibility)
 
-- Collection: `member-imports` (`src/payload/collections/MemberImports/`). The `susu` role is what `votes` create-access checks, so this import is the voting-eligibility source of truth.
+- Collections: `member-imports` (`src/payload/collections/MemberImports/`) stores the uploaded CSV and its summary; `susu-members` (`src/payload/collections/SusuMembers.ts`) is the **durable membership index**. The `susu` role is what `votes` create-access checks, so this import is the voting-eligibility source of truth.
 - Uploads are admin-only CSVs. The collection intentionally has **no `mimeTypes` allow-list** (mobile browsers report `.csv` as `text/plain`/`application/octet-stream`); `validateCsvUpload.ts` enforces the `.csv` extension instead.
 - Parser: `src/payload/utilities/memberCsv.ts`. It is header-driven and supports both SUSU exports: one row per membership (`Status`, `Membership Type`) and the roll-up (`Membership Statuses`, `Membership Types`, `|`-separated lists). Emails are optional — the exports received have an empty `Email` column, so do not make it required.
-- Matching (`checkCsvAccounts.ts`): email/username first, then a **unique** normalized full-name match (with a first/last-token fallback for middle names). Ambiguous names (2+ accounts) and incomplete names (placeholder last names such as `.`/`-`) are skipped and listed in the import summary; never fall back to first-name-only matching.
-- Add-only: importing grants `susu` and never revokes it. Removing roles is a separate, destructive change.
-- Any membership row marked `active` counts; membership type and dates are not used.
+- An import upserts every parsed member into `susu-members` by `susuId` (SUSU User ID, with email/name fallbacks) and then matches existing accounts. Members absent from a newer export keep their previous record; role grants remain add-only.
+- First login (`checkSusuRoleAfterCreate`) and the admin "Re-apply memberships to all accounts" action (`POST /api/member-imports/reapply`) match against `susu-members`, **not** the uploaded file. Never re-introduce a dependency on `media/member-imports` for post-import logins: the file is ephemeral and per-instance.
+- Azure AD display names look like `Henry Foster (hwjf1g26)`. Strip the `(<username>)` suffix before name matching (`displayNameWithoutUsername` in `memberCsv.ts`, anchored on the user's `username`/email local part). Do not use a generic "strip all brackets" rule.
+- Matching (`checkCsvAccounts.ts`): email/username first, then a **unique** normalized full-name match (with a first/last-token fallback for middle names). Ambiguous names (2+ accounts) and incomplete names (placeholder last names such as `.`/`-`) are skipped and listed in the import summary; never fall back to first-name-only matching. For a known first-login user, any active member with that name is enough (the batch importer is the strict one).
+- Any membership row marked `active` counts; membership type and dates are not used. Inactive rows are stored in `susu-members` but never used for grants.
 - Tests: `npm run test:member-import` (Node's `node:test` via `ts-node`).
 
 ### Booking
@@ -120,6 +123,21 @@ Do not hand-edit generated files when the generation commands are available. If 
 - The scheduler is in-process with no distributed lock (single-instance assumption); add a lock before running multiple instances.
 - Polling reads only upcoming events with a Discord link. `discordSyncError` surfaces failures; alert on it and on stale `discordLastSyncedAt`.
 - Auto-creating events from announcement messages is intentionally not implemented yet (separate phase; needs a privileged Message Content intent and an idempotency/index decision).
+
+### Games
+
+- `/games` is the hub (`src/app/(pages)/games/page.tsx`). Games live at `src/app/(pages)/games/<slug>/`. **Read `src/app/(pages)/games/README.md` before adding a game** — it has the checklist and templates for routes, score validation and leaderboards.
+- The game list is code-defined in `src/utilities/games/registry.ts`; adding a game means adding a route plus a registry entry. There is no CMS collection for games.
+- Word data: `src/utilities/games/wordleWords.ts` is server-only (`getDailyWord` must never reach a `'use client'` component); `validWords.json` is shared by the client and the `/api/wordle-scores/guess` endpoint.
+- ECSSle is login-gated (`/games/wordle`, leaderboard at `/games/wordle/leaderboard`) and keeps the legacy `wordle-scores` collection and `/api/wordle-scores/*` endpoints.
+- Scored games other than ECSSle use the generic **`game-scores`** collection and `POST /api/game-scores/submit`; the server validator in `src/utilities/games/scoring.ts` must re-derive the result from server-owned state — never store a client-reported score. One score per `game:user:date` via the unique `entryKey`; the lowest score for the day wins.
+- Leaderboards share `src/utilities/games/leaderboard.ts` (`GAME_LEADERBOARD_CONFIGS`, `computeLeaderboard`), the `LeaderboardTable` component and the `LeaderboardVisibilityToggle`. ECSSle and Logic Gate Lab both appear on `/games/*/leaderboard` (`GET /api/wordle-scores/leaderboard` and `GET /api/game-scores/leaderboard?game=…`).
+- Leaderboard visibility is per user, per game, stored in **`game-prefs`** and toggled via `GET/POST /api/game-prefs/me`. Scores are always recorded; `getHiddenUserIds` filters opted-out players out of the leaderboard responses (including ECSSle).
+- Logic Gate Lab (`/games/logic-gate-lab`) is login-gated. Its circuit model and validator live in `src/utilities/games/logicGate/`; every three-input function is solvable in at most three gates, so keep the target precomputed (`puzzle.ts`) and validate the submitted circuit server-side.
+- Arcade games with no server scores (Base Blitz) keep personal bests in `localStorage` via `src/utilities/games/bestScore.ts` — no accounts, no leaderboard.
+- Daily games derive their puzzle from the `Europe/London` day key (`src/utilities/games/daily.ts`): same puzzle all day, new one at midnight UK time, with British Summer Time handled. Date maths uses day keys, never timestamps, so DST days cannot skip or repeat a puzzle.
+- **No link embeds for game pages.** `src/app/robots.txt` blocks `Discordbot` from `/wordle` and `/games/wordle`, and wordle/game pages omit `description`/OpenGraph/Twitter metadata. Discord falls back to `<title>`/`<meta name="description">` when OG tags are absent, so keep both patterns when adding games. The `/games` hub itself keeps a normal description + OpenGraph card.
+- Old URLs `/wordle` and `/wordle/leaderboard` redirect (308) to `/games/*` via `redirects.js`; the Payload redirects collection works too but is not required.
 
 ## Security and correctness rules
 

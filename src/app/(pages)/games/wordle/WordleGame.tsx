@@ -3,8 +3,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 
-import { inter } from '../../_utilities/font'
-import VALID_WORDS from './validWords.json'
+import VALID_WORDS from '../../../../utilities/games/validWords.json'
+import { inter } from '../../../_utilities/font'
 
 import classes from './index.module.scss'
 
@@ -156,7 +156,7 @@ export const WordleGame: React.FC<WordleGameProps> = ({
       text += statuses.map(getEmojiFromStatus).join('') + '\n'
     })
 
-    text += '\nhttps://ecss.club/wordle'
+    text += '\nhttps://ecss.club/games/wordle'
 
     try {
       await navigator.clipboard.writeText(text)
@@ -454,7 +454,7 @@ export const WordleGame: React.FC<WordleGameProps> = ({
             <button className={classes.shareButton} onClick={handleCopyResult}>
               {copied ? 'Copied!' : 'Copy Result'}
             </button>
-            <Link href="/wordle/leaderboard" className={classes.viewLeaderboardLink}>
+            <Link href="/games/wordle/leaderboard" className={classes.viewLeaderboardLink}>
               Leaderboard
             </Link>
           </div>

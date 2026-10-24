@@ -1,51 +1,27 @@
-import path from 'path'
 import type { AfterChangeHook } from 'payload/dist/collections/config/types'
 
-import { runCheckSingleUserFromCsvFile } from '../../../utilities/checkCsvAccounts'
+import { grantRoleIfSusuMember } from '../../../utilities/susuMembers'
 
-const memberImportUploadDir = path.resolve(__dirname, '../../../../../media/member-imports')
-
+/**
+ * First Azure AD login. Matches against the durable `susu-members` collection,
+ * so it keeps working after a redeploy/restart (the uploaded CSV may be gone) and
+ * on any app instance.
+ */
 export const checkSusuRoleAfterCreate: AfterChangeHook = async ({ doc, req, operation }) => {
-  if (operation === 'create') {
-    const latest = await req.payload.find({
-      collection: 'member-imports',
-      limit: 1,
-      sort: '-createdAt',
-      overrideAccess: true,
-    })
-
-    if (latest.docs.length === 0) {
-      req.payload.logger.warn(`No member-import found in collection`)
-      return doc
-    }
-
-    const csv = latest.docs[0]
-    const filename = csv.filename
-
-    // A failed or still-running import must not be used to grant access.
-    if (csv.runStatus !== 'completed' || !filename) {
-      req.payload.logger.warn(
-        `Latest member-import '${csv.id}' is not completed; skipping susu role check for new user '${doc.id}'.`,
-      )
-      return doc
-    }
-
-    const csvFilePath = path.join(memberImportUploadDir, filename)
-
-    try {
-      await runCheckSingleUserFromCsvFile({
-        payload: req.payload,
-        csvFilePath,
-        userDoc: doc,
-        role: 'susu',
-      })
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Unknown error'
-
-      req.payload.logger.error(`Failed to process member import '${doc.id}': ${message}`)
-    }
-
+  if (operation !== 'create') {
     return doc
+  }
+
+  try {
+    await grantRoleIfSusuMember({
+      payload: req.payload,
+      userDoc: doc,
+      role: 'susu',
+    })
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+
+    req.payload.logger.error(`Failed to check SUSU membership for user '${doc.id}': ${message}`)
   }
 
   return doc

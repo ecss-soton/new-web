@@ -1,14 +1,7 @@
 import assert from 'node:assert/strict'
-import fs from 'node:fs'
-import os from 'node:os'
-import path from 'node:path'
 import { test } from 'node:test'
 
-import {
-  checkCsvAccountsFromContent,
-  type PayloadLike,
-  runCheckSingleUserFromCsvFile,
-} from './checkCsvAccounts'
+import { checkCsvAccountsFromContent, type PayloadLike } from './checkCsvAccounts'
 
 type FakeRole = 'admin' | 'user' | 'susu'
 
@@ -37,6 +30,7 @@ const createFakePayload = (
       docs: users.map(user => ({ ...user })),
       totalDocs: users.length,
     }),
+    create: async () => undefined,
     update: async ({ id, data }: { id: number; data: { roles: FakeRole[] } }) => {
       const user = users.find(candidate => candidate.id === id)
       if (user) user.roles = data.roles
@@ -86,6 +80,32 @@ test('grants susu on a unique name match and ignores inactive members', async ()
   assert.match(result.summary, /present but empty/)
 })
 
+test('matches Azure AD display names that include the username suffix', async () => {
+  const { payload, updates } = createFakePayload([
+    { id: 1, name: 'Henry Foster (hwjf1g26)', username: 'hwjf1g26' },
+  ])
+
+  const result = await checkCsvAccountsFromContent({
+    payload,
+    csvContent: membershipsCsv([row('173525', 'Henry', 'Foster', '', 'active')]),
+  })
+
+  assert.equal(result.stats.matchedByName, 1)
+  assert.deepEqual(updates, [{ id: 1, roles: ['susu'] }])
+})
+
+test('matches a username suffix even when the account has no username field', async () => {
+  const { payload, updates } = createFakePayload([{ id: 1, name: 'Ada Lovelace (ab1c23)' }])
+
+  const result = await checkCsvAccountsFromContent({
+    payload,
+    csvContent: membershipsCsv([row('1', 'Ada', 'Lovelace', '', 'active')]),
+  })
+
+  assert.equal(result.stats.matchedByName, 1)
+  assert.deepEqual(updates, [{ id: 1, roles: ['susu'] }])
+})
+
 test('still matches by email and by the email local part', async () => {
   const { payload, updates } = createFakePayload([
     { id: 1, name: 'Ada Lovelace', email: 'ada@example.com' },
@@ -106,7 +126,7 @@ test('still matches by email and by the email local part', async () => {
 })
 
 test('matches a display name that has a middle name', async () => {
-  const { payload, updates } = createFakePayload([{ id: 5, name: 'Dan James Abu-Reish' }])
+  const { payload, updates } = createFakePayload([{ id: 5, name: 'Dan James Abu-Reish (da1b23)' }])
 
   const result = await checkCsvAccountsFromContent({
     payload,
@@ -119,8 +139,8 @@ test('matches a display name that has a middle name', async () => {
 
 test('never grants when a name matches more than one account', async () => {
   const { payload, updates } = createFakePayload([
-    { id: 1, name: 'Alex Smith' },
-    { id: 2, name: 'Alex Smith' },
+    { id: 1, name: 'Alex Smith (as1a23)' },
+    { id: 2, name: 'Alex Smith (as2b23)' },
   ])
 
   const result = await checkCsvAccountsFromContent({
@@ -135,7 +155,7 @@ test('never grants when a name matches more than one account', async () => {
 })
 
 test('does not grant a first-name-only match', async () => {
-  const { payload, updates } = createFakePayload([{ id: 1, name: 'Tharun' }])
+  const { payload, updates } = createFakePayload([{ id: 1, name: 'Tharun (th1a23)' }])
 
   const result = await checkCsvAccountsFromContent({
     payload,
@@ -175,47 +195,4 @@ test('collapses duplicate membership rows for the same member', async () => {
   assert.equal(result.stats.duplicateRows, 1)
   assert.equal(result.stats.rolesAdded, 1)
   assert.equal(updates.length, 1)
-})
-
-test('single-user check grants on an active name match only', async () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ecss-member-csv-'))
-
-  try {
-    const activePath = path.join(dir, 'active.csv')
-    fs.writeFileSync(
-      activePath,
-      membershipsCsv([row('1', 'Ada', 'Lovelace', '', 'active')]),
-      'utf8',
-    )
-    const expiredPath = path.join(dir, 'expired.csv')
-    fs.writeFileSync(
-      expiredPath,
-      membershipsCsv([row('1', 'Ada', 'Lovelace', '', 'expired')]),
-      'utf8',
-    )
-
-    const { payload, updates } = createFakePayload([{ id: 1, name: 'Ada Lovelace' }])
-
-    assert.equal(
-      await runCheckSingleUserFromCsvFile({
-        payload,
-        csvFilePath: expiredPath,
-        userDoc: { id: 1, name: 'Ada Lovelace', roles: ['user'] },
-      }),
-      false,
-    )
-    assert.equal(updates.length, 0)
-
-    assert.equal(
-      await runCheckSingleUserFromCsvFile({
-        payload,
-        csvFilePath: activePath,
-        userDoc: { id: 1, name: 'Ada Lovelace', roles: ['user'] },
-      }),
-      true,
-    )
-    assert.deepEqual(updates, [{ id: 1, roles: ['user', 'susu'] }])
-  } finally {
-    fs.rmSync(dir, { recursive: true, force: true })
-  }
 })

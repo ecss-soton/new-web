@@ -1,0 +1,53 @@
+@import '../../../../_css/common';
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: calc(var(--base) * 1.5);
+  padding: calc(var(--base) * 0.75) var(--base);
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 6px;
+  background: var(--theme-elevation-50);
+}
+
+.loading {
+  @extend %body;
+  margin: 0 0 calc(var(--base) * 1.5);
+  color: var(--theme-elevation-500);
+  font-size: 0.85rem;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--theme-elevation-900);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ecss-red);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--ecss-red);
+    outline-offset: 2px;
+  }
+}
+
+.hint {
+  margin: 0;
+  color: var(--theme-elevation-600);
+  font-size: 0.75rem;
+}
+
+.error {
+  margin: 0;
+  color: var(--theme-error-700);
+  font-size: 0.75rem;
+}

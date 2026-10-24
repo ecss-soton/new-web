@@ -16,7 +16,8 @@
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload generate:types",
     "generate:graphQLSchema": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload generate:graphQLSchema",
     "check-susu": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/checkCsvAccounts.ts",
-    "test:member-import": "ts-node src/payload/utilities/memberCsv.test.ts && ts-node src/payload/utilities/checkCsvAccounts.test.ts",
+    "test:member-import": "ts-node src/payload/utilities/memberCsv.test.ts && ts-node src/payload/utilities/checkCsvAccounts.test.ts && ts-node src/payload/utilities/susuMembers.test.ts",
+    "test:event-calendar": "ts-node src/utilities/richText.test.ts && ts-node src/utilities/eventCalendar.test.ts",
     "migrate:event-categories": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/migrateEventCategories.ts",
     "migrate:wordle-scores": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/migrateWordleScores.ts",
     "migrate:booking-indexes": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/migrateBookingIndexes.ts",
@@ -27,6 +28,7 @@
     "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^8.0.0",
     "@payloadcms/bundler-webpack": "^1.0.7",
     "@payloadcms/db-mongodb": "^1.7.5",

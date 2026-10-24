@@ -140,6 +140,7 @@ export const SeatPage: React.FC<{
         eventSlug={data.eventSlug || eventSlug}
         isMember={data.isMember}
         canEdit={data.isMember && (!data.locked || data.isAdmin)}
+        canManageAll={data.isOwner || data.isAdmin}
         locked={data.locked}
         canJoin={data.canJoin}
         onJoin={handleJoin}

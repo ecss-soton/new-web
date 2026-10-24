@@ -1,3 +1,5 @@
+import { getDayKey } from './daily'
+
 const TECH_WORDS = [
   'ABORT',
   'ADMIN',
@@ -165,8 +167,8 @@ const TECH_WORDS = [
 // deployment configuration is strictly required. Only ever read server-side.
 const getDailyWordSalt = (): string => process.env.WORDLE_SECRET || process.env.PAYLOAD_SECRET || ''
 
-export function getDailyWord(): string {
-  const input = `${new Date().toISOString().split('T')[0]}:${getDailyWordSalt()}`
+export function getDailyWord(now: Date = new Date()): string {
+  const input = `${getDayKey(now)}:${getDailyWordSalt()}`
   let hash = 5381
   for (let i = 0; i < input.length; i++) {
     hash = ((hash << 5) + hash + input.charCodeAt(i)) | 0
@@ -175,12 +177,7 @@ export function getDailyWord(): string {
 }
 
 export function getTodayDate(): string {
-  return new Date().toISOString().split('T')[0]
+  return getDayKey()
 }
 
-export function getPuzzleNumber(): number {
-  const epoch = new Date('2026-01-01')
-  const today = new Date()
-  const diff = Math.floor((today.getTime() - epoch.getTime()) / (1000 * 60 * 60 * 24))
-  return diff + 1
-}
+export { getPuzzleNumber } from './daily'

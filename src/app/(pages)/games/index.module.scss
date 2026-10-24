@@ -1,0 +1,30 @@
+@import '../../_css/common';
+
+.wrapper {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: calc(var(--base) * 1.5) 0 calc(var(--base) * 4);
+}
+
+.section {
+  margin-bottom: calc(var(--base) * 2.5);
+}
+
+.heading {
+  @extend %h3;
+  margin: 0 0 var(--base);
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: calc(var(--base) * 0.75);
+
+  @include small-break {
+    grid-template-columns: 1fr;
+  }
+}

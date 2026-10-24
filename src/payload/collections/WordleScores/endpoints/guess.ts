@@ -1,8 +1,8 @@
 import type { Payload } from 'payload'
 import type { PayloadHandler } from 'payload/config'
 
-import { getDailyWord, getTodayDate } from '../../../../app/(pages)/wordle/techWords'
-import VALID_WORDS from '../../../../app/(pages)/wordle/validWords.json'
+import VALID_WORDS from '../../../../utilities/games/validWords.json'
+import { getDailyWord, getTodayDate } from '../../../../utilities/games/wordleWords'
 
 const MAX_GUESSES = 6
 const WORD_LENGTH = 5

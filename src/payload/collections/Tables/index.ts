@@ -308,6 +308,7 @@ export const Tables: CollectionConfig = {
           members,
           yourTable: isMember,
           isMember,
+          isOwner: relationshipId(table.owner) === user.id,
           isAdmin: isAdmin(user),
           locked: Boolean(table.locked),
           full,

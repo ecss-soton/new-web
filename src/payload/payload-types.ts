@@ -14,6 +14,7 @@ export interface Config {
     newsletters: Newsletter;
     media: Media;
     'member-imports': MemberImport;
+    'susu-members': SusuMember;
     categories: Category;
     users: User;
     comments: Comment;
@@ -34,6 +35,8 @@ export interface Config {
     'ticket-holders': TicketHolder;
     'wordle-overrides': WordleOverride;
     'wordle-scores': WordleScore;
+    'game-scores': GameScore;
+    'game-prefs': GamePref;
     'city-challenge-locations': CityChallengeLocation;
     'city-challenge-teams': CityChallengeTeam;
     redirects: Redirect;
@@ -1278,6 +1281,24 @@ export interface MemberImport {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "susu-members".
+ */
+export interface SusuMember {
+  id: string;
+  susuId: string;
+  displayName?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+  normalizedName?: string | null;
+  nameEndpoint?: string | null;
+  active?: boolean | null;
+  lastImport?: (string | null) | MemberImport;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "comments".
  */
 export interface Comment {
@@ -1473,6 +1494,45 @@ export interface WordleScore {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "game-scores".
+ */
+export interface GameScore {
+  id: string;
+  entryKey: string;
+  game: string;
+  user: string | User;
+  displayName: string;
+  date: string;
+  solved: boolean;
+  completed: boolean;
+  score: number;
+  metrics?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "game-prefs".
+ */
+export interface GamePref {
+  id: string;
+  entryKey: string;
+  user: string | User;
+  game: string;
+  hidden: boolean;
   updatedAt: string;
   createdAt: string;
 }

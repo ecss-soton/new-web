@@ -1,2 +1,2 @@
 **/payload-types.ts
-src/app/(pages)/wordle/validWords.json
+src/utilities/games/validWords.json
