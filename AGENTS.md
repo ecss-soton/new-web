@@ -79,12 +79,14 @@ Do not hand-edit generated files when the generation commands are available. If 
 
 ### Membership imports (voting eligibility)
 
-- Collection: `member-imports` (`src/payload/collections/MemberImports/`). The `susu` role is what `votes` create-access checks, so this import is the voting-eligibility source of truth.
+- Collections: `member-imports` (`src/payload/collections/MemberImports/`) stores the uploaded CSV and its summary; `susu-members` (`src/payload/collections/SusuMembers.ts`) is the **durable membership index**. The `susu` role is what `votes` create-access checks, so this import is the voting-eligibility source of truth.
 - Uploads are admin-only CSVs. The collection intentionally has **no `mimeTypes` allow-list** (mobile browsers report `.csv` as `text/plain`/`application/octet-stream`); `validateCsvUpload.ts` enforces the `.csv` extension instead.
 - Parser: `src/payload/utilities/memberCsv.ts`. It is header-driven and supports both SUSU exports: one row per membership (`Status`, `Membership Type`) and the roll-up (`Membership Statuses`, `Membership Types`, `|`-separated lists). Emails are optional — the exports received have an empty `Email` column, so do not make it required.
-- Matching (`checkCsvAccounts.ts`): email/username first, then a **unique** normalized full-name match (with a first/last-token fallback for middle names). Ambiguous names (2+ accounts) and incomplete names (placeholder last names such as `.`/`-`) are skipped and listed in the import summary; never fall back to first-name-only matching.
-- Add-only: importing grants `susu` and never revokes it. Removing roles is a separate, destructive change.
-- Any membership row marked `active` counts; membership type and dates are not used.
+- An import upserts every parsed member into `susu-members` by `susuId` (SUSU User ID, with email/name fallbacks) and then matches existing accounts. Members absent from a newer export keep their previous record; role grants remain add-only.
+- First login (`checkSusuRoleAfterCreate`) and the admin "Re-apply memberships to all accounts" action (`POST /api/member-imports/reapply`) match against `susu-members`, **not** the uploaded file. Never re-introduce a dependency on `media/member-imports` for post-import logins: the file is ephemeral and per-instance.
+- Azure AD display names look like `Henry Foster (hwjf1g26)`. Strip the `(<username>)` suffix before name matching (`displayNameWithoutUsername` in `memberCsv.ts`, anchored on the user's `username`/email local part). Do not use a generic "strip all brackets" rule.
+- Matching (`checkCsvAccounts.ts`): email/username first, then a **unique** normalized full-name match (with a first/last-token fallback for middle names). Ambiguous names (2+ accounts) and incomplete names (placeholder last names such as `.`/`-`) are skipped and listed in the import summary; never fall back to first-name-only matching. For a known first-login user, any active member with that name is enough (the batch importer is the strict one).
+- Any membership row marked `active` counts; membership type and dates are not used. Inactive rows are stored in `susu-members` but never used for grants.
 - Tests: `npm run test:member-import` (Node's `node:test` via `ts-node`).
 
 ### Booking

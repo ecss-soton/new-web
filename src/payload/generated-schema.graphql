@@ -31,6 +31,10 @@ type Query {
   MemberImports(where: MemberImport_where, limit: Int, page: Int, sort: String): MemberImports
   countMemberImports(where: MemberImport_where): countMemberImports
   docAccessMemberImport(id: String!): member_importsDocAccess
+  SusuMember(id: String!): SusuMember
+  SusuMembers(where: SusuMember_where, limit: Int, page: Int, sort: String): SusuMembers
+  countSusuMembers(where: SusuMember_where): countSusuMembers
+  docAccessSusuMember(id: String!): susu_membersDocAccess
   Category(id: String!): Category
   Categories(where: Category_where, limit: Int, page: Int, sort: String): Categories
   countCategories(where: Category_where): countCategories
@@ -14881,6 +14885,509 @@ type MemberImportsUpdateDocAccess {
 }
 
 type MemberImportsDeleteDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SusuMember {
+  id: String
+  susuId: String!
+  displayName: String
+  firstName: String
+  lastName: String
+  email: String
+  normalizedName: String
+  nameEndpoint: String
+  active: Boolean
+  lastImport: MemberImport
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+type SusuMembers {
+  docs: [SusuMember]
+  hasNextPage: Boolean
+  hasPrevPage: Boolean
+  limit: Int
+  nextPage: Int
+  offset: Int
+  page: Int
+  pagingCounter: Int
+  prevPage: Int
+  totalDocs: Int
+  totalPages: Int
+}
+
+input SusuMember_where {
+  susuId: SusuMember_susuId_operator
+  displayName: SusuMember_displayName_operator
+  firstName: SusuMember_firstName_operator
+  lastName: SusuMember_lastName_operator
+  email: SusuMember_email_operator
+  normalizedName: SusuMember_normalizedName_operator
+  nameEndpoint: SusuMember_nameEndpoint_operator
+  active: SusuMember_active_operator
+  lastImport: SusuMember_lastImport_operator
+  updatedAt: SusuMember_updatedAt_operator
+  createdAt: SusuMember_createdAt_operator
+  id: SusuMember_id_operator
+  AND: [SusuMember_where_and]
+  OR: [SusuMember_where_or]
+}
+
+input SusuMember_susuId_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+}
+
+input SusuMember_displayName_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SusuMember_firstName_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SusuMember_lastName_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SusuMember_email_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SusuMember_normalizedName_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SusuMember_nameEndpoint_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SusuMember_active_operator {
+  equals: Boolean
+  not_equals: Boolean
+  exists: Boolean
+}
+
+input SusuMember_lastImport_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input SusuMember_updatedAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input SusuMember_createdAt_operator {
+  equals: DateTime
+  not_equals: DateTime
+  greater_than_equal: DateTime
+  greater_than: DateTime
+  less_than_equal: DateTime
+  less_than: DateTime
+  like: DateTime
+  exists: Boolean
+}
+
+input SusuMember_id_operator {
+  equals: String
+  not_equals: String
+  like: String
+  contains: String
+  in: [String]
+  not_in: [String]
+  all: [String]
+  exists: Boolean
+}
+
+input SusuMember_where_and {
+  susuId: SusuMember_susuId_operator
+  displayName: SusuMember_displayName_operator
+  firstName: SusuMember_firstName_operator
+  lastName: SusuMember_lastName_operator
+  email: SusuMember_email_operator
+  normalizedName: SusuMember_normalizedName_operator
+  nameEndpoint: SusuMember_nameEndpoint_operator
+  active: SusuMember_active_operator
+  lastImport: SusuMember_lastImport_operator
+  updatedAt: SusuMember_updatedAt_operator
+  createdAt: SusuMember_createdAt_operator
+  id: SusuMember_id_operator
+  AND: [SusuMember_where_and]
+  OR: [SusuMember_where_or]
+}
+
+input SusuMember_where_or {
+  susuId: SusuMember_susuId_operator
+  displayName: SusuMember_displayName_operator
+  firstName: SusuMember_firstName_operator
+  lastName: SusuMember_lastName_operator
+  email: SusuMember_email_operator
+  normalizedName: SusuMember_normalizedName_operator
+  nameEndpoint: SusuMember_nameEndpoint_operator
+  active: SusuMember_active_operator
+  lastImport: SusuMember_lastImport_operator
+  updatedAt: SusuMember_updatedAt_operator
+  createdAt: SusuMember_createdAt_operator
+  id: SusuMember_id_operator
+  AND: [SusuMember_where_and]
+  OR: [SusuMember_where_or]
+}
+
+type countSusuMembers {
+  totalDocs: Int
+}
+
+type susu_membersDocAccess {
+  fields: SusuMembersDocAccessFields
+  create: SusuMembersCreateDocAccess
+  read: SusuMembersReadDocAccess
+  update: SusuMembersUpdateDocAccess
+  delete: SusuMembersDeleteDocAccess
+}
+
+type SusuMembersDocAccessFields {
+  susuId: SusuMembersDocAccessFields_susuId
+  displayName: SusuMembersDocAccessFields_displayName
+  firstName: SusuMembersDocAccessFields_firstName
+  lastName: SusuMembersDocAccessFields_lastName
+  email: SusuMembersDocAccessFields_email
+  normalizedName: SusuMembersDocAccessFields_normalizedName
+  nameEndpoint: SusuMembersDocAccessFields_nameEndpoint
+  active: SusuMembersDocAccessFields_active
+  lastImport: SusuMembersDocAccessFields_lastImport
+  updatedAt: SusuMembersDocAccessFields_updatedAt
+  createdAt: SusuMembersDocAccessFields_createdAt
+}
+
+type SusuMembersDocAccessFields_susuId {
+  create: SusuMembersDocAccessFields_susuId_Create
+  read: SusuMembersDocAccessFields_susuId_Read
+  update: SusuMembersDocAccessFields_susuId_Update
+  delete: SusuMembersDocAccessFields_susuId_Delete
+}
+
+type SusuMembersDocAccessFields_susuId_Create {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_susuId_Read {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_susuId_Update {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_susuId_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_displayName {
+  create: SusuMembersDocAccessFields_displayName_Create
+  read: SusuMembersDocAccessFields_displayName_Read
+  update: SusuMembersDocAccessFields_displayName_Update
+  delete: SusuMembersDocAccessFields_displayName_Delete
+}
+
+type SusuMembersDocAccessFields_displayName_Create {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_displayName_Read {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_displayName_Update {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_displayName_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_firstName {
+  create: SusuMembersDocAccessFields_firstName_Create
+  read: SusuMembersDocAccessFields_firstName_Read
+  update: SusuMembersDocAccessFields_firstName_Update
+  delete: SusuMembersDocAccessFields_firstName_Delete
+}
+
+type SusuMembersDocAccessFields_firstName_Create {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_firstName_Read {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_firstName_Update {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_firstName_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_lastName {
+  create: SusuMembersDocAccessFields_lastName_Create
+  read: SusuMembersDocAccessFields_lastName_Read
+  update: SusuMembersDocAccessFields_lastName_Update
+  delete: SusuMembersDocAccessFields_lastName_Delete
+}
+
+type SusuMembersDocAccessFields_lastName_Create {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_lastName_Read {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_lastName_Update {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_lastName_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_email {
+  create: SusuMembersDocAccessFields_email_Create
+  read: SusuMembersDocAccessFields_email_Read
+  update: SusuMembersDocAccessFields_email_Update
+  delete: SusuMembersDocAccessFields_email_Delete
+}
+
+type SusuMembersDocAccessFields_email_Create {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_email_Read {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_email_Update {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_email_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_normalizedName {
+  create: SusuMembersDocAccessFields_normalizedName_Create
+  read: SusuMembersDocAccessFields_normalizedName_Read
+  update: SusuMembersDocAccessFields_normalizedName_Update
+  delete: SusuMembersDocAccessFields_normalizedName_Delete
+}
+
+type SusuMembersDocAccessFields_normalizedName_Create {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_normalizedName_Read {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_normalizedName_Update {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_normalizedName_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_nameEndpoint {
+  create: SusuMembersDocAccessFields_nameEndpoint_Create
+  read: SusuMembersDocAccessFields_nameEndpoint_Read
+  update: SusuMembersDocAccessFields_nameEndpoint_Update
+  delete: SusuMembersDocAccessFields_nameEndpoint_Delete
+}
+
+type SusuMembersDocAccessFields_nameEndpoint_Create {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_nameEndpoint_Read {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_nameEndpoint_Update {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_nameEndpoint_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_active {
+  create: SusuMembersDocAccessFields_active_Create
+  read: SusuMembersDocAccessFields_active_Read
+  update: SusuMembersDocAccessFields_active_Update
+  delete: SusuMembersDocAccessFields_active_Delete
+}
+
+type SusuMembersDocAccessFields_active_Create {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_active_Read {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_active_Update {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_active_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_lastImport {
+  create: SusuMembersDocAccessFields_lastImport_Create
+  read: SusuMembersDocAccessFields_lastImport_Read
+  update: SusuMembersDocAccessFields_lastImport_Update
+  delete: SusuMembersDocAccessFields_lastImport_Delete
+}
+
+type SusuMembersDocAccessFields_lastImport_Create {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_lastImport_Read {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_lastImport_Update {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_lastImport_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_updatedAt {
+  create: SusuMembersDocAccessFields_updatedAt_Create
+  read: SusuMembersDocAccessFields_updatedAt_Read
+  update: SusuMembersDocAccessFields_updatedAt_Update
+  delete: SusuMembersDocAccessFields_updatedAt_Delete
+}
+
+type SusuMembersDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_createdAt {
+  create: SusuMembersDocAccessFields_createdAt_Create
+  read: SusuMembersDocAccessFields_createdAt_Read
+  update: SusuMembersDocAccessFields_createdAt_Update
+  delete: SusuMembersDocAccessFields_createdAt_Delete
+}
+
+type SusuMembersDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type SusuMembersDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersCreateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SusuMembersReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SusuMembersUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SusuMembersDeleteDocAccess {
   permission: Boolean!
   where: JSONObject
 }
@@ -32598,6 +33105,7 @@ type Access {
   newsletters: newslettersAccess
   media: mediaAccess
   member_imports: member_importsAccess
+  susu_members: susu_membersAccess
   categories: categoriesAccess
   users: usersAccess
   comments: commentsAccess
@@ -35891,6 +36399,301 @@ type MemberImportsUpdateAccess {
 }
 
 type MemberImportsDeleteAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type susu_membersAccess {
+  fields: SusuMembersFields
+  create: SusuMembersCreateAccess
+  read: SusuMembersReadAccess
+  update: SusuMembersUpdateAccess
+  delete: SusuMembersDeleteAccess
+}
+
+type SusuMembersFields {
+  susuId: SusuMembersFields_susuId
+  displayName: SusuMembersFields_displayName
+  firstName: SusuMembersFields_firstName
+  lastName: SusuMembersFields_lastName
+  email: SusuMembersFields_email
+  normalizedName: SusuMembersFields_normalizedName
+  nameEndpoint: SusuMembersFields_nameEndpoint
+  active: SusuMembersFields_active
+  lastImport: SusuMembersFields_lastImport
+  updatedAt: SusuMembersFields_updatedAt
+  createdAt: SusuMembersFields_createdAt
+}
+
+type SusuMembersFields_susuId {
+  create: SusuMembersFields_susuId_Create
+  read: SusuMembersFields_susuId_Read
+  update: SusuMembersFields_susuId_Update
+  delete: SusuMembersFields_susuId_Delete
+}
+
+type SusuMembersFields_susuId_Create {
+  permission: Boolean!
+}
+
+type SusuMembersFields_susuId_Read {
+  permission: Boolean!
+}
+
+type SusuMembersFields_susuId_Update {
+  permission: Boolean!
+}
+
+type SusuMembersFields_susuId_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersFields_displayName {
+  create: SusuMembersFields_displayName_Create
+  read: SusuMembersFields_displayName_Read
+  update: SusuMembersFields_displayName_Update
+  delete: SusuMembersFields_displayName_Delete
+}
+
+type SusuMembersFields_displayName_Create {
+  permission: Boolean!
+}
+
+type SusuMembersFields_displayName_Read {
+  permission: Boolean!
+}
+
+type SusuMembersFields_displayName_Update {
+  permission: Boolean!
+}
+
+type SusuMembersFields_displayName_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersFields_firstName {
+  create: SusuMembersFields_firstName_Create
+  read: SusuMembersFields_firstName_Read
+  update: SusuMembersFields_firstName_Update
+  delete: SusuMembersFields_firstName_Delete
+}
+
+type SusuMembersFields_firstName_Create {
+  permission: Boolean!
+}
+
+type SusuMembersFields_firstName_Read {
+  permission: Boolean!
+}
+
+type SusuMembersFields_firstName_Update {
+  permission: Boolean!
+}
+
+type SusuMembersFields_firstName_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersFields_lastName {
+  create: SusuMembersFields_lastName_Create
+  read: SusuMembersFields_lastName_Read
+  update: SusuMembersFields_lastName_Update
+  delete: SusuMembersFields_lastName_Delete
+}
+
+type SusuMembersFields_lastName_Create {
+  permission: Boolean!
+}
+
+type SusuMembersFields_lastName_Read {
+  permission: Boolean!
+}
+
+type SusuMembersFields_lastName_Update {
+  permission: Boolean!
+}
+
+type SusuMembersFields_lastName_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersFields_email {
+  create: SusuMembersFields_email_Create
+  read: SusuMembersFields_email_Read
+  update: SusuMembersFields_email_Update
+  delete: SusuMembersFields_email_Delete
+}
+
+type SusuMembersFields_email_Create {
+  permission: Boolean!
+}
+
+type SusuMembersFields_email_Read {
+  permission: Boolean!
+}
+
+type SusuMembersFields_email_Update {
+  permission: Boolean!
+}
+
+type SusuMembersFields_email_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersFields_normalizedName {
+  create: SusuMembersFields_normalizedName_Create
+  read: SusuMembersFields_normalizedName_Read
+  update: SusuMembersFields_normalizedName_Update
+  delete: SusuMembersFields_normalizedName_Delete
+}
+
+type SusuMembersFields_normalizedName_Create {
+  permission: Boolean!
+}
+
+type SusuMembersFields_normalizedName_Read {
+  permission: Boolean!
+}
+
+type SusuMembersFields_normalizedName_Update {
+  permission: Boolean!
+}
+
+type SusuMembersFields_normalizedName_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersFields_nameEndpoint {
+  create: SusuMembersFields_nameEndpoint_Create
+  read: SusuMembersFields_nameEndpoint_Read
+  update: SusuMembersFields_nameEndpoint_Update
+  delete: SusuMembersFields_nameEndpoint_Delete
+}
+
+type SusuMembersFields_nameEndpoint_Create {
+  permission: Boolean!
+}
+
+type SusuMembersFields_nameEndpoint_Read {
+  permission: Boolean!
+}
+
+type SusuMembersFields_nameEndpoint_Update {
+  permission: Boolean!
+}
+
+type SusuMembersFields_nameEndpoint_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersFields_active {
+  create: SusuMembersFields_active_Create
+  read: SusuMembersFields_active_Read
+  update: SusuMembersFields_active_Update
+  delete: SusuMembersFields_active_Delete
+}
+
+type SusuMembersFields_active_Create {
+  permission: Boolean!
+}
+
+type SusuMembersFields_active_Read {
+  permission: Boolean!
+}
+
+type SusuMembersFields_active_Update {
+  permission: Boolean!
+}
+
+type SusuMembersFields_active_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersFields_lastImport {
+  create: SusuMembersFields_lastImport_Create
+  read: SusuMembersFields_lastImport_Read
+  update: SusuMembersFields_lastImport_Update
+  delete: SusuMembersFields_lastImport_Delete
+}
+
+type SusuMembersFields_lastImport_Create {
+  permission: Boolean!
+}
+
+type SusuMembersFields_lastImport_Read {
+  permission: Boolean!
+}
+
+type SusuMembersFields_lastImport_Update {
+  permission: Boolean!
+}
+
+type SusuMembersFields_lastImport_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersFields_updatedAt {
+  create: SusuMembersFields_updatedAt_Create
+  read: SusuMembersFields_updatedAt_Read
+  update: SusuMembersFields_updatedAt_Update
+  delete: SusuMembersFields_updatedAt_Delete
+}
+
+type SusuMembersFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type SusuMembersFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type SusuMembersFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type SusuMembersFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersFields_createdAt {
+  create: SusuMembersFields_createdAt_Create
+  read: SusuMembersFields_createdAt_Read
+  update: SusuMembersFields_createdAt_Update
+  delete: SusuMembersFields_createdAt_Delete
+}
+
+type SusuMembersFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type SusuMembersFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type SusuMembersFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type SusuMembersFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type SusuMembersCreateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SusuMembersReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SusuMembersUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type SusuMembersDeleteAccess {
   permission: Boolean!
   where: JSONObject
 }
@@ -45085,6 +45888,9 @@ type Mutation {
   createMemberImport(data: mutationMemberImportInput!): MemberImport
   updateMemberImport(id: String!, autosave: Boolean, data: mutationMemberImportUpdateInput!): MemberImport
   deleteMemberImport(id: String!): MemberImport
+  createSusuMember(data: mutationSusuMemberInput!): SusuMember
+  updateSusuMember(id: String!, autosave: Boolean, data: mutationSusuMemberUpdateInput!): SusuMember
+  deleteSusuMember(id: String!): SusuMember
   createCategory(data: mutationCategoryInput!): Category
   updateCategory(id: String!, autosave: Boolean, data: mutationCategoryUpdateInput!): Category
   deleteCategory(id: String!): Category
@@ -45729,6 +46535,34 @@ enum MemberImportUpdate_runStatus_MutationInput {
   running
   completed
   failed
+}
+
+input mutationSusuMemberInput {
+  susuId: String!
+  displayName: String
+  firstName: String
+  lastName: String
+  email: String
+  normalizedName: String
+  nameEndpoint: String
+  active: Boolean
+  lastImport: String
+  updatedAt: String
+  createdAt: String
+}
+
+input mutationSusuMemberUpdateInput {
+  susuId: String
+  displayName: String
+  firstName: String
+  lastName: String
+  email: String
+  normalizedName: String
+  nameEndpoint: String
+  active: Boolean
+  lastImport: String
+  updatedAt: String
+  createdAt: String
 }
 
 input mutationCategoryInput {

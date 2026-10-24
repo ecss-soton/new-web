@@ -2,11 +2,16 @@ import path from 'path'
 import type { AfterChangeHook } from 'payload/dist/collections/config/types'
 
 import {
+  buildCsvAccountCheckResult,
   logCsvAccountCheckResult,
-  runCheckCsvAccountsFromFile,
+  parseCsvFile,
 } from '../../../utilities/checkCsvAccounts'
+import { withKeyedLock } from '../../../utilities/keyedMutex'
+import { syncSusuMembers } from '../../../utilities/susuMembers'
 
 const memberImportUploadDir = path.resolve(__dirname, '../../../../../media/member-imports')
+
+const SUSU_MEMBER_LOCK = 'susu-members'
 
 export const processCsvImport: AfterChangeHook = async ({ doc, req, operation }) => {
   if (operation !== 'create') {
@@ -31,13 +36,32 @@ export const processCsvImport: AfterChangeHook = async ({ doc, req, operation })
   })
 
   try {
-    const result = await runCheckCsvAccountsFromFile({
-      payload: req.payload,
-      csvFilePath,
-      role: 'susu',
+    const processed = await withKeyedLock(SUSU_MEMBER_LOCK, async () => {
+      const parsed = parseCsvFile(csvFilePath)
+
+      // Persist first: later logins match against `susu-members`, not this file.
+      const synced = await syncSusuMembers({
+        payload: req.payload,
+        members: parsed.members,
+        importId: String(doc.id),
+      })
+
+      const matchResult = await buildCsvAccountCheckResult({
+        payload: req.payload,
+        parsed,
+        role: 'susu',
+      })
+
+      return { result: matchResult, memberSync: synced }
     })
 
-    logCsvAccountCheckResult(req.payload, result)
+    const summary = [
+      processed.result.summary,
+      '',
+      `SUSU member records: ${processed.memberSync.total} (${processed.memberSync.created} created, ${processed.memberSync.updated} updated, ${processed.memberSync.unchanged} unchanged)`,
+    ].join('\n')
+
+    logCsvAccountCheckResult(req.payload, { ...processed.result, summary })
 
     // Returning the updated document lets the admin create response show the
     // finished status and summary without a manual refresh.
@@ -47,7 +71,7 @@ export const processCsvImport: AfterChangeHook = async ({ doc, req, operation })
       data: {
         runStatus: 'completed',
         processedAt: new Date().toISOString(),
-        summary: result.summary,
+        summary,
       },
       overrideAccess: true,
     })

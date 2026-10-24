@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
 import {
+  displayNameWithoutUsername,
   fullNameEndpointKey,
   fullNameKey,
   isPlaceholderNamePart,
@@ -143,4 +144,19 @@ test('recognises placeholder name parts', () => {
   assert.equal(isPlaceholderNamePart('-'), true)
   assert.equal(isPlaceholderNamePart('   '), true)
   assert.equal(isPlaceholderNamePart('Abu Reish'), false)
+})
+
+test('strips the Azure AD username suffix from display names', () => {
+  assert.equal(displayNameWithoutUsername('Henry Foster (hwjf1g26)', 'hwjf1g26'), 'Henry Foster')
+  assert.equal(displayNameWithoutUsername('Henry Foster (HWJF1G26)', 'hwjf1g26'), 'Henry Foster')
+  assert.equal(
+    displayNameWithoutUsername('Henry Foster (hwjf1g26)', null, 'hwjf1g26@soton.ac.uk'),
+    'Henry Foster',
+  )
+  // The fallback covers older records with no username stored.
+  assert.equal(displayNameWithoutUsername('Henry Foster (hwjf1g26)'), 'Henry Foster')
+  // Brackets elsewhere in the name are left alone.
+  assert.equal(displayNameWithoutUsername('John (Jack) Smith', 'js1a23'), 'John (Jack) Smith')
+  assert.equal(displayNameWithoutUsername('Henry Foster', 'hwjf1g26'), 'Henry Foster')
+  assert.equal(displayNameWithoutUsername(null, 'hwjf1g26'), '')
 })

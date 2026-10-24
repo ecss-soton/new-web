@@ -39,6 +39,7 @@ import {
 } from './collections/Redirects/hooks/invalidateRedirects'
 import Societies from './collections/Societies'
 import Sponsors from './collections/Sponsors'
+import { SusuMembers } from './collections/SusuMembers'
 import { Tables } from './collections/Tables'
 import { TicketHolders } from './collections/TicketHolders'
 import Users from './collections/Users'
@@ -134,6 +135,7 @@ export default buildConfig({
     Newsletters,
     Media,
     MemberImports,
+    SusuMembers,
     Categories,
     Users,
     Comments,

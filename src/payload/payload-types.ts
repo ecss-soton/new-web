@@ -14,6 +14,7 @@ export interface Config {
     newsletters: Newsletter;
     media: Media;
     'member-imports': MemberImport;
+    'susu-members': SusuMember;
     categories: Category;
     users: User;
     comments: Comment;
@@ -1275,6 +1276,24 @@ export interface MemberImport {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "susu-members".
+ */
+export interface SusuMember {
+  id: string;
+  susuId: string;
+  displayName?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+  normalizedName?: string | null;
+  nameEndpoint?: string | null;
+  active?: boolean | null;
+  lastImport?: (string | null) | MemberImport;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

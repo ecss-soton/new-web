@@ -19,6 +19,8 @@
  * Payload admin config bundle.
  */
 
+import { normalizeSotonId } from './sotonId'
+
 export type MemberCsvFormat = 'members' | 'memberships'
 
 export interface MemberCsvMember {
@@ -98,6 +100,40 @@ export const normalizePersonName = (value?: string | null): string => {
 /** `Tharun .` and `Joseph -` show up in the exports; those last names are unusable. */
 export const isPlaceholderNamePart = (value?: string | null): boolean =>
   normalizePersonName(value) === ''
+
+/**
+ * Azure AD display names are `First Last (soton-username)`, e.g.
+ * `Henry Foster (hwjf1g26)`. The parenthetical is the account username, not part
+ * of the name, so it has to be removed before comparing with a SUSU export.
+ *
+ * The username/email local part is used as the anchor rather than a generic
+ * "strip any brackets" rule, so a name that legitimately contains brackets is
+ * left alone. The trailing-token fallback only exists for older accounts whose
+ * username is missing from the record.
+ */
+export const displayNameWithoutUsername = (
+  name?: string | null,
+  username?: string | null,
+  email?: string | null,
+): string => {
+  const trimmed = typeof name === 'string' ? name.trim() : ''
+  if (!trimmed) return ''
+
+  const candidates = [normalizeSotonId(username), normalizeSotonId(email)].filter(Boolean)
+  const lower = trimmed.toLowerCase()
+
+  for (const candidate of candidates) {
+    const suffix = `(${candidate})`
+    if (lower.endsWith(suffix)) {
+      return trimmed.slice(0, trimmed.length - suffix.length).trim()
+    }
+  }
+
+  const fallback = /\(\s*([^()\s]+)\s*\)\s*$/.exec(trimmed)
+  if (fallback) return trimmed.slice(0, fallback.index).trim()
+
+  return trimmed
+}
 
 /** `Grace Brewster Hopper` + `Hopper` -> `grace hopper` when used with first/last names. */
 export const fullNameKey = (firstName?: string | null, lastName?: string | null): string =>
