@@ -13,7 +13,6 @@ import {
 } from '@dnd-kit/core'
 import Link from 'next/link'
 
-import { bungee } from '../../../_utilities/font'
 import {
   countGates,
   type DailyPuzzle,
@@ -29,6 +28,7 @@ import {
   truthTable,
   valuesForRow,
 } from '../../../../utilities/games/logicGate/logic'
+import { bungee } from '../../../_utilities/font'
 import { readStoredExpression, writeStoredExpression } from './storage'
 
 import classes from './index.module.scss'
