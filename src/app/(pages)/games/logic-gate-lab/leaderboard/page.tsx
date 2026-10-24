@@ -13,6 +13,7 @@ import { LeaderboardVisibilityToggle } from '../../_components/LeaderboardVisibi
 import classes from './index.module.scss'
 
 export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
 
 const config = GAME_LEADERBOARD_CONFIGS['logic-gate-lab']
 
@@ -30,6 +31,8 @@ export default async function LogicGateLabLeaderboardPage() {
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/game-scores/leaderboard?game=logic-gate-lab`,
       {
         headers: { Authorization: `JWT ${token}` },
+        // Leaderboards must never be served from Next's data cache.
+        cache: 'no-store',
       },
     )
     const json = await req.json()

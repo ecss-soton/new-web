@@ -15,6 +15,7 @@ import classes from './index.module.scss'
 // The puzzle is seeded from today's date, so it must be generated per request
 // rather than baked into a static build.
 export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
 
 export default async function LogicGateLabPage() {
   const { user, token } = await getMeUser({
@@ -32,6 +33,8 @@ export default async function LogicGateLabPage() {
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/game-scores?where[game][equals]=logic-gate-lab&where[user][equals]=${user.id}&where[date][equals]=${puzzle.date}&limit=1&depth=0`,
       {
         headers: { Authorization: `JWT ${token}` },
+        // Always reflect the latest recorded score, not a cached page fetch.
+        cache: 'no-store',
       },
     )
     const { docs } = await todayReq.json()

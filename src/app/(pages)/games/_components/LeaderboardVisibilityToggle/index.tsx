@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 import { inter } from '../../../../_utilities/font'
 
@@ -12,6 +13,7 @@ interface PreferenceResponse {
 }
 
 export const LeaderboardVisibilityToggle: React.FC<{ game: string }> = ({ game }) => {
+  const router = useRouter()
   const [hidden, setHidden] = useState<boolean | null>(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -73,6 +75,9 @@ export const LeaderboardVisibilityToggle: React.FC<{ game: string }> = ({ game }
       }
 
       setHidden(Boolean(payload?.hidden))
+      // The table is rendered on the server, so re-fetch it now that this player
+      // is shown/hidden.
+      router.refresh()
     } catch (saveError) {
       setError(
         saveError instanceof Error
