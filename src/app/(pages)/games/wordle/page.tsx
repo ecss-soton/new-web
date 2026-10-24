@@ -1,6 +1,8 @@
 import React from 'react'
 import { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
+import { isGameDisabled } from '../../../../utilities/games/availability'
 import { getPuzzleNumber, getTodayDate } from '../../../../utilities/games/wordleWords'
 import { Gutter } from '../../../_components/Gutter'
 import { LowImpactHero } from '../../../_heros/LowImpact'
@@ -12,6 +14,8 @@ import { WordleGame } from './WordleGame'
 export const dynamic = 'force-dynamic'
 
 export default async function WordlePage() {
+  if (await isGameDisabled('wordle')) redirect('/games')
+
   const { user, token } = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to play ECSSle.',

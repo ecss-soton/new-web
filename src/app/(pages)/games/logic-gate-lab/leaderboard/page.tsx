@@ -1,7 +1,9 @@
 import React from 'react'
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
+import { isGameDisabled } from '../../../../../utilities/games/availability'
 import type { LeaderboardRow } from '../../../../../utilities/games/leaderboard'
 import { GAME_LEADERBOARD_CONFIGS } from '../../../../../utilities/games/leaderboard'
 import { Gutter } from '../../../../_components/Gutter'
@@ -18,6 +20,8 @@ export const fetchCache = 'force-no-store'
 const config = GAME_LEADERBOARD_CONFIGS['logic-gate-lab']
 
 export default async function LogicGateLabLeaderboardPage() {
+  if (await isGameDisabled('logic-gate-lab')) redirect('/games')
+
   const { user, token } = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to view the leaderboard.',

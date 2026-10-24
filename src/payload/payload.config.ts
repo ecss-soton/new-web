@@ -50,6 +50,7 @@ import WordleOverrides from './collections/WordleOverrides'
 import WordleScores from './collections/WordleScores'
 import { cityChallengeProgress } from './endpoints/cityChallengeProgress'
 import { Footer } from './globals/Footer'
+import { Games } from './globals/Games'
 import { Header } from './globals/Header'
 import { Settings } from './globals/Settings'
 
@@ -163,7 +164,7 @@ export default buildConfig({
     CityChallengeLocations,
     CityChallengeTeams,
   ],
-  globals: [Settings, Header, Footer],
+  globals: [Settings, Header, Footer, Games],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },

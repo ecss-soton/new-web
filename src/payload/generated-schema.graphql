@@ -165,6 +165,8 @@ type Query {
   docAccessHeader: headerDocAccess
   Footer(draft: Boolean): Footer
   docAccessFooter: footerDocAccess
+  Game(draft: Boolean): Game
+  docAccessGame: gamesDocAccess
   Access: Access
 }
 
@@ -33899,6 +33901,109 @@ type FooterUpdateDocAccess {
   where: JSONObject
 }
 
+type Game {
+  disabledGames: [Game_disabledGames!]
+  updatedAt: DateTime
+  createdAt: DateTime
+}
+
+enum Game_disabledGames {
+  wordle
+  logic_gate_lab
+  base_blitz
+}
+
+type gamesDocAccess {
+  fields: GamesDocAccessFields
+  read: GamesReadDocAccess
+  update: GamesUpdateDocAccess
+}
+
+type GamesDocAccessFields {
+  disabledGames: GamesDocAccessFields_disabledGames
+  updatedAt: GamesDocAccessFields_updatedAt
+  createdAt: GamesDocAccessFields_createdAt
+}
+
+type GamesDocAccessFields_disabledGames {
+  create: GamesDocAccessFields_disabledGames_Create
+  read: GamesDocAccessFields_disabledGames_Read
+  update: GamesDocAccessFields_disabledGames_Update
+  delete: GamesDocAccessFields_disabledGames_Delete
+}
+
+type GamesDocAccessFields_disabledGames_Create {
+  permission: Boolean!
+}
+
+type GamesDocAccessFields_disabledGames_Read {
+  permission: Boolean!
+}
+
+type GamesDocAccessFields_disabledGames_Update {
+  permission: Boolean!
+}
+
+type GamesDocAccessFields_disabledGames_Delete {
+  permission: Boolean!
+}
+
+type GamesDocAccessFields_updatedAt {
+  create: GamesDocAccessFields_updatedAt_Create
+  read: GamesDocAccessFields_updatedAt_Read
+  update: GamesDocAccessFields_updatedAt_Update
+  delete: GamesDocAccessFields_updatedAt_Delete
+}
+
+type GamesDocAccessFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type GamesDocAccessFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type GamesDocAccessFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type GamesDocAccessFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type GamesDocAccessFields_createdAt {
+  create: GamesDocAccessFields_createdAt_Create
+  read: GamesDocAccessFields_createdAt_Read
+  update: GamesDocAccessFields_createdAt_Update
+  delete: GamesDocAccessFields_createdAt_Delete
+}
+
+type GamesDocAccessFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type GamesDocAccessFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type GamesDocAccessFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type GamesDocAccessFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type GamesReadDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type GamesUpdateDocAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type Access {
   canAccessAdmin: Boolean!
   pages: pagesAccess
@@ -33939,6 +34044,7 @@ type Access {
   settings: settingsAccess
   header: headerAccess
   footer: footerAccess
+  games: gamesAccess
 }
 
 type pagesAccess {
@@ -47139,6 +47245,97 @@ type FooterUpdateAccess {
   where: JSONObject
 }
 
+type gamesAccess {
+  fields: GamesFields
+  read: GamesReadAccess
+  update: GamesUpdateAccess
+}
+
+type GamesFields {
+  disabledGames: GamesFields_disabledGames
+  updatedAt: GamesFields_updatedAt
+  createdAt: GamesFields_createdAt
+}
+
+type GamesFields_disabledGames {
+  create: GamesFields_disabledGames_Create
+  read: GamesFields_disabledGames_Read
+  update: GamesFields_disabledGames_Update
+  delete: GamesFields_disabledGames_Delete
+}
+
+type GamesFields_disabledGames_Create {
+  permission: Boolean!
+}
+
+type GamesFields_disabledGames_Read {
+  permission: Boolean!
+}
+
+type GamesFields_disabledGames_Update {
+  permission: Boolean!
+}
+
+type GamesFields_disabledGames_Delete {
+  permission: Boolean!
+}
+
+type GamesFields_updatedAt {
+  create: GamesFields_updatedAt_Create
+  read: GamesFields_updatedAt_Read
+  update: GamesFields_updatedAt_Update
+  delete: GamesFields_updatedAt_Delete
+}
+
+type GamesFields_updatedAt_Create {
+  permission: Boolean!
+}
+
+type GamesFields_updatedAt_Read {
+  permission: Boolean!
+}
+
+type GamesFields_updatedAt_Update {
+  permission: Boolean!
+}
+
+type GamesFields_updatedAt_Delete {
+  permission: Boolean!
+}
+
+type GamesFields_createdAt {
+  create: GamesFields_createdAt_Create
+  read: GamesFields_createdAt_Read
+  update: GamesFields_createdAt_Update
+  delete: GamesFields_createdAt_Delete
+}
+
+type GamesFields_createdAt_Create {
+  permission: Boolean!
+}
+
+type GamesFields_createdAt_Read {
+  permission: Boolean!
+}
+
+type GamesFields_createdAt_Update {
+  permission: Boolean!
+}
+
+type GamesFields_createdAt_Delete {
+  permission: Boolean!
+}
+
+type GamesReadAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
+type GamesUpdateAccess {
+  permission: Boolean!
+  where: JSONObject
+}
+
 type Mutation {
   createPage(data: mutationPageInput!, draft: Boolean): Page
   updatePage(id: String!, autosave: Boolean, data: mutationPageUpdateInput!, draft: Boolean): Page
@@ -47259,6 +47456,7 @@ type Mutation {
   updateSettings(data: mutationSettingsInput!, draft: Boolean): Settings
   updateHeader(data: mutationHeaderInput!, draft: Boolean): Header
   updateFooter(data: mutationFooterInput!, draft: Boolean): Footer
+  updateGame(data: mutationGameInput!, draft: Boolean): Game
 }
 
 input mutationPageInput {
@@ -49116,4 +49314,16 @@ input Footer_NavItems_Link_ReferenceRelationshipInput {
 
 enum Footer_NavItems_Link_ReferenceRelationshipInputRelationTo {
   pages
+}
+
+input mutationGameInput {
+  disabledGames: [Game_disabledGames_MutationInput]
+  updatedAt: String
+  createdAt: String
+}
+
+enum Game_disabledGames_MutationInput {
+  wordle
+  logic_gate_lab
+  base_blitz
 }

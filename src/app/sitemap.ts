@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 
 import type { Newsletter, Page, Post, Project, Society, Sponsor } from '../payload/payload-types'
+import { getDisabledGames } from '../utilities/games/availability'
 import { fetchDocs } from './_api/fetchDoc'
 
 const BASE_URL = (process.env.NEXT_PUBLIC_SERVER_URL || 'https://society.ecs.soton.ac.uk').replace(
@@ -32,12 +33,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entries.push({ url, priority, changeFrequency })
   }
 
+  const disabledGames = await getDisabledGames()
+
   add('/', 1, 'weekly')
   add('/news', 0.8, 'monthly')
   add('/jumpstart', 0.7, 'weekly')
   add('/games', 0.7, 'weekly')
-  add('/games/base-blitz', 0.5, 'monthly')
-  add('/games/logic-gate-lab', 0.5, 'daily')
+  if (!disabledGames.has('base-blitz')) add('/games/base-blitz', 0.5, 'monthly')
+  if (!disabledGames.has('logic-gate-lab')) add('/games/logic-gate-lab', 0.5, 'daily')
 
   pages.forEach(page => {
     if (page.slug && page.slug !== 'home') add(`/${page.slug}`, 0.7, 'monthly')

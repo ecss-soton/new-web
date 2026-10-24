@@ -342,6 +342,20 @@
   letter-spacing: 0.06em;
 }
 
+.startLocation {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
 .startTime {
   color: white;
   font-size: 16px;

@@ -49,6 +49,7 @@ export interface Config {
     settings: Settings;
     header: Header;
     footer: Footer;
+    games: Game;
   };
 }
 /**
@@ -1877,6 +1878,16 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "games".
+ */
+export interface Game {
+  id: string;
+  disabledGames?: ('wordle' | 'logic-gate-lab' | 'base-blitz')[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
