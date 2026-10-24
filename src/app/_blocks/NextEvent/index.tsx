@@ -228,7 +228,13 @@ export const NextEventBlock: React.FC<
               <div className={classes.time}>
                 <div className={classes.start}>
                   {isNow ? (
-                    <span className={classes.startNow}>Happening now</span>
+                    result.location ? (
+                      <span className={classes.startLocation} title={result.location}>
+                        {result.location}
+                      </span>
+                    ) : (
+                      <span className={classes.startNow}>Happening now</span>
+                    )
                   ) : (
                     <>
                       <span className={classes.startText}>starts</span>

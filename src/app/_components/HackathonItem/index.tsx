@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import moment from 'moment-timezone'
 import Image from 'next/image'
 
@@ -12,24 +12,32 @@ import classes from './index.module.scss'
 const formatDate = (value?: string | null) =>
   value ? moment.utc(value).tz('Europe/London').format('D MMM YYYY, HH:mm') : null
 
-const getDescriptionLength = (desc: Hackathon['description']): number => {
-  if (!desc) return 0
-  const walk = (nodes: unknown[]): number =>
-    nodes.reduce<number>((total, node) => {
-      if (node && typeof node === 'object') {
-        const { text, children } = node as { text?: unknown; children?: unknown }
-        if (typeof text === 'string') total += text.length
-        if (Array.isArray(children)) total += walk(children)
-      }
-      return total
-    }, 0)
-  return walk(desc as unknown[])
-}
-
 export const HackathonItem: React.FC<{ hackathon: Hackathon }> = ({ hackathon }) => {
   const { name, startDate, endDate, location, mapsUrl, description, image, organiser, prize } =
     hackathon
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isTruncated, setIsTruncated] = useState(false)
+  const descriptionRef = useRef<HTMLDivElement>(null)
+
+  // Show Read More whenever the clamped description actually overflows, rather
+  // than relying on a character count (line length depends on the card width).
+  useEffect(() => {
+    const element = descriptionRef.current
+    if (!element || isExpanded) return
+
+    const measure = () => {
+      setIsTruncated(element.scrollHeight > element.clientHeight + 1)
+    }
+
+    measure()
+
+    if (typeof ResizeObserver === 'undefined') return
+
+    const observer = new ResizeObserver(measure)
+    observer.observe(element)
+
+    return () => observer.disconnect()
+  }, [description, isExpanded])
 
   let imageUrl: string | null = null
   let imageAlt = name
@@ -90,11 +98,16 @@ export const HackathonItem: React.FC<{ hackathon: Hackathon }> = ({ hackathon })
 
         {description && (
           <div className={classes.description}>
-            <div className={!isExpanded ? classes.truncated : ''}>
+            <div ref={descriptionRef} className={!isExpanded ? classes.truncated : ''}>
               <RichText content={description} />
             </div>
-            {getDescriptionLength(description) > 150 && (
-              <button className={classes.expandButton} onClick={() => setIsExpanded(!isExpanded)}>
+            {isTruncated && (
+              <button
+                type="button"
+                className={classes.expandButton}
+                onClick={() => setIsExpanded(current => !current)}
+                aria-expanded={isExpanded}
+              >
                 {isExpanded ? 'Show Less' : 'Read More'}
               </button>
             )}
