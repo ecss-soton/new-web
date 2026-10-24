@@ -62,6 +62,31 @@ const start = async (): Promise<void> => {
 
   const nextHandler = nextApp.getRequestHandler()
 
+  // Disabled games are blocked here so direct links get a real 302 instead of a
+  // streamed page. Cached briefly to avoid a database read per request.
+  let disabledGamesCache: { expiresAt: number; slugs: Set<string> } | null = null
+
+  const getDisabledGameSlugs = async (): Promise<Set<string>> => {
+    if (disabledGamesCache && disabledGamesCache.expiresAt > Date.now()) {
+      return disabledGamesCache.slugs
+    }
+
+    const games = (await payload.findGlobal({
+      slug: 'games',
+      depth: 0,
+      overrideAccess: true,
+    })) as { disabledGames?: unknown }
+
+    const slugs = new Set(
+      Array.isArray(games?.disabledGames)
+        ? games.disabledGames.filter((value): value is string => typeof value === 'string')
+        : [],
+    )
+
+    disabledGamesCache = { expiresAt: Date.now() + 10_000, slugs }
+    return slugs
+  }
+
   app.use(async (req, res, nextMiddleware) => {
     if (req.method !== 'GET' && req.method !== 'HEAD') {
       return nextMiddleware()
@@ -93,6 +118,29 @@ const start = async (): Promise<void> => {
       payload.logger.error(`Error resolving redirects: ${message}`)
       return nextMiddleware()
     }
+  })
+
+  app.use(async (req, res, nextMiddleware) => {
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      return nextMiddleware()
+    }
+
+    const match = /^\/games\/([^/]+)/.exec(req.path)
+    if (!match) {
+      return nextMiddleware()
+    }
+
+    try {
+      const disabled = await getDisabledGameSlugs()
+      if (disabled.has(match[1])) {
+        return res.redirect(302, '/games')
+      }
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      payload.logger.error(`Error checking disabled games: ${message}`)
+    }
+
+    return nextMiddleware()
   })
 
   app.use((req, res) => nextHandler(req, res))

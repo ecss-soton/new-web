@@ -1,6 +1,8 @@
 import React from 'react'
 import { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
+import { isGameDisabled } from '../../../../utilities/games/availability'
 import { Gutter } from '../../../_components/Gutter'
 import { LowImpactHero } from '../../../_heros/LowImpact'
 import { inter } from '../../../_utilities/font'
@@ -9,7 +11,11 @@ import { BaseBlitz } from './BaseBlitz'
 
 import classes from './index.module.scss'
 
-export default function BaseBlitzPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function BaseBlitzPage() {
+  if (await isGameDisabled('base-blitz')) redirect('/games')
+
   return (
     <>
       <LowImpactHero title="Base Blitz" type="lowImpact" />

@@ -15,6 +15,8 @@ Everything under `/games` — how it fits together, and a checklist for adding a
 | `src/utilities/games/scoring.ts` | Server-side score validators (`GAME_SCORE_VALIDATORS`) |
 | `src/payload/collections/GameScores/` | Generic score storage + `/api/game-scores/{submit,leaderboard}` |
 | `src/payload/collections/GamePrefs/` | Per-user, per-game leaderboard visibility (`/api/game-prefs/me`) |
+| `src/payload/globals/Games.ts` | Admin global: `disabledGames` (enable/disable without a deploy) |
+| `src/utilities/games/availability.ts` | Reads the `games` global for the hub, routes and sitemap |
 
 ECSSle is a special case: it keeps its original `wordle-scores` collection and endpoints, but its leaderboard and stats are computed by the same shared module and rendered with the same table as every other game.
 
@@ -155,6 +157,28 @@ Every player can choose whether to appear on each leaderboard:
 - Toggle UI: `LeaderboardVisibilityToggle` on the leaderboard page.
 - Endpoint: `GET /api/game-prefs/me?game=<slug>` and `POST /api/game-prefs/me` `{ game, hidden }`.
 
+## Disabling a game (no deploy)
+
+Payload admin → **Games** → *Disabled games*. Tick a game and save.
+
+- It disappears from the `/games` hub.
+- Its page and leaderboard redirect to `/games` (a real 302 at the Express layer), including direct links.
+- It is dropped from `sitemap.xml`.
+- Scores and preferences are kept, so re-enabling restores everything.
+
+The check lives in `src/utilities/games/availability.ts` (fetched with `cache: 'no-store'`, fails open if the CMS is unreachable). The hub, every game page, leaderboard page and the sitemap call `getDisabledGames()`/`isGameDisabled()`; **new game routes must add the same guard**:
+
+```tsx
+export const dynamic = 'force-dynamic'
+
+export default async function MyGamePage() {
+  if (await isGameDisabled('my-game')) redirect('/games')
+  // ...
+}
+```
+
+Adding, renaming or changing the order of a game still needs a code change, because the registry and route folders are code; only enable/disable is CMS-driven.
+
 ## Existing games
 
 | Game | Route | Daily | Login | Scores |
@@ -162,6 +186,8 @@ Every player can choose whether to appear on each leaderboard:
 | ECSSle | `/games/wordle` | Yes | Yes | `wordle-scores` (legacy, shared leaderboard maths) |
 | Logic Gate Lab | `/games/logic-gate-lab` | Yes | Yes | `game-scores`, validated circuit |
 | Base Blitz | `/games/base-blitz` | No | No | local best score only |
+
+Any of these can be disabled from the admin without a deploy.
 
 ## Validation
 

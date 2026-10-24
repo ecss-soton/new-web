@@ -1,7 +1,11 @@
 import React from 'react'
 import { Metadata } from 'next'
 
-import type { GameDefinition } from '../../../utilities/games/registry'
+import { getDisabledGames } from '../../../utilities/games/availability'
+import type {
+  GameDefinition,
+  GameSection as GameSectionKind,
+} from '../../../utilities/games/registry'
 import { gamesIn } from '../../../utilities/games/registry'
 import { Gutter } from '../../_components/Gutter'
 import { LowImpactHero } from '../../_heros/LowImpact'
@@ -10,6 +14,8 @@ import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
 import { GameCard } from './_components/GameCard'
 
 import classes from './index.module.scss'
+
+export const dynamic = 'force-dynamic'
 
 const GameSection: React.FC<{ heading: string; games: GameDefinition[] }> = ({
   heading,
@@ -29,14 +35,18 @@ const GameSection: React.FC<{ heading: string; games: GameDefinition[] }> = ({
   )
 }
 
-export default function GamesPage() {
+export default async function GamesPage() {
+  const disabled = await getDisabledGames()
+  const available = (section: GameSectionKind): GameDefinition[] =>
+    gamesIn(section).filter(game => !disabled.has(game.slug))
+
   return (
     <>
       <LowImpactHero title="Games" type="lowImpact" />
       <Gutter>
         <div className={classes.wrapper}>
-          <GameSection heading="Daily" games={gamesIn('daily')} />
-          <GameSection heading="Quick play" games={gamesIn('arcade')} />
+          <GameSection heading="Daily" games={available('daily')} />
+          <GameSection heading="Quick play" games={available('arcade')} />
         </div>
       </Gutter>
     </>

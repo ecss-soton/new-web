@@ -1,6 +1,8 @@
 import React from 'react'
 import { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
+import { isGameDisabled } from '../../../../utilities/games/availability'
 import { createDailyPuzzle } from '../../../../utilities/games/logicGate/puzzle'
 import { Gutter } from '../../../_components/Gutter'
 import { LowImpactHero } from '../../../_heros/LowImpact'
@@ -18,6 +20,8 @@ export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
 
 export default async function LogicGateLabPage() {
+  if (await isGameDisabled('logic-gate-lab')) redirect('/games')
+
   const { user, token } = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to play Logic Gate Lab.',
