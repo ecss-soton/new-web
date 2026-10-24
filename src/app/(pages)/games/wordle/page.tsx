@@ -6,6 +6,7 @@ import { Gutter } from '../../../_components/Gutter'
 import { LowImpactHero } from '../../../_heros/LowImpact'
 import { getMeUser } from '../../../_utilities/getMeUser'
 import { GameBackLink } from '../_components/GameBackLink'
+import { LeaderboardVisibilityToggle } from '../_components/LeaderboardVisibilityToggle'
 import { WordleGame } from './WordleGame'
 
 export const dynamic = 'force-dynamic'
@@ -69,6 +70,7 @@ export default async function WordlePage() {
           todayScore={todayScore}
           existingDisplayName={existingDisplayName}
         />
+        <LeaderboardVisibilityToggle game="wordle" />
         <GameBackLink />
       </Gutter>
     </>

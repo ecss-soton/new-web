@@ -1,9 +1,4 @@
-import {
-  createSeededRandom,
-  getDayKey,
-  getPuzzleNumberForDay,
-  hashString,
-} from '../../../../utilities/games/daily'
+import { createSeededRandom, getDayKey, getPuzzleNumberForDay, hashString } from '../daily'
 import { type DailyPuzzle, INPUT_NAMES, ROW_COUNT, truthTable } from './logic'
 
 /**

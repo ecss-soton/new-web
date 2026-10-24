@@ -35,6 +35,8 @@ export interface Config {
     'ticket-holders': TicketHolder;
     'wordle-overrides': WordleOverride;
     'wordle-scores': WordleScore;
+    'game-scores': GameScore;
+    'game-prefs': GamePref;
     'city-challenge-locations': CityChallengeLocation;
     'city-challenge-teams': CityChallengeTeam;
     redirects: Redirect;
@@ -1492,6 +1494,45 @@ export interface WordleScore {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "game-scores".
+ */
+export interface GameScore {
+  id: string;
+  entryKey: string;
+  game: string;
+  user: string | User;
+  displayName: string;
+  date: string;
+  solved: boolean;
+  completed: boolean;
+  score: number;
+  metrics?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "game-prefs".
+ */
+export interface GamePref {
+  id: string;
+  entryKey: string;
+  user: string | User;
+  game: string;
+  hidden: boolean;
   updatedAt: string;
   createdAt: string;
 }

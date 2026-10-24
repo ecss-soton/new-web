@@ -2,14 +2,19 @@ import React from 'react'
 import { Metadata } from 'next'
 import Link from 'next/link'
 
+import type { LeaderboardRow } from '../../../../../utilities/games/leaderboard'
+import { GAME_LEADERBOARD_CONFIGS } from '../../../../../utilities/games/leaderboard'
 import { Gutter } from '../../../../_components/Gutter'
 import { LowImpactHero } from '../../../../_heros/LowImpact'
 import { getMeUser } from '../../../../_utilities/getMeUser'
-import { type LeaderboardEntry, LeaderboardTable } from './LeaderboardTable'
+import { LeaderboardTable } from '../../_components/LeaderboardTable'
+import { LeaderboardVisibilityToggle } from '../../_components/LeaderboardVisibilityToggle'
 
 import classes from './index.module.scss'
 
 export const dynamic = 'force-dynamic'
+
+const config = GAME_LEADERBOARD_CONFIGS.wordle
 
 export default async function LeaderboardPage() {
   const { user, token } = await getMeUser({
@@ -18,7 +23,7 @@ export default async function LeaderboardPage() {
     )}&redirect=${encodeURIComponent('/games/wordle/leaderboard')}`,
   })
 
-  let leaderboard: LeaderboardEntry[] = []
+  let leaderboard: LeaderboardRow[] = []
 
   try {
     const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/wordle-scores/leaderboard`, {
@@ -35,7 +40,8 @@ export default async function LeaderboardPage() {
       <LowImpactHero title="ECSSle Leaderboard" type="lowImpact" />
       <Gutter>
         <div className={classes.leaderboardWrapper}>
-          <LeaderboardTable data={leaderboard} currentUserId={user.id} />
+          <LeaderboardVisibilityToggle game="wordle" />
+          <LeaderboardTable rows={leaderboard} currentUserId={user.id} labels={config.labels} />
           <div className={classes.backLinks}>
             <Link href="/games/wordle" className={classes.backLink}>
               &larr; Back to ECSSle

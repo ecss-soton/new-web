@@ -1,5 +1,5 @@
 /**
- * Circuit model for Logic Gate Lab.
+ * Circuit model for Logic Gate Lab, shared by the client and the score validator.
  *
  * Truth-table rows are the eight (A, B, C) combinations in binary order, with A
  * as the most significant bit: row index 0 is 000 and row 7 is 111.
@@ -12,6 +12,7 @@ export const GATE_OPS = ['AND', 'OR', 'XOR', 'NOT'] as const
 export type GateOp = (typeof GATE_OPS)[number]
 
 export const ROW_COUNT = 8
+const MAX_EXPRESSION_DEPTH = 12
 
 export interface InputNode {
   kind: 'input'
@@ -84,3 +85,42 @@ export const formatExpression = (node: ExprNode | null): string => {
   const right = formatExpression(node.children[1] ?? null)
   return `(${left} ${node.op} ${right})`
 }
+
+const isInputName = (value: unknown): value is InputName =>
+  typeof value === 'string' && (INPUT_NAMES as readonly string[]).includes(value)
+
+const isGateOp = (value: unknown): value is GateOp =>
+  typeof value === 'string' && (GATE_OPS as readonly string[]).includes(value)
+
+const sanitizeExpression = (value: unknown, depth: number): ExprNode | null => {
+  if (depth > MAX_EXPRESSION_DEPTH || !value || typeof value !== 'object') return null
+
+  const record = value as Record<string, unknown>
+
+  if (record.kind === 'input' && isInputName(record.name)) {
+    return { kind: 'input', name: record.name }
+  }
+
+  if (record.kind === 'gate' && isGateOp(record.op)) {
+    const children = Array.isArray(record.children) ? record.children : []
+    const sanitizedChildren: Array<ExprNode | null> = []
+
+    for (let index = 0; index < slotCount(record.op); index++) {
+      sanitizedChildren.push(sanitizeExpression(children[index], depth + 1))
+    }
+
+    return {
+      kind: 'gate',
+      op: record.op,
+      children: sanitizedChildren,
+    }
+  }
+
+  return null
+}
+
+/**
+ * Rebuild an expression from untrusted input (localStorage or an API body),
+ * keeping only known node shapes. Unknown data is discarded.
+ */
+export const parseExpression = (value: unknown): ExprNode | null => sanitizeExpression(value, 0)

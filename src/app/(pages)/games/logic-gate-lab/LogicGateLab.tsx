@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import {
   DndContext,
@@ -11,6 +11,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
+import Link from 'next/link'
 
 import { bungee } from '../../../_utilities/font'
 import {
@@ -27,7 +28,7 @@ import {
   slotCount,
   truthTable,
   valuesForRow,
-} from './logic'
+} from '../../../../utilities/games/logicGate/logic'
 import { readStoredExpression, writeStoredExpression } from './storage'
 
 import classes from './index.module.scss'
@@ -141,12 +142,19 @@ const EmptySlot: React.FC<{
   )
 }
 
-export const LogicGateLab: React.FC<{ puzzle: DailyPuzzle }> = ({ puzzle }) => {
+export const LogicGateLab: React.FC<{ puzzle: DailyPuzzle; todayScore: number | null }> = ({
+  puzzle,
+  todayScore,
+}) => {
   const [expression, setExpression] = useState<ExprNode | null>(null)
   const [selected, setSelected] = useState<PaletteItem | null>(null)
   const [activeItem, setActiveItem] = useState<PaletteItem | null>(null)
   const [hint, setHint] = useState('')
   const [restored, setRestored] = useState(false)
+  const [recordedScore, setRecordedScore] = useState<number | null>(todayScore)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+  const lastSubmittedRef = useRef('')
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -171,6 +179,51 @@ export const LogicGateLab: React.FC<{ puzzle: DailyPuzzle }> = ({ puzzle }) => {
     : 0
   const solved = matches === ROW_COUNT && Boolean(userTable)
   const gateCount = countGates(expression)
+
+  const submitScore = useCallback(async () => {
+    if (!completeExpression) return
+
+    const gates = countGates(completeExpression)
+    const signature = `${puzzle.date}:${JSON.stringify(completeExpression)}`
+    if (lastSubmittedRef.current === signature) return
+    if (recordedScore !== null && recordedScore <= gates) return
+
+    lastSubmittedRef.current = signature
+    setSubmitting(true)
+    setSubmitError('')
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/game-scores/submit`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          game: 'logic-gate-lab',
+          data: { expression: completeExpression },
+        }),
+      })
+
+      const payload = await response.json().catch(() => null)
+      if (!response.ok) {
+        throw new Error(payload?.error || 'Could not record your score')
+      }
+
+      const best = typeof payload?.best === 'number' ? payload.best : gates
+      setRecordedScore(best)
+    } catch (error) {
+      lastSubmittedRef.current = ''
+      setSubmitError(error instanceof Error ? error.message : 'Could not record your score')
+    } finally {
+      setSubmitting(false)
+    }
+  }, [completeExpression, puzzle.date, recordedScore])
+
+  useEffect(() => {
+    if (!solved) return
+    const gates = countGates(completeExpression)
+    if (recordedScore !== null && recordedScore <= gates) return
+    void submitScore()
+  }, [solved, completeExpression, recordedScore, submitScore])
 
   const place = (item: PaletteItem, path: number[]) => {
     setExpression(current => setAtPath(current, path, nodeFromItem(item)))
@@ -290,7 +343,10 @@ export const LogicGateLab: React.FC<{ puzzle: DailyPuzzle }> = ({ puzzle }) => {
       <div className={classes.game}>
         <div className={classes.meta}>
           <span className={classes.puzzleNumber}>Puzzle #{puzzle.number}</span>
-          <span className={classes.metaHint}>New puzzle at midnight UK time</span>
+          <span className={classes.metaHint}>
+            New puzzle at midnight UK time ·{' '}
+            <Link href="/games/logic-gate-lab/leaderboard">Leaderboard</Link>
+          </span>
         </div>
 
         <div className={classes.layout}>
@@ -348,6 +404,36 @@ export const LogicGateLab: React.FC<{ puzzle: DailyPuzzle }> = ({ puzzle }) => {
             >
               {statusText}
             </p>
+
+            {solved && (
+              <div className={classes.submission} aria-live="polite">
+                {submitting && <span>Recording your score…</span>}
+                {!submitting && submitError && (
+                  <>
+                    <span className={classes.submissionError}>{submitError}</span>
+                    <button
+                      type="button"
+                      className={classes.retryButton}
+                      onClick={() => {
+                        void submitScore()
+                      }}
+                    >
+                      Retry
+                    </button>
+                  </>
+                )}
+                {!submitting && !submitError && recordedScore !== null && (
+                  <span>
+                    Best recorded today: {recordedScore} gate
+                    {recordedScore === 1 ? '' : 's'} ·{' '}
+                    <Link href="/games/logic-gate-lab/leaderboard">Leaderboard</Link>
+                  </span>
+                )}
+                {!submitting && !submitError && recordedScore === null && (
+                  <span>Score not recorded yet.</span>
+                )}
+              </div>
+            )}
           </section>
 
           <section className={classes.panel} aria-labelledby="logic-workspace-heading">

@@ -30,6 +30,11 @@
 .metaHint {
   font-size: 0.75rem;
   color: var(--theme-elevation-600);
+
+  a {
+    color: var(--ecss-red);
+    font-weight: 700;
+  }
 }
 
 .layout {
@@ -126,6 +131,47 @@
 .solved {
   color: var(--theme-success-700);
   font-weight: 700;
+}
+
+.submission {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--theme-elevation-700);
+
+  a {
+    color: var(--ecss-red);
+    font-weight: 700;
+  }
+}
+
+.submissionError {
+  color: var(--theme-error-700);
+}
+
+.retryButton {
+  padding: 4px 10px;
+  border: 1px solid var(--theme-elevation-300);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--theme-elevation-800);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--theme-elevation-600);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ecss-red);
+    outline-offset: 2px;
+  }
 }
 
 .palette {

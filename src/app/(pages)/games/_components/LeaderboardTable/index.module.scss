@@ -1,0 +1,90 @@
+@import '../../../../_css/common';
+
+.emptyText {
+  @extend %body;
+  text-align: center;
+  color: var(--theme-elevation-500);
+  margin: calc(var(--base) * 3) 0;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+
+  th {
+    @extend %label;
+    text-align: left;
+    padding: calc(var(--base) * 0.75) var(--base);
+    border-bottom: 2px solid var(--theme-elevation-200);
+    color: var(--theme-elevation-500);
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .sorted {
+    color: var(--theme-elevation-1000);
+  }
+
+  td {
+    padding: calc(var(--base) * 0.65) var(--base);
+    border-bottom: 1px solid var(--theme-elevation-100);
+    white-space: nowrap;
+  }
+
+  tr:hover {
+    background-color: var(--theme-elevation-50);
+  }
+
+  .rankCell {
+    font-weight: 700;
+    color: var(--theme-elevation-400);
+  }
+
+  .ratingCell {
+    font-weight: 700;
+    color: var(--theme-elevation-1000);
+  }
+}
+
+.sortButton {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--theme-elevation-1000);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ecss-red);
+    outline-offset: 2px;
+  }
+}
+
+.highlight {
+  background-color: var(--theme-elevation-100);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .table {
+    font-size: 0.8rem;
+
+    th,
+    td {
+      padding: calc(var(--base) * 0.5) calc(var(--base) * 0.5);
+    }
+  }
+}

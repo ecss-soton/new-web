@@ -23,6 +23,8 @@ import DiscordAnnouncements from './collections/DiscordAnnouncements'
 import { ElectionResults } from './collections/ElectionResults'
 import Elections from './collections/Elections'
 import Events from './collections/Events'
+import GamePrefs from './collections/GamePrefs'
+import GameScores from './collections/GameScores'
 import Hackathons from './collections/Hackathons'
 import { Media } from './collections/Media'
 import { MemberImports } from './collections/MemberImports'
@@ -156,6 +158,8 @@ export default buildConfig({
     TicketHolders,
     WordleOverrides,
     WordleScores,
+    GameScores,
+    GamePrefs,
     CityChallengeLocations,
     CityChallengeTeams,
   ],

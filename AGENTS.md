@@ -126,12 +126,16 @@ Do not hand-edit generated files when the generation commands are available. If 
 
 ### Games
 
-- `/games` is the hub (`src/app/(pages)/games/page.tsx`). Games live at `src/app/(pages)/games/<slug>/`; ECSSle is `/games/wordle` (login-gated) with `/games/wordle/leaderboard`.
+- `/games` is the hub (`src/app/(pages)/games/page.tsx`). Games live at `src/app/(pages)/games/<slug>/`. **Read `src/app/(pages)/games/README.md` before adding a game** — it has the checklist and templates for routes, score validation and leaderboards.
 - The game list is code-defined in `src/utilities/games/registry.ts`; adding a game means adding a route plus a registry entry. There is no CMS collection for games.
 - Word data: `src/utilities/games/wordleWords.ts` is server-only (`getDailyWord` must never reach a `'use client'` component); `validWords.json` is shared by the client and the `/api/wordle-scores/guess` endpoint.
-- ECSSle scores/leaderboard use the `wordle-scores` collection and `/api/wordle-scores/*` endpoints unchanged.
-- Arcade games are client-only and keep personal bests in `localStorage` via `src/utilities/games/bestScore.ts` — no accounts, no server-side scores. Never store client-reported scores in a leaderboard without server validation.
-- Daily games derive their puzzle from the `Europe/London` day key (`src/utilities/games/daily.ts`): same puzzle all day, new one at midnight UK time, with British Summer Time handled. Date maths uses day keys, never timestamps, so DST days cannot skip or repeat a puzzle. Logic Gate Lab (`/games/logic-gate-lab`) picks its target from precomputed non-trivial truth tables (`puzzle.ts`) — every three-input function is solvable in at most three gates, so do not switch it to `Math.random()` or user data.
+- ECSSle is login-gated (`/games/wordle`, leaderboard at `/games/wordle/leaderboard`) and keeps the legacy `wordle-scores` collection and `/api/wordle-scores/*` endpoints.
+- Scored games other than ECSSle use the generic **`game-scores`** collection and `POST /api/game-scores/submit`; the server validator in `src/utilities/games/scoring.ts` must re-derive the result from server-owned state — never store a client-reported score. One score per `game:user:date` via the unique `entryKey`; the lowest score for the day wins.
+- Leaderboards share `src/utilities/games/leaderboard.ts` (`GAME_LEADERBOARD_CONFIGS`, `computeLeaderboard`), the `LeaderboardTable` component and the `LeaderboardVisibilityToggle`. ECSSle and Logic Gate Lab both appear on `/games/*/leaderboard` (`GET /api/wordle-scores/leaderboard` and `GET /api/game-scores/leaderboard?game=…`).
+- Leaderboard visibility is per user, per game, stored in **`game-prefs`** and toggled via `GET/POST /api/game-prefs/me`. Scores are always recorded; `getHiddenUserIds` filters opted-out players out of the leaderboard responses (including ECSSle).
+- Logic Gate Lab (`/games/logic-gate-lab`) is login-gated. Its circuit model and validator live in `src/utilities/games/logicGate/`; every three-input function is solvable in at most three gates, so keep the target precomputed (`puzzle.ts`) and validate the submitted circuit server-side.
+- Arcade games with no server scores (Base Blitz) keep personal bests in `localStorage` via `src/utilities/games/bestScore.ts` — no accounts, no leaderboard.
+- Daily games derive their puzzle from the `Europe/London` day key (`src/utilities/games/daily.ts`): same puzzle all day, new one at midnight UK time, with British Summer Time handled. Date maths uses day keys, never timestamps, so DST days cannot skip or repeat a puzzle.
 - **No link embeds for game pages.** `src/app/robots.txt` blocks `Discordbot` from `/wordle` and `/games/wordle`, and wordle/game pages omit `description`/OpenGraph/Twitter metadata. Discord falls back to `<title>`/`<meta name="description">` when OG tags are absent, so keep both patterns when adding games. The `/games` hub itself keeps a normal description + OpenGraph card.
 - Old URLs `/wordle` and `/wordle/leaderboard` redirect (308) to `/games/*` via `redirects.js`; the Payload redirects collection works too but is not required.
 

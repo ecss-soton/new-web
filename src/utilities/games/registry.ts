@@ -45,14 +45,6 @@ export const GAMES: GameDefinition[] = [
     section: 'arcade',
     order: 1,
   },
-  {
-    slug: 'tech-match',
-    title: 'Tech Match',
-    tagline: 'Flip the cards, find the matching parts.',
-    href: '/games/tech-match',
-    section: 'arcade',
-    order: 2,
-  },
 ]
 
 const byOrder = (a: GameDefinition, b: GameDefinition): number => a.order - b.order
