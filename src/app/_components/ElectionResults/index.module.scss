@@ -1,7 +1,7 @@
 @import '../../_css/common';
 
 .resultsContainer {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   background: var(--theme-elevation-50);
   border-radius: 8px;
   padding: 1.5rem;
@@ -18,7 +18,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--theme-border-color);
 
@@ -30,28 +30,10 @@
   }
 }
 
-.electedBadge {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.electedLabel {
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: var(--theme-success-700);
-  letter-spacing: 0.05em;
-}
-
-.electedNominee {
+.roundsHeading {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.15rem;
   color: var(--theme-text);
-
-  @include small-break {
-    font-size: 1.15rem;
-  }
 }
 
 .downloadTranscript {
@@ -63,37 +45,17 @@
   }
 }
 
+// Wrapping grid: cards side-by-side where they fit, full width on mobile.
+// No horizontal scrolling.
 .grid {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
   gap: 1.5rem;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 1rem;
-
-  /* Custom scrollbar for better look */
-  &::-webkit-scrollbar {
-    height: 8px;
-  }
-  &::-webkit-scrollbar-track {
-    background: var(--theme-elevation-150);
-    border-radius: 4px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: var(--theme-elevation-400);
-    border-radius: 4px;
-  }
-  &::-webkit-scrollbar-thumb:hover {
-    background: var(--theme-elevation-500);
-  }
+  width: 100%;
 }
 
 .roundCard {
-  flex: 0 0 auto;
-  // Fixed comfortable width on desktop; cards scroll horizontally
-  width: 500px;
+  min-width: 0;
   background: var(--theme-elevation-0);
   border-radius: 8px;
   padding: 1.25rem;
@@ -104,9 +66,6 @@
   gap: 1rem;
 
   @include small-break {
-    // Fill available width on mobile
-    width: 100%;
-    flex: none;
     padding: 0.875rem 0.75rem;
     gap: 0.75rem;
   }
@@ -157,18 +116,10 @@
 }
 
 .chartWrapper {
-  // Responsive: fill the card width, fixed height on desktop
-  width: 100%;
-  height: 300px;
+  // Height is set inline from the candidate count so every bar is visible.
   position: relative;
-
-  @include small-break {
-    height: 220px;
-  }
-
-  @include extra-small-break {
-    height: 180px;
-  }
+  width: 100%;
+  min-height: 180px;
 }
 
 .chart {
