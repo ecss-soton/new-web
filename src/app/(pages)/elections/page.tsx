@@ -63,7 +63,7 @@ export default async function Elections() {
 
 export const metadata: Metadata = {
   title: 'Elections',
-  description: 'An overview of all upcoming and current elections',
+  description: 'An overview of current and past elections and their results',
   openGraph: mergeOpenGraph({
     title: 'Elections',
     url: '/elections',

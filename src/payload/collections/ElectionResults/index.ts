@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload/types'
 import { admins } from '../../access/admins'
 import { isAnInt } from '../../validate/isAnInt'
 import Groups from '../groups'
+import { detailOrAdmin } from './access/detailOrAdmin'
 import { publishedOrAdmin } from './access/publishedOrAdmin'
 import { electionTranscript } from './endpoints/electionTranscript'
 import { recountVotes } from './endpoints/recountVotes'
@@ -51,11 +52,11 @@ export const ElectionResults: CollectionConfig = {
     {
       name: 'showOnMainPage',
       type: 'checkbox',
-      label: 'Show on main election page',
+      label: 'Show detailed results on the main election page',
       defaultValue: false,
       admin: {
         description:
-          'When enabled, this result is visible on the public election page after voting has ended.',
+          'The elected winner is always summarised on the public election page after voting ends. Enable this to also show the round-by-round charts, other candidates and the transcript.',
       },
     },
     {
@@ -89,6 +90,7 @@ export const ElectionResults: CollectionConfig = {
       type: 'textarea',
       required: true,
       access: {
+        read: detailOrAdmin,
         update: () => false,
       },
     },
@@ -97,6 +99,7 @@ export const ElectionResults: CollectionConfig = {
       type: 'textarea',
       required: true,
       access: {
+        read: detailOrAdmin,
         update: () => false,
       },
     },
@@ -106,6 +109,7 @@ export const ElectionResults: CollectionConfig = {
       minRows: 1,
       required: true,
       access: {
+        read: detailOrAdmin,
         update: () => false,
       },
       fields: [

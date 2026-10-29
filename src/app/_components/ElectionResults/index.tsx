@@ -3,10 +3,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Bar } from 'react-chartjs-2'
 import { BarElement, CategoryScale, Chart as ChartJS, LinearScale, Tooltip } from 'chart.js'
-import qs from 'qs'
 ChartJS.register(CategoryScale, LinearScale, Tooltip, BarElement)
 
-import { Election, ElectionResult, Nomination, User } from '../../../payload/payload-types'
+import { ElectionResult, Nomination } from '../../../payload/payload-types'
+import { nominationDisplayName } from '../../../utilities/nominationLabel'
 import { Button } from '../Button'
 import { buildOptions } from './options'
 
@@ -32,97 +32,60 @@ function lineSplitter(input: string, maxLength: number): string[] {
   return lines
 }
 
-function splitNames(nomination: Nomination | null): string[] {
+function splitNames(nomination: Nomination | string | null): string[] {
   if (!nomination) {
     return lineSplitter('Re-Open Nominations', 15)
   }
-  return (nomination.populatedNominees ?? []).reduce((arr, n) => {
-    arr.push(...lineSplitter(n.name, 14))
-    return arr
+
+  if (typeof nomination === 'string') {
+    return lineSplitter('Unknown', 15)
+  }
+
+  const names = (nomination.populatedNominees ?? [])
+    .map(nominee => nominee.name)
+    .filter((name): name is string => typeof name === 'string' && name.trim().length > 0)
+
+  if (names.length === 0) {
+    return lineSplitter('Unknown', 15)
+  }
+
+  return names.reduce<string[]>((lines, name) => {
+    lines.push(...lineSplitter(name, 14))
+    return lines
   }, [])
 }
 
-function getName(nominee: Nomination | null): string {
-  if (!nominee) {
-    return 'Re-Open Nominations'
-  }
-  const nomineeNames = (nominee.populatedNominees ?? []).map(n => n.name).join(' & ')
-  const nickname = nominee.nickname
-  return nickname ? `${nickname} - ${nomineeNames}` : `${nomineeNames}`
-}
-
-export const ElectionResults: React.FC<{
-  positionId?: string
-  election?: Election
-  user?: User
-}> = props => {
-  const { positionId, election, user } = props
-
-  const [result, setResult] = useState<ElectionResult | null>(null)
+/**
+ * Round-by-round chart for one published result. Rendered only when the admin
+ * has enabled detailed results and the user expands the summary.
+ */
+export const ElectionResults: React.FC<{ result: ElectionResult }> = ({ result }) => {
+  const { id, rounds } = result
   const [isMobile, setIsMobile] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Track container width so chart options update when the card resizes
+  // Track container width so chart options update when the card resizes.
   useEffect(() => {
     if (!containerRef.current) return
+
     const observer = new ResizeObserver(entries => {
       for (const entry of entries) {
         setIsMobile(entry.contentRect.width <= MOBILE_BREAKPOINT)
       }
     })
+
     observer.observe(containerRef.current)
-    // Set initial value
     setIsMobile(containerRef.current.offsetWidth <= MOBILE_BREAKPOINT)
+
     return () => observer.disconnect()
   }, [])
 
-  useEffect(() => {
-    const getElectionResult = async (): Promise<ElectionResult | null> => {
-      const searchQuery = qs.stringify(
-        {
-          depth: 2,
-          limit: 1,
-          where: {
-            and: [
-              { election: { equals: election.id } },
-              { position: { equals: positionId } },
-              { showOnMainPage: { equals: true } },
-            ],
-          },
-        },
-        { encode: false },
-      )
-
-      try {
-        const req = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/electionResults?${searchQuery}`,
-          { credentials: 'include' },
-        )
-        const json = await req.json()
-        const { docs } = json as { docs: ElectionResult[] }
-        return docs.length > 0 ? docs[0] : null
-      } catch (err) {
-        console.warn(err) // eslint-disable-line no-console
-      }
-    }
-    getElectionResult().then(setResult)
-  }, [user, positionId, election.id])
-
-  if (!result) {
-    return null
-  }
-
-  const { id, electedNominee, rounds } = result
-  const electedNomineeName = getName(electedNominee as Nomination | null)
   const chartOptions = buildOptions(isMobile)
 
   return (
     <div className={classes.resultsContainer} ref={containerRef}>
       <div className={classes.titleHolder}>
-        <div className={classes.electedBadge}>
-          <span className={classes.electedLabel}>Elected</span>
-          <h4 className={classes.electedNominee}>{electedNomineeName}</h4>
-        </div>
+        <h4 className={classes.roundsHeading}>Voting rounds</h4>
         <Button
           newTab={true}
           className={classes.downloadTranscript}
@@ -132,14 +95,16 @@ export const ElectionResults: React.FC<{
         />
       </div>
       <div className={classes.grid}>
-        {rounds.map((round, index) => {
+        {(rounds ?? []).map((round, index) => {
           const { votes, outcome, nomination } = round
-          const nomineeName = getName(nomination as Nomination)
-          // Number of candidates determines minimum chart height so all bars are visible
+          const nomineeName = nominationDisplayName(nomination ?? null)
           const candidateCount = votes.length
-          const sorted_votes = votes
-            .map(v => ({ x: v.count, y: splitNames(v.nomination as Nomination) }))
+          const sortedVotes = votes
+            .map(vote => ({ x: vote.count, y: splitNames(vote.nomination ?? null) }))
             .sort((a, b) => b.x - a.x)
+
+          // Keep every candidate bar visible and give long names room to wrap.
+          const chartHeight = Math.max(isMobile ? 200 : 240, candidateCount * (isMobile ? 48 : 64))
 
           return (
             <div key={index} className={classes.roundCard}>
@@ -149,25 +114,15 @@ export const ElectionResults: React.FC<{
                   {nomineeName} was {outcome}ed
                 </span>
               </div>
-              <div
-                className={classes.chartWrapper}
-                style={{
-                  // Ensure each candidate gets at least enough vertical space to render.
-                  // 60px per candidate on desktop, 44px on mobile — whichever is larger
-                  // than the CSS minimum set in the stylesheet.
-                  minHeight: isMobile
-                    ? `${Math.max(180, candidateCount * 44)}px`
-                    : `${Math.max(220, candidateCount * 60)}px`,
-                }}
-              >
+              <div className={classes.chartWrapper} style={{ height: `${chartHeight}px` }}>
                 <Bar
                   className={classes.chart}
                   data={{
-                    labels: sorted_votes.map(v => v.y),
+                    labels: sortedVotes.map(vote => vote.y),
                     datasets: [
                       {
                         label: 'Votes',
-                        data: sorted_votes.map(v => v.x),
+                        data: sortedVotes.map(vote => vote.x),
                         backgroundColor: 'rgba(211, 0, 26, 0.6)',
                         borderColor: 'rgb(211, 0, 26)',
                         borderWidth: 1,

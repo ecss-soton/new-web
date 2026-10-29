@@ -35,8 +35,8 @@ Use this guide before broad exploration. Read only the files relevant to the req
 - Node, MongoDB, and Rust are required. Election counting also requires the `stv-rs` binary (`cargo install stv-rs`).
 - Copy `.env.example` to `.env`; never commit `.env` or real credentials.
 - The application reads `DATABASE_URI`, `PAYLOAD_SECRET`, `PAYLOAD_PUBLIC_SERVER_URL`, and `NEXT_PUBLIC_SERVER_URL`.
-- `npm run dev` starts the custom Express/Payload server and Next development flow.
-- `npm run seed` **drops the database**. Never run it against shared or production data.
+- `npm run dev` starts the custom Express/Payload server and Next development flow. You are allowed to run this, but only if absolutely necessarily. Ideally run this by the user first.
+- `npm run seed` **drops the database**. Never run it against shared or production data. DANGEROUS.
 - The README’s `mongorestore` dump path may not exist in every checkout; verify before relying on it.
 
 ## Commands
@@ -75,7 +75,10 @@ Do not hand-edit generated files when the generation commands are available. If 
 - Election jobs are restored by `src/payload/utilities/restartJobs.ts`.
 - Voting must enforce time windows and election/position/nomination consistency server-side.
 - Avoid weakening vote uniqueness or result consistency. Database-level indexes/migrations require explicit production-data planning.
-- Results are hidden from the public election UI unless the Election Result CMS checkbox `showOnMainPage` is enabled. New and existing results should remain hidden by default.
+- After voting closes, the public election page always summarises the elected nominee for every **published** result. Finished elections show position + winner only (no position descriptions; descriptions stay for upcoming/current elections).
+- `showOnMainPage` now gates **detailed** results: round-by-round charts, other candidates and the transcript. It defaults to `false`. Non-admin API/GraphQL responses for `rounds`, `ballot` and `roundTranscript` are field-gated by it, and the transcript endpoint returns 403 unless enabled and published.
+- Admin live first-preference standings are available from the Elections edit view (`GET /api/elections/:id/standings`, admin-only). It is a live snapshot for monitoring during voting, not an STV result, and returns aggregates only (no voter identities).
+- Tests: `npm run test:elections`.
 
 ### Membership imports (voting eligibility)
 

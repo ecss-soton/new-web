@@ -11,11 +11,14 @@ const getCssVariable = (variable: string): string => {
 
 export const buildOptions = (isMobile: boolean): ChartOptions<'bar'> => ({
   indexAxis: 'y',
+  responsive: true,
+  maintainAspectRatio: false,
   scales: {
     x: {
+      beginAtZero: true,
       ticks: {
         precision: 0,
-        font: { size: isMobile ? 10 : 14 },
+        font: { size: isMobile ? 11 : 14 },
       },
       grid: {
         lineWidth: 2,
@@ -24,9 +27,9 @@ export const buildOptions = (isMobile: boolean): ChartOptions<'bar'> => ({
     },
     y: {
       ticks: {
-        font: { size: isMobile ? 10 : 14 },
-        // Give labels more room — Chart.js auto-calculates this from maxTicksLimit
-        // but we set an explicit pixel cap so labels aren't squeezed on narrow cards
+        autoSkip: false,
+        font: { size: isMobile ? 11 : 14 },
+        padding: 6,
       },
       grid: {
         lineWidth: 2,
@@ -35,17 +38,21 @@ export const buildOptions = (isMobile: boolean): ChartOptions<'bar'> => ({
       },
     },
   },
-  responsive: true,
-  maintainAspectRatio: false,
   layout: {
-    // Extra left padding so long candidate names aren't clipped
-    padding: { left: isMobile ? 0 : 0 },
+    // Keep long, wrapped candidate labels away from the chart edges.
+    padding: { top: 4, right: isMobile ? 4 : 8, bottom: 4, left: 0 },
   },
   plugins: {
+    legend: {
+      display: false,
+    },
     tooltip: {
       callbacks: {
         title(tooltipItems): string | string[] | void {
           return tooltipItems[0].label.split(',')
+        },
+        label(tooltipItem): string {
+          return `${tooltipItem.raw} vote(s)`
         },
       },
     },

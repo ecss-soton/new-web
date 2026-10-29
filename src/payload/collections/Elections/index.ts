@@ -4,8 +4,10 @@ import { admins } from '../../access/admins'
 import { publishedOrAdmin } from '../ElectionResults/access/publishedOrAdmin'
 import Groups from '../groups'
 import { electionResults } from './endpoints/results'
+import { electionStandings } from './endpoints/standings'
 import { checkNominations } from './hooks/checkNominations'
 import { countVotes } from './hooks/checkVotes'
+import { LiveStandings } from './react/LiveStandings'
 import { PrettyPrintLink } from './react/prettyPrintLink'
 import {
   isAfterNomination,
@@ -36,8 +38,22 @@ const Elections: CollectionConfig = {
       method: 'get',
       handler: electionResults,
     },
+    {
+      path: '/:id/standings',
+      method: 'get',
+      handler: electionStandings,
+    },
   ],
   fields: [
+    {
+      name: 'liveStandings',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: LiveStandings,
+        },
+      },
+    },
     {
       name: 'prettyPrint',
       type: 'ui',

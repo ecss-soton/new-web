@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 
 import { Election, Position, User } from '../../../payload/payload-types'
+import { ElectionOutcome } from '../../_components/ElectionOutcome'
 import { Positions } from '../../_components/Positions'
 
 import classes from './index.module.scss'
@@ -35,8 +36,11 @@ export const ElectionCard: React.FC<{
       ? 'Voting Open'
       : 'Finished'
 
-  const isActive = status !== 'Upcoming' && status !== 'Finished'
-  const [isExpanded, setIsExpanded] = useState(isActive)
+  const isFinished = status === 'Finished'
+  // Surface the elected summary immediately for finished elections; upcoming
+  // cards stay collapsed.
+  const [isExpanded, setIsExpanded] = useState(status !== 'Upcoming')
+  const bodyId = `election-body-${id}`
 
   return (
     <div className={classes.electionCard}>
@@ -45,8 +49,11 @@ export const ElectionCard: React.FC<{
         onClick={() => setIsExpanded(!isExpanded)}
         role="button"
         tabIndex={0}
+        aria-expanded={isExpanded}
+        aria-controls={bodyId}
         onKeyDown={e => {
           if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
             setIsExpanded(!isExpanded)
           }
         }}
@@ -83,13 +90,17 @@ export const ElectionCard: React.FC<{
       </div>
 
       {isExpanded && (
-        <div className={classes.electionBody}>
-          <Positions
-            positions={positions}
-            election={election}
-            canCreateNominations={canCreateNomination}
-            user={user}
-          />
+        <div className={classes.electionBody} id={bodyId}>
+          {isFinished ? (
+            <ElectionOutcome election={election} positions={positions} />
+          ) : (
+            <Positions
+              positions={positions}
+              election={election}
+              canCreateNominations={canCreateNomination}
+              user={user}
+            />
+          )}
         </div>
       )}
     </div>

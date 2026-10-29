@@ -19293,14 +19293,14 @@ type ElectionResult {
   electedNominee: Nomination
   ballot: String
   roundTranscript: String
-  rounds: [ElectionResult_Rounds!]!
+  rounds: [ElectionResult_Rounds!]
   updatedAt: DateTime
   createdAt: DateTime
   _status: ElectionResult__status
 }
 
 type ElectionResult_Rounds {
-  outcome: ElectionResult_Rounds_outcome!
+  outcome: ElectionResult_Rounds_outcome
   nomination: Nomination
   votes: [ElectionResult_Rounds_Votes!]!
   id: String
@@ -19312,9 +19312,9 @@ enum ElectionResult_Rounds_outcome {
 }
 
 type ElectionResult_Rounds_Votes {
-  count: Float
+  count: Float!
   nomination: Nomination
-  state: ElectionResult_Rounds_Votes_state
+  state: ElectionResult_Rounds_Votes_state!
   id: String
 }
 
@@ -20074,14 +20074,14 @@ type ElectionResultVersion_Version {
   electedNominee: Nomination
   ballot: String
   roundTranscript: String
-  rounds: [ElectionResultVersion_Version_Rounds!]!
+  rounds: [ElectionResultVersion_Version_Rounds!]
   updatedAt: DateTime
   createdAt: DateTime
   _status: ElectionResultVersion_Version__status
 }
 
 type ElectionResultVersion_Version_Rounds {
-  outcome: ElectionResultVersion_Version_Rounds_outcome!
+  outcome: ElectionResultVersion_Version_Rounds_outcome
   nomination: Nomination
   votes: [ElectionResultVersion_Version_Rounds_Votes!]!
   id: String
@@ -20093,9 +20093,9 @@ enum ElectionResultVersion_Version_Rounds_outcome {
 }
 
 type ElectionResultVersion_Version_Rounds_Votes {
-  count: Float
+  count: Float!
   nomination: Nomination
-  state: ElectionResultVersion_Version_Rounds_Votes_state
+  state: ElectionResultVersion_Version_Rounds_Votes_state!
   id: String
 }
 
@@ -48293,9 +48293,9 @@ input mutationElectionResultInput {
   election: String
   position: String
   electedNominee: String
-  ballot: String!
-  roundTranscript: String!
-  rounds: [mutationElectionResult_RoundsInput!]
+  ballot: String
+  roundTranscript: String
+  rounds: [mutationElectionResult_RoundsInput]
   updatedAt: String
   createdAt: String
   _status: ElectionResult__status_MutationInput

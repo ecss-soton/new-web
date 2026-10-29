@@ -1,19 +1,16 @@
 'use client'
 import React, { Fragment } from 'react'
 
-import {
-  Election,
-  Media,
-  Nomination,
-  Position,
-  Sponsor,
-  User,
-} from '../../../payload/payload-types'
+import { Election, Position, User } from '../../../payload/payload-types'
 import { Button } from '../Button'
-import { ElectionResults } from '../ElectionResults'
 import { Nominations } from '../Nominations'
 import { VotingButton } from '../VotingButton'
 
+/**
+ * Nomination/voting UI for elections that have not finished. Finished elections
+ * use `ElectionOutcome` instead, which shows only position + winner (and the
+ * optional detailed result).
+ */
 export const Positions: React.FC<{
   positions?: Position[]
   election?: Election
@@ -22,15 +19,16 @@ export const Positions: React.FC<{
 }> = props => {
   const { user, positions, election, canCreateNominations } = props
 
-  positions?.sort((p1, p2) => p1.importance - p2.importance)
-  const hasPassedVoting = new Date().getTime() > Date.parse(election.votingEnd)
+  const orderedPositions = [...(positions ?? [])].sort(
+    (first, second) => first.importance - second.importance,
+  )
   const isBeingVoted =
     new Date().getTime() >= Date.parse(election.votingStart) &&
     new Date().getTime() <= Date.parse(election.votingEnd)
 
   return (
     <div>
-      {positions?.map((position, index) => {
+      {orderedPositions.map(position => {
         const { name, description } = position
 
         return (
@@ -50,18 +48,13 @@ export const Positions: React.FC<{
             {isBeingVoted && (
               <VotingButton label={'Vote'} position={position} election={election} />
             )}
-            {!hasPassedVoting && (
-              <Nominations
-                positionId={position.id}
-                election={election}
-                user={user}
-                showSupport={canCreateNominations}
-                isBeingVoted={isBeingVoted}
-              />
-            )}
-            {hasPassedVoting && (
-              <ElectionResults election={election} positionId={position.id} user={user} />
-            )}
+            <Nominations
+              positionId={position.id}
+              election={election}
+              user={user}
+              showSupport={canCreateNominations}
+              isBeingVoted={isBeingVoted}
+            />
           </Fragment>
         )
       })}
