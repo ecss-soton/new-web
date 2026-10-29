@@ -19,6 +19,7 @@
     "test:member-import": "ts-node src/payload/utilities/memberCsv.test.ts && ts-node src/payload/utilities/checkCsvAccounts.test.ts && ts-node src/payload/utilities/susuMembers.test.ts",
     "test:elections": "ts-node src/payload/utilities/electionStandings.test.ts && ts-node src/utilities/nominationLabel.test.ts",
     "test:event-calendar": "ts-node src/utilities/richText.test.ts && ts-node src/utilities/eventCalendar.test.ts",
+    "test:logic-gate": "ts-node src/utilities/games/logicGate/parse.test.ts",
     "migrate:event-categories": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/migrateEventCategories.ts",
     "migrate:wordle-scores": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/migrateWordleScores.ts",
     "migrate:booking-indexes": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts ts-node src/scripts/migrateBookingIndexes.ts",

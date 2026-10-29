@@ -62,12 +62,24 @@ const wordleRating = (stats: LeaderboardStats): number =>
   stats.maxStreak * 2 -
   stats.average * 30
 
+/**
+ * Every Logic Gate Lab target is solvable with three gates, so three is par.
+ * The ECSSle penalty (average * 30) is tuned for ~4-5 guesses and far outweighs
+ * the per-solve credit here, which made a normal 3-gate first solve come out
+ * negative (20 + 35 + 7 - 90). Only gates above par are penalised, and the
+ * result is floored at 0 so a weak first solve never shows a negative rating.
+ */
+const LOGIC_GATE_PAR_GATES = 3
+
 const logicGateRating = (stats: LeaderboardStats): number =>
-  stats.wins * 20 +
-  Math.log(stats.wins + 1) * 50 +
-  stats.currentStreak * 5 +
-  stats.maxStreak * 2 -
-  stats.average * 30
+  Math.max(
+    0,
+    stats.wins * 20 +
+      Math.log(stats.wins + 1) * 50 +
+      stats.currentStreak * 5 +
+      stats.maxStreak * 2 -
+      Math.max(0, stats.average - LOGIC_GATE_PAR_GATES) * 20,
+  )
 
 export const GAME_LEADERBOARD_CONFIGS: Record<string, GameLeaderboardConfig> = {
   wordle: {

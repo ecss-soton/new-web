@@ -35,8 +35,8 @@ Use this guide before broad exploration. Read only the files relevant to the req
 - Node, MongoDB, and Rust are required. Election counting also requires the `stv-rs` binary (`cargo install stv-rs`).
 - Copy `.env.example` to `.env`; never commit `.env` or real credentials.
 - The application reads `DATABASE_URI`, `PAYLOAD_SECRET`, `PAYLOAD_PUBLIC_SERVER_URL`, and `NEXT_PUBLIC_SERVER_URL`.
-- `npm run dev` starts the custom Express/Payload server and Next development flow.
-- `npm run seed` **drops the database**. Never run it against shared or production data.
+- `npm run dev` starts the custom Express/Payload server and Next development flow. You are allowed to run this, but only if absolutely necessarily. Ideally run this by the user first.
+- `npm run seed` **drops the database**. Never run it against shared or production data. DANGEROUS.
 - The README’s `mongorestore` dump path may not exist in every checkout; verify before relying on it.
 
 ## Commands

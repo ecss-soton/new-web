@@ -298,6 +298,43 @@
   }
 }
 
+// Small screens show one toggle (naming the view it switches to) instead of the
+// two-button control, which saves horizontal space next to Subscribe.
+.viewToggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--theme-elevation-200);
+  border-radius: 6px;
+  background-color: var(--theme-elevation-100);
+  color: var(--theme-elevation-1000);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--theme-elevation-150);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ecss-red);
+    outline-offset: 2px;
+  }
+}
+
+@include small-break {
+  .viewButtons {
+    display: none;
+  }
+
+  .viewToggle {
+    display: inline-flex;
+  }
+}
+
 .hackathonGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

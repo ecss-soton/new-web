@@ -298,6 +298,19 @@ export const CollectionArchive: React.FC<Props> = props => {
                       Calendar
                     </button>
                   </div>
+                  {/*
+                    On small screens the two-button control is replaced by a single
+                    toggle that names the view it switches to, so the toolbar
+                    still fits beside the Subscribe button.
+                  */}
+                  <button
+                    type="button"
+                    className={classes.viewToggle}
+                    onClick={() => setUseCalendarView(current => !current)}
+                    aria-label={`Switch to ${useCalendarView ? 'timeline' : 'calendar'} view`}
+                  >
+                    {useCalendarView ? 'Timeline' : 'Calendar'}
+                  </button>
                   <SubscribeDialog />
                 </div>
               </div>
