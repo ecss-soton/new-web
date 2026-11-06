@@ -98,6 +98,10 @@ Do not hand-edit generated files when the generation commands are available. If 
 - Use the custom table endpoints rather than opening generic table writes.
 - Capacity, membership, and seating are integrity-sensitive. Validate booking-open status, event membership, seat bounds, and duplicate seat assignments on the server.
 - Avoid exposing guest names, join codes, or seat plans to non-members.
+- Guest list: imports accept the full `sotonId,name,plusOneCount,dietaryRequirements` CSV, a bare sotonId list, or sotonId + name pairs (header optional, `,`/`;`/tab). Parser/formatter live in `src/payload/utilities/ticketHoldersCsv.ts`; `POST /api/ticket-holders/import-csv` takes `mode: 'add' | 'overwrite'` (add never rewrites existing guests), `POST /api/ticket-holders/import-users` adds selected website accounts with no plus-ones, and `GET /api/ticket-holders/export-csv?eventId=` returns the re-importable file. All are admin-only.
+- Plus-ones: a member's guest-list `plusOneCount` reserves seats in `memberCount` (`src/payload/utilities/memberCount.ts`) and they place those seats themselves as `seatPositions[].plusOneOf` entries; the label is derived server-side. Members may only move their own seat and their own plus-ones; owners/admins may rearrange everything.
+- Table names: `tables.nameMode` is a two-option select (`ownerName` default → "Indigo's Table", or `joinCode` → "Table ABCD2345"). The owner/admin toggles it on the seat plan via `PATCH /api/tables/:id/name`; the name is derived with `src/utilities/booking/tableName.ts` wherever tables are rendered. There is deliberately no free-text name.
+- Tests: `npm run test:booking` (CSV parser/formatter, table naming and the seat-plan rules against an in-memory Payload stand-in; Node's `node:test` via `ts-node`).
 
 ### Jumpstart
 

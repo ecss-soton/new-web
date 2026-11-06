@@ -8,14 +8,16 @@ import { getTableByJoinCode } from './getTableByJoinCode'
 interface SeatPosition {
   seatIndex: number
   userId?: string | null
+  plusOneOf?: string | null
   name: string
 }
 
 /**
- * Drops the seats belonging to a departing member. New rows are keyed by
- * `userId`; rows written before that field existed only carry a display name, so
- * those fall back to a name match (ambiguous when two members share a name —
- * they are rewritten with a `userId` on the next seat save).
+ * Drops the seats belonging to a departing member, including the seats their
+ * plus-ones were placed in. New rows are keyed by `userId`/`plusOneOf`; rows
+ * written before those fields existed only carry a display name, so those fall
+ * back to a name match (ambiguous when two members share a name — they are
+ * rewritten with a `userId` on the next seat save).
  */
 const removeMemberSeats = (
   seatPositions: unknown,
@@ -27,6 +29,9 @@ const removeMemberSeats = (
   return (seatPositions as SeatPosition[]).filter(seat => {
     const seatUserId = relationshipId(seat?.userId)
     if (seatUserId) return seatUserId !== userId
+
+    if (relationshipId(seat?.plusOneOf) === userId) return false
+
     return !userName || seat?.name !== userName
   })
 }

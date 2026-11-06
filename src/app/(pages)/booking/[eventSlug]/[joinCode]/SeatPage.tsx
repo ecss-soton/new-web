@@ -3,8 +3,14 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { User } from '../../../../../payload/payload-types'
+import type { TableNameMode } from '../../../../../utilities/booking/tableName'
 import type { SeatAssignment, TableSeatData } from '../../../../_api/fetchBooking'
-import { fetchTableSeats, joinTable, updateSeats } from '../../../../_api/fetchBooking'
+import {
+  fetchTableSeats,
+  joinTable,
+  setTableNameMode,
+  updateSeats,
+} from '../../../../_api/fetchBooking'
 import { SeatLayout } from '../../../../_components/SeatLayout'
 
 export const SeatPage: React.FC<{
@@ -43,6 +49,11 @@ export const SeatPage: React.FC<{
 
   const handleSave = async (seatPositions: SeatAssignment[]) => {
     await updateSeats(joinCode, seatPositions, token)
+    await loadSeats()
+  }
+
+  const handleRename = async (nameMode: TableNameMode) => {
+    await setTableNameMode(joinCode, nameMode, token)
     await loadSeats()
   }
 
@@ -137,6 +148,10 @@ export const SeatPage: React.FC<{
         members={data.members}
         currentUserId={user?.id}
         joinCode={data.joinCode}
+        name={data.name}
+        nameMode={data.nameMode}
+        canRename={data.canRename}
+        onRename={handleRename}
         eventSlug={data.eventSlug || eventSlug}
         isMember={data.isMember}
         canEdit={data.isMember && (!data.locked || data.isAdmin)}

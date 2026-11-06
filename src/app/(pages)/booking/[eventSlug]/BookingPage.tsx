@@ -239,7 +239,7 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
             }}
           >
             <h2 style={{ marginTop: 0, marginBottom: '0.5rem' }}>
-              Your Table: {yourTable.joinCode}
+              Your Table: {yourTable.name || yourTable.joinCode}
               {yourTable.locked && ' 🔒'}
             </h2>
             <p style={{ color: 'var(--color-base-400)', margin: 0 }}>
@@ -283,6 +283,7 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
               key={table.joinCode}
               id={table.joinCode}
               joinCode={table.joinCode}
+              name={table.name}
               locked={table.locked}
               isOwner={table.isOwner}
               members={table.members}

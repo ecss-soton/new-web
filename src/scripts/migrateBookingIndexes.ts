@@ -31,6 +31,7 @@ interface NativeCollection {
 interface SeatPosition {
   seatIndex: number
   userId?: string | null
+  plusOneOf?: string | null
   name?: string | null
 }
 
@@ -215,6 +216,14 @@ const migrate = async (): Promise<void> => {
           userId: seatUserId,
           name: nameById.get(seatUserId) ?? seat.name ?? 'Unknown',
         })
+        continue
+      }
+
+      // Plus-one seats postdate this migration; keep them untouched if it is ever
+      // re-run, otherwise the rebuild would silently drop the guest's plus-one.
+      const plusOneOf = relationshipId(seat?.plusOneOf)
+      if (plusOneOf && members.includes(plusOneOf)) {
+        seats.push({ seatIndex, plusOneOf, name: seat.name ?? 'Unknown' })
         continue
       }
 

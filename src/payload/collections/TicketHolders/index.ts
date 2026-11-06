@@ -1,46 +1,31 @@
+import type { BeforeValidateHook } from 'payload/dist/collections/config/types'
 import type { CollectionConfig } from 'payload/types'
 
 import { admins } from '../../access/admins'
-import { isAdmin } from '../../access/isAdmin'
+import type { TicketHolder } from '../../payload-types'
 import { normalizeSotonId } from '../../utilities/sotonId'
 import Groups from '../groups'
+import { exportTicketHolderCsv } from './endpoints/exportCsv'
+import { importTicketHolderCsv } from './endpoints/importCsv'
+import { importTicketHolderUsers } from './endpoints/importUsers'
 
 /**
- * Splits one CSV row, honouring double-quoted fields (including escaped `""`).
- * Guest names are the reason this exists — a name like `Lovelace, Ada` would
- * otherwise shift every later column.
+ * Keeps hand-edited rows matching the guest-list rules: the Azure AD
+ * `mailNickname` is stored lower-cased and without the email domain, and every
+ * booking lookup compares against that form.
  */
-const splitCsvLine = (line: string): string[] => {
-  const fields: string[] = []
-  let current = ''
-  let inQuotes = false
+const normaliseSotonIdField: BeforeValidateHook<TicketHolder> = ({ data }) => {
+  if (!data) return data
 
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i]
-
-    if (inQuotes) {
-      if (char === '"') {
-        if (line[i + 1] === '"') {
-          current += '"'
-          i++
-        } else {
-          inQuotes = false
-        }
-      } else {
-        current += char
-      }
-    } else if (char === '"') {
-      inQuotes = true
-    } else if (char === ',') {
-      fields.push(current)
-      current = ''
-    } else {
-      current += char
-    }
+  if (typeof data.sotonId === 'string') {
+    data.sotonId = normalizeSotonId(data.sotonId)
   }
 
-  fields.push(current)
-  return fields.map(field => field.trim())
+  if (typeof data.name === 'string') {
+    data.name = data.name.trim()
+  }
+
+  return data
 }
 
 export const TicketHolders: CollectionConfig = {
@@ -59,6 +44,9 @@ export const TicketHolders: CollectionConfig = {
     create: admins,
     update: admins,
     delete: admins,
+  },
+  hooks: {
+    beforeValidate: [normaliseSotonIdField],
   },
   fields: [
     {
@@ -115,135 +103,17 @@ export const TicketHolders: CollectionConfig = {
     {
       path: '/import-csv',
       method: 'post',
-      handler: async (req, res) => {
-        const { user, payload } = req
-
-        if (!user || !isAdmin(user)) {
-          return res.status(401).json({ error: 'Admin access required' })
-        }
-
-        const { csv, eventId } = req.body as { csv?: string; eventId?: string }
-
-        if (!csv || typeof csv !== 'string') {
-          return res.status(400).json({ error: 'Missing "csv" field with CSV text' })
-        }
-
-        if (!eventId) {
-          return res.status(400).json({ error: 'Missing "eventId" field' })
-        }
-
-        // Verify event exists, and keep it so rows can be validated against the
-        // event's seat allocation.
-        let event
-        try {
-          event = await payload.findByID({
-            collection: 'booking-events',
-            id: eventId,
-            depth: 0,
-          })
-        } catch {
-          return res.status(400).json({ error: 'Event not found' })
-        }
-
-        const seatsPerTable = event.seatsPerTable || 10
-
-        const lines = csv
-          .split('\n')
-          .map(l => l.trim())
-          .filter(l => l.length > 0 && !l.startsWith('#'))
-
-        if (lines.length === 0) {
-          return res.status(400).json({ error: 'CSV is empty' })
-        }
-
-        // First line is header: sotonId,name,plusOneCount,dietaryRequirements
-        const header = splitCsvLine(lines[0]).map(h => h.toLowerCase())
-        const rows = lines.slice(1)
-
-        let created = 0
-        let updated = 0
-        const errors: string[] = []
-
-        for (let i = 0; i < rows.length; i++) {
-          const cols = splitCsvLine(rows[i])
-          const record: Record<string, string> = {}
-          for (let j = 0; j < header.length; j++) {
-            record[header[j]] = cols[j] || ''
-          }
-
-          // Accept either a university username ("ab1c23") or an email
-          // ("ab1c23@soton.ac.uk"); guest-list checks compare against the
-          // Azure AD mailNickname.
-          const sotonId = normalizeSotonId(record.sotonid)
-          const name = record.name
-
-          if (!sotonId || !name) {
-            errors.push(`Row ${i + 1}: missing sotonId or name`)
-            continue
-          }
-
-          const plusOneCount = Math.max(0, parseInt(record.plusonecount, 10) || 0)
-          const dietary = record.dietaryrequirements || ''
-
-          // A guest who cannot fit at an empty table can never be seated.
-          if (1 + plusOneCount > seatsPerTable) {
-            errors.push(
-              `Row ${i + 1} (${sotonId}): needs ${
-                1 + plusOneCount
-              } seats but a table only has ${seatsPerTable}`,
-            )
-            continue
-          }
-
-          try {
-            const existing = await payload.find({
-              collection: 'ticket-holders',
-              where: {
-                and: [{ sotonId: { equals: sotonId } }, { event: { equals: eventId } }],
-              },
-              limit: 1,
-              depth: 0,
-            })
-
-            if (existing.totalDocs > 0) {
-              await payload.update({
-                collection: 'ticket-holders',
-                id: existing.docs[0].id,
-                data: {
-                  event: eventId,
-                  name,
-                  plusOneCount,
-                  dietaryRequirements: dietary || undefined,
-                },
-              })
-              updated++
-            } else {
-              await payload.create({
-                collection: 'ticket-holders',
-                data: {
-                  event: eventId,
-                  sotonId,
-                  name,
-                  plusOneCount,
-                  dietaryRequirements: dietary || undefined,
-                },
-              })
-              created++
-            }
-          } catch (err: unknown) {
-            const msg = err instanceof Error ? err.message : 'Unknown error'
-            errors.push(`Row ${i + 1} (${sotonId}): ${msg}`)
-          }
-        }
-
-        return res.json({
-          success: errors.length === 0,
-          summary: `Created ${created}, updated ${updated}, errors ${errors.length}`,
-          created,
-          updated,
-          errors: errors.length > 0 ? errors : undefined,
-        })
-      },
+      handler: importTicketHolderCsv,
+    },
+    {
+      path: '/import-users',
+      method: 'post',
+      handler: importTicketHolderUsers,
+    },
+    {
+      path: '/export-csv',
+      method: 'get',
+      handler: exportTicketHolderCsv,
     },
   ],
 }
