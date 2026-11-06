@@ -1435,6 +1435,7 @@ export interface Table {
   id: string;
   event: string | BookingEvent;
   joinCode: string;
+  nameMode?: ('ownerName' | 'joinCode') | null;
   owner: string | User;
   locked?: boolean | null;
   members?: (string | User)[] | null;
@@ -1443,6 +1444,7 @@ export interface Table {
     | {
         seatIndex: number;
         userId?: (string | null) | User;
+        plusOneOf?: (string | null) | User;
         name: string;
         id?: string | null;
       }[]

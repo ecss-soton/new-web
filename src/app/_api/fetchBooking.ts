@@ -1,3 +1,4 @@
+import type { TableNameMode } from '../../utilities/booking/tableName'
 import { GRAPHQL_API_URL } from './shared'
 
 const API_URL = GRAPHQL_API_URL
@@ -5,11 +6,18 @@ const API_URL = GRAPHQL_API_URL
 export interface BookingTable {
   id: string
   joinCode: string
+  /** Human-readable name: the owner's first name or the join code. */
+  name?: string
   locked: boolean
   isOwner: boolean
   members: Array<{ id: string; name: string }>
   memberCount: number
-  seatPositions?: Array<{ seatIndex: number; userId?: string | null; name: string }> | null
+  seatPositions?: Array<{
+    seatIndex: number
+    userId?: string | null
+    plusOneOf?: string | null
+    name: string
+  }> | null
 }
 
 export interface BookingEventData {
@@ -24,12 +32,27 @@ export interface BookingEventData {
 export interface SeatAssignment {
   seatIndex: number
   userId?: string
+  /** A plus-one seat: the member whose ticket it belongs to. */
+  plusOneOf?: string
   name?: string
 }
 
+export interface BookingSeat {
+  userId: string | null
+  plusOneOf: string | null
+  name: string
+}
+
+export interface TableMember {
+  id: string
+  name: string
+  /** From the event guest list; how many plus-one seats this member may place. */
+  plusOneCount: number
+}
+
 export interface TableSeatData {
-  seats: Array<{ userId: string | null; name: string } | null>
-  members: Array<{ id: string; name: string }>
+  seats: Array<BookingSeat | null>
+  members: TableMember[]
   yourTable: boolean
   isMember: boolean
   /** The viewer owns the table, so they may rearrange every seat. */
@@ -40,6 +63,11 @@ export interface TableSeatData {
   bookingOpen: boolean
   canJoin: boolean
   joinCode: string
+  /** Human-readable table name shown instead of the join code. */
+  name: string
+  nameMode: TableNameMode
+  /** Owner or admin: may switch between the owner name and the join code. */
+  canRename: boolean
   eventSlug: string
   seatsPerTable: number
   memberCount: number
@@ -156,5 +184,23 @@ export async function updateSeats(
     cache: 'no-store',
   })
   if (!res.ok) throw new Error(await readErrorMessage(res, 'Failed to save seats'))
+  return res.json()
+}
+
+export async function setTableNameMode(
+  joinCode: string,
+  nameMode: TableNameMode,
+  token: string,
+): Promise<{ success: boolean; nameMode: TableNameMode; name: string }> {
+  const res = await fetch(`${API_URL}/api/tables/${encodeURIComponent(joinCode)}/name`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `JWT ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ nameMode }),
+    cache: 'no-store',
+  })
+  if (!res.ok) throw new Error(await readErrorMessage(res, 'Failed to change the table name'))
   return res.json()
 }

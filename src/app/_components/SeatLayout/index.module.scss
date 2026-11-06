@@ -25,11 +25,82 @@
   }
 }
 
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  margin-bottom: 2rem;
+}
+
 .title {
   text-align: center;
-  margin-bottom: 2rem;
+  margin: 0;
   font-size: 1.5rem;
   color: var(--color-base-100);
+}
+
+// The owner's two-option naming switch, sitting to the right of the title.
+// Only ever offers "owner name" and "join code" — never free text.
+.nameToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: transparent;
+  border: none;
+  padding: 0.25rem 0.35rem;
+  border-radius: 6px;
+  color: var(--color-base-300);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+
+  &:hover:not(:disabled) {
+    color: var(--color-base-100);
+    background: var(--color-base-900);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-base-100);
+    outline-offset: 2px;
+  }
+}
+
+.switchTrack {
+  position: relative;
+  display: inline-block;
+  width: 2rem;
+  height: 1.1rem;
+  border-radius: 999px;
+  background: var(--color-base-700);
+  border: 1px solid var(--color-base-600);
+  flex: none;
+}
+
+.switchKnob {
+  position: absolute;
+  top: 50%;
+  left: 0.15rem;
+  transform: translateY(-50%);
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--color-base-200);
+  transition: left 0.15s;
+}
+
+.nameToggle[aria-checked='true'] .switchKnob {
+  left: calc(100% - 0.9rem);
+}
+
+.switchLabel {
+  white-space: nowrap;
 }
 
 .tableContainer {
@@ -94,6 +165,11 @@
   border: 2px solid var(--color-base-100);
 }
 
+.swatchPlusOne {
+  background: var(--color-warning-900);
+  border: 2px solid var(--color-warning-500);
+}
+
 // The ring is laid out entirely in percentages of this square box, so seats
 // scale with the container instead of overflowing. `container-type` makes `cqw`
 // resolve against this box, which is what keeps the text scaling with the
@@ -137,6 +213,19 @@
   font-size: 1.4em;
   font-weight: 700;
   color: var(--color-base-100);
+}
+
+.tableName {
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--color-base-100);
+  text-align: center;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .seat {
@@ -195,6 +284,19 @@
 .mine {
   border-color: var(--color-base-100) !important;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22), inset 0 0 0 3px rgba(0, 0, 0, 0.35);
+}
+
+// A plus-one seat is a guest like any other, but the warning tint separates it
+// from a full member seat at a glance.
+.plusOneSeat {
+  background: var(--color-warning-900);
+  border-color: var(--color-warning-600);
+  color: var(--color-warning-100);
+
+  &:hover {
+    background: var(--color-warning-850);
+    border-color: var(--color-warning-500);
+  }
 }
 
 .editing {
@@ -303,6 +405,15 @@
   }
 }
 
+.plusOneBtn {
+  border-color: var(--color-warning-700);
+  color: var(--color-warning-200);
+
+  &:hover {
+    background: var(--color-warning-900);
+  }
+}
+
 .cancelBtn {
   background: transparent;
   color: var(--color-base-400);
@@ -340,6 +451,15 @@
 .unassignedName {
   background: var(--color-base-850);
   color: var(--color-base-200);
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+.unassignedPlusOne {
+  background: var(--color-warning-900);
+  color: var(--color-warning-200);
+  border: 1px solid var(--color-warning-700);
   padding: 0.3rem 0.75rem;
   border-radius: 20px;
   font-size: 0.85rem;

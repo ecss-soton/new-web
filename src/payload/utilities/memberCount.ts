@@ -1,25 +1,33 @@
 import type { Payload } from 'payload'
 
+import { relationshipIds } from './relationships'
 import { normalizeSotonId } from './sotonId'
 
+/** Mirrors the `plusOneCount` field bounds on `ticket-holders`. */
+const MAX_PLUS_ONE_COUNT = 9
+
+/** Duplicate ids in `members` are corrupt data; count each guest once. */
+const uniqueMemberIds = (members: Array<string | { id: string }> | null | undefined): string[] => [
+  ...new Set(relationshipIds(members)),
+]
+
 /**
- * The capacity ledger for a table is derived from its members' guest-list entries:
- * every member consumes one seat plus however many plus-ones their ticket allows.
+ * How many plus-ones each member of a table is allowed, read from the event's
+ * guest list. The seat plan and the capacity ledger both use this, so a guest
+ * can never be given more plus-one seats than their ticket allows.
  *
- * Deriving it on every write (rather than incrementing/decrementing it) keeps it
- * correct when the guest list is re-imported mid-booking, and means an admin edit
- * through the generic REST API cannot leave it out of sync with `members`.
+ * Members whose account no longer exists (or who have no username) are absent
+ * from the map and are treated as zero plus-ones.
  */
-export const computeMemberCount = async (
+export const getPlusOneAllowances = async (
   payload: Payload,
   eventId: string,
   members: Array<string | { id: string }> | null | undefined,
-): Promise<number> => {
-  const memberIds = (Array.isArray(members) ? members : [])
-    .map(member => (typeof member === 'string' ? member : member?.id))
-    .filter((id): id is string => typeof id === 'string' && id.length > 0)
+): Promise<Map<string, number>> => {
+  const memberIds = uniqueMemberIds(members)
+  const allowances = new Map<string, number>()
 
-  if (memberIds.length === 0) return 0
+  if (memberIds.length === 0) return allowances
 
   const users = await payload.find({
     collection: 'users',
@@ -53,16 +61,42 @@ export const computeMemberCount = async (
     if (!key) continue
     const count = typeof holder.plusOneCount === 'number' ? holder.plusOneCount : 0
     // Defensive: duplicate guest-list rows can't be counted twice.
-    plusOnesBySotonId.set(key, Math.max(plusOnesBySotonId.get(key) ?? 0, Math.max(0, count)))
+    plusOnesBySotonId.set(
+      key,
+      Math.max(plusOnesBySotonId.get(key) ?? 0, Math.min(MAX_PLUS_ONE_COUNT, Math.max(0, count))),
+    )
   }
+
+  for (const user of users.docs) {
+    allowances.set(user.id, plusOnesBySotonId.get(normalizeSotonId(user.username as string)) ?? 0)
+  }
+
+  return allowances
+}
+
+/**
+ * The capacity ledger for a table is derived from its members' guest-list entries:
+ * every member consumes one seat plus however many plus-ones their ticket allows.
+ *
+ * Deriving it on every write (rather than incrementing/decrementing it) keeps it
+ * correct when the guest list is re-imported mid-booking, and means an admin edit
+ * through the generic REST API cannot leave it out of sync with `members`.
+ */
+export const computeMemberCount = async (
+  payload: Payload,
+  eventId: string,
+  members: Array<string | { id: string }> | null | undefined,
+): Promise<number> => {
+  const memberIds = uniqueMemberIds(members)
+  if (memberIds.length === 0) return 0
+
+  const allowances = await getPlusOneAllowances(payload, eventId, memberIds)
 
   let total = 0
-  for (const user of users.docs) {
-    total += 1 + (plusOnesBySotonId.get(normalizeSotonId(user.username as string)) ?? 0)
+  for (const id of memberIds) {
+    // Members whose user record has since been deleted still occupy a seat.
+    total += 1 + (allowances.get(id) ?? 0)
   }
-
-  // Members whose user record has since been deleted still occupy a seat.
-  total += Math.max(0, memberIds.length - users.docs.length)
 
   return total
 }

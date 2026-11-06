@@ -26350,6 +26350,7 @@ type Table {
   id: String
   event: BookingEvent!
   joinCode: String!
+  nameMode: Table_nameMode
   owner: User!
   locked: Boolean
   members: [User!]
@@ -26359,9 +26360,15 @@ type Table {
   createdAt: DateTime
 }
 
+enum Table_nameMode {
+  ownerName
+  joinCode
+}
+
 type Table_SeatPositions {
   seatIndex: Float
   userId: User
+  plusOneOf: User
   name: String
   id: String
 }
@@ -26383,12 +26390,14 @@ type Tables {
 input Table_where {
   event: Table_event_operator
   joinCode: Table_joinCode_operator
+  nameMode: Table_nameMode_operator
   owner: Table_owner_operator
   locked: Table_locked_operator
   members: Table_members_operator
   memberCount: Table_memberCount_operator
   seatPositions__seatIndex: Table_seatPositions__seatIndex_operator
   seatPositions__userId: Table_seatPositions__userId_operator
+  seatPositions__plusOneOf: Table_seatPositions__plusOneOf_operator
   seatPositions__name: Table_seatPositions__name_operator
   seatPositions__id: Table_seatPositions__id_operator
   updatedAt: Table_updatedAt_operator
@@ -26414,6 +26423,20 @@ input Table_joinCode_operator {
   in: [String]
   not_in: [String]
   all: [String]
+}
+
+input Table_nameMode_operator {
+  equals: Table_nameMode_Input
+  not_equals: Table_nameMode_Input
+  in: [Table_nameMode_Input]
+  not_in: [Table_nameMode_Input]
+  all: [Table_nameMode_Input]
+  exists: Boolean
+}
+
+enum Table_nameMode_Input {
+  ownerName
+  joinCode
 }
 
 input Table_owner_operator {
@@ -26459,6 +26482,15 @@ input Table_seatPositions__seatIndex_operator {
 }
 
 input Table_seatPositions__userId_operator {
+  equals: JSON
+  not_equals: JSON
+  in: [JSON]
+  not_in: [JSON]
+  all: [JSON]
+  exists: Boolean
+}
+
+input Table_seatPositions__plusOneOf_operator {
   equals: JSON
   not_equals: JSON
   in: [JSON]
@@ -26524,12 +26556,14 @@ input Table_id_operator {
 input Table_where_and {
   event: Table_event_operator
   joinCode: Table_joinCode_operator
+  nameMode: Table_nameMode_operator
   owner: Table_owner_operator
   locked: Table_locked_operator
   members: Table_members_operator
   memberCount: Table_memberCount_operator
   seatPositions__seatIndex: Table_seatPositions__seatIndex_operator
   seatPositions__userId: Table_seatPositions__userId_operator
+  seatPositions__plusOneOf: Table_seatPositions__plusOneOf_operator
   seatPositions__name: Table_seatPositions__name_operator
   seatPositions__id: Table_seatPositions__id_operator
   updatedAt: Table_updatedAt_operator
@@ -26542,12 +26576,14 @@ input Table_where_and {
 input Table_where_or {
   event: Table_event_operator
   joinCode: Table_joinCode_operator
+  nameMode: Table_nameMode_operator
   owner: Table_owner_operator
   locked: Table_locked_operator
   members: Table_members_operator
   memberCount: Table_memberCount_operator
   seatPositions__seatIndex: Table_seatPositions__seatIndex_operator
   seatPositions__userId: Table_seatPositions__userId_operator
+  seatPositions__plusOneOf: Table_seatPositions__plusOneOf_operator
   seatPositions__name: Table_seatPositions__name_operator
   seatPositions__id: Table_seatPositions__id_operator
   updatedAt: Table_updatedAt_operator
@@ -26572,6 +26608,7 @@ type tablesDocAccess {
 type TablesDocAccessFields {
   event: TablesDocAccessFields_event
   joinCode: TablesDocAccessFields_joinCode
+  nameMode: TablesDocAccessFields_nameMode
   owner: TablesDocAccessFields_owner
   locked: TablesDocAccessFields_locked
   members: TablesDocAccessFields_members
@@ -26624,6 +26661,29 @@ type TablesDocAccessFields_joinCode_Update {
 }
 
 type TablesDocAccessFields_joinCode_Delete {
+  permission: Boolean!
+}
+
+type TablesDocAccessFields_nameMode {
+  create: TablesDocAccessFields_nameMode_Create
+  read: TablesDocAccessFields_nameMode_Read
+  update: TablesDocAccessFields_nameMode_Update
+  delete: TablesDocAccessFields_nameMode_Delete
+}
+
+type TablesDocAccessFields_nameMode_Create {
+  permission: Boolean!
+}
+
+type TablesDocAccessFields_nameMode_Read {
+  permission: Boolean!
+}
+
+type TablesDocAccessFields_nameMode_Update {
+  permission: Boolean!
+}
+
+type TablesDocAccessFields_nameMode_Delete {
   permission: Boolean!
 }
 
@@ -26746,6 +26806,7 @@ type TablesDocAccessFields_seatPositions_Delete {
 type TablesDocAccessFields_seatPositions_Fields {
   seatIndex: TablesDocAccessFields_seatPositions_seatIndex
   userId: TablesDocAccessFields_seatPositions_userId
+  plusOneOf: TablesDocAccessFields_seatPositions_plusOneOf
   name: TablesDocAccessFields_seatPositions_name
   id: TablesDocAccessFields_seatPositions_id
 }
@@ -26793,6 +26854,29 @@ type TablesDocAccessFields_seatPositions_userId_Update {
 }
 
 type TablesDocAccessFields_seatPositions_userId_Delete {
+  permission: Boolean!
+}
+
+type TablesDocAccessFields_seatPositions_plusOneOf {
+  create: TablesDocAccessFields_seatPositions_plusOneOf_Create
+  read: TablesDocAccessFields_seatPositions_plusOneOf_Read
+  update: TablesDocAccessFields_seatPositions_plusOneOf_Update
+  delete: TablesDocAccessFields_seatPositions_plusOneOf_Delete
+}
+
+type TablesDocAccessFields_seatPositions_plusOneOf_Create {
+  permission: Boolean!
+}
+
+type TablesDocAccessFields_seatPositions_plusOneOf_Read {
+  permission: Boolean!
+}
+
+type TablesDocAccessFields_seatPositions_plusOneOf_Update {
+  permission: Boolean!
+}
+
+type TablesDocAccessFields_seatPositions_plusOneOf_Delete {
   permission: Boolean!
 }
 
@@ -42967,6 +43051,7 @@ type tablesAccess {
 type TablesFields {
   event: TablesFields_event
   joinCode: TablesFields_joinCode
+  nameMode: TablesFields_nameMode
   owner: TablesFields_owner
   locked: TablesFields_locked
   members: TablesFields_members
@@ -43019,6 +43104,29 @@ type TablesFields_joinCode_Update {
 }
 
 type TablesFields_joinCode_Delete {
+  permission: Boolean!
+}
+
+type TablesFields_nameMode {
+  create: TablesFields_nameMode_Create
+  read: TablesFields_nameMode_Read
+  update: TablesFields_nameMode_Update
+  delete: TablesFields_nameMode_Delete
+}
+
+type TablesFields_nameMode_Create {
+  permission: Boolean!
+}
+
+type TablesFields_nameMode_Read {
+  permission: Boolean!
+}
+
+type TablesFields_nameMode_Update {
+  permission: Boolean!
+}
+
+type TablesFields_nameMode_Delete {
   permission: Boolean!
 }
 
@@ -43141,6 +43249,7 @@ type TablesFields_seatPositions_Delete {
 type TablesFields_seatPositions_Fields {
   seatIndex: TablesFields_seatPositions_seatIndex
   userId: TablesFields_seatPositions_userId
+  plusOneOf: TablesFields_seatPositions_plusOneOf
   name: TablesFields_seatPositions_name
   id: TablesFields_seatPositions_id
 }
@@ -43188,6 +43297,29 @@ type TablesFields_seatPositions_userId_Update {
 }
 
 type TablesFields_seatPositions_userId_Delete {
+  permission: Boolean!
+}
+
+type TablesFields_seatPositions_plusOneOf {
+  create: TablesFields_seatPositions_plusOneOf_Create
+  read: TablesFields_seatPositions_plusOneOf_Read
+  update: TablesFields_seatPositions_plusOneOf_Update
+  delete: TablesFields_seatPositions_plusOneOf_Delete
+}
+
+type TablesFields_seatPositions_plusOneOf_Create {
+  permission: Boolean!
+}
+
+type TablesFields_seatPositions_plusOneOf_Read {
+  permission: Boolean!
+}
+
+type TablesFields_seatPositions_plusOneOf_Update {
+  permission: Boolean!
+}
+
+type TablesFields_seatPositions_plusOneOf_Delete {
   permission: Boolean!
 }
 
@@ -48851,6 +48983,7 @@ input mutationBookingEventUpdateInput {
 input mutationTableInput {
   event: String
   joinCode: String!
+  nameMode: Table_nameMode_MutationInput
   owner: String
   locked: Boolean
   members: [String]
@@ -48860,9 +48993,15 @@ input mutationTableInput {
   createdAt: String
 }
 
+enum Table_nameMode_MutationInput {
+  ownerName
+  joinCode
+}
+
 input mutationTable_SeatPositionsInput {
   seatIndex: Float!
   userId: String
+  plusOneOf: String
   name: String!
   id: String
 }
@@ -48870,6 +49009,7 @@ input mutationTable_SeatPositionsInput {
 input mutationTableUpdateInput {
   event: String
   joinCode: String
+  nameMode: TableUpdate_nameMode_MutationInput
   owner: String
   locked: Boolean
   members: [String]
@@ -48879,9 +49019,15 @@ input mutationTableUpdateInput {
   createdAt: String
 }
 
+enum TableUpdate_nameMode_MutationInput {
+  ownerName
+  joinCode
+}
+
 input mutationTableUpdate_SeatPositionsInput {
   seatIndex: Float!
   userId: String
+  plusOneOf: String
   name: String!
   id: String
 }

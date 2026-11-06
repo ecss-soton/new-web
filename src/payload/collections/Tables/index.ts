@@ -1,7 +1,9 @@
 import type { CollectionConfig } from 'payload/types'
 
+import { normalizeTableNameMode, tableDisplayName } from '../../../utilities/booking/tableName'
 import { admins } from '../../access/admins'
 import { isAdmin } from '../../access/isAdmin'
+import { getPlusOneAllowances } from '../../utilities/memberCount'
 import { relationshipId, relationshipIds } from '../../utilities/relationships'
 import Groups from '../groups'
 import { createTable } from './endpoints/createTable'
@@ -9,6 +11,7 @@ import { getTableByJoinCode } from './endpoints/getTableByJoinCode'
 import { joinTable } from './endpoints/joinTable'
 import { leaveTable } from './endpoints/leaveTable'
 import { manageSeats } from './endpoints/manageSeats'
+import { setTableNameMode } from './endpoints/setTableNameMode'
 import { toggleLock } from './endpoints/toggleLock'
 import { beforeTableChange } from './hooks/beforeTableChange'
 
@@ -21,7 +24,7 @@ export const Tables: CollectionConfig = {
   admin: {
     useAsTitle: 'joinCode',
     group: Groups.Booking,
-    defaultColumns: ['joinCode', 'owner', 'memberCount', 'locked', 'createdAt'],
+    defaultColumns: ['joinCode', 'nameMode', 'owner', 'memberCount', 'locked', 'createdAt'],
   },
   access: {
     read: () => false,
@@ -52,6 +55,26 @@ export const Tables: CollectionConfig = {
       admin: {
         readOnly: true,
         description: 'The 8-character code users share to invite others.',
+      },
+    },
+    {
+      name: 'nameMode',
+      type: 'select',
+      label: 'Table Name',
+      defaultValue: 'ownerName',
+      options: [
+        {
+          label: "Owner's first name (e.g. Indigo's Table)",
+          value: 'ownerName',
+        },
+        {
+          label: 'Join code (e.g. Table ABCD2345)',
+          value: 'joinCode',
+        },
+      ],
+      admin: {
+        description:
+          'What the table is called on the booking page. The owner can switch between these two from the seat plan; only these two options are available.',
       },
     },
     {
@@ -118,6 +141,16 @@ export const Tables: CollectionConfig = {
           },
         },
         {
+          name: 'plusOneOf',
+          type: 'relationship',
+          relationTo: 'users',
+          admin: {
+            readOnly: true,
+            description:
+              "Set when this seat is one of a member's plus-ones. The label is derived from the member's guest-list allowance.",
+          },
+        },
+        {
           name: 'name',
           type: 'text',
           required: true,
@@ -159,6 +192,31 @@ export const Tables: CollectionConfig = {
           pagination: false,
         })
 
+        // The depth-1 find populates each owner, which is where the display name
+        // comes from. A deleted account simply falls back to the join code.
+        const ownerInfoById = new Map<string, { name?: string | null; username?: string | null }>()
+        for (const table of tables.docs) {
+          const owner = table.owner as unknown
+          if (!owner || typeof owner !== 'object') continue
+          const doc = owner as { id?: string; name?: string | null; username?: string | null }
+          if (doc.id) ownerInfoById.set(doc.id, { name: doc.name, username: doc.username })
+        }
+
+        const displayNameFor = (table: {
+          joinCode: string
+          nameMode?: unknown
+          owner: unknown
+        }): string => {
+          const ownerId = relationshipId(table.owner)
+          const info = ownerId ? ownerInfoById.get(ownerId) : undefined
+          return tableDisplayName({
+            nameMode: normalizeTableNameMode(table.nameMode),
+            joinCode: table.joinCode,
+            ownerName: info?.name,
+            ownerUsername: info?.username,
+          })
+        }
+
         const yourTable = tables.docs.find(t => {
           return relationshipIds(t.members).includes(user.id)
         })
@@ -168,6 +226,7 @@ export const Tables: CollectionConfig = {
           .map(t => ({
             id: t.id,
             joinCode: t.joinCode,
+            name: displayNameFor(t),
             locked: t.locked,
             isOwner: relationshipId(t.owner) === user.id,
             members: Array.isArray(t.members)
@@ -188,6 +247,7 @@ export const Tables: CollectionConfig = {
             ? {
                 id: yourTable.id,
                 joinCode: yourTable.joinCode,
+                name: displayNameFor(yourTable),
                 locked: yourTable.locked,
                 isOwner: relationshipId(yourTable.owner) === user.id,
                 memberCount: yourTable.memberCount,
@@ -227,6 +287,11 @@ export const Tables: CollectionConfig = {
       handler: toggleLock,
     },
     {
+      path: '/:id/name',
+      method: 'patch',
+      handler: setTableNameMode,
+    },
+    {
       path: '/:id/seats',
       method: 'get',
       handler: async (req, res) => {
@@ -264,10 +329,18 @@ export const Tables: CollectionConfig = {
         const memberCount = table.memberCount || 0
         const full = memberCount >= seatsPerTable
 
-        const filledSeats: Array<{ userId: string | null; name: string } | null> =
-          Array(seatsPerTable).fill(null)
+        const filledSeats: Array<{
+          userId: string | null
+          plusOneOf: string | null
+          name: string
+        } | null> = Array(seatsPerTable).fill(null)
         const seatPositions = table.seatPositions as
-          | Array<{ seatIndex: number; userId?: string | { id: string } | null; name: string }>
+          | Array<{
+              seatIndex: number
+              userId?: string | { id: string } | null
+              plusOneOf?: string | { id: string } | null
+              name: string
+            }>
           | undefined
         if (seatPositions) {
           for (const s of seatPositions) {
@@ -278,11 +351,20 @@ export const Tables: CollectionConfig = {
             const seatUserId = relationshipId(s.userId)
             if (seatUserId && !memberIds.includes(seatUserId)) continue
 
-            filledSeats[s.seatIndex] = { userId: seatUserId ?? null, name: s.name }
+            // The same applies to a plus-one seat whose member has left.
+            const plusOneOf = relationshipId(s.plusOneOf)
+            if (plusOneOf && !memberIds.includes(plusOneOf)) continue
+
+            filledSeats[s.seatIndex] = {
+              userId: seatUserId ?? null,
+              plusOneOf: plusOneOf ?? null,
+              name: s.name,
+            }
           }
         }
 
-        const members: Array<{ id: string; name: string }> = []
+        const plusOneAllowances = await getPlusOneAllowances(payload, eventId, memberIds)
+        const members: Array<{ id: string; name: string; plusOneCount: number }> = []
 
         if (memberIds.length > 0) {
           const usersResult = await payload.find({
@@ -296,9 +378,31 @@ export const Tables: CollectionConfig = {
             members.push({
               id: u.id,
               name: (u.name as string) || (u.username as string) || 'Unknown',
+              plusOneCount: plusOneAllowances.get(u.id) ?? 0,
             })
           }
         }
+
+        const ownerId = relationshipId(table.owner)
+        let ownerName: string | null = null
+        let ownerUsername: string | null = null
+        if (ownerId) {
+          try {
+            const owner = await payload.findByID({
+              collection: 'users',
+              id: ownerId,
+              depth: 0,
+              overrideAccess: true,
+            })
+            ownerName = (owner.name as string) ?? null
+            ownerUsername = (owner.username as string) ?? null
+          } catch {
+            // A deleted owner just falls back to the join code label.
+          }
+        }
+
+        const nameMode = normalizeTableNameMode(table.nameMode)
+        const isOwner = relationshipId(table.owner) === user.id
 
         // Any signed-in user may view a table's seat plan so a shared link works
         // as an invite; joining is still gated by the guest list, the lock, the
@@ -308,13 +412,21 @@ export const Tables: CollectionConfig = {
           members,
           yourTable: isMember,
           isMember,
-          isOwner: relationshipId(table.owner) === user.id,
+          isOwner,
+          canRename: isOwner || isAdmin(user),
           isAdmin: isAdmin(user),
           locked: Boolean(table.locked),
           full,
           bookingOpen: Boolean(event.isOpen),
           canJoin: !isMember && !table.locked && Boolean(event.isOpen) && !full,
           joinCode: table.joinCode,
+          name: tableDisplayName({
+            nameMode,
+            joinCode: table.joinCode,
+            ownerName,
+            ownerUsername,
+          }),
+          nameMode,
           eventSlug: event.slug,
           seatsPerTable,
           memberCount,

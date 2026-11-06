@@ -8,6 +8,8 @@ import classes from './index.module.scss'
 type TableCardProps = {
   id: string
   joinCode: string
+  /** Human-readable table name (owner's first name or the join code). */
+  name?: string
   locked: boolean
   isOwner: boolean
   members: { id: string; name: string }[]
@@ -26,6 +28,7 @@ type TableCardProps = {
 export const TableCard: React.FC<TableCardProps> = ({
   id,
   joinCode,
+  name,
   locked,
   isOwner,
   members,
@@ -70,7 +73,7 @@ export const TableCard: React.FC<TableCardProps> = ({
     >
       <div className={classes.header}>
         <h3 className={classes.code}>
-          Table {joinCode}
+          {name || `Table ${joinCode}`}
           {locked && <span className={classes.lockIcon}> 🔒</span>}
         </h3>
         <span className={classes.capacity}>
