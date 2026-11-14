@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
 import {
+  flipCustomerName,
   formatTicketHolderCsv,
   MAX_IMPORT_ROWS,
   parseTicketHolderCsv,
@@ -233,4 +234,176 @@ test('round-trips an export through the parser', () => {
     })),
     original,
   )
+})
+
+const SALES_HEADER =
+  '" ","Customer","Email","Qty","Order Reference","Date","Member Type","Ticket Type","Price","Total","Status"'
+
+const salesRow = (customer: string, email: string, qty: string, status = 'Paid'): string =>
+  `" ","${customer}","${email}","${qty}","O/1/1","09/11/2026 16:40","Member","Ticket","\u00a329.95","\u00a329.95","${status}"`
+
+test('converts the SUSU ticket-sales export into guests', () => {
+  const csv = [
+    SALES_HEADER,
+    salesRow('Advincula, Sophia', 'sa9g24@soton.ac.uk', '2'),
+    salesRow('Agunsoye, Dara', 'opa1g26@soton.ac.uk', '1'),
+    salesRow('Almarzooq, Ali', 'aha2g24@soton.ac.uk', '1'),
+  ].join('\n')
+
+  const parsed = parseTicketHolderCsv(csv)
+
+  assert.equal(parsed.format, 'sales')
+  assert.equal(parsed.hasHeader, true)
+  assert.deepEqual(parsed.errors, [])
+  assert.deepEqual(
+    parsed.rows.map(row => ({
+      sotonId: row.sotonId,
+      name: row.name,
+      plusOneCount: row.plusOneCount,
+      dietaryRequirements: row.dietaryRequirements,
+    })),
+    [
+      {
+        sotonId: 'sa9g24',
+        name: 'Sophia Advincula',
+        plusOneCount: 1,
+        dietaryRequirements: undefined,
+      },
+      {
+        sotonId: 'opa1g26',
+        name: 'Dara Agunsoye',
+        plusOneCount: 0,
+        dietaryRequirements: undefined,
+      },
+      {
+        sotonId: 'aha2g24',
+        name: 'Ali Almarzooq',
+        plusOneCount: 0,
+        dietaryRequirements: undefined,
+      },
+    ],
+  )
+})
+
+test('adds up several orders from the same buyer', () => {
+  const csv = [
+    SALES_HEADER,
+    salesRow('Advincula, Sophia', 'sa9g24@soton.ac.uk', '1'),
+    salesRow('Advincula, Sophia', 'SA9G24@soton.ac.uk', '2'),
+  ].join('\n')
+
+  const parsed = parseTicketHolderCsv(csv)
+
+  assert.equal(parsed.rows.length, 1)
+  assert.equal(parsed.rows[0].sotonId, 'sa9g24')
+  assert.equal(parsed.rows[0].plusOneCount, 2)
+  assert.equal(parsed.rows[0].name, 'Sophia Advincula')
+})
+
+test('only imports Paid rows and reports the rest', () => {
+  const csv = [
+    SALES_HEADER,
+    salesRow('Advincula, Sophia', 'sa9g24@soton.ac.uk', '2'),
+    salesRow('Agunsoye, Dara', 'opa1g26@soton.ac.uk', '1', 'Refunded'),
+    salesRow('Almarzooq, Ali', 'aha2g24@soton.ac.uk', '1', 'Cancelled'),
+    salesRow('Almarzooq, Ali', 'aha2g24@soton.ac.uk', '1', 'Pending'),
+  ].join('\n')
+
+  const parsed = parseTicketHolderCsv(csv)
+
+  assert.deepEqual(
+    parsed.rows.map(row => row.sotonId),
+    ['sa9g24'],
+  )
+  assert.match(parsed.warnings.join('\n'), /Skipped 3 non-Paid row\(s\) .*Refunded: 1/)
+})
+
+test('includes rows with a blank status and says so', () => {
+  const csv = [SALES_HEADER, salesRow('Advincula, Sophia', 'sa9g24@soton.ac.uk', '2', '')].join(
+    '\n',
+  )
+
+  const parsed = parseTicketHolderCsv(csv)
+
+  assert.equal(parsed.rows.length, 1)
+  assert.match(parsed.warnings.join('\n'), /no status/)
+})
+
+test('imports every sales row when there is no Status column', () => {
+  const csv = [
+    'Customer,Email,Qty',
+    '"Advincula, Sophia",sa9g24@soton.ac.uk,2',
+    '"Agunsoye, Dara",opa1g26@soton.ac.uk,1',
+  ].join('\n')
+
+  const parsed = parseTicketHolderCsv(csv)
+
+  assert.equal(parsed.format, 'sales')
+  assert.equal(parsed.rows.length, 2)
+  assert.equal(parsed.rows[0].plusOneCount, 1)
+})
+
+test('treats an empty or non-numeric sales quantity as one seat', () => {
+  const csv = [
+    SALES_HEADER,
+    salesRow('Advincula, Sophia', 'sa9g24@soton.ac.uk', ''),
+    salesRow('Agunsoye, Dara', 'opa1g26@soton.ac.uk', 'loads'),
+    salesRow('Almarzooq, Ali', 'aha2g24@soton.ac.uk', '0'),
+  ].join('\n')
+
+  const parsed = parseTicketHolderCsv(csv)
+
+  assert.deepEqual(
+    parsed.rows.map(row => row.plusOneCount),
+    [0, 0, 0],
+  )
+  assert.match(parsed.warnings.join('\n'), /missing quantity/)
+  assert.match(parsed.warnings.join('\n'), /not a number/)
+})
+
+test('caps a large sales quantity at the plus-one limit', () => {
+  const parsed = parseTicketHolderCsv(
+    [SALES_HEADER, salesRow('Advincula, Sophia', 'sa9g24@soton.ac.uk', '12')].join('\n'),
+  )
+
+  assert.equal(parsed.rows[0].plusOneCount, 9)
+  assert.match(parsed.warnings.join('\n'), /plus-ones capped at 9/)
+})
+
+test('warns about sales addresses that are not soton.ac.uk', () => {
+  const parsed = parseTicketHolderCsv(
+    [SALES_HEADER, salesRow('Doe, Jane', 'jane@gmail.com', '1')].join('\n'),
+  )
+
+  assert.equal(parsed.rows[0].sotonId, 'jane')
+  assert.match(parsed.warnings.join('\n'), /not a @soton\.ac\.uk address/)
+})
+
+test('accepts a tab separated sales export with a Name column', () => {
+  const csv = ['Name\tEmail\tQty\tStatus', 'Advincula, Sophia\tsa9g24@soton.ac.uk\t2\tPaid'].join(
+    '\n',
+  )
+
+  const parsed = parseTicketHolderCsv(csv)
+
+  assert.equal(parsed.format, 'sales')
+  assert.equal(parsed.rows[0].name, 'Sophia Advincula')
+  assert.equal(parsed.rows[0].plusOneCount, 1)
+})
+
+test('flips Surname, First names', () => {
+  assert.equal(flipCustomerName('Advincula, Sophia'), 'Sophia Advincula')
+  assert.equal(flipCustomerName('Van Der Berg, Anna Maria'), 'Anna Maria Van Der Berg')
+  assert.equal(flipCustomerName('Sophia Advincula'), 'Sophia Advincula')
+  assert.equal(flipCustomerName(', Sophia'), 'Sophia')
+  assert.equal(flipCustomerName('Advincula,'), 'Advincula')
+  assert.equal(flipCustomerName('  '), undefined)
+})
+
+test('keeps ordinary guest lists on the guest-list format', () => {
+  assert.equal(
+    parseTicketHolderCsv(TICKET_HOLDER_HEADER_LINE + '\nab1c23,Ada,0,').format,
+    'guest-list',
+  )
+  assert.equal(parseTicketHolderCsv('ab1c23').format, 'guest-list')
 })

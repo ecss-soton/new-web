@@ -1,3 +1,4 @@
+import { escapeCsvField } from '../../utilities/booking/csv'
 import { normalizeSotonId } from './sotonId'
 
 /**
@@ -25,6 +26,13 @@ export const MAX_IMPORT_ROWS = 1000
 
 export type TicketHolderCsvMode = 'add' | 'overwrite'
 
+/**
+ * `sales` is the SUSU ticket-sales export (Customer / Email / Qty / Status):
+ * it is converted into the same rows, with `Qty - 1` as the plus-one count and
+ * the `Surname, First` name flipped.
+ */
+export type TicketHolderCsvFormat = 'guest-list' | 'sales'
+
 export type TicketHolderCsvColumn = (typeof TICKET_HOLDER_HEADER)[number]
 
 export interface ParsedTicketHolderRow {
@@ -45,6 +53,7 @@ export interface ParsedTicketHolderCsv {
   warnings: string[]
   hasHeader: boolean
   delimiter: ',' | '\t' | ';'
+  format: TicketHolderCsvFormat
 }
 
 /**
@@ -127,6 +136,25 @@ const detectDelimiter = (line: string): ',' | '\t' | ';' => {
   return ','
 }
 
+/**
+ * `Advincula, Sophia` -> `Sophia Advincula`. A name without a comma is already
+ * `First Last`, so it is left alone.
+ */
+export const flipCustomerName = (raw?: string | null): string | undefined => {
+  const value = typeof raw === 'string' ? raw.trim() : ''
+  if (!value) return undefined
+
+  const comma = value.indexOf(',')
+  if (comma < 0) return value
+
+  const surname = value.slice(0, comma).trim()
+  const given = value.slice(comma + 1).trim()
+
+  if (!surname) return given || undefined
+  if (!given) return surname
+  return `${given} ${surname}`
+}
+
 interface ColumnIndexes {
   sotonId?: number
   name?: number
@@ -175,6 +203,168 @@ const parsePlusOneCount = (raw: string, lineNumber: number, warnings: string[]):
   return clamped
 }
 
+interface SalesColumns {
+  email: number
+  quantity: number
+  customer?: number
+  status?: number
+}
+
+/**
+ * The SUSU ticket export is recognisable by its `Email` + `Qty` columns; the
+ * leading blank `" "` column is just an artefact of that export. Returns null for
+ * any other CSV so the guest-list formats keep their existing behaviour.
+ */
+const detectSalesColumns = (cells: string[]): SalesColumns | null => {
+  const positions = new Map<string, number>()
+  cells.forEach((cell, index) => {
+    const key = headerKey(cell)
+    if (key && !positions.has(key)) positions.set(key, index)
+  })
+
+  const email = positions.get('email')
+  const quantity = positions.get('qty') ?? positions.get('quantity')
+  if (email === undefined || quantity === undefined) return null
+
+  return {
+    email,
+    quantity,
+    customer: positions.get('customer') ?? positions.get('name'),
+    status: positions.get('status'),
+  }
+}
+
+const parseSalesQuantity = (
+  raw: string | undefined,
+  lineNumber: number,
+  warnings: string[],
+): number => {
+  const trimmed = (raw ?? '').trim()
+
+  if (!trimmed) {
+    warnings.push(`Line ${lineNumber}: missing quantity — counted as 1 seat`)
+    return 1
+  }
+
+  const parsed = Number.parseInt(trimmed, 10)
+  if (!Number.isFinite(parsed)) {
+    warnings.push(`Line ${lineNumber}: quantity "${trimmed}" is not a number — counted as 1 seat`)
+    return 1
+  }
+
+  if (parsed < 1) {
+    warnings.push(`Line ${lineNumber}: quantity ${parsed} — counted as 1 seat`)
+    return 1
+  }
+
+  return parsed
+}
+
+const plusOneCountForQuantity = (
+  quantity: number,
+  lineNumber: number,
+  warnings: string[],
+): number => {
+  const plusOneCount = Math.max(0, quantity - 1)
+  const clamped = Math.min(MAX_PLUS_ONE_COUNT, plusOneCount)
+
+  if (clamped !== plusOneCount) {
+    warnings.push(
+      `Line ${lineNumber}: ${quantity} seats for one buyer — plus-ones capped at ${MAX_PLUS_ONE_COUNT}`,
+    )
+  }
+
+  return clamped
+}
+
+/**
+ * Converts SUSU ticket-sales rows into guest rows. A buyer with several orders is
+ * one guest whose quantities add up; only `Paid` rows count (unless the file has
+ * no Status column at all).
+ */
+const parseSalesRows = (args: {
+  dataLines: string[]
+  delimiter: ',' | '\t' | ';'
+  columns: SalesColumns
+  offset: number
+  errors: string[]
+  warnings: string[]
+}): ParsedTicketHolderRow[] => {
+  const { dataLines, delimiter, columns, offset, errors, warnings } = args
+
+  interface Buyer {
+    lineNumber: number
+    sotonId: string
+    name?: string
+    quantity: number
+  }
+
+  const buyers = new Map<string, Buyer>()
+  const skippedStatuses = new Map<string, number>()
+  let blankStatusRows = 0
+
+  dataLines.forEach((line, index) => {
+    const lineNumber = index + offset
+    const cells = splitCsvLine(line, delimiter)
+    const cellAt = (columnIndex?: number): string | undefined => {
+      if (columnIndex === undefined || columnIndex >= cells.length) return undefined
+      return cells[columnIndex]
+    }
+
+    const email = cellAt(columns.email) ?? ''
+    const sotonId = normalizeSotonId(email)
+    if (!sotonId) {
+      errors.push(`Line ${lineNumber}: missing email`)
+      return
+    }
+
+    const status = (cellAt(columns.status) ?? '').trim()
+    if (status && status.toLowerCase() !== 'paid') {
+      skippedStatuses.set(status, (skippedStatuses.get(status) ?? 0) + 1)
+      return
+    }
+    if (!status && columns.status !== undefined) blankStatusRows++
+
+    if (!email.trim().toLowerCase().endsWith('@soton.ac.uk')) {
+      warnings.push(
+        `Line ${lineNumber}: "${email.trim()}" is not a @soton.ac.uk address — using "${sotonId}" as the username`,
+      )
+    }
+
+    const quantity = parseSalesQuantity(cellAt(columns.quantity), lineNumber, warnings)
+    const name = flipCustomerName(cellAt(columns.customer))
+
+    const existing = buyers.get(sotonId)
+    if (existing) {
+      existing.quantity += quantity
+      if (!existing.name && name) existing.name = name
+      return
+    }
+
+    buyers.set(sotonId, { lineNumber, sotonId, name, quantity })
+  })
+
+  if (skippedStatuses.size > 0) {
+    const breakdown = [...skippedStatuses.entries()]
+      .map(([status, count]) => `${status}: ${count}`)
+      .join(', ')
+    const skipped = [...skippedStatuses.values()].reduce((total, count) => total + count, 0)
+    warnings.push(`Skipped ${skipped} non-Paid row(s) (${breakdown})`)
+  }
+
+  if (blankStatusRows > 0) {
+    warnings.push(`Included ${blankStatusRows} row(s) with no status`)
+  }
+
+  return [...buyers.values()].map(buyer => ({
+    lineNumber: buyer.lineNumber,
+    sotonId: buyer.sotonId,
+    name: buyer.name,
+    plusOneCount: plusOneCountForQuantity(buyer.quantity, buyer.lineNumber, warnings),
+    dietaryRequirements: undefined,
+  }))
+}
+
 /**
  * Parses a pasted guest list. Row-level problems are reported in `errors` while
  * the remaining rows still parse, so one bad line never loses a whole paste.
@@ -199,11 +389,66 @@ export const parseTicketHolderCsv = (csv: string): ParsedTicketHolderCsv => {
       warnings: [],
       hasHeader: false,
       delimiter: ',',
+      format: 'guest-list',
     }
   }
 
   const delimiter = detectDelimiter(lines[0])
   const firstCells = splitCsvLine(lines[0], delimiter)
+
+  // The SUSU ticket-sales export has its own columns and semantics, so it is
+  // recognised before the guest-list header mapping (which would read Email as
+  // the username and ignore Qty).
+  const salesColumns = detectSalesColumns(firstCells)
+
+  if (salesColumns) {
+    const dataLines = lines.slice(1)
+
+    if (dataLines.length === 0) {
+      return {
+        rows: [],
+        errors: ['CSV has a header but no ticket rows'],
+        warnings: [],
+        hasHeader: true,
+        delimiter,
+        format: 'sales',
+      }
+    }
+
+    if (dataLines.length > MAX_IMPORT_ROWS) {
+      return {
+        rows: [],
+        errors: [`CSV has ${dataLines.length} rows; the limit is ${MAX_IMPORT_ROWS}`],
+        warnings: [],
+        hasHeader: true,
+        delimiter,
+        format: 'sales',
+      }
+    }
+
+    const salesRows = parseSalesRows({
+      dataLines,
+      delimiter,
+      columns: salesColumns,
+      offset: 2,
+      errors,
+      warnings,
+    })
+
+    if (salesRows.length === 0 && errors.length === 0) {
+      errors.push('No rows in the SUSU ticket export were marked Paid')
+    }
+
+    return {
+      rows: salesRows,
+      errors,
+      warnings,
+      hasHeader: true,
+      delimiter,
+      format: 'sales',
+    }
+  }
+
   const { indexes: detected, recognised } = headerIndexes(firstCells)
   const hasHeader = detected.sotonId !== undefined || recognised >= 2
   const indexes = hasHeader ? detected : positionalIndexes
@@ -216,6 +461,7 @@ export const parseTicketHolderCsv = (csv: string): ParsedTicketHolderCsv => {
       warnings: [],
       hasHeader,
       delimiter,
+      format: 'guest-list',
     }
   }
 
@@ -226,6 +472,7 @@ export const parseTicketHolderCsv = (csv: string): ParsedTicketHolderCsv => {
       warnings: [],
       hasHeader,
       delimiter,
+      format: 'guest-list',
     }
   }
 
@@ -236,6 +483,7 @@ export const parseTicketHolderCsv = (csv: string): ParsedTicketHolderCsv => {
       warnings: [],
       hasHeader,
       delimiter,
+      format: 'guest-list',
     }
   }
 
@@ -290,12 +538,8 @@ export const parseTicketHolderCsv = (csv: string): ParsedTicketHolderCsv => {
     warnings,
     hasHeader,
     delimiter,
+    format: 'guest-list',
   }
-}
-
-const escapeCsvField = (value: string): string => {
-  if (!/[",\r\n]/.test(value)) return value
-  return `"${value.replace(/"/g, '""')}"`
 }
 
 /**

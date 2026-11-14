@@ -2,14 +2,8 @@ import type { PayloadHandler } from 'payload/config'
 
 import { isAdmin } from '../../../access/isAdmin'
 import type { TicketHolder } from '../../../payload-types'
+import { asString, csvFileNamePart, loadBookingEvent } from '../../../utilities/booking'
 import { formatTicketHolderCsv } from '../../../utilities/ticketHoldersCsv'
-import { asString, loadEvent } from './shared'
-
-const fileNamePart = (value: string | undefined | null): string =>
-  (value || '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
 
 /**
  * Downloads an event's guest list in the exact shape the importer accepts, so the
@@ -27,7 +21,7 @@ export const exportTicketHolderCsv: PayloadHandler = async (req, res) => {
     return res.status(400).json({ error: 'Missing "eventId" query parameter' })
   }
 
-  const event = await loadEvent(payload, eventId)
+  const event = await loadBookingEvent(payload, eventId)
   if (!event) {
     return res.status(400).json({ error: 'Event not found' })
   }
@@ -42,7 +36,7 @@ export const exportTicketHolderCsv: PayloadHandler = async (req, res) => {
   })
 
   const csv = formatTicketHolderCsv(holders.docs as TicketHolder[])
-  const slug = fileNamePart(event.slug || event.name) || `event-${event.id}`
+  const slug = csvFileNamePart(event.slug || event.name) || `event-${event.id}`
 
   res.setHeader('Content-Type', 'text/csv; charset=utf-8')
   res.setHeader('Content-Disposition', `attachment; filename="${slug}-ticket-holders.csv"`)

@@ -239,12 +239,20 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
             }}
           >
             <h2 style={{ marginTop: 0, marginBottom: '0.5rem' }}>
-              Your Table: {yourTable.name || yourTable.joinCode}
+              Your Table:{' '}
+              {yourTable.number !== undefined
+                ? `Table ${yourTable.number} — ${yourTable.name || yourTable.joinCode}`
+                : yourTable.name || yourTable.joinCode}
               {yourTable.locked && ' 🔒'}
             </h2>
             <p style={{ color: 'var(--color-base-400)', margin: 0 }}>
               {yourTable.memberCount} seats reserved
               {yourTable.isOwner ? ' — You are the table owner' : ''}
+            </p>
+            <p style={{ color: 'var(--color-base-400)', margin: '0.25rem 0 0' }}>
+              {yourTable.yourSeat != null
+                ? `Your seat: #${yourTable.yourSeat}`
+                : "You haven't picked a seat yet — open your table's seat plan to choose one."}
             </p>
           </div>
         )}
@@ -284,6 +292,7 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
               id={table.joinCode}
               joinCode={table.joinCode}
               name={table.name}
+              number={table.number}
               locked={table.locked}
               isOwner={table.isOwner}
               members={table.members}

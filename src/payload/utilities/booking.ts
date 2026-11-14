@@ -1,8 +1,13 @@
 import type { Payload } from 'payload'
 
-import type { BookingEvent, TicketHolder, User } from '../../../payload-types'
-import { displayNameWithoutUsername } from '../../../utilities/memberCsv'
-import { normalizeSotonId } from '../../../utilities/sotonId'
+import type { BookingEvent, TicketHolder, User } from '../payload-types'
+import { displayNameWithoutUsername } from './memberCsv'
+import { normalizeSotonId } from './sotonId'
+
+/**
+ * Helpers shared by the booking collections' custom endpoints. They are plain
+ * Payload local-API calls, so every caller keeps its own access checks.
+ */
 
 /** Mongo `$in` with thousands of values is slow to plan; keep the batches small. */
 const USERNAME_CHUNK = 500
@@ -10,7 +15,14 @@ const USERNAME_CHUNK = 500
 /** Query-string / body values arrive as `unknown`; only strings are useful here. */
 export const asString = (value: unknown): string => (typeof value === 'string' ? value : '')
 
-export const loadEvent = async (
+/** A safe `.csv` filename stem from an event's slug or name. */
+export const csvFileNamePart = (value?: string | null): string =>
+  (value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+export const loadBookingEvent = async (
   payload: Payload,
   eventId: string,
 ): Promise<BookingEvent | null> => {
@@ -26,8 +38,9 @@ export const loadEvent = async (
 }
 
 /**
- * One read of the event's guest list, keyed by the normalised sotonId. Both
- * import paths use it so a paste never becomes a query per row.
+ * One read of the event's guest list, keyed by the normalised sotonId. The
+ * importers use it so a paste never becomes a query per row, and the seat-plan
+ * export uses it for dietary requirements.
  */
 export const loadHoldersBySotonId = async (
   payload: Payload,
