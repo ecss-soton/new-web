@@ -10,6 +10,8 @@ type TableCardProps = {
   joinCode: string
   /** Human-readable table name (owner's first name or the join code). */
   name?: string
+  /** Derived 1..N table number; omitted for admin-visible empty tables. */
+  number?: number
   locked: boolean
   isOwner: boolean
   members: { id: string; name: string }[]
@@ -29,6 +31,7 @@ export const TableCard: React.FC<TableCardProps> = ({
   id,
   joinCode,
   name,
+  number,
   locked,
   isOwner,
   members,
@@ -72,10 +75,13 @@ export const TableCard: React.FC<TableCardProps> = ({
         .join(' ')}
     >
       <div className={classes.header}>
-        <h3 className={classes.code}>
-          {name || `Table ${joinCode}`}
-          {locked && <span className={classes.lockIcon}> 🔒</span>}
-        </h3>
+        <div className={classes.titleBlock}>
+          {number !== undefined && <span className={classes.tableNumber}>Table {number}</span>}
+          <h3 className={classes.code}>
+            {name || `Table ${joinCode}`}
+            {locked && <span className={classes.lockIcon}> 🔒</span>}
+          </h3>
+        </div>
         <span className={classes.capacity}>
           {currentSeats}/{capacity} seats reserved
           {plusOneSeats > 0 ? ` (${members.length} + ${plusOneSeats} plus-ones)` : ''}

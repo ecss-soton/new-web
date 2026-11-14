@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload/types'
 import { admins } from '../../access/admins'
 import { slugField } from '../../fields/slug'
 import Groups from '../groups'
+import { ExportSeatPlan } from './react/ExportSeatPlan'
 import { ImportTicketHolders } from './react/ImportTicketHolders'
 
 export const BookingEvents: CollectionConfig = {
@@ -44,6 +45,15 @@ export const BookingEvents: CollectionConfig = {
       admin: {
         components: {
           Field: ImportTicketHolders,
+        },
+      },
+    },
+    {
+      name: 'exportSeatPlan',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: ExportSeatPlan,
         },
       },
     },

@@ -24,6 +24,21 @@
   align-items: center;
 }
 
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.tableNumber {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-base-500);
+}
+
 .code {
   font-size: 1.25rem;
   font-weight: 600;

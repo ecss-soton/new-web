@@ -2,8 +2,13 @@ import type { PayloadHandler } from 'payload/config'
 
 import { isAdmin } from '../../../access/isAdmin'
 import type { User } from '../../../payload-types'
+import {
+  accountDisplayName,
+  asString,
+  loadBookingEvent,
+  loadHoldersBySotonId,
+} from '../../../utilities/booking'
 import { normalizeSotonId } from '../../../utilities/sotonId'
-import { accountDisplayName, asString, loadEvent, loadHoldersBySotonId } from './shared'
 
 const MONGO_ID = /^[a-f0-9]{24}$/i
 /** A picker selection beyond this is a mistake, not a guest list. */
@@ -45,7 +50,7 @@ export const importTicketHolderUsers: PayloadHandler = async (req, res) => {
     return res.status(400).json({ error: 'One or more user ids are not valid' })
   }
 
-  const event = await loadEvent(payload, eventIdValue)
+  const event = await loadBookingEvent(payload, eventIdValue)
   if (!event) {
     return res.status(400).json({ error: 'Event not found' })
   }

@@ -149,6 +149,7 @@ export const SeatPage: React.FC<{
         currentUserId={user?.id}
         joinCode={data.joinCode}
         name={data.name}
+        tableNumber={data.tableNumber ?? null}
         nameMode={data.nameMode}
         canRename={data.canRename}
         onRename={handleRename}

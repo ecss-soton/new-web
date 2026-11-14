@@ -1,10 +1,10 @@
 /**
- * Downloads an event's guest list through the admin's cookie session. A plain
- * anchor cannot send the Payload auth header the endpoint expects, so the CSV is
- * fetched and turned into a blob download instead.
+ * Downloads a CSV through the admin's cookie session. A plain anchor cannot send
+ * the auth cookie the endpoints expect, so the file is fetched and turned into a
+ * blob download instead.
  */
-export const downloadTicketHoldersCsv = async (eventId: string): Promise<void> => {
-  const res = await fetch(`/api/ticket-holders/export-csv?eventId=${encodeURIComponent(eventId)}`, {
+export const downloadCsv = async (endpoint: string, fallbackFilename: string): Promise<void> => {
+  const res = await fetch(endpoint, {
     credentials: 'include',
     cache: 'no-store',
   })
@@ -19,7 +19,7 @@ export const downloadTicketHoldersCsv = async (eventId: string): Promise<void> =
   // Cross-origin responses do not expose Content-Disposition, so keep a fallback.
   const disposition = res.headers.get('Content-Disposition') || ''
   const match = /filename="?([^";]+)"?/i.exec(disposition)
-  const filename = match?.[1] || 'ticket-holders.csv'
+  const filename = match?.[1] || fallbackFilename
 
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')

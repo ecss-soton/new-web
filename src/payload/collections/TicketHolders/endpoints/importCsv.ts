@@ -1,14 +1,14 @@
 import type { PayloadHandler } from 'payload/config'
 
 import { isAdmin } from '../../../access/isAdmin'
-import { parseTicketHolderCsv, type TicketHolderCsvMode } from '../../../utilities/ticketHoldersCsv'
 import {
   accountDisplayName,
   asString,
-  loadEvent,
+  loadBookingEvent,
   loadHoldersBySotonId,
   loadUsersBySotonId,
-} from './shared'
+} from '../../../utilities/booking'
+import { parseTicketHolderCsv, type TicketHolderCsvMode } from '../../../utilities/ticketHoldersCsv'
 
 export const importTicketHolderCsv: PayloadHandler = async (req, res) => {
   const { user, payload } = req
@@ -36,7 +36,7 @@ export const importTicketHolderCsv: PayloadHandler = async (req, res) => {
   // list, so re-pasting a username list cannot wipe a plus-one allowance.
   const importMode: TicketHolderCsvMode = mode === 'overwrite' ? 'overwrite' : 'add'
 
-  const event = await loadEvent(payload, eventIdValue)
+  const event = await loadBookingEvent(payload, eventIdValue)
   if (!event) {
     return res.status(400).json({ error: 'Event not found' })
   }
@@ -47,6 +47,7 @@ export const importTicketHolderCsv: PayloadHandler = async (req, res) => {
     return res.status(400).json({
       error: parsed.errors[0] || 'CSV is empty',
       errors: parsed.errors,
+      warnings: parsed.warnings.length > 0 ? parsed.warnings : undefined,
     })
   }
 
@@ -95,15 +96,22 @@ export const importTicketHolderCsv: PayloadHandler = async (req, res) => {
     try {
       if (existing) {
         // Under "overwrite" a column the file does not supply is reset, which is
-        // what an admin correcting a full export expects.
+        // what an admin correcting a full export expects. The SUSU sales export
+        // carries no dietary column, so it must never clear stored allergies.
+        const updateData: {
+          name: string
+          plusOneCount: number
+          dietaryRequirements?: string
+        } = { name: resolvedName, plusOneCount }
+
+        if (parsed.format !== 'sales') {
+          updateData.dietaryRequirements = row.dietaryRequirements ?? ''
+        }
+
         await payload.update({
           collection: 'ticket-holders',
           id: existing.id,
-          data: {
-            name: resolvedName,
-            plusOneCount,
-            dietaryRequirements: row.dietaryRequirements ?? '',
-          },
+          data: updateData,
         })
         updated++
       } else {
@@ -129,6 +137,7 @@ export const importTicketHolderCsv: PayloadHandler = async (req, res) => {
     success: errors.length === 0,
     summary: `Created ${created}, updated ${updated}, skipped ${skipped}, errors ${errors.length}`,
     mode: importMode,
+    format: parsed.format,
     created,
     updated,
     skipped,

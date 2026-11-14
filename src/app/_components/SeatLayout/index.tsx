@@ -23,6 +23,8 @@ type SeatLayoutProps = {
   joinCode: string
   /** Human-readable name: the owner's first name or the join code. */
   name: string
+  /** Derived table number, so the page matches the exported seat plan. */
+  tableNumber?: number | null
   nameMode: TableNameMode
   /** Owner or admin: may switch what the table is called. */
   canRename: boolean
@@ -70,6 +72,7 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
   members,
   joinCode,
   name,
+  tableNumber,
   nameMode,
   canRename,
   onRename,
@@ -367,7 +370,10 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
       </div>
 
       <div className={classes.titleRow}>
-        <h2 className={classes.title}>{name} - Seat Plan</h2>
+        <h2 className={classes.title}>
+          {typeof tableNumber === 'number' ? `Table ${tableNumber} · ` : ''}
+          {name} - Seat Plan
+        </h2>
         {canRename && onRename && (
           <button
             type="button"

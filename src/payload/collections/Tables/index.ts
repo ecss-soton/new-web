@@ -1,12 +1,14 @@
 import type { CollectionConfig } from 'payload/types'
 
 import { normalizeTableNameMode, tableDisplayName } from '../../../utilities/booking/tableName'
+import { rankTables } from '../../../utilities/booking/tableNumbers'
 import { admins } from '../../access/admins'
 import { isAdmin } from '../../access/isAdmin'
 import { getPlusOneAllowances } from '../../utilities/memberCount'
 import { relationshipId, relationshipIds } from '../../utilities/relationships'
 import Groups from '../groups'
 import { createTable } from './endpoints/createTable'
+import { exportSeatPlan } from './endpoints/exportSeatPlan'
 import { getTableByJoinCode } from './endpoints/getTableByJoinCode'
 import { joinTable } from './endpoints/joinTable'
 import { leaveTable } from './endpoints/leaveTable'
@@ -217,9 +219,22 @@ export const Tables: CollectionConfig = {
           })
         }
 
+        // Active tables (at least one member) are numbered 1..N by creation order;
+        // the seat plan and the seat-plan export use the same helper.
+        const tableNumbers = rankTables(
+          tables.docs.filter(t => relationshipIds(t.members).length > 0),
+        )
+
         const yourTable = tables.docs.find(t => {
           return relationshipIds(t.members).includes(user.id)
         })
+
+        const yourSeatEntry = yourTable
+          ? (yourTable.seatPositions ?? []).find(
+              seat => relationshipId((seat as { userId?: unknown }).userId) === user.id,
+            )
+          : undefined
+        const yourSeat = yourSeatEntry ? yourSeatEntry.seatIndex + 1 : null
 
         const formattedTables = tables.docs
           .filter(t => relationshipIds(t.members).length > 0 || (isAdmin(user) && event.isOpen))
@@ -227,6 +242,7 @@ export const Tables: CollectionConfig = {
             id: t.id,
             joinCode: t.joinCode,
             name: displayNameFor(t),
+            number: tableNumbers.get(t.id),
             locked: t.locked,
             isOwner: relationshipId(t.owner) === user.id,
             members: Array.isArray(t.members)
@@ -248,6 +264,8 @@ export const Tables: CollectionConfig = {
                 id: yourTable.id,
                 joinCode: yourTable.joinCode,
                 name: displayNameFor(yourTable),
+                number: tableNumbers.get(yourTable.id),
+                yourSeat,
                 locked: yourTable.locked,
                 isOwner: relationshipId(yourTable.owner) === user.id,
                 memberCount: yourTable.memberCount,
@@ -265,6 +283,11 @@ export const Tables: CollectionConfig = {
           isAdmin: isAdmin(user),
         })
       },
+    },
+    {
+      path: '/export-seat-plan',
+      method: 'get',
+      handler: exportSeatPlan,
     },
     {
       path: '/create',
@@ -322,6 +345,18 @@ export const Tables: CollectionConfig = {
         } catch {
           return res.status(500).json({ error: 'Event not found' })
         }
+
+        const eventTables = await payload.find({
+          collection: 'tables',
+          where: { event: { equals: eventId } },
+          pagination: false,
+          depth: 0,
+          overrideAccess: true,
+        })
+        const tableNumber =
+          rankTables(
+            eventTables.docs.filter(candidate => relationshipIds(candidate.members).length > 0),
+          ).get(table.id) ?? null
 
         const memberIds = relationshipIds(table.members)
         const isMember = memberIds.includes(user.id)
@@ -426,6 +461,7 @@ export const Tables: CollectionConfig = {
             ownerName,
             ownerUsername,
           }),
+          tableNumber,
           nameMode,
           eventSlug: event.slug,
           seatsPerTable,

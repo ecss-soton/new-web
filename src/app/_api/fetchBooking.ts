@@ -8,6 +8,10 @@ export interface BookingTable {
   joinCode: string
   /** Human-readable name: the owner's first name or the join code. */
   name?: string
+  /** Derived 1..N creation-order number; shown on cards and matched by the export. */
+  number?: number
+  /** Only sent on `yourTable`: the viewer's own seat (1-based), or null. */
+  yourSeat?: number | null
   locked: boolean
   isOwner: boolean
   members: Array<{ id: string; name: string }>
@@ -65,6 +69,8 @@ export interface TableSeatData {
   joinCode: string
   /** Human-readable table name shown instead of the join code. */
   name: string
+  /** Derived 1..N creation-order table number, matching the seat-plan export. */
+  tableNumber?: number | null
   nameMode: TableNameMode
   /** Owner or admin: may switch between the owner name and the join code. */
   canRename: boolean
