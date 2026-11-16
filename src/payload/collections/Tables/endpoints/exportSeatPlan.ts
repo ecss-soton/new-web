@@ -1,7 +1,6 @@
 import type { PayloadHandler } from 'payload/config'
 
 import { formatSeatPlanCsv, type SeatPlanRow } from '../../../../utilities/booking/seatPlanCsv'
-import { firstNameOf, plusOneSeatLabel } from '../../../../utilities/booking/tableName'
 import { rankTables } from '../../../../utilities/booking/tableNumbers'
 import { isAdmin } from '../../../access/isAdmin'
 import type { User } from '../../../payload-types'
@@ -17,10 +16,11 @@ import { relationshipId, relationshipIds } from '../../../utilities/relationship
 import { normalizeSotonId } from '../../../utilities/sotonId'
 
 /**
- * Downloads the venue seating plan for an event. Every guest gets a row with the
- * table number and seat number shown on the booking pages, plus ticket holders
- * who never joined a table (so nobody is silently left out). Meal choices and the
- * final checks column are intentionally blank.
+ * Downloads the venue seating plan for an event: table number, seat number, guest
+ * name, guest type (normal/plusone), ticket holder and the guest's username. It
+ * also lists table members who have not picked a seat and ticket holders who have
+ * not joined a table, so nobody is silently left out. Allergies and meal choices
+ * are handled separately and are not part of this export.
  */
 export const exportSeatPlan: PayloadHandler = async (req, res) => {
   const { user, payload } = req
@@ -79,15 +79,8 @@ export const exportSeatPlan: PayloadHandler = async (req, res) => {
 
   const displayNameFor = (memberId: string): string => displayNameById.get(memberId) ?? 'Unknown'
 
-  const firstNameFor = (memberId: string): string => {
-    const member = userById.get(memberId)
-    return firstNameOf(member?.name, member?.username)
-  }
-
-  const allergiesFor = (memberId: string): string => {
-    const member = userById.get(memberId)
-    return holders.get(normalizeSotonId(member?.username))?.dietaryRequirements ?? ''
-  }
+  const sotonIdFor = (memberId: string): string =>
+    normalizeSotonId(userById.get(memberId)?.username)
 
   const rows: SeatPlanRow[] = []
 
@@ -117,24 +110,24 @@ export const exportSeatPlan: PayloadHandler = async (req, res) => {
           tableNumber,
           seatNumber: seat.seatIndex + 1,
           guestName: name,
-          allergies: allergiesFor(userId),
-          guestType: 'Member',
+          guestType: 'normal',
           ticketHolder: name,
+          sotonId: sotonIdFor(userId),
         })
         continue
       }
 
       if (plusOneOf) {
-        const position = (placedPlusOnes.get(plusOneOf) ?? 0) + 1
-        placedPlusOnes.set(plusOneOf, position)
+        // Plus-ones have no account or real name on file; the ticket holder
+        // column is what identifies them.
+        placedPlusOnes.set(plusOneOf, (placedPlusOnes.get(plusOneOf) ?? 0) + 1)
         rows.push({
           tableNumber,
           seatNumber: seat.seatIndex + 1,
-          guestName:
-            (seat.name ?? '').trim() || plusOneSeatLabel(firstNameFor(plusOneOf), position),
-          allergies: '',
-          guestType: 'Plus-one',
+          guestName: '',
+          guestType: 'plusone',
           ticketHolder: displayNameFor(plusOneOf),
+          sotonId: '',
         })
         continue
       }
@@ -143,10 +136,10 @@ export const exportSeatPlan: PayloadHandler = async (req, res) => {
       rows.push({
         tableNumber,
         seatNumber: seat.seatIndex + 1,
-        guestName: (seat.name ?? '').trim() || 'Guest',
-        allergies: '',
-        guestType: 'Guest',
+        guestName: (seat.name ?? '').trim(),
+        guestType: 'normal',
         ticketHolder: '',
+        sotonId: '',
       })
     }
 
@@ -157,9 +150,9 @@ export const exportSeatPlan: PayloadHandler = async (req, res) => {
         tableNumber,
         seatNumber: null,
         guestName: name,
-        allergies: allergiesFor(memberId),
-        guestType: 'Member',
+        guestType: 'normal',
         ticketHolder: name,
+        sotonId: sotonIdFor(memberId),
       })
     }
 
@@ -168,14 +161,14 @@ export const exportSeatPlan: PayloadHandler = async (req, res) => {
       const allowance = plusOneAllowances.get(memberId) ?? 0
       const ticketHolder = displayNameFor(memberId)
 
-      for (let position = placed + 1; position <= allowance; position++) {
+      for (let position = placed; position < allowance; position++) {
         rows.push({
           tableNumber,
           seatNumber: null,
-          guestName: plusOneSeatLabel(firstNameFor(memberId), position),
-          allergies: '',
-          guestType: 'Plus-one',
+          guestName: '',
+          guestType: 'plusone',
           ticketHolder,
+          sotonId: '',
         })
       }
     }
@@ -189,9 +182,9 @@ export const exportSeatPlan: PayloadHandler = async (req, res) => {
       tableNumber: null,
       seatNumber: null,
       guestName: name,
-      allergies: holder.dietaryRequirements ?? '',
-      guestType: 'Member',
+      guestType: 'normal',
       ticketHolder: name,
+      sotonId: normalizeSotonId(holder.sotonId),
     })
   }
 

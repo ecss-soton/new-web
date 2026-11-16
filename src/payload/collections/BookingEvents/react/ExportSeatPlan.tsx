@@ -37,10 +37,12 @@ export const ExportSeatPlan: React.FC = () => {
     <div style={{ marginBottom: '1.5rem' }}>
       <h3 style={{ marginTop: 0 }}>Seat plan export</h3>
       <p style={{ marginTop: 0 }}>
-        One row per guest with their table number, seat number, allergies, guest type and ticket
-        holder. Table numbers match the booking page. Includes table members who have not picked a
-        seat and ticket holders who have not joined a table (blank table/seat); the Starter, Main,
-        Dessert and “Checks before sending” columns are left blank for you to fill in.
+        One row per guest with their table number, seat number, guest name, guest type (
+        <code>normal</code> / <code>plusone</code>), ticket holder and university username (
+        <code>SotonID</code>). Table numbers match the booking page. Plus-ones have a blank guest
+        name and username — the ticket holder column identifies them. Also includes table members
+        who have not picked a seat and ticket holders who have not joined a table, with blank
+        table/seat columns.
       </p>
 
       <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>

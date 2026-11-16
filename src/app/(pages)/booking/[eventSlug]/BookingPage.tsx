@@ -173,6 +173,9 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
 
   const { yourTable, event, tables, isAdmin } = data
   const bookingOpen = event?.isOpen || isAdmin
+  // The CMS description replaces the default open message, and is still shown
+  // below the closed notice so event-specific instructions are never lost.
+  const description = event?.description?.trim() || null
 
   return (
     <div className="page-container">
@@ -194,11 +197,22 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
           <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem' }}>
             {event?.name || 'Table Booking'}
           </h1>
-          <p style={{ color: 'var(--color-base-400)' }}>
+          <p style={{ color: 'var(--color-base-400)', whiteSpace: 'pre-line' }}>
             {event?.isOpen
-              ? 'Booking is open — create or join a table!'
+              ? description || 'Booking is open — create or join a table!'
               : 'Booking is currently closed.'}
           </p>
+          {!event?.isOpen && description && (
+            <p
+              style={{
+                color: 'var(--color-base-400)',
+                marginTop: '0.5rem',
+                whiteSpace: 'pre-line',
+              }}
+            >
+              {description}
+            </p>
+          )}
         </div>
 
         {error && (
