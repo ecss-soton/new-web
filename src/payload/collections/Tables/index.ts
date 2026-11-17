@@ -275,6 +275,7 @@ export const Tables: CollectionConfig = {
             id: event.id,
             name: event.name,
             slug: event.slug,
+            description: event.description,
             isOpen: event.isOpen,
             maxTables: event.maxTables,
             seatsPerTable: event.seatsPerTable,

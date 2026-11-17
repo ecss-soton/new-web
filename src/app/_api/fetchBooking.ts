@@ -28,6 +28,8 @@ export interface BookingEventData {
   id: string
   name: string
   slug?: string | null
+  /** CMS copy shown in place of the default booking-open message. */
+  description?: string | null
   isOpen?: boolean | null
   maxTables?: number | null
   seatsPerTable?: number | null

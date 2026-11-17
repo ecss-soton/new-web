@@ -70,7 +70,12 @@ export const BookingEvents: CollectionConfig = {
     {
       name: 'description',
       type: 'textarea',
-      label: 'Description',
+      label: 'Booking Page Description',
+      admin: {
+        rows: 4,
+        description:
+          'Shown at the top of this event\'s booking page in place of the default "Booking is open — create or join a table!" message. Line breaks are preserved. Leave blank for the default; it is still shown when booking is closed.',
+      },
     },
     {
       name: 'isOpen',
