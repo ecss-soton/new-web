@@ -6,7 +6,6 @@ import Link from 'next/link'
 import classes from './index.module.scss'
 
 type TableCardProps = {
-  id: string
   joinCode: string
   /** Human-readable table name (owner's first name or the join code). */
   name?: string
@@ -30,7 +29,6 @@ type TableCardProps = {
 }
 
 export const TableCard: React.FC<TableCardProps> = ({
-  id,
   joinCode,
   name,
   number,

@@ -1,9 +1,58 @@
 import type { Payload } from 'payload'
 
 import type { SeatRow } from '../../utilities/booking/seats'
-import type { Table } from '../payload-types'
+import { firstNameOf } from '../../utilities/booking/tableName'
+import type { Table, User } from '../payload-types'
+import { accountDisplayName } from './booking'
+import { getPlusOneAllowancesForUsers } from './memberCount'
 import { relationshipId, relationshipIds } from './relationships'
+import { normalizeSotonId } from './sotonId'
 import { normaliseSeatRows } from './tableSeats'
+
+export interface TableMemberContext {
+  users: User[]
+  displayNameById: Map<string, string>
+  firstNameById: Map<string, string>
+  sotonIdById: Map<string, string>
+  plusOneAllowances: Map<string, number>
+}
+
+/**
+ * Loads the accounts at a table together with the display names the seat plan,
+ * export and seat names need, plus their guest-list plus-one allowances. One
+ * query instead of each caller repeating the same lookups.
+ */
+export const loadTableMemberContext = async (
+  payload: Payload,
+  eventId: string,
+  memberIds: string[],
+): Promise<TableMemberContext> => {
+  const users =
+    memberIds.length > 0
+      ? ((
+          await payload.find({
+            collection: 'users',
+            where: { id: { in: memberIds } },
+            pagination: false,
+            depth: 0,
+            overrideAccess: true,
+          })
+        ).docs as User[])
+      : []
+
+  return {
+    users,
+    displayNameById: new Map(
+      users.map(user => [
+        user.id,
+        accountDisplayName(user) || (user.username as string) || 'Unknown',
+      ]),
+    ),
+    firstNameById: new Map(users.map(user => [user.id, firstNameOf(user.name, user.username)])),
+    sotonIdById: new Map(users.map(user => [user.id, normalizeSotonId(user.username)])),
+    plusOneAllowances: await getPlusOneAllowancesForUsers(payload, eventId, users),
+  }
+}
 
 export interface RemoveMemberResult {
   /** True when the table had no members left and was deleted. */

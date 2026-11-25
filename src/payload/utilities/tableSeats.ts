@@ -20,10 +20,14 @@ export const parseSeatRow = (value: unknown): SeatRow | null => {
 
   if (!Number.isInteger(seat.seatIndex)) return null
 
+  const userId = relationshipId(seat.userId)
+  const plusOneOf = relationshipId(seat.plusOneOf)
+
   return {
     seatIndex: seat.seatIndex as number,
-    userId: relationshipId(seat.userId),
-    plusOneOf: relationshipId(seat.plusOneOf),
+    // Omit absent relationships so stored seat rows stay clean.
+    ...(userId ? { userId } : {}),
+    ...(plusOneOf ? { plusOneOf } : {}),
     name: typeof seat.name === 'string' ? seat.name.trim() : '',
   }
 }

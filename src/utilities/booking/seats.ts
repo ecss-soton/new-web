@@ -59,7 +59,7 @@ export const plusOneStateFor = (
  * show always agree.
  */
 export const plusOneSeatNames = (
-  seats: ReadonlyArray<{ seatIndex: number; plusOneOf?: string | null }>,
+  seats: ReadonlyArray<{ seatIndex: number; userId?: string | null; plusOneOf?: string | null }>,
   firstNameFor: (memberId: string) => string,
 ): Map<number, string> => {
   const indexesByMember = new Map<string, number[]>()

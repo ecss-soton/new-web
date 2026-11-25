@@ -1,4 +1,3 @@
-import type { Payload } from 'payload'
 import type { PayloadHandler } from 'payload/config'
 
 import {
@@ -6,11 +5,10 @@ import {
   plusOneSeatNames,
   type SeatRow,
 } from '../../../../utilities/booking/seats'
-import { firstNameOf } from '../../../../utilities/booking/tableName'
 import { isAdmin } from '../../../access/isAdmin'
 import { withKeyedLock } from '../../../utilities/keyedMutex'
-import { getPlusOneAllowances } from '../../../utilities/memberCount'
 import { relationshipId, relationshipIds } from '../../../utilities/relationships'
+import { loadTableMemberContext } from '../../../utilities/tableMembers'
 import {
   isSeatStale,
   normaliseSeatRows,
@@ -26,45 +24,7 @@ interface IncomingSeat {
   name?: unknown
 }
 
-interface SeatMemberContext {
-  /** Full display name, used for the stored seat rows. */
-  nameById: Map<string, string>
-  /** First name, used for plus-one labels. */
-  firstNameById: Map<string, string>
-  plusOneAllowances: Map<string, number>
-}
-
-const displayName = (user: { name?: string | null; username?: string | null }): string =>
-  user.name || user.username || 'Unknown'
-
 const plural = (count: number, word: string): string => `${count} ${word}${count === 1 ? '' : 's'}`
-
-/**
- * Names and plus-one allowances for everyone at the table. A member whose account
- * no longer exists keeps a seat but gets no plus-one allowance, because there is
- * no guest-list row to grant one.
- */
-const loadSeatMemberContext = async (
-  payload: Payload,
-  eventId: string,
-  members: string[],
-): Promise<SeatMemberContext> => {
-  const users = await payload.find({
-    collection: 'users',
-    where: { id: { in: members } },
-    pagination: false,
-    depth: 0,
-    overrideAccess: true,
-  })
-
-  return {
-    nameById: new Map(users.docs.map(user => [user.id, displayName(user)])),
-    firstNameById: new Map(
-      users.docs.map(user => [user.id, firstNameOf(user.name, user.username)]),
-    ),
-    plusOneAllowances: await getPlusOneAllowances(payload, eventId, members),
-  }
-}
 
 export const manageSeats: PayloadHandler = async (req, res) => {
   const { user, payload } = req
@@ -131,7 +91,7 @@ export const manageSeats: PayloadHandler = async (req, res) => {
     }
 
     const seatsPerTable = event.seatsPerTable || 10
-    const { nameById, firstNameById, plusOneAllowances } = await loadSeatMemberContext(
+    const { displayNameById, firstNameById, plusOneAllowances } = await loadTableMemberContext(
       payload,
       eventId,
       members,
@@ -177,7 +137,7 @@ export const manageSeats: PayloadHandler = async (req, res) => {
           userId: seatUserId,
           // Display names are derived server-side so a client cannot write
           // arbitrary text into the seating chart.
-          name: nameById.get(seatUserId) ?? 'Unknown',
+          name: displayNameById.get(seatUserId) ?? 'Unknown',
         })
         continue
       }

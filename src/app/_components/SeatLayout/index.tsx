@@ -3,19 +3,19 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import {
+  plusOneSeatNames,
+  plusOneStateFor,
+  type SeatAssignment,
+  type SeatSlot,
+} from '../../../utilities/booking/seats'
+import {
   firstNameOf,
   plusOneSeatLabel,
   type TableNameMode,
 } from '../../../utilities/booking/tableName'
-import type { SeatAssignment, TableMember } from '../../_api/fetchBooking'
+import type { TableMember } from '../../_api/fetchBooking'
 
 import classes from './index.module.scss'
-
-export type SeatSlot = {
-  userId: string | null
-  plusOneOf?: string | null
-  name: string
-} | null
 
 type SeatLayoutProps = {
   seats: SeatSlot[]
@@ -26,8 +26,6 @@ type SeatLayoutProps = {
   /** Derived table number, so the page matches the exported seat plan. */
   tableNumber?: number | null
   nameMode: TableNameMode
-  /** Owner or admin: may switch what the table is called. */
-  canRename: boolean
   onRename?: (nameMode: TableNameMode) => Promise<void>
   eventSlug: string
   onSave: (seats: SeatAssignment[]) => Promise<void>
@@ -35,12 +33,10 @@ type SeatLayoutProps = {
   currentUserId?: string
   /** A member of this table, so the plan is theirs to arrange. */
   isMember: boolean
+  /** The table owner, so they may rearrange every seat. */
+  isOwner: boolean
   /** May open and rearrange any table without being a member. */
-  isAdmin?: boolean
-  /** Members can edit only while the owner's lock is off. */
-  canEdit: boolean
-  /** Owner or admin: may rearrange every seat. Everyone else may only move their own. */
-  canManageAll: boolean
+  isAdmin: boolean
   locked: boolean
   /** Signed in but not at this table yet. */
   canJoin: boolean
@@ -63,10 +59,16 @@ const diameterFor = (count: number): number => {
   return Math.min(34, solved)
 }
 
-const isMySeat = (seat: SeatSlot, userId?: string, userName?: string): boolean => {
+/**
+ * Whether a seat belongs to a member. Legacy rows (written before seats were keyed
+ * by `userId`) only carry the member's display name, so those fall back to a name
+ * match; plus-one seats never belong to anyone directly.
+ */
+const belongsToMember = (seat: SeatSlot, memberId?: string, memberName?: string): boolean => {
   if (!seat) return false
-  if (seat.userId) return seat.userId === userId
-  return Boolean(userName) && seat.name === userName
+  if (seat.userId) return Boolean(memberId) && seat.userId === memberId
+  if (seat.plusOneOf) return false
+  return Boolean(memberName) && seat.name === memberName
 }
 
 export const SeatLayout: React.FC<SeatLayoutProps> = ({
@@ -76,15 +78,13 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
   name,
   tableNumber,
   nameMode,
-  canRename,
   onRename,
   eventSlug,
   onSave,
   currentUserId,
   isMember,
+  isOwner,
   isAdmin,
-  canEdit,
-  canManageAll,
   locked,
   canJoin,
   onJoin,
@@ -101,6 +101,10 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
     text: string
   } | null>(null)
 
+  const canManageAll = isOwner || isAdmin
+  // Admins can always arrange seats; members need the owner's lock off.
+  const canEdit = isAdmin || (isMember && !locked)
+
   // The page polls every few seconds. Adopt server changes unless the viewer has
   // unsaved edits, so another member's update appears without clobbering theirs.
   useEffect(() => {
@@ -109,99 +113,64 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
     }
   }, [seats, dirty])
 
-  const myMember = useMemo(
-    () => members.find(member => member.id === currentUserId),
-    [members, currentUserId],
-  )
-
   const memberById = useMemo(() => new Map(members.map(member => [member.id, member])), [members])
+  const myMember = memberById.get(currentUserId ?? '')
 
-  /** Plus-one seats a member has already placed, by member id. */
-  const placedByMember = useMemo(() => {
-    const placed = new Map<string, number>()
-    for (const seat of localSeats) {
-      if (!seat?.plusOneOf) continue
-      placed.set(seat.plusOneOf, (placed.get(seat.plusOneOf) ?? 0) + 1)
-    }
-    return placed
-  }, [localSeats])
+  /** How much of each member's plus-one allowance the current plan uses. */
+  const plusOneState = useMemo(() => plusOneStateFor(members, localSeats), [members, localSeats])
 
-  // Derived labels keep every plus-one seat named consistently ("Indigo's +1"),
-  // matching what the server stores.
-  const plusOneNameByIndex = useMemo(() => {
-    const byMember = new Map<string, number[]>()
-    localSeats.forEach((seat, index) => {
-      if (!seat?.plusOneOf) return
-      const list = byMember.get(seat.plusOneOf) ?? []
-      list.push(index)
-      byMember.set(seat.plusOneOf, list)
-    })
-
-    const names = new Map<number, string>()
-    byMember.forEach((indexes, memberId) => {
-      const first = firstNameOf(memberById.get(memberId)?.name)
-      indexes
-        .slice()
-        .sort((a, b) => a - b)
-        .forEach((index, position) => names.set(index, plusOneSeatLabel(first, position + 1)))
-    })
-    return names
-  }, [localSeats, memberById])
-
-  const seatCount = Math.max(localSeats.length, 1)
-  const diameter = diameterFor(seatCount)
-  const radius = 50 - diameter / 2
-  // Font size tracks the circle so long names stay inside it at any seat count.
-  const seatFont = `${(diameter * 0.15).toFixed(2)}cqw`
-
-  const positionFor = useCallback(
-    (index: number) => {
-      const angle = (360 / seatCount) * index - 90
-      const radian = (angle * Math.PI) / 180
-      return {
-        left: 50 + radius * Math.cos(radian),
-        top: 50 + radius * Math.sin(radian),
-      }
-    },
-    [radius, seatCount],
+  /** Plus-one seat labels, numbered by seat order within each member. */
+  const plusOneNamesByIndex = useMemo(
+    () =>
+      plusOneSeatNames(
+        localSeats.map((seat, index) => ({ seatIndex: index, plusOneOf: seat?.plusOneOf })),
+        memberId => firstNameOf(memberById.get(memberId)?.name),
+      ),
+    [localSeats, memberById],
   )
 
-  const isSeated = useCallback(
-    (member: { id: string; name: string }): boolean =>
-      localSeats.some(seat => seat !== null && isMySeat(seat, member.id, member.name)),
-    [localSeats],
-  )
-
-  const seatLabel = useCallback(
+  const seatName = useCallback(
     (index: number): string => {
       const seat = localSeats[index]
       if (!seat) return 'Free'
-      if (seat.plusOneOf) {
-        return plusOneNameByIndex.get(index) || seat.name || 'Plus-one'
-      }
-      return seat.name
+      if (!seat.plusOneOf) return seat.name
+      return plusOneNamesByIndex.get(index) || seat.name || 'Plus-one'
     },
-    [localSeats, plusOneNameByIndex],
+    [localSeats, plusOneNamesByIndex],
   )
 
-  const unassigned = members.filter(member => !isSeated(member))
+  const { seatedMemberIds, legacySeatNames } = useMemo(() => {
+    const ids = new Set<string>()
+    const names = new Set<string>()
+    for (const seat of localSeats) {
+      if (!seat) continue
+      if (seat.userId) ids.add(seat.userId)
+      else if (!seat.plusOneOf && seat.name) names.add(seat.name)
+    }
+    return { seatedMemberIds: ids, legacySeatNames: names }
+  }, [localSeats])
 
-  // Plus-one slots the viewer (or the owner, on everyone's behalf) could still
-  // place, e.g. "Indigo's +2".
+  const isMemberSeated = (member: TableMember): boolean =>
+    seatedMemberIds.has(member.id) || legacySeatNames.has(member.name)
+
+  const unassigned = members.filter(member => !isMemberSeated(member))
+  const myMemberSeated = myMember ? isMemberSeated(myMember) : false
+
+  // Plus-one slots the viewer (or the owner/admin on everyone's behalf) could
+  // still place, e.g. "Indigo's +2".
   const unplacedPlusOnes = members.flatMap(member => {
     if (!canManageAll && member.id !== currentUserId) return []
-    const placed = placedByMember.get(member.id) ?? 0
-    const allowance = Math.max(0, member.plusOneCount ?? 0)
-    const first = firstNameOf(member.name)
+    const state = plusOneState.get(member.id)
+    if (!state) return []
 
-    const slots: Array<{ key: string; label: string }> = []
-    for (let position = placed + 1; position <= allowance; position++) {
-      slots.push({
+    const firstName = firstNameOf(member.name)
+    return Array.from({ length: state.remaining }, (_, offset) => {
+      const position = state.placed + offset + 1
+      return {
         key: `${member.id}-${position}`,
-        label: plusOneSeatLabel(first, position),
-      })
-    }
-    return slots
+        label: plusOneSeatLabel(firstName, position),
+      }
+    })
   })
 
   // Auto-dismiss transient confirmations; errors stay put until the next action.
@@ -211,12 +180,12 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
     return () => clearTimeout(timer)
   }, [message])
 
-  const assignSeat = (index: number, member: { id: string; name: string }) => {
+  const assignSeat = (index: number, member: TableMember) => {
     setLocalSeats(current => {
       const updated = [...current]
       // A guest holds one seat, so clear them from wherever they were.
       for (let i = 0; i < updated.length; i++) {
-        if (isMySeat(updated[i], member.id, member.name)) {
+        if (belongsToMember(updated[i], member.id, member.name)) {
           updated[i] = null
         }
       }
@@ -253,21 +222,14 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
     if (!canEdit) return
 
     const seat = localSeats[index]
-
-    // Owners and admins open the guest picker on any seat.
-    if (canManageAll) {
-      setEditingSeat(current => (current === index ? null : index))
-      setMessage(null)
-      return
-    }
-
-    // Everyone else can only ever act on their own seat or their own plus-ones.
-    const mine = isMySeat(seat, currentUserId, myMember?.name)
+    const mine = belongsToMember(seat, currentUserId, myMember?.name)
     const myPlusOne = Boolean(seat?.plusOneOf && seat.plusOneOf === currentUserId)
 
-    if (seat && !mine && !myPlusOne) {
+    // Owners and admins can open any seat; members can only act on their own
+    // seat, their own plus-ones, or a free seat.
+    if (!canManageAll && seat && !mine && !myPlusOne) {
       setEditingSeat(null)
-      setMessage({ type: 'info', text: `Seat #${index + 1} is taken by ${seatLabel(index)}.` })
+      setMessage({ type: 'info', text: `Seat #${index + 1} is taken by ${seatName(index)}.` })
       return
     }
 
@@ -330,6 +292,24 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
     }
   }
 
+  const seatCount = Math.max(localSeats.length, 1)
+  const diameter = diameterFor(seatCount)
+  const radius = 50 - diameter / 2
+  // Font size tracks the circle so long names stay inside it at any seat count.
+  const seatFont = `${(diameter * 0.15).toFixed(2)}cqw`
+
+  const positionFor = useCallback(
+    (index: number) => {
+      const angle = (360 / seatCount) * index - 90
+      const radian = (angle * Math.PI) / 180
+      return {
+        left: 50 + radius * Math.cos(radian),
+        top: 50 + radius * Math.sin(radian),
+      }
+    },
+    [radius, seatCount],
+  )
+
   const editingPosition = editingSeat !== null ? positionFor(editingSeat) : null
   const editingBelow = editingPosition !== null && editingPosition.top <= 50
   // The popover is up to 46% of the box wide, so keep its centre at least 23% in
@@ -338,31 +318,62 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
 
   const editingSeatData = editingSeat !== null ? localSeats[editingSeat] : null
   const editingIsMySeat =
-    editingSeat !== null && isMySeat(localSeats[editingSeat], currentUserId, myMember?.name)
+    editingSeat !== null && belongsToMember(localSeats[editingSeat], currentUserId, myMember?.name)
   const editingIsMyPlusOne = Boolean(
     editingSeatData?.plusOneOf && editingSeatData.plusOneOf === currentUserId,
   )
   const editingIsFree = editingSeat !== null && !localSeats[editingSeat]
 
-  const plusOneChoices = (index: number) =>
+  const plusOneChoices = (index: number): React.ReactNode[] =>
     members
       .filter(member => canManageAll || member.id === currentUserId)
-      .map(member => {
-        const placed = placedByMember.get(member.id) ?? 0
-        const allowance = Math.max(0, member.plusOneCount ?? 0)
-        if (placed >= allowance) return null
+      .flatMap(member => {
+        const state = plusOneState.get(member.id)
+        if (!state || state.remaining <= 0) return []
 
-        return (
+        return [
           <button
             type="button"
             key={`${member.id}-plus`}
             className={[classes.assignBtn, classes.plusOneBtn].join(' ')}
             onClick={() => assignPlusOneSeat(index, member)}
           >
-            Add {plusOneSeatLabel(firstNameOf(member.name), placed + 1)}
-          </button>
-        )
+            Add {plusOneSeatLabel(firstNameOf(member.name), state.placed + 1)}
+          </button>,
+        ]
       })
+
+  let notice: React.ReactNode
+  if (isAdmin && !isMember) {
+    notice = (
+      <span>
+        Admin view — you are not a member of this table. Arranging seats here does not add you to
+        it.
+      </span>
+    )
+  } else if (isMember) {
+    notice =
+      locked && !isAdmin ? (
+        <span>🔒 This table is locked. The owner can unlock it to make changes.</span>
+      ) : canManageAll ? (
+        <span>Click any seat to arrange the table, including everyone&apos;s plus-ones.</span>
+      ) : (
+        <span>
+          Click a free seat to sit there or add a plus-one, or your own seat to give it up.
+        </span>
+      )
+  } else if (canJoin) {
+    notice = (
+      <span className={classes.joinRow}>
+        <span>This table has space — join it to take a seat.</span>
+        <button type="button" className={classes.saveBtn} onClick={onJoin} disabled={joining}>
+          {joining ? 'Joining...' : 'Join Table'}
+        </button>
+      </span>
+    )
+  } else {
+    notice = <span>{joinBlockedReason || 'You cannot join this table.'}</span>
+  }
 
   return (
     <div className={classes.container}>
@@ -377,7 +388,7 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
           {typeof tableNumber === 'number' ? `Table ${tableNumber} · ` : ''}
           {name} - Seat Plan
         </h2>
-        {canRename && onRename && (
+        {canManageAll && onRename && (
           <button
             type="button"
             role="switch"
@@ -399,33 +410,7 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
         )}
       </div>
 
-      <div className={classes.statusNotice}>
-        {isAdmin && !isMember ? (
-          <span>
-            Admin view — you are not a member of this table. Arranging seats here does not add you
-            to it.
-          </span>
-        ) : isMember ? (
-          locked && !isAdmin ? (
-            <span>🔒 This table is locked. The owner can unlock it to make changes.</span>
-          ) : canManageAll ? (
-            <span>Click any seat to arrange the table, including everyone&apos;s plus-ones.</span>
-          ) : (
-            <span>
-              Click a free seat to sit there or add a plus-one, or your own seat to give it up.
-            </span>
-          )
-        ) : canJoin ? (
-          <span className={classes.joinRow}>
-            <span>This table has space — join it to take a seat.</span>
-            <button type="button" className={classes.saveBtn} onClick={onJoin} disabled={joining}>
-              {joining ? 'Joining...' : 'Join Table'}
-            </button>
-          </span>
-        ) : (
-          <span>{joinBlockedReason || 'You cannot join this table.'}</span>
-        )}
-      </div>
+      <div className={classes.statusNotice}>{notice}</div>
 
       <div className={classes.legend}>
         <span className={classes.legendItem}>
@@ -458,10 +443,10 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
           {localSeats.map((seat, index) => {
             const pos = positionFor(index)
             const occupied = seat !== null
-            const mine = isMySeat(seat, currentUserId, myMember?.name)
+            const mine = belongsToMember(seat, currentUserId, myMember?.name)
             const myPlusOne = Boolean(seat?.plusOneOf && seat.plusOneOf === currentUserId)
             const isEditableSeat = canEdit && (canManageAll || mine || myPlusOne || !occupied)
-            const label = seatLabel(index)
+            const label = seatName(index)
 
             return (
               <button
@@ -542,7 +527,7 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
                       className={classes.assignBtn}
                       onClick={() => assignSeat(editingSeat, myMember)}
                     >
-                      {isSeated(myMember) ? 'Move me here' : 'Seat me here'}
+                      {myMemberSeated ? 'Move me here' : 'Seat me here'}
                     </button>
                   )}
 

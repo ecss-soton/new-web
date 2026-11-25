@@ -238,13 +238,11 @@ export const SeatPage: React.FC<{
         name={data.name}
         tableNumber={data.tableNumber ?? null}
         nameMode={data.nameMode}
-        canRename={data.canRename}
         onRename={handleRename}
         eventSlug={data.eventSlug || eventSlug}
         isAdmin={data.isAdmin}
         isMember={data.isMember}
-        canEdit={data.isAdmin || (data.isMember && !data.locked)}
-        canManageAll={data.isOwner || data.isAdmin}
+        isOwner={data.isOwner}
         locked={data.locked}
         canJoin={data.canJoin}
         onJoin={handleJoin}

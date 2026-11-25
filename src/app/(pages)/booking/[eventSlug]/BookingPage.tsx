@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 import type { User } from '../../../../payload/payload-types'
-import type { BookingEventData, BookingTable } from '../../../_api/fetchBooking'
+import type { BookingEventData, BookingTable, YourTable } from '../../../_api/fetchBooking'
 import {
   createTable,
   deleteTable,
@@ -16,7 +16,7 @@ import {
 import { TableCard } from '../../../_components/TableCard'
 
 type BookingState = {
-  yourTable: BookingTable | null
+  yourTable: YourTable | null
   event: BookingEventData
   tables: BookingTable[]
   isAdmin: boolean
@@ -331,7 +331,6 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
           {tables.map(table => (
             <TableCard
               key={table.joinCode}
-              id={table.joinCode}
               joinCode={table.joinCode}
               name={table.name}
               number={table.number}
@@ -342,7 +341,7 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
               seatsPerTable={event?.seatsPerTable || 10}
               isYourTable={yourTable?.joinCode === table.joinCode}
               isAdmin={isAdmin}
-              bookingOpen={event?.isOpen || isAdmin}
+              bookingOpen={bookingOpen}
               eventSlug={eventSlug}
               onJoin={() => handleJoin(table.joinCode)}
               onLeave={() => handleLeave(table.joinCode)}
