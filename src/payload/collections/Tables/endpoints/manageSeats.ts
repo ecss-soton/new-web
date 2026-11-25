@@ -1,12 +1,24 @@
+import type { Payload } from 'payload'
 import type { PayloadHandler } from 'payload/config'
 
-import { firstNameOf, plusOneSeatLabel } from '../../../../utilities/booking/tableName'
+import {
+  isSeatIndexValid,
+  plusOneSeatNames,
+  type SeatRow,
+} from '../../../../utilities/booking/seats'
+import { firstNameOf } from '../../../../utilities/booking/tableName'
 import { isAdmin } from '../../../access/isAdmin'
 import { withKeyedLock } from '../../../utilities/keyedMutex'
 import { getPlusOneAllowances } from '../../../utilities/memberCount'
 import { relationshipId, relationshipIds } from '../../../utilities/relationships'
+import {
+  isSeatStale,
+  normaliseSeatRows,
+  plusOneCountsByMember,
+} from '../../../utilities/tableSeats'
 import { getTableByJoinCode } from './getTableByJoinCode'
 
+/** A seat as submitted by the client; fields are unknown until validated. */
 interface IncomingSeat {
   seatIndex?: unknown
   userId?: unknown
@@ -14,18 +26,45 @@ interface IncomingSeat {
   name?: unknown
 }
 
-/** A seat as stored or as built from the request. */
-interface SeatEntry {
-  seatIndex: number
-  userId?: string
-  plusOneOf?: string
-  name: string
+interface SeatMemberContext {
+  /** Full display name, used for the stored seat rows. */
+  nameById: Map<string, string>
+  /** First name, used for plus-one labels. */
+  firstNameById: Map<string, string>
+  plusOneAllowances: Map<string, number>
 }
 
 const displayName = (user: { name?: string | null; username?: string | null }): string =>
   user.name || user.username || 'Unknown'
 
 const plural = (count: number, word: string): string => `${count} ${word}${count === 1 ? '' : 's'}`
+
+/**
+ * Names and plus-one allowances for everyone at the table. A member whose account
+ * no longer exists keeps a seat but gets no plus-one allowance, because there is
+ * no guest-list row to grant one.
+ */
+const loadSeatMemberContext = async (
+  payload: Payload,
+  eventId: string,
+  members: string[],
+): Promise<SeatMemberContext> => {
+  const users = await payload.find({
+    collection: 'users',
+    where: { id: { in: members } },
+    pagination: false,
+    depth: 0,
+    overrideAccess: true,
+  })
+
+  return {
+    nameById: new Map(users.docs.map(user => [user.id, displayName(user)])),
+    firstNameById: new Map(
+      users.docs.map(user => [user.id, firstNameOf(user.name, user.username)]),
+    ),
+    plusOneAllowances: await getPlusOneAllowances(payload, eventId, members),
+  }
+}
 
 export const manageSeats: PayloadHandler = async (req, res) => {
   const { user, payload } = req
@@ -92,63 +131,35 @@ export const manageSeats: PayloadHandler = async (req, res) => {
     }
 
     const seatsPerTable = event.seatsPerTable || 10
-
-    const usersResult = await payload.find({
-      collection: 'users',
-      where: { id: { in: members } },
-      pagination: false,
-      depth: 0,
-      overrideAccess: true,
-    })
-    const docById = new Map(usersResult.docs.map(u => [u.id, u]))
-    const nameById = new Map(
-      usersResult.docs.map(u => [
-        u.id,
-        displayName(u as { name?: string | null; username?: string | null }),
-      ]),
+    const { nameById, firstNameById, plusOneAllowances } = await loadSeatMemberContext(
+      payload,
+      eventId,
+      members,
     )
-    // A member whose account no longer exists keeps a seat, but cannot hold
-    // plus-one seats because there is no guest-list row to grant them.
-    const plusOneAllowances = await getPlusOneAllowances(payload, eventId, members)
 
-    const storedSeats: SeatEntry[] = (current.seatPositions ?? []).map(seat => ({
-      seatIndex: seat.seatIndex,
-      userId: relationshipId((seat as { userId?: unknown }).userId),
-      plusOneOf: relationshipId((seat as { plusOneOf?: unknown }).plusOneOf),
-      name: typeof seat.name === 'string' ? seat.name.trim() : '',
-    }))
+    const storedSeats = normaliseSeatRows(current.seatPositions)
     const storedByIndex = new Map(storedSeats.map(seat => [seat.seatIndex, seat]))
 
     const placedPlusOnes = new Map<string, number>()
-    const existingPlusOnes = new Map<string, number>()
-    for (const seat of storedSeats) {
-      if (!seat.plusOneOf) continue
-      existingPlusOnes.set(seat.plusOneOf, (existingPlusOnes.get(seat.plusOneOf) ?? 0) + 1)
-    }
-
     const assignedSeats = new Set<number>()
-    const seatPositions: SeatEntry[] = []
+    const seatPositions: SeatRow[] = []
 
     for (const seat of incoming) {
       const seatIndex = seat?.seatIndex
 
-      if (
-        !Number.isInteger(seatIndex) ||
-        (seatIndex as number) < 0 ||
-        (seatIndex as number) >= seatsPerTable
-      ) {
+      if (!isSeatIndexValid(seatIndex, seatsPerTable)) {
         return res.status(400).json({
           error: `Seat numbers must be whole numbers between 1 and ${seatsPerTable}`,
         })
       }
 
-      if (assignedSeats.has(seatIndex as number)) {
+      if (assignedSeats.has(seatIndex)) {
         return res.status(400).json({ error: 'A seat can only be assigned once' })
       }
-      assignedSeats.add(seatIndex as number)
+      assignedSeats.add(seatIndex)
 
-      const seatUserId = relationshipId(seat?.userId)
-      const plusOneOf = relationshipId(seat?.plusOneOf)
+      const seatUserId = relationshipId(seat.userId)
+      const plusOneOf = relationshipId(seat.plusOneOf)
 
       if (seatUserId && plusOneOf) {
         return res.status(400).json({ error: 'A seat cannot be both a guest and a plus-one' })
@@ -162,7 +173,7 @@ export const manageSeats: PayloadHandler = async (req, res) => {
         }
 
         seatPositions.push({
-          seatIndex: seatIndex as number,
+          seatIndex,
           userId: seatUserId,
           // Display names are derived server-side so a client cannot write
           // arbitrary text into the seating chart.
@@ -179,18 +190,18 @@ export const manageSeats: PayloadHandler = async (req, res) => {
         }
 
         placedPlusOnes.set(plusOneOf, (placedPlusOnes.get(plusOneOf) ?? 0) + 1)
-        seatPositions.push({ seatIndex: seatIndex as number, plusOneOf, name: '' })
+        seatPositions.push({ seatIndex, plusOneOf, name: '' })
         continue
       }
 
       // Legacy payloads (and pre-`userId` rows) carry a display name only. They
-      // may be re-saved unchanged, but a brand-new free-text seat is refused so
-      // a table cannot be stuffed beyond its guest list.
-      const name = typeof seat?.name === 'string' ? seat.name.trim() : ''
-      const stored = storedByIndex.get(seatIndex as number)
+      // may be re-saved unchanged, but a brand-new free-text seat is refused so a
+      // table cannot be stuffed beyond its guest list.
+      const name = typeof seat.name === 'string' ? seat.name.trim() : ''
+      const stored = storedByIndex.get(seatIndex)
 
       if (stored && !stored.userId && !stored.plusOneOf && stored.name === name && name) {
-        seatPositions.push({ seatIndex: seatIndex as number, name })
+        seatPositions.push({ seatIndex, name })
         continue
       }
 
@@ -201,15 +212,15 @@ export const manageSeats: PayloadHandler = async (req, res) => {
     }
 
     // A guest cannot be handed more plus-one seats than their ticket allows.
-    // Seats that already existed survive a later allowance reduction, so this
-    // only rejects *new* seats beyond the current allowance.
+    // Seats that already existed survive a later allowance reduction, so this only
+    // rejects *new* seats beyond the current allowance.
+    const existingPlusOnes = plusOneCountsByMember(storedSeats)
     for (const [memberId, count] of placedPlusOnes) {
       const allowance = plusOneAllowances.get(memberId) ?? 0
       const alreadyPlaced = existingPlusOnes.get(memberId) ?? 0
 
       if (count > allowance && count > alreadyPlaced) {
-        const member = docById.get(memberId)
-        const who = firstNameOf(member?.name, member?.username) || 'That guest'
+        const who = firstNameById.get(memberId) || 'That guest'
 
         return res.status(400).json({
           error:
@@ -223,24 +234,15 @@ export const manageSeats: PayloadHandler = async (req, res) => {
       }
     }
 
-    // Plus-one labels are derived from the member and their order, so the client
-    // never writes arbitrary text there either.
-    const byMember = new Map<string, SeatEntry[]>()
+    // Plus-one labels are derived from the member and their seat order, so the
+    // client never writes arbitrary text there either.
+    const plusOneNames = plusOneSeatNames(
+      seatPositions,
+      memberId => firstNameById.get(memberId) ?? '',
+    )
     for (const seat of seatPositions) {
       if (!seat.plusOneOf) continue
-      const list = byMember.get(seat.plusOneOf) ?? []
-      list.push(seat)
-      byMember.set(seat.plusOneOf, list)
-    }
-    for (const [memberId, seats] of byMember) {
-      const member = docById.get(memberId)
-      const first = firstNameOf(member?.name, member?.username)
-      seats
-        .slice()
-        .sort((a, b) => a.seatIndex - b.seatIndex)
-        .forEach((seat, index) => {
-          seat.name = plusOneSeatLabel(first, index + 1)
-        })
+      seat.name = plusOneNames.get(seat.seatIndex) ?? ''
     }
 
     // A guest holds at most one seat. The UI already moves people rather than
@@ -254,17 +256,13 @@ export const manageSeats: PayloadHandler = async (req, res) => {
       seatedUsers.add(seat.userId)
     }
 
-    // Members may only move their own seat and their own plus-one seats; the
-    // table owner (or an admin) can rearrange everyone. Without this, any member
-    // could shuffle the whole table.
+    // Members may only move their own seat and their own plus-one seats; the table
+    // owner (or an admin) can rearrange everyone. Without this, any member could
+    // shuffle the whole table.
     if (!isOwner && !admin) {
       const myName = (user.name as string) || (user.username as string) || ''
 
-      const signature = (entry?: {
-        userId?: string | null
-        plusOneOf?: string | null
-        name?: string | null
-      }): string | null => {
+      const signature = (entry?: SeatRow): string | null => {
         if (!entry) return null
         if (entry.userId) return `user:${entry.userId}`
         if (entry.plusOneOf) return `plus:${entry.plusOneOf}`
@@ -273,30 +271,23 @@ export const manageSeats: PayloadHandler = async (req, res) => {
         return entry.name ? `name:${entry.name}` : null
       }
 
-      const mine = (value: string | null): boolean =>
+      const isMine = (value: string | null): boolean =>
         value === null || value === `user:${user.id}` || value === `plus:${user.id}`
 
-      const submitted = new Map<number, SeatEntry>(
-        seatPositions.map(seat => [seat.seatIndex, seat]),
-      )
+      const submitted = new Map(seatPositions.map(seat => [seat.seatIndex, seat]))
 
-      const indexes = new Set<number>([...storedByIndex.keys(), ...submitted.keys()])
-      for (const index of indexes) {
+      for (const index of new Set([...storedByIndex.keys(), ...submitted.keys()])) {
         const stored = storedByIndex.get(index)
 
         // Pruning a seat whose guest has since left the table is always allowed;
         // otherwise a member could not save the plan the seat endpoint shows them.
-        const stale = Boolean(
-          (stored?.userId && !members.includes(stored.userId)) ||
-            (stored?.plusOneOf && !members.includes(stored.plusOneOf)),
-        )
-        if (stale) continue
+        if (stored && isSeatStale(stored, members)) continue
 
         const before = signature(stored)
         const after = signature(submitted.get(index))
         if (before === after) continue
 
-        if (!mine(before) || !mine(after)) {
+        if (!isMine(before) || !isMine(after)) {
           return res.status(403).json({
             error:
               'You can only move your own seat and your own plus-ones. Ask the table owner to rearrange the others.',

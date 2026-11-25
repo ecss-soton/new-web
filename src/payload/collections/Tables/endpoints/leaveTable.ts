@@ -2,39 +2,9 @@ import type { PayloadHandler } from 'payload/config'
 
 import { isAdmin } from '../../../access/isAdmin'
 import { withKeyedLock } from '../../../utilities/keyedMutex'
-import { relationshipId, relationshipIds } from '../../../utilities/relationships'
+import { relationshipIds } from '../../../utilities/relationships'
+import { removeMemberFromTable } from '../../../utilities/tableMembers'
 import { getTableByJoinCode } from './getTableByJoinCode'
-
-interface SeatPosition {
-  seatIndex: number
-  userId?: string | null
-  plusOneOf?: string | null
-  name: string
-}
-
-/**
- * Drops the seats belonging to a departing member, including the seats their
- * plus-ones were placed in. New rows are keyed by `userId`/`plusOneOf`; rows
- * written before those fields existed only carry a display name, so those fall
- * back to a name match (ambiguous when two members share a name — they are
- * rewritten with a `userId` on the next seat save).
- */
-const removeMemberSeats = (
-  seatPositions: unknown,
-  userId: string,
-  userName: string,
-): SeatPosition[] => {
-  if (!Array.isArray(seatPositions)) return []
-
-  return (seatPositions as SeatPosition[]).filter(seat => {
-    const seatUserId = relationshipId(seat?.userId)
-    if (seatUserId) return seatUserId !== userId
-
-    if (relationshipId(seat?.plusOneOf) === userId) return false
-
-    return !userName || seat?.name !== userName
-  })
-}
 
 export const leaveTable: PayloadHandler = async (req, res) => {
   const { user, payload } = req
@@ -61,11 +31,9 @@ export const leaveTable: PayloadHandler = async (req, res) => {
       return res.status(404).json({ error: 'Table not found' })
     }
 
-    const admin = isAdmin(user)
-
     // Closing booking stops new tables and new joins; it must not trap existing
     // members. The owner's lock is the freeze control.
-    if (current.locked && !admin) {
+    if (current.locked && !isAdmin(user)) {
       return res
         .status(403)
         .json({ error: 'This table is locked. Ask the table owner to unlock it first.' })
@@ -77,38 +45,13 @@ export const leaveTable: PayloadHandler = async (req, res) => {
       return res.status(400).json({ error: 'You are not a member of this table' })
     }
 
-    const nextMembers = members.filter(id => id !== user.id)
-
     try {
-      if (nextMembers.length === 0) {
-        await payload.delete({
-          collection: 'tables',
-          id: current.id,
-        })
-        return res.json({ success: true })
-      }
-
-      const nextSeats = removeMemberSeats(
-        current.seatPositions,
+      await removeMemberFromTable(
+        payload,
+        current,
         user.id,
         (user.name as string) || (user.username as string) || '',
       )
-
-      const updateData: Record<string, unknown> = {
-        members: nextMembers,
-        seatPositions: nextSeats,
-      }
-
-      // The owner is required, so hand ownership to the longest-standing member.
-      if (relationshipId(current.owner) === user.id) {
-        updateData.owner = nextMembers[0]
-      }
-
-      await payload.update({
-        collection: 'tables',
-        id: current.id,
-        data: updateData,
-      })
     } catch (err: unknown) {
       // Custom endpoints have no async rejection guard — respond rather than throw.
       const message = err instanceof Error ? err.message : 'Unable to leave this table'

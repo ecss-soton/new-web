@@ -7,6 +7,8 @@ import { isAdmin } from '../../access/isAdmin'
 import { getPlusOneAllowances } from '../../utilities/memberCount'
 import { relationshipId, relationshipIds } from '../../utilities/relationships'
 import Groups from '../groups'
+import { adminDeleteTable } from './endpoints/adminDeleteTable'
+import { adminRemoveTableMember } from './endpoints/adminRemoveTableMember'
 import { createTable } from './endpoints/createTable'
 import { exportSeatPlan } from './endpoints/exportSeatPlan'
 import { getTableByJoinCode } from './endpoints/getTableByJoinCode'
@@ -237,7 +239,8 @@ export const Tables: CollectionConfig = {
         const yourSeat = yourSeatEntry ? yourSeatEntry.seatIndex + 1 : null
 
         const formattedTables = tables.docs
-          .filter(t => relationshipIds(t.members).length > 0 || (isAdmin(user) && event.isOpen))
+          // Admins can manage every table, including empty ones after booking closes.
+          .filter(t => relationshipIds(t.members).length > 0 || isAdmin(user))
           .map(t => ({
             id: t.id,
             joinCode: t.joinCode,
@@ -314,6 +317,16 @@ export const Tables: CollectionConfig = {
       path: '/:id/name',
       method: 'patch',
       handler: setTableNameMode,
+    },
+    {
+      path: '/:id/delete',
+      method: 'post',
+      handler: adminDeleteTable,
+    },
+    {
+      path: '/:id/remove-member',
+      method: 'post',
+      handler: adminRemoveTableMember,
     },
     {
       path: '/:id/seats',

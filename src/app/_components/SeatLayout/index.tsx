@@ -35,6 +35,8 @@ type SeatLayoutProps = {
   currentUserId?: string
   /** A member of this table, so the plan is theirs to arrange. */
   isMember: boolean
+  /** May open and rearrange any table without being a member. */
+  isAdmin?: boolean
   /** Members can edit only while the owner's lock is off. */
   canEdit: boolean
   /** Owner or admin: may rearrange every seat. Everyone else may only move their own. */
@@ -80,6 +82,7 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
   onSave,
   currentUserId,
   isMember,
+  isAdmin,
   canEdit,
   canManageAll,
   locked,
@@ -397,8 +400,13 @@ export const SeatLayout: React.FC<SeatLayoutProps> = ({
       </div>
 
       <div className={classes.statusNotice}>
-        {isMember ? (
-          locked ? (
+        {isAdmin && !isMember ? (
+          <span>
+            Admin view — you are not a member of this table. Arranging seats here does not add you
+            to it.
+          </span>
+        ) : isMember ? (
+          locked && !isAdmin ? (
             <span>🔒 This table is locked. The owner can unlock it to make changes.</span>
           ) : canManageAll ? (
             <span>Click any seat to arrange the table, including everyone&apos;s plus-ones.</span>

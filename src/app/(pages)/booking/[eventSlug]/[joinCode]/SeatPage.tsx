@@ -1,16 +1,21 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 import type { User } from '../../../../../payload/payload-types'
 import type { TableNameMode } from '../../../../../utilities/booking/tableName'
-import type { SeatAssignment, TableSeatData } from '../../../../_api/fetchBooking'
+import type { SeatAssignment, TableMember, TableSeatData } from '../../../../_api/fetchBooking'
 import {
+  deleteTable,
   fetchTableSeats,
   joinTable,
+  removeTableMember,
   setTableNameMode,
+  toggleTableLock,
   updateSeats,
 } from '../../../../_api/fetchBooking'
+import { SeatAdminControls } from '../../../../_components/SeatAdminControls'
 import { SeatLayout } from '../../../../_components/SeatLayout'
 
 export const SeatPage: React.FC<{
@@ -19,10 +24,13 @@ export const SeatPage: React.FC<{
   user: User
   token: string
 }> = ({ joinCode, eventSlug, user, token }) => {
+  const router = useRouter()
   const [data, setData] = useState<TableSeatData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [joining, setJoining] = useState(false)
+  const [removingMemberId, setRemovingMemberId] = useState<string | null>(null)
+  const [adminAction, setAdminAction] = useState<'lock' | 'delete' | null>(null)
   const seatRequestRef = useRef(0)
 
   const loadSeats = useCallback(async () => {
@@ -67,6 +75,73 @@ export const SeatPage: React.FC<{
       setError(err instanceof Error ? err.message : 'Failed to join table')
     } finally {
       setJoining(false)
+    }
+  }
+
+  const tableLabel = data
+    ? data.tableNumber !== null && data.tableNumber !== undefined
+      ? `Table ${data.tableNumber}`
+      : data.name
+    : 'this table'
+
+  const handleRemoveMember = async (member: TableMember) => {
+    if (!data || removingMemberId || adminAction) return
+
+    const confirmed = window.confirm(
+      `Remove ${member.name} from ${tableLabel}? Their seat and any plus-one seats will be cleared.`,
+    )
+    if (!confirmed) return
+
+    setRemovingMemberId(member.id)
+    setError(null)
+
+    try {
+      const result = await removeTableMember(joinCode, member.id, token)
+      if (result.tableDeleted) {
+        router.push(`/booking/${data.eventSlug || eventSlug}`)
+        return
+      }
+      await loadSeats()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to remove that guest')
+    } finally {
+      setRemovingMemberId(null)
+    }
+  }
+
+  const handleToggleLock = async () => {
+    if (!data || adminAction || removingMemberId) return
+
+    setAdminAction('lock')
+    setError(null)
+
+    try {
+      await toggleTableLock(joinCode, token)
+      await loadSeats()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to change the lock')
+    } finally {
+      setAdminAction(null)
+    }
+  }
+
+  const handleDeleteTable = async () => {
+    if (!data || adminAction || removingMemberId) return
+
+    const confirmed = window.confirm(
+      `Delete ${tableLabel}? Its seating will be removed and this cannot be undone.`,
+    )
+    if (!confirmed) return
+
+    setAdminAction('delete')
+    setError(null)
+
+    try {
+      await deleteTable(joinCode, token)
+      router.push(`/booking/${data.eventSlug || eventSlug}`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete table')
+      setAdminAction(null)
     }
   }
 
@@ -143,6 +218,18 @@ export const SeatPage: React.FC<{
         </div>
       )}
 
+      {data.isAdmin && (
+        <SeatAdminControls
+          members={data.members}
+          locked={data.locked}
+          onRemoveMember={handleRemoveMember}
+          onToggleLock={handleToggleLock}
+          onDeleteTable={handleDeleteTable}
+          removingMemberId={removingMemberId}
+          busyAction={adminAction}
+        />
+      )}
+
       <SeatLayout
         seats={data.seats}
         members={data.members}
@@ -154,8 +241,9 @@ export const SeatPage: React.FC<{
         canRename={data.canRename}
         onRename={handleRename}
         eventSlug={data.eventSlug || eventSlug}
+        isAdmin={data.isAdmin}
         isMember={data.isMember}
-        canEdit={data.isMember && (!data.locked || data.isAdmin)}
+        canEdit={data.isAdmin || (data.isMember && !data.locked)}
         canManageAll={data.isOwner || data.isAdmin}
         locked={data.locked}
         canJoin={data.canJoin}

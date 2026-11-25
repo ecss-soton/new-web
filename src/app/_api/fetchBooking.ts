@@ -132,6 +132,34 @@ export async function createTable(
   return res.json()
 }
 
+export async function deleteTable(joinCode: string, token: string): Promise<{ success: boolean }> {
+  const res = await fetch(`${API_URL}/api/tables/${encodeURIComponent(joinCode)}/delete`, {
+    method: 'POST',
+    headers: { Authorization: `JWT ${token}` },
+    cache: 'no-store',
+  })
+  if (!res.ok) throw new Error(await readErrorMessage(res, 'Failed to delete table'))
+  return res.json()
+}
+
+export async function removeTableMember(
+  joinCode: string,
+  userId: string,
+  token: string,
+): Promise<{ success: boolean; tableDeleted?: boolean }> {
+  const res = await fetch(`${API_URL}/api/tables/${encodeURIComponent(joinCode)}/remove-member`, {
+    method: 'POST',
+    headers: {
+      Authorization: `JWT ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ userId }),
+    cache: 'no-store',
+  })
+  if (!res.ok) throw new Error(await readErrorMessage(res, 'Failed to remove that guest'))
+  return res.json()
+}
+
 export async function joinTable(
   joinCode: string,
   token: string,

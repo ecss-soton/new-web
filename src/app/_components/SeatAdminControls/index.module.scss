@@ -1,0 +1,139 @@
+.panel {
+  width: calc(100% - 2rem);
+  max-width: 800px;
+  margin: 1.5rem auto 0;
+  padding: 1rem 1.25rem;
+  background: var(--color-base-950);
+  border: 1px solid var(--color-base-800);
+  border-radius: 12px;
+  color: var(--color-base-300);
+  font-size: 0.9rem;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-base-100);
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--color-base-500);
+}
+
+.label {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-base-500);
+}
+
+.empty {
+  margin: 0 0 0.75rem;
+  color: var(--color-base-500);
+  font-size: 0.85rem;
+}
+
+.members {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.memberRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.35rem 0.5rem;
+  background: var(--color-base-900);
+  border: 1px solid var(--color-base-850);
+  border-radius: 8px;
+}
+
+.memberName {
+  overflow-wrap: anywhere;
+}
+
+.remove {
+  background: transparent;
+  border: 1px solid var(--color-error-700);
+  color: var(--color-error-300);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover:not(:disabled) {
+    background: var(--color-error-900);
+    border-color: var(--color-error-500);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.secondary {
+  background: var(--color-base-800);
+  border: 1px solid var(--color-base-700);
+  color: var(--color-base-100);
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover:not(:disabled) {
+    background: var(--color-base-700);
+    border-color: var(--color-base-500);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.danger {
+  background: transparent;
+  border: 1px solid var(--color-error-700);
+  color: var(--color-error-300);
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover:not(:disabled) {
+    background: var(--color-error-900);
+    border-color: var(--color-error-500);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
