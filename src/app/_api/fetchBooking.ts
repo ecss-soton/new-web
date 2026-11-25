@@ -1,5 +1,8 @@
+import type { SeatAssignment, SeatSlot } from '../../utilities/booking/seats'
 import type { TableNameMode } from '../../utilities/booking/tableName'
 import { GRAPHQL_API_URL } from './shared'
+
+export type { SeatAssignment, SeatSlot }
 
 const API_URL = GRAPHQL_API_URL
 
@@ -10,18 +13,23 @@ export interface BookingTable {
   name?: string
   /** Derived 1..N creation-order number; shown on cards and matched by the export. */
   number?: number
-  /** Only sent on `yourTable`: the viewer's own seat (1-based), or null. */
-  yourSeat?: number | null
   locked: boolean
   isOwner: boolean
   members: Array<{ id: string; name: string }>
   memberCount: number
-  seatPositions?: Array<{
-    seatIndex: number
-    userId?: string | null
-    plusOneOf?: string | null
-    name: string
-  }> | null
+}
+
+/** The viewer's own table, with their seat on it. */
+export interface YourTable {
+  id: string
+  joinCode: string
+  name?: string
+  number?: number
+  /** 1-based seat number, or null when the viewer has not picked one. */
+  yourSeat?: number | null
+  locked: boolean
+  isOwner: boolean
+  memberCount: number
 }
 
 export interface BookingEventData {
@@ -35,20 +43,6 @@ export interface BookingEventData {
   seatsPerTable?: number | null
 }
 
-export interface SeatAssignment {
-  seatIndex: number
-  userId?: string
-  /** A plus-one seat: the member whose ticket it belongs to. */
-  plusOneOf?: string
-  name?: string
-}
-
-export interface BookingSeat {
-  userId: string | null
-  plusOneOf: string | null
-  name: string
-}
-
 export interface TableMember {
   id: string
   name: string
@@ -57,9 +51,8 @@ export interface TableMember {
 }
 
 export interface TableSeatData {
-  seats: Array<BookingSeat | null>
+  seats: SeatSlot[]
   members: TableMember[]
-  yourTable: boolean
   isMember: boolean
   /** The viewer owns the table, so they may rearrange every seat. */
   isOwner: boolean
@@ -74,11 +67,7 @@ export interface TableSeatData {
   /** Derived 1..N creation-order table number, matching the seat-plan export. */
   tableNumber?: number | null
   nameMode: TableNameMode
-  /** Owner or admin: may switch between the owner name and the join code. */
-  canRename: boolean
   eventSlug: string
-  seatsPerTable: number
-  memberCount: number
 }
 
 /**
@@ -102,7 +91,7 @@ export async function fetchBookingData(
   eventId: string,
   args?: { token?: string },
 ): Promise<{
-  yourTable: BookingTable | null
+  yourTable: YourTable | null
   event: BookingEventData
   tables: BookingTable[]
   isAdmin: boolean
@@ -129,6 +118,34 @@ export async function createTable(
     cache: 'no-store',
   })
   if (!res.ok) throw new Error(await readErrorMessage(res, 'Failed to create table'))
+  return res.json()
+}
+
+export async function deleteTable(joinCode: string, token: string): Promise<{ success: boolean }> {
+  const res = await fetch(`${API_URL}/api/tables/${encodeURIComponent(joinCode)}/delete`, {
+    method: 'POST',
+    headers: { Authorization: `JWT ${token}` },
+    cache: 'no-store',
+  })
+  if (!res.ok) throw new Error(await readErrorMessage(res, 'Failed to delete table'))
+  return res.json()
+}
+
+export async function removeTableMember(
+  joinCode: string,
+  userId: string,
+  token: string,
+): Promise<{ success: boolean; tableDeleted?: boolean }> {
+  const res = await fetch(`${API_URL}/api/tables/${encodeURIComponent(joinCode)}/remove-member`, {
+    method: 'POST',
+    headers: {
+      Authorization: `JWT ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ userId }),
+    cache: 'no-store',
+  })
+  if (!res.ok) throw new Error(await readErrorMessage(res, 'Failed to remove that guest'))
   return res.json()
 }
 

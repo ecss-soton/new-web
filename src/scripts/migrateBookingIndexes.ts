@@ -10,6 +10,7 @@ import payload from 'payload'
 import { computeMemberCount } from '../payload/utilities/memberCount'
 import { relationshipId } from '../payload/utilities/relationships'
 import { normalizeSotonId } from '../payload/utilities/sotonId'
+import type { SeatRow } from '../utilities/booking/seats'
 
 interface NativeIndex {
   name?: string
@@ -26,13 +27,6 @@ interface NativeCollection {
   createIndex: (keys: Record<string, 1 | -1>, options?: Record<string, unknown>) => Promise<unknown>
   indexes: () => Promise<NativeIndex[]>
   dropIndex: (name: string) => Promise<unknown>
-}
-
-interface SeatPosition {
-  seatIndex: number
-  userId?: string | null
-  plusOneOf?: string | null
-  name?: string | null
 }
 
 // One-off migration for the table-booking integrity changes.
@@ -151,7 +145,7 @@ const migrate = async (): Promise<void> => {
     id: unknown
     members: string[]
     memberCount: number
-    seats: SeatPosition[]
+    seats: SeatRow[]
   }> = []
 
   for (const table of allTables) {
@@ -199,10 +193,8 @@ const migrate = async (): Promise<void> => {
     }
 
     const seenSeatIndexes = new Set<number>()
-    const seats: SeatPosition[] = []
-    const rawSeats = Array.isArray(table.seatPositions)
-      ? (table.seatPositions as SeatPosition[])
-      : []
+    const seats: SeatRow[] = []
+    const rawSeats = Array.isArray(table.seatPositions) ? (table.seatPositions as SeatRow[]) : []
 
     for (const seat of rawSeats) {
       const seatIndex = Number(seat?.seatIndex)

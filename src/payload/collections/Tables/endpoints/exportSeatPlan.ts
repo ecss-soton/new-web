@@ -3,17 +3,16 @@ import type { PayloadHandler } from 'payload/config'
 import { formatSeatPlanCsv, type SeatPlanRow } from '../../../../utilities/booking/seatPlanCsv'
 import { rankTables } from '../../../../utilities/booking/tableNumbers'
 import { isAdmin } from '../../../access/isAdmin'
-import type { User } from '../../../payload-types'
 import {
-  accountDisplayName,
   asString,
   csvFileNamePart,
   loadBookingEvent,
   loadHoldersBySotonId,
 } from '../../../utilities/booking'
-import { getPlusOneAllowances } from '../../../utilities/memberCount'
-import { relationshipId, relationshipIds } from '../../../utilities/relationships'
+import { relationshipIds } from '../../../utilities/relationships'
 import { normalizeSotonId } from '../../../utilities/sotonId'
+import { loadTableMemberContext } from '../../../utilities/tableMembers'
+import { currentSeatRows } from '../../../utilities/tableSeats'
 
 /**
  * Downloads the venue seating plan for an event: table number, seat number, guest
@@ -47,40 +46,23 @@ export const exportSeatPlan: PayloadHandler = async (req, res) => {
     overrideAccess: true,
   })
 
+  const seatsPerTable = event.seatsPerTable || 10
   const activeTables = tablesResult.docs.filter(table => relationshipIds(table.members).length > 0)
   const tableNumbers = rankTables(activeTables)
   const holders = await loadHoldersBySotonId(payload, eventId)
 
   const memberIds = [...new Set(activeTables.flatMap(table => relationshipIds(table.members)))]
-  const users =
-    memberIds.length > 0
-      ? ((
-          await payload.find({
-            collection: 'users',
-            where: { id: { in: memberIds } },
-            pagination: false,
-            depth: 0,
-            overrideAccess: true,
-          })
-        ).docs as User[])
-      : []
-
-  const userById = new Map(users.map(member => [member.id, member]))
-  const displayNameById = new Map(
-    users.map(member => [
-      member.id,
-      accountDisplayName(member) || (member.username as string) || 'Unknown',
-    ]),
+  const { users, displayNameById, sotonIdById, plusOneAllowances } = await loadTableMemberContext(
+    payload,
+    eventId,
+    memberIds,
   )
-  const plusOneAllowances = await getPlusOneAllowances(payload, eventId, memberIds)
   const memberSotonIds = new Set(
-    users.map(member => normalizeSotonId(member.username)).filter(Boolean),
+    users.map(member => sotonIdById.get(member.id)).filter((id): id is string => Boolean(id)),
   )
 
   const displayNameFor = (memberId: string): string => displayNameById.get(memberId) ?? 'Unknown'
-
-  const sotonIdFor = (memberId: string): string =>
-    normalizeSotonId(userById.get(memberId)?.username)
+  const sotonIdFor = (memberId: string): string => sotonIdById.get(memberId) ?? ''
 
   const rows: SeatPlanRow[] = []
 
@@ -90,18 +72,13 @@ export const exportSeatPlan: PayloadHandler = async (req, res) => {
     const seatedMemberIds = new Set<string>()
     const placedPlusOnes = new Map<string, number>()
 
-    const seats = [...(table.seatPositions ?? [])].sort((a, b) => a.seatIndex - b.seatIndex)
+    // Bounds, stale members and duplicate seat indexes are handled consistently
+    // with the seats endpoint.
+    const seats = currentSeatRows(table.seatPositions, tableMemberIds, seatsPerTable)
 
     for (const seat of seats) {
-      if (!Number.isInteger(seat.seatIndex) || seat.seatIndex < 0) continue
-
-      const userId = relationshipId((seat as { userId?: unknown }).userId)
-      const plusOneOf = relationshipId((seat as { plusOneOf?: unknown }).plusOneOf)
-
-      // Seats left behind by a guest who has left the table are stale, exactly
-      // as the seat-plan endpoint treats them.
-      if (userId && !tableMemberIds.includes(userId)) continue
-      if (plusOneOf && !tableMemberIds.includes(plusOneOf)) continue
+      const userId = seat.userId
+      const plusOneOf = seat.plusOneOf
 
       if (userId) {
         seatedMemberIds.add(userId)

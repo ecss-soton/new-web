@@ -1,5 +1,6 @@
 import type { Payload } from 'payload'
 
+import type { User } from '../payload-types'
 import { relationshipIds } from './relationships'
 import { normalizeSotonId } from './sotonId'
 
@@ -12,34 +13,25 @@ const uniqueMemberIds = (members: Array<string | { id: string }> | null | undefi
 ]
 
 /**
- * How many plus-ones each member of a table is allowed, read from the event's
- * guest list. The seat plan and the capacity ledger both use this, so a guest
- * can never be given more plus-one seats than their ticket allows.
+ * How many plus-ones each of the given accounts is allowed, read from the event's
+ * guest list. Callers that have already loaded the member docs use this to avoid
+ * re-querying them.
  *
- * Members whose account no longer exists (or who have no username) are absent
- * from the map and are treated as zero plus-ones.
+ * Members who have no username are absent from the map and count as zero.
  */
-export const getPlusOneAllowances = async (
+export const getPlusOneAllowancesForUsers = async (
   payload: Payload,
   eventId: string,
-  members: Array<string | { id: string }> | null | undefined,
+  users: Array<Pick<User, 'id' | 'username'>>,
 ): Promise<Map<string, number>> => {
-  const memberIds = uniqueMemberIds(members)
   const allowances = new Map<string, number>()
+  if (users.length === 0) return allowances
 
-  if (memberIds.length === 0) return allowances
-
-  const users = await payload.find({
-    collection: 'users',
-    where: { id: { in: memberIds } },
-    pagination: false,
-    depth: 0,
-    overrideAccess: true,
-  })
-
-  const usernames = users.docs
-    .map(user => normalizeSotonId(user.username as string | undefined))
-    .filter(Boolean)
+  const usernames = [
+    ...new Set(
+      users.map(user => normalizeSotonId(user.username as string | undefined)).filter(Boolean),
+    ),
+  ]
 
   let holderDocs: Array<{ sotonId?: string | null; plusOneCount?: number | null }> = []
   if (usernames.length > 0) {
@@ -67,11 +59,31 @@ export const getPlusOneAllowances = async (
     )
   }
 
-  for (const user of users.docs) {
+  for (const user of users) {
     allowances.set(user.id, plusOnesBySotonId.get(normalizeSotonId(user.username as string)) ?? 0)
   }
 
   return allowances
+}
+
+/** The same allowances, looking the member accounts up first. */
+export const getPlusOneAllowances = async (
+  payload: Payload,
+  eventId: string,
+  members: Array<string | { id: string }> | null | undefined,
+): Promise<Map<string, number>> => {
+  const memberIds = uniqueMemberIds(members)
+  if (memberIds.length === 0) return new Map()
+
+  const users = await payload.find({
+    collection: 'users',
+    where: { id: { in: memberIds } },
+    pagination: false,
+    depth: 0,
+    overrideAccess: true,
+  })
+
+  return getPlusOneAllowancesForUsers(payload, eventId, users.docs)
 }
 
 /**

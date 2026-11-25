@@ -6,7 +6,6 @@ import Link from 'next/link'
 import classes from './index.module.scss'
 
 type TableCardProps = {
-  id: string
   joinCode: string
   /** Human-readable table name (owner's first name or the join code). */
   name?: string
@@ -24,11 +23,12 @@ type TableCardProps = {
   onJoin?: () => void
   onLeave?: () => void
   onToggleLock?: () => void
+  /** Admin only: delete the table and its seating. */
+  onDelete?: () => void
   loading?: boolean
 }
 
 export const TableCard: React.FC<TableCardProps> = ({
-  id,
   joinCode,
   name,
   number,
@@ -44,6 +44,7 @@ export const TableCard: React.FC<TableCardProps> = ({
   onJoin,
   onLeave,
   onToggleLock,
+  onDelete,
   loading,
 }) => {
   const [copied, setCopied] = useState(false)
@@ -54,6 +55,8 @@ export const TableCard: React.FC<TableCardProps> = ({
   const canJoin = !full && !locked && (bookingOpen || isAdmin)
   // The lock is the owner's freeze control: it stops joins, leaves and seat edits.
   const canLeave = (bookingOpen || isAdmin) && (!locked || isAdmin)
+  // Owners freeze their own table; admins can freeze (or rescue) any table.
+  const canToggleLock = isOwner || isAdmin
   const plusOneSeats = Math.max(0, currentSeats - members.length)
 
   const shareLink = `${process.env.NEXT_PUBLIC_SERVER_URL}/booking/${eventSlug || ''}/${joinCode}`
@@ -114,7 +117,7 @@ export const TableCard: React.FC<TableCardProps> = ({
             >
               {loading ? 'Leaving...' : 'Leave'}
             </button>
-            {isOwner && (
+            {canToggleLock && (
               <button
                 className={[classes.button, classes.secondary].join(' ')}
                 onClick={onToggleLock}
@@ -123,12 +126,50 @@ export const TableCard: React.FC<TableCardProps> = ({
                 {loading ? '...' : locked ? 'Unlock' : 'Lock'}
               </button>
             )}
+            {isAdmin && (
+              <button
+                className={[classes.button, classes.danger].join(' ')}
+                onClick={onDelete}
+                disabled={loading}
+                title="Delete this table and its seating"
+              >
+                Delete
+              </button>
+            )}
           </>
         ) : (
           <>
+            {isAdmin && (
+              <Link
+                href={`/booking/${eventSlug || ''}/${joinCode}`}
+                className={[classes.button, classes.secondary].join(' ')}
+                title="View the seating plan without joining this table"
+              >
+                View seat plan
+              </Link>
+            )}
             {canJoin && (
               <button className={classes.button} onClick={onJoin} disabled={loading}>
                 {loading ? 'Joining...' : 'Join Table'}
+              </button>
+            )}
+            {isAdmin && (
+              <button
+                className={[classes.button, classes.secondary].join(' ')}
+                onClick={onToggleLock}
+                disabled={loading}
+              >
+                {loading ? '...' : locked ? 'Unlock' : 'Lock'}
+              </button>
+            )}
+            {isAdmin && (
+              <button
+                className={[classes.button, classes.danger].join(' ')}
+                onClick={onDelete}
+                disabled={loading}
+                title="Delete this table and its seating"
+              >
+                Delete
               </button>
             )}
             {full && !isYourTable && <span className={classes.fullLabel}>Full</span>}

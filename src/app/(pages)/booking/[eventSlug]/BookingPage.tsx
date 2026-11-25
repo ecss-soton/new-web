@@ -4,9 +4,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 import type { User } from '../../../../payload/payload-types'
-import type { BookingEventData, BookingTable } from '../../../_api/fetchBooking'
+import type { BookingEventData, BookingTable, YourTable } from '../../../_api/fetchBooking'
 import {
   createTable,
+  deleteTable,
   fetchBookingData,
   joinTable,
   leaveTable,
@@ -15,7 +16,7 @@ import {
 import { TableCard } from '../../../_components/TableCard'
 
 type BookingState = {
-  yourTable: BookingTable | null
+  yourTable: YourTable | null
   event: BookingEventData
   tables: BookingTable[]
   isAdmin: boolean
@@ -129,6 +130,27 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
     }
   }
 
+  const handleDeleteTable = async (table: BookingTable) => {
+    if (actionLoading) return
+
+    const label =
+      table.number !== undefined ? `Table ${table.number}` : table.name || table.joinCode
+    const confirmed = window.confirm(
+      `Delete ${label}? Its seating will be removed and this cannot be undone.`,
+    )
+    if (!confirmed) return
+
+    setActionLoading(table.joinCode)
+    try {
+      await deleteTable(table.joinCode, token)
+      await loadData()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete table')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
   const handleToggleLock = async (joinCode: string) => {
     setActionLoading(joinCode)
     try {
@@ -211,6 +233,12 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
               }}
             >
               {description}
+            </p>
+          )}
+          {isAdmin && (
+            <p style={{ color: 'var(--color-base-500)', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+              Admin: you can view, lock or delete any table, and remove people from a table&apos;s
+              seat plan.
             </p>
           )}
         </div>
@@ -303,7 +331,6 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
           {tables.map(table => (
             <TableCard
               key={table.joinCode}
-              id={table.joinCode}
               joinCode={table.joinCode}
               name={table.name}
               number={table.number}
@@ -314,11 +341,12 @@ export const BookingPage: React.FC<{ user: User; token: string; eventSlug: strin
               seatsPerTable={event?.seatsPerTable || 10}
               isYourTable={yourTable?.joinCode === table.joinCode}
               isAdmin={isAdmin}
-              bookingOpen={event?.isOpen || isAdmin}
+              bookingOpen={bookingOpen}
               eventSlug={eventSlug}
               onJoin={() => handleJoin(table.joinCode)}
               onLeave={() => handleLeave(table.joinCode)}
               onToggleLock={() => handleToggleLock(table.joinCode)}
+              onDelete={() => handleDeleteTable(table)}
               loading={actionLoading === table.joinCode}
             />
           ))}
